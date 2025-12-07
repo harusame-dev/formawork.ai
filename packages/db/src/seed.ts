@@ -1,4 +1,6 @@
-import { db } from "./client.js";
+import { sql } from "drizzle-orm";
+import { schemaName } from "./pgschema.js";
+import { getPostgresRoleDbClient } from "./postgres-role-db-client.js";
 import { customersTable } from "./schema/customer.js";
 import {
 	customerNoteImagesTable,
@@ -549,8 +551,10 @@ const customerNoteImageSeeds = [
 ];
 
 async function seed() {
-	console.log("Seeding database...");
+	console.log("⭐️ シーディング");
 
+	const db = getPostgresRoleDbClient();
+	await db.execute(sql.raw(`SET search_path TO ${schemaName}`));
 	// スタッフデータを投入
 	await db.insert(staffsTable).values(staffSeeds);
 	console.log(`Inserted ${staffSeeds.length} staffs`);
@@ -567,11 +571,14 @@ async function seed() {
 	await db.insert(customerNoteImagesTable).values(customerNoteImageSeeds);
 	console.log(`Inserted ${customerNoteImageSeeds.length} customer note images`);
 
-	console.log("Seeding completed!");
-	process.exit(0);
+	console.log("✅️ シーディング完了");
 }
 
-seed().catch((error) => {
-	console.error("Seeding failed:", error);
-	process.exit(1);
-});
+seed()
+	.then(() => {
+		process.exit(0);
+	})
+	.catch((error) => {
+		console.error("Seeding failed:", error);
+		process.exit(1);
+	});
