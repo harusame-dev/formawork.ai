@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
+import { db } from "./client.js";
 import { schemaName } from "./pgschema.js";
-import { getPostgresRoleDbClient } from "./postgres-role-db-client.js";
 import { customersTable } from "./schema/customer.js";
 import {
 	customerNoteImagesTable,
@@ -553,7 +553,6 @@ const customerNoteImageSeeds = [
 async function seed() {
 	console.log("⭐️ シーディング");
 
-	const db = getPostgresRoleDbClient();
 	await db.execute(sql.raw(`SET search_path TO ${schemaName}`));
 	// スタッフデータを投入
 	await db.insert(staffsTable).values(staffSeeds);

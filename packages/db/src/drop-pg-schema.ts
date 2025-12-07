@@ -1,11 +1,9 @@
 import { sql } from "drizzle-orm";
+import { db } from "./client";
 import { schemaName } from "./pgschema";
-import { getPostgresRoleDbClient } from "./postgres-role-db-client";
 
 async function main() {
 	console.log("⭐️ pg スキーマ削除", { schemaName });
-
-	const db = getPostgresRoleDbClient();
 
 	const result = await db.execute(
 		sql.raw(`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`),

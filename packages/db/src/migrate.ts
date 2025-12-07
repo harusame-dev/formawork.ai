@@ -1,8 +1,7 @@
 import { sql } from "drizzle-orm";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
-import { databaseUrl } from "./client";
+import { databaseUrl, db } from "./client";
 import { schemaName } from "./pgschema";
-import { getPostgresRoleDbClient } from "./postgres-role-db-client";
 
 async function main() {
 	console.log("⭐️ マイグレーション", {
@@ -12,8 +11,6 @@ async function main() {
 		schemaName,
 		user: databaseUrl.username,
 	});
-
-	const db = getPostgresRoleDbClient();
 
 	// 対象のスキーマにマイグレーションを実施できるように search_path を設定
 	await db.execute(sql.raw(`SET search_path TO ${schemaName}`));
