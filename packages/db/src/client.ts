@@ -18,7 +18,7 @@ databaseUrl.username = `${schemaName}_user`;
 const client = postgres(databaseUrl.toString());
 
 export const db = globalForDb.db || drizzle(client, { schema });
-console.log("current user:", db.execute(sql.raw("SELECT current_user")));
+console.log("current user:", await db.execute(sql.raw("SELECT current_user")));
 
 // biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 if (process.env["NODE_ENV"] !== "production") globalForDb.db = db;
