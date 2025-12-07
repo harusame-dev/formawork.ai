@@ -2,7 +2,6 @@ import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { pgRoleName } from "./pgrole";
-import { schemaName } from "./pgschema";
 import { systemManageDatabaseUrl } from "./postgres-role-db-client";
 import * as schema from "./schema";
 
@@ -12,7 +11,7 @@ databaseUrl.username = pgRoleName;
 const globalForDb = global as unknown as {
 	db: PostgresJsDatabase<typeof schema>;
 };
-databaseUrl.username = `${schemaName}_user`;
+databaseUrl.username = pgRoleName;
 
 const client = postgres(databaseUrl.toString());
 
