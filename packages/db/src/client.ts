@@ -4,7 +4,7 @@ import postgres from "postgres";
 import * as v from "valibot";
 import * as schema from "./schema";
 
-export const systemManageDatabaseUrl = new URL(
+export const databaseUrl = new URL(
 	v.parse(
 		v.pipe(
 			v.string("databaseUrl は文字列である必要があります"),
@@ -14,7 +14,6 @@ export const systemManageDatabaseUrl = new URL(
 		process.env["DATABASE_URL"],
 	),
 );
-export const databaseUrl = new URL(systemManageDatabaseUrl);
 
 const globalForDb = global as unknown as {
 	db: PostgresJsDatabase<typeof schema>;
