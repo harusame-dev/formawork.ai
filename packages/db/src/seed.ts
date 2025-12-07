@@ -566,15 +566,14 @@ async function seed() {
 	// 顧客ノート画像データを投入
 	await db.insert(customerNoteImagesTable).values(customerNoteImageSeeds);
 	console.log(`Inserted ${customerNoteImageSeeds.length} customer note images`);
-
-	console.log("✅️ シーディング完了");
 }
 
 seed()
 	.then(() => {
+		console.log("✅️ シーディング完了");
 		process.exit(0);
 	})
 	.catch((error) => {
-		console.error("Seeding failed:", error);
+		console.error("❌️ シーディング失敗", error);
 		process.exit(1);
 	});

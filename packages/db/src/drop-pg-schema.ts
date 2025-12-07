@@ -5,15 +5,15 @@ import { schemaName } from "./pgschema";
 async function main() {
 	console.log("⭐️ pg スキーマ削除", { schemaName });
 
-	const result = await db.execute(
-		sql.raw(`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`),
-	);
-	console.log("✅️ pg スキーマ削除完了", { ...result });
+	await db.execute(sql.raw(`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`));
 }
 
 main()
-	.then(() => process.exit(0))
+	.then(() => {
+		console.log("✅️ pg スキーマ削除完了");
+		process.exit(0);
+	})
 	.catch((error) => {
-		console.log(error);
+		console.log("❌️ pg スキーマ削除失敗", error);
 		process.exit(1);
 	});

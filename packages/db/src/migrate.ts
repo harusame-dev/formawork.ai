@@ -26,6 +26,6 @@ async function main() {
 await main()
 	.then(() => process.exit(0))
 	.catch((error) => {
-		console.error("Migration failed:", error);
+		console.error("❌️ マイグレーション失敗", error);
 		process.exit(1);
 	});
