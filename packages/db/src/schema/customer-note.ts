@@ -2,7 +2,6 @@ import {
 	index,
 	integer,
 	pgSchema,
-	pgTable,
 	primaryKey,
 	text,
 	timestamp,
@@ -38,7 +37,7 @@ export const customerNotesTable = pgSchema(schemaName).table(
 	}),
 );
 
-export const customerNoteImagesTable = pgTable(
+export const customerNoteImagesTable = pgSchema(schemaName).table(
 	"customer_note_images",
 	{
 		createdAt: timestamp("created_at").defaultNow().notNull(),
