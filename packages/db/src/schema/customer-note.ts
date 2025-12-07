@@ -1,16 +1,18 @@
 import {
 	index,
 	integer,
+	pgSchema,
 	pgTable,
 	primaryKey,
 	text,
 	timestamp,
 	uuid,
 } from "drizzle-orm/pg-core";
+import { schemaName } from "../pgschema";
 import { customersTable } from "./customer";
 import { staffsTable } from "./staff";
 
-export const customerNotesTable = pgTable(
+export const customerNotesTable = pgSchema(schemaName).table(
 	"customer_notes",
 	{
 		content: text("content").notNull(),

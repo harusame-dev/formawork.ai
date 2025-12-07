@@ -1,12 +1,12 @@
 {
-  "id": "d7d601d2-d501-40bd-8ba1-1b0afcaa14fd",
+  "id": "8f76dd45-e632-45db-956b-c2eb643a1103",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.customers": {
+    "local.customers": {
       "name": "customers",
-      "schema": "",
+      "schema": "local",
       "columns": {
         "created_at": {
           "name": "created_at",
@@ -97,6 +97,7 @@
           "name": "customer_note_images_customer_note_id_customer_notes_id_fk",
           "tableFrom": "customer_note_images",
           "tableTo": "customer_notes",
+          "schemaTo": "local",
           "columnsFrom": [
             "customer_note_id"
           ],
@@ -121,9 +122,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.customer_notes": {
+    "local.customer_notes": {
       "name": "customer_notes",
-      "schema": "",
+      "schema": "local",
       "columns": {
         "content": {
           "name": "content",
@@ -208,6 +209,7 @@
           "name": "customer_notes_customer_id_customers_customer_id_fk",
           "tableFrom": "customer_notes",
           "tableTo": "customers",
+          "schemaTo": "local",
           "columnsFrom": [
             "customer_id"
           ],
@@ -221,6 +223,7 @@
           "name": "customer_notes_staff_id_staffs_staff_id_fk",
           "tableFrom": "customer_notes",
           "tableTo": "staffs",
+          "schemaTo": "local",
           "columnsFrom": [
             "staff_id"
           ],
@@ -237,9 +240,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.staffs": {
+    "local.staffs": {
       "name": "staffs",
-      "schema": "",
+      "schema": "local",
       "columns": {
         "auth_user_id": {
           "name": "auth_user_id",
