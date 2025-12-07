@@ -16,7 +16,7 @@ CREATE TABLE "customer_note_images" (
 	CONSTRAINT "customer_note_images_customer_note_id_display_order_pk" PRIMARY KEY("customer_note_id","display_order")
 );
 
-CREATE TABLE "local"."customer_notes" (
+CREATE TABLE "customer_notes" (
 	"content" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"customer_id" uuid NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE "local"."customer_notes" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 
-CREATE TABLE "local"."staffs" (
+CREATE TABLE "staffs" (
 	"auth_user_id" uuid,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"first_name" text NOT NULL,
@@ -35,8 +35,8 @@ CREATE TABLE "local"."staffs" (
 	CONSTRAINT "staffs_auth_user_id_unique" UNIQUE("auth_user_id")
 );
 
-ALTER TABLE "customer_note_images" ADD CONSTRAINT "customer_note_images_customer_note_id_customer_notes_id_fk" FOREIGN KEY ("customer_note_id") REFERENCES "local"."customer_notes"("id") ON DELETE cascade ON UPDATE no action;
-ALTER TABLE "local"."customer_notes" ADD CONSTRAINT "customer_notes_customer_id_customers_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "local"."customers"("customer_id") ON DELETE cascade ON UPDATE no action;
-ALTER TABLE "local"."customer_notes" ADD CONSTRAINT "customer_notes_staff_id_staffs_staff_id_fk" FOREIGN KEY ("staff_id") REFERENCES "local"."staffs"("staff_id") ON DELETE cascade ON UPDATE no action;
-CREATE INDEX "idx_customer_notes_customer_created" ON "local"."customer_notes" USING btree ("customer_id","created_at" DESC NULLS LAST);
-CREATE INDEX "idx_customer_notes_staff_id" ON "local"."customer_notes" USING btree ("staff_id");
+ALTER TABLE "customer_note_images" ADD CONSTRAINT "customer_note_images_customer_note_id_customer_notes_id_fk" FOREIGN KEY ("customer_note_id") REFERENCES "customer_notes"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "customer_notes" ADD CONSTRAINT "customer_notes_customer_id_customers_customer_id_fk" FOREIGN KEY ("customer_id") REFERENCES "customers"("customer_id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "customer_notes" ADD CONSTRAINT "customer_notes_staff_id_staffs_staff_id_fk" FOREIGN KEY ("staff_id") REFERENCES "staffs"("staff_id") ON DELETE cascade ON UPDATE no action;
+CREATE INDEX "idx_customer_notes_customer_created" ON "customer_notes" USING btree ("customer_id","created_at" DESC NULLS LAST);
+CREATE INDEX "idx_customer_notes_staff_id" ON "customer_notes" USING btree ("staff_id");
