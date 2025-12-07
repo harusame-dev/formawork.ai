@@ -1,7 +1,7 @@
 import { db } from "@workspace/db/client";
 import type { SelectCustomer } from "@workspace/db/schema/customer";
 import { customersTable } from "@workspace/db/schema/customer";
-import { asc, eq, or } from "drizzle-orm";
+import { asc, eq, or, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { CustomerTag } from "../tag";
 import type { CustomersCondition } from "./schema";
@@ -28,6 +28,7 @@ export async function getCustomers({
 			)
 		: undefined;
 
+	console.log(await db.execute(sql.raw("SELECT current_user;")));
 	const customers = await db
 		.select()
 		.from(customersTable)
