@@ -1,22 +1,18 @@
 import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
-import postgres from "postgres";
-import { databaseUrl } from "./client";
+import { databaseUrl, db } from "./client";
 import { schemaName } from "./pgschema";
 
-const client = postgres(databaseUrl.toString());
-
-const db = drizzle(client);
-
 async function main() {
-	console.log("Running migrations...", {
+	console.log("⭐️ マイグレーション", {
 		databaseHost: databaseUrl.hostname,
 		databaseName: databaseUrl.pathname,
 		databasePort: databaseUrl.port,
 		schemaName,
+		user: databaseUrl.username,
 	});
 
+	// 対象のスキーマにマイグレーションを実施できるように search_path を設定
 	await db.execute(sql.raw(`SET search_path TO ${schemaName}`));
 
 	await migrate(db, {
@@ -24,12 +20,12 @@ async function main() {
 		migrationsSchema: schemaName,
 	});
 
-	console.log("Migrations completed successfully");
+	console.log("✅️ マイグレーション完了");
 }
 
 await main()
 	.then(() => process.exit(0))
 	.catch((error) => {
-		console.error("Migration failed:", error);
+		console.error("❌️ マイグレーション失敗", error);
 		process.exit(1);
 	});

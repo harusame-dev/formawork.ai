@@ -1,6 +1,7 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgSchema, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { schemaName } from "../pgschema";
 
-export const customersTable = pgTable("customers", {
+export const customersTable = pgSchema(schemaName).table("customers", {
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	customerId: uuid("customer_id").primaryKey(),
 	email: text("email").notNull(),

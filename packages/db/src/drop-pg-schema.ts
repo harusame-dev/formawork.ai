@@ -3,16 +3,17 @@ import { db } from "./client";
 import { schemaName } from "./pgschema";
 
 async function main() {
-	console.log("Drop postgresql schema");
-	const result = await db.execute(
-		sql.raw(`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`),
-	);
-	console.log("result", { ...result });
+	console.log("⭐️ pg スキーマ削除", { schemaName });
+
+	await db.execute(sql.raw(`DROP SCHEMA IF EXISTS ${schemaName} CASCADE`));
 }
 
-await main()
-	.then(() => process.exit(0))
+main()
+	.then(() => {
+		console.log("✅️ pg スキーマ削除完了");
+		process.exit(0);
+	})
 	.catch((error) => {
-		console.log(error);
+		console.log("❌️ pg スキーマ削除失敗", error);
 		process.exit(1);
 	});
