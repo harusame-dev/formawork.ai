@@ -1,6 +1,6 @@
 {
-  "id": "771ddc9a-0071-4d0c-b23b-9b01fc9e2177",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "b947c449-c792-5a8b-9335-7628606e5c86",
+  "prevId": "a836b338-b681-497a-8224-6517595d4b75",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -96,16 +96,16 @@
         "customer_note_images_customer_note_id_customer_notes_id_fk": {
           "name": "customer_note_images_customer_note_id_customer_notes_id_fk",
           "tableFrom": "customer_note_images",
-          "tableTo": "customer_notes",
-          "schemaTo": "local",
           "columnsFrom": [
             "customer_note_id"
           ],
+          "tableTo": "customer_notes",
+          "schemaTo": "local",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {
@@ -184,9 +184,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "idx_customer_notes_staff_id": {
           "name": "idx_customer_notes_staff_id",
@@ -199,39 +199,39 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "customer_notes_customer_id_customers_customer_id_fk": {
           "name": "customer_notes_customer_id_customers_customer_id_fk",
           "tableFrom": "customer_notes",
-          "tableTo": "customers",
-          "schemaTo": "local",
           "columnsFrom": [
             "customer_id"
           ],
+          "tableTo": "customers",
+          "schemaTo": "local",
           "columnsTo": [
             "customer_id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "customer_notes_staff_id_staffs_staff_id_fk": {
           "name": "customer_notes_staff_id_staffs_staff_id_fk",
           "tableFrom": "customer_notes",
-          "tableTo": "staffs",
-          "schemaTo": "local",
           "columnsFrom": [
             "staff_id"
           ],
+          "tableTo": "staffs",
+          "schemaTo": "local",
           "columnsTo": [
             "staff_id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -289,25 +289,25 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "customer_note_advice_customer_note_id_customer_notes_id_fk": {
           "name": "customer_note_advice_customer_note_id_customer_notes_id_fk",
           "tableFrom": "customer_note_advice",
-          "tableTo": "customer_notes",
-          "schemaTo": "local",
           "columnsFrom": [
             "customer_note_id"
           ],
+          "tableTo": "customer_notes",
+          "schemaTo": "local",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -366,10 +366,10 @@
       "uniqueConstraints": {
         "staffs_auth_user_id_unique": {
           "name": "staffs_auth_user_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "auth_user_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -379,10 +379,10 @@
   },
   "enums": {},
   "schemas": {},
+  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
-  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

@@ -6,6 +6,15 @@ import {
 	getCustomerNotes,
 } from "./get-customer-notes";
 
+const ADVICE_TIMEOUT_MINUTES = 5;
+
+function isAdviceTimeout(noteUpdatedAt: Date): boolean {
+	const now = new Date();
+	const diffMs = now.getTime() - noteUpdatedAt.getTime();
+	const diffMinutes = diffMs / (1000 * 60);
+	return diffMinutes > ADVICE_TIMEOUT_MINUTES;
+}
+
 type CustomerNotesContainerProps = {
 	customerIdPromise: Promise<string>;
 	searchConditionPromise: Promise<{
@@ -54,6 +63,7 @@ export async function CustomerNotesContainer({
 			...note,
 			authorName: note.staffName ?? "",
 			canEdit: isOwner || isAdmin,
+			isAdviceTimeout: !note.advice && isAdviceTimeout(note.updatedAt),
 		};
 	});
 

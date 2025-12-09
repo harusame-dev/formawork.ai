@@ -46,6 +46,7 @@
 		"WCAG",
 		"Vali",
 		"pgschema",
+		"pgmq",
 		"precomposed"
 	]
 }
