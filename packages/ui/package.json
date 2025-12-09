@@ -10,6 +10,7 @@
 		"@radix-ui/react-slot": "catalog:",
 		"@radix-ui/react-switch": "catalog:",
 		"@radix-ui/react-tabs": "catalog:",
+		"@tailwindcss/typography": "catalog:",
 		"class-variance-authority": "catalog:",
 		"clsx": "catalog:",
 		"cmdk": "catalog:",

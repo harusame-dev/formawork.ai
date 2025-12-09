@@ -1,6 +1,9 @@
 "use server";
 
 import { succeed } from "@harusame0616/result";
+import { db } from "@workspace/db/client";
+import { ADVICE_QUEUE_NAME } from "@workspace/db/queue-names";
+import { sql } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import * as v from "valibot";
 import { CustomerTag } from "@/features/customer/tag";
@@ -40,6 +43,13 @@ export const editCustomerNoteAction = createServerAction(
 		if (!result.success) {
 			return result;
 		}
+
+		await db.execute(sql`
+			SELECT pgmq.send(
+				${ADVICE_QUEUE_NAME},
+				${JSON.stringify({ customerNoteId: noteId })}::jsonb
+			)
+		`);
 
 		return succeed({ customerId: result.data.customerId });
 	},

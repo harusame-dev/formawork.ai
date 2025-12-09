@@ -1,11 +1,13 @@
 {
 	"dependencies": {
+		"@ai-sdk/valibot": "catalog:",
 		"@harusame0616/result": "catalog:",
 		"@hookform/resolvers": "catalog:",
 		"@repo/logger": "workspace:",
 		"@repo/supabase": "workspace:",
 		"@workspace/db": "workspace:",
 		"@workspace/ui": "workspace:",
+		"ai": "catalog:",
 		"lucide-react": "catalog:",
 		"next": "catalog:",
 		"pino": "catalog:",

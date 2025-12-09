@@ -26,7 +26,7 @@ export const schemaName = v.parse(
 		v.transform((result) =>
 			result.environment === "local"
 				? "local"
-				: `${result.appName}__${result.serviceName}__${result.branchName}`.toLowerCase(),
+				: `${result.appName}_${result.serviceName}_${result.branchName}`.toLowerCase(),
 		),
 	),
 	{
