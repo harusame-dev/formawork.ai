@@ -152,7 +152,7 @@ export async function generateAdvice(
 	const options: Parameters<typeof generateObject>[0] = {
 		experimental_telemetry: { isEnabled: true },
 		maxOutputTokens: 2048,
-		model: "google/gemini-2.0-flash",
+		model: "google/gemini-2.5-flash",
 		prompt: generatePrompt(params),
 		schema: valibotSchema(adviceSchema),
 		temperature: 0.3,
