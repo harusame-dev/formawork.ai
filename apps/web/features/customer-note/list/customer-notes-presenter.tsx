@@ -6,6 +6,7 @@ type CustomerNotesPresenterProps = {
 	notes: (CustomerNoteWithImages & {
 		authorName: string;
 		canEdit: boolean;
+		isAdviceTimeout: boolean;
 	})[];
 	totalCount: number;
 	currentPage: number;
@@ -40,6 +41,7 @@ export function CustomerNotesPresenter({
 						<CustomerNoteCard
 							authorName={note.authorName}
 							canEdit={note.canEdit}
+							isAdviceTimeout={note.isAdviceTimeout}
 							note={note}
 						/>
 					</li>

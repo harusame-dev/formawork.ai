@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
 import { CalendarClock, UserPen } from "lucide-react";
 import { DateTime } from "@/components/date-time";
+import { CustomerNoteAdvice } from "@/features/customer-note/advice/customer-note-advice";
 import { DeleteCustomerNoteDialog } from "@/features/customer-note/delete/delete-customer-note-dialog";
 import { EditCustomerNoteDialog } from "@/features/customer-note/edit/edit-customer-note-dialog";
 import { CustomerNoteImageGallery } from "./customer-note-image-gallery";
@@ -10,12 +11,14 @@ type CustomerNoteCardProps = {
 	note: CustomerNoteWithImages;
 	authorName: string;
 	canEdit: boolean;
+	isAdviceTimeout: boolean;
 };
 
 export function CustomerNoteCard({
 	note,
 	authorName,
 	canEdit,
+	isAdviceTimeout,
 }: CustomerNoteCardProps) {
 	return (
 		<Card>
@@ -51,6 +54,7 @@ export function CustomerNoteCard({
 			<CardContent className="space-y-4">
 				<p className="whitespace-pre-wrap text-sm">{note.content}</p>
 				<CustomerNoteImageGallery images={note.images} />
+				<CustomerNoteAdvice advice={note.advice} isTimeout={isAdviceTimeout} />
 			</CardContent>
 		</Card>
 	);

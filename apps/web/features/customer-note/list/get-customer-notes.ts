@@ -6,6 +6,7 @@ import {
 	customerNotesTable,
 	type SelectCustomerNote,
 } from "@workspace/db/schema/customer-note";
+import type { SelectCustomerNoteAdvice } from "@workspace/db/schema/customer-note-advice";
 import { staffsTable } from "@workspace/db/schema/staff";
 import {
 	and,
@@ -22,6 +23,7 @@ import {
 import { cacheLife, cacheTag } from "next/cache";
 import { CustomerTag } from "@/features/customer/tag";
 import { StaffTag } from "@/features/staff/tag";
+import { getLatestAdvice } from "../advice/get-latest-advice";
 import { getCustomerNoteImageUrl } from "./get-customer-note-image-url";
 
 export type CustomerNoteSearchCondition = {
@@ -41,6 +43,7 @@ export type CustomerNoteImageWithUrl = {
 };
 
 export type CustomerNoteWithImages = SelectCustomerNote & {
+	advice: SelectCustomerNoteAdvice | null;
 	images: CustomerNoteImageWithUrl[];
 	staffName: string | null;
 };
@@ -129,21 +132,25 @@ export async function getCustomerNotes(
 		.limit(NOTES_PER_PAGE)
 		.offset(offset);
 
-	// 画像に signed URL を付与
+	// 画像に signed URL を付与し、アドバイスを取得
 	const notesWithSignedUrls: CustomerNoteWithImages[] = await Promise.all(
 		notesWithImages.map(async (note) => {
-			const imagesWithUrls = await Promise.all(
-				note.images.map(async (image) => ({
-					createdAt: new Date(image.createdAt),
-					customerNoteId: image.customerNoteId,
-					displayOrder: image.displayOrder,
-					path: image.path,
-					url: await getCustomerNoteImageUrl(image.path),
-				})),
-			);
+			const [imagesWithUrls, advice] = await Promise.all([
+				Promise.all(
+					note.images.map(async (image) => ({
+						createdAt: new Date(image.createdAt),
+						customerNoteId: image.customerNoteId,
+						displayOrder: image.displayOrder,
+						path: image.path,
+						url: await getCustomerNoteImageUrl(image.path),
+					})),
+				),
+				getLatestAdvice(note.id),
+			]);
 
 			return {
 				...note,
+				advice,
 				images: imagesWithUrls,
 			};
 		}),
