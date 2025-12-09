@@ -246,7 +246,7 @@
       "columns": {
         "advice": {
           "name": "advice",
-          "type": "text",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true
         },

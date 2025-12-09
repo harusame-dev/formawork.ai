@@ -2,7 +2,10 @@ import { getLogger } from "@repo/logger/nextjs/server";
 import { db } from "@workspace/db/client";
 import { schemaName } from "@workspace/db/pgschema";
 import { ADVICE_QUEUE_NAME } from "@workspace/db/queue-names";
-import { customerNoteAdviceTable } from "@workspace/db/schema/customer-note-advice";
+import {
+	type AdviceContent,
+	customerNoteAdviceTable,
+} from "@workspace/db/schema/customer-note-advice";
 import { sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { CustomerTag } from "@/features/customer/tag";
@@ -86,7 +89,7 @@ async function deleteMessage(msgId: number): Promise<void> {
 
 async function saveAdvice(
 	customerNoteId: string,
-	advice: string,
+	advice: AdviceContent,
 ): Promise<void> {
 	await db.insert(customerNoteAdviceTable).values({
 		advice,

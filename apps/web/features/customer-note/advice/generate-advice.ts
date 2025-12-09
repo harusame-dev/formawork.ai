@@ -1,6 +1,8 @@
-import { generateText } from "ai";
-
-const MAX_OUTPUT_TOKENS = 512;
+import { valibotSchema } from "@ai-sdk/valibot";
+import { getLogger } from "@repo/logger/nextjs/server";
+import type { AdviceContent } from "@workspace/db/schema/customer-note-advice";
+import { generateObject } from "ai";
+import * as v from "valibot";
 
 type CustomerInfo = {
 	firstName: string;
@@ -18,40 +20,148 @@ type GenerateAdviceParams = {
 	recentNotes: RecentNote[];
 };
 
-export async function generateAdvice({
+const adviceSchema = v.object({
+	currentEvaluation: v.object({
+		good: v.pipe(
+			v.string(),
+			v.description("今回の接客で良かった点。具体的な行動と顧客への影響"),
+		),
+		improvement: v.pipe(
+			v.string(),
+			v.description("今回の接客の改善ポイント。課題と代替案"),
+		),
+	}),
+	nextAdvice: v.object({
+		caution: v.pipe(
+			v.string(),
+			v.description(
+				"注意点・避けるべきこと。過去の反応から避けた方がよいアプローチ",
+			),
+		),
+		followUpItems: v.pipe(
+			v.string(),
+			v.description(
+				"確認・フォローすべきこと。未解決の要望、クレーム、宿題など",
+			),
+		),
+		nextActions: v.pipe(
+			v.string(),
+			v.description(
+				"次回に向けて確認しておくこと。接客の最後に確認・約束すべきこと",
+			),
+		),
+		openingTopics: v.pipe(
+			v.string(),
+			v.description("冒頭で触れるべきこと。前回からの繋がりを感じさせる話題"),
+		),
+		salesOpportunities: v.pipe(
+			v.string(),
+			v.description("提案の機会。顧客に提案できる商品・サービス・情報と理由"),
+		),
+	}),
+}) satisfies v.GenericSchema<AdviceContent>;
+
+function generatePrompt({
 	customer,
 	noteContent,
 	recentNotes,
-}: GenerateAdviceParams): Promise<string> {
+}: GenerateAdviceParams): string {
 	const recentNotesSection =
 		recentNotes.length > 0
-			? `
-過去の接客履歴（直近${recentNotes.length}件）:
-${recentNotes
-	.map(
-		(note, index) =>
-			`--- ${index + 1}件目 (${note.createdAt.toLocaleDateString("ja-JP")}) ---
+			? recentNotes
+					.map(
+						(note, index) =>
+							`--- ${index + 1}件目 (${note.createdAt.toLocaleDateString("ja-JP")}) ---
 ${note.content}`,
-	)
-	.join("\n\n")}`
-			: "";
+					)
+					.join("\n\n")
+			: "なし";
 
-	const { text } = await generateText({
-		maxOutputTokens: MAX_OUTPUT_TOKENS,
-		model: "google/gemini-2.0-flash",
-		prompt: `以下のお客様情報と接客ノートを読んで、次回の接客に役立つ具体的なアドバイスを日本語で生成してください。
-アドバイスは簡潔で実践的なものにしてください（200文字程度）。
-過去の接客履歴がある場合は、その傾向も踏まえてアドバイスしてください。
+	return `あなたは接客コーチです。
+以下の情報をもとに、今回の接客の評価と、次回接客時のアドバイスを生成してください。
 
-お客様情報:
-- お名前: ${customer.lastName} ${customer.firstName} 様
-${recentNotesSection}
+---
 
-今回の接客ノート:
+## 顧客情報
+- 名前: ${customer.lastName} ${customer.firstName} 様
+
+## 今回の接客メモ
 ${noteContent}
 
-アドバイス:`,
-	});
+## 直近10回の接客メモ（新しい順）
+${recentNotesSection}
 
-	return text;
+---
+
+## 出力要件
+
+### 今回の接客評価 (currentEvaluation)
+
+**良かった点 (good)**
+今回の接客で効果的だったと思われる行動・対応を挙げてください。
+- 具体的に何をしたか
+- なぜそれが良かったか（顧客への影響）
+
+**改善ポイント (improvement)**
+今回の接客で改善の余地があると思われる点を挙げてください。
+- 具体的に何が課題か
+- どうすればより良かったか（代替案）
+
+※接客メモは本人記録のため、記録されていない問題がある可能性があります。
+※断定ではなく「〜の可能性がある」「〜だったかもしれない」の表現を使ってください。
+
+---
+
+### 次回の接客アドバイス (nextAdvice)
+
+**冒頭で触れるべきこと (openingTopics)**
+前回からの繋がりを感じさせる話題や確認事項。
+「〇〇について、その後いかがですか？」のように具体的に。
+
+**確認・フォローすべきこと (followUpItems)**
+未解決の要望、過去のクレーム、前回の宿題など。
+放置すると不満に繋がるものを優先。
+
+**提案の機会 (salesOpportunities)**
+顧客の状況・嗜好から、提案できそうな商品・サービス・情報。
+なぜその顧客に合うかの理由も添える。
+
+**注意点・避けるべきこと (caution)**
+過去の反応から、この顧客に対して避けた方がよいアプローチ。
+
+**次回に向けて確認しておくこと (nextActions)**
+今回の接客の最後に確認・約束しておくと良いこと。
+
+---
+
+## 注意事項
+- 情報が不足している項目は「情報不足のため判断不可」と明記
+- 推測で補う場合は「〜と推測されるため」と理由を明示
+- 売上への貢献と顧客満足の両立を意識する
+- 評価は批判ではなく、改善のためのフィードバックとして記述する
+- 抽象的な表現（「信頼関係を築けた」「丁寧に対応できた」など）は禁止
+- 必ず具体的な行動・発言レベルで記述
+- 各項目は簡潔に。1項目あたり1〜3文程度`;
+}
+
+export async function generateAdvice(
+	params: GenerateAdviceParams,
+): Promise<AdviceContent> {
+	const logger = await getLogger("generateAdvice");
+
+	const options: Parameters<typeof generateObject>[0] = {
+		experimental_telemetry: { isEnabled: true },
+		maxOutputTokens: 2048,
+		model: "google/gemini-2.0-flash",
+		prompt: generatePrompt(params),
+		schema: valibotSchema(adviceSchema),
+		temperature: 0.3,
+		topP: 0.9,
+	};
+
+	logger.info("生成パラメーター：", { options });
+
+	const { object } = await generateObject(options);
+
+	return object;
 }

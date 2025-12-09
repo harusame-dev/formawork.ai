@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@ai-sdk/valibot": "catalog:",
 		"@harusame0616/result": "catalog:",
 		"@hookform/resolvers": "catalog:",
 		"@repo/logger": "workspace:",

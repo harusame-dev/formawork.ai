@@ -26,7 +26,7 @@ CREATE TABLE "customer_notes" (
 );
 
 CREATE TABLE "customer_note_advice" (
-	"advice" text NOT NULL,
+	"advice" jsonb NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"customer_note_id" uuid NOT NULL,
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL
