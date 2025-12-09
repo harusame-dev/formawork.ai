@@ -155,7 +155,7 @@ export async function generateAdvice(
 ): Promise<AdviceContent> {
 	const logger = await getLogger("generateAdvice");
 
-	const options: Parameters<typeof generateObject>[0] = {
+	const options = {
 		experimental_telemetry: { isEnabled: true },
 		maxOutputTokens: 2048,
 		model: "google/gemini-2.5-flash",
@@ -163,7 +163,7 @@ export async function generateAdvice(
 		schema: valibotSchema(adviceSchema),
 		temperature: 0.3,
 		topP: 0.9,
-	};
+	} as const satisfies Parameters<typeof generateObject>[0];
 
 	logger.info("生成パラメーター：", { options });
 
