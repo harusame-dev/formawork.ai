@@ -20,6 +20,12 @@ type GenerateAdviceParams = {
 	recentNotes: RecentNote[];
 };
 
+/**
+ * AI 生成結果のバリデーション用スキーマ
+ *
+ * satisfies で AdviceContent 型との整合性をコンパイル時にチェック。
+ * 型定義は packages/db/src/schema/customer-note-advice.ts を参照。
+ */
 const adviceSchema = v.object({
 	currentEvaluation: v.object({
 		good: v.pipe(

@@ -3,6 +3,29 @@ import { schemaName } from "../pgschema";
 import { customerNotesTable } from "./customer-note";
 
 /**
+ * 接客アドバイスの型定義
+ *
+ * TODO: 型安全性の改善
+ *
+ * 【現状の課題】
+ * - AdviceContent 型（ここ）と Valibot スキーマ（generate-advice.ts）が分離している
+ * - 変更時に手動で同期が必要（satisfies で整合性チェックはしている）
+ *
+ * 【なぜこの設計か】
+ * - Valibot スキーマは AI 生成結果のバリデーション用（アプリケーションロジック）
+ * - DB パッケージにアプリケーションロジックを置くのは責務違反
+ * - 型は jsonb カラムの型定義として DB パッケージに置くのが自然
+ *
+ * 【トレードオフ】
+ * - 現状: 型とスキーマの二重管理が必要だが、責務は明確
+ * - 理想: 共有パッケージ（packages/schemas）を新設し一元管理
+ *   → パッケージ増加のコストと天秤にかけ、現状は見送り
+ *
+ * 【関連ファイル】
+ * - apps/web/features/customer-note/advice/generate-advice.ts（adviceSchema）
+ */
+
+/**
  * 今回の接客評価
  */
 export type CurrentEvaluation = {
