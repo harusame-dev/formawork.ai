@@ -58,7 +58,6 @@ export function CustomerNoteAdvice({ advice, isTimeout = false }: Props) {
 	}
 
 	const { currentEvaluation, nextAdvice } = advice.advice;
-	console.log(advice);
 
 	return (
 		<div className="rounded-md border border-dashed border-muted-foreground/30 bg-muted/30 p-3 space-y-4">
