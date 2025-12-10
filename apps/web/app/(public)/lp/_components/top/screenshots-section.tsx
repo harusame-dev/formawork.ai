@@ -34,6 +34,7 @@ export function ScreenshotsSection() {
 								alt={screenshot.alt}
 								className="rounded-2xl object-cover shadow-md"
 								fill
+								loading="eager"
 								sizes="(max-width: 768px) 100vw, 50vw"
 								src={screenshot.image}
 							/>

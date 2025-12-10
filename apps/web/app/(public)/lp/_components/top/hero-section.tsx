@@ -1,10 +1,16 @@
 import { Button } from "@workspace/ui/components/button";
+import Image from "next/image";
 import Link from "next/link";
+import icon from "../../../../../public/icon-512x512.png";
 
 export function HeroSection() {
 	return (
 		<section className="py-16 px-4">
 			<div className="container mx-auto max-w-4xl text-center">
+				<div className="flex items-center justify-center gap-3 mb-8">
+					<Image alt="formawork ロゴ" height={48} src={icon} width={48} />
+					<span className="text-2xl font-mono">FORMAWORK.ai</span>
+				</div>
 				<h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-6">
 					AI が接客をサポートする
 					<br />
