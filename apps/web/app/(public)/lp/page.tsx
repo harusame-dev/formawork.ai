@@ -6,12 +6,12 @@ import { TechStackSection } from "./_components/top/tech-stack-section";
 
 export default function Page() {
 	return (
-		<>
+		<div className="overflow-auto h-dvh *:odd:bg-background">
 			<HeroSection />
+			<ScreenshotsSection />
 			<FeaturesSection />
 			<TechStackSection />
-			<ScreenshotsSection />
 			<EndDemoSection />
-		</>
+		</div>
 	);
 }

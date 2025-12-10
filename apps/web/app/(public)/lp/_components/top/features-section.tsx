@@ -6,6 +6,7 @@ import {
 	CardTitle,
 } from "@workspace/ui/components/card";
 import { FileText, Sparkles, Users } from "lucide-react";
+import { LpSection } from "./lp-section";
 
 const features = [
 	{
@@ -29,32 +30,27 @@ const features = [
 
 export function FeaturesSection() {
 	return (
-		<section className="py-16 px-4 bg-muted/60">
-			<div className="container mx-auto max-w-5xl">
-				<h2 className="text-2xl font-bold text-center mb-4">
-					このデモで体験できること
-				</h2>
-				<p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-					顧客管理の基本機能に加え、AI による接客支援機能を搭載しています。
-				</p>
-				<div className="grid gap-6 md:grid-cols-3">
-					{features.map((feature) => (
-						<Card key={feature.title}>
-							<CardHeader className="flex flex-row gap-2 items-center">
-								<div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center">
-									<feature.icon className="size-6 text-primary" />
-								</div>
-								<CardTitle className="text-lg">{feature.title}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription className="text-sm leading-relaxed">
-									{feature.description}
-								</CardDescription>
-							</CardContent>
-						</Card>
-					))}
-				</div>
+		<LpSection
+			description="顧客管理の基本機能に加え、AI による接客支援機能を搭載しています。"
+			title="このデモで体験できること"
+		>
+			<div className="grid gap-6 md:grid-cols-3">
+				{features.map((feature) => (
+					<Card key={feature.title}>
+						<CardHeader className="flex flex-row gap-2 items-center">
+							<div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center">
+								<feature.icon className="size-6 text-primary" />
+							</div>
+							<CardTitle className="text-lg">{feature.title}</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<CardDescription className="text-sm leading-relaxed">
+								{feature.description}
+							</CardDescription>
+						</CardContent>
+					</Card>
+				))}
 			</div>
-		</section>
+		</LpSection>
 	);
 }
