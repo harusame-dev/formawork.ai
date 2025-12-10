@@ -16,22 +16,32 @@ const cronConfig = v.parse(
 					v.string("CRON_SECRET は文字列である必要があります"),
 					v.minLength(1, "CRON_SECRET は必須です"),
 				),
-				environment: v.picklist(["production", "preview"]),
+				environment: v.picklist(["production"]),
 				vercelUrl: v.pipe(
 					v.string("VERCEL_URL は文字列である必要があります"),
 					v.minLength(1, "VERCEL_URL は必須です"),
 				),
 			}),
 			v.object({
+				environment: v.literal("preview"),
+			}),
+			v.object({
 				environment: v.optional(v.literal("local"), "local"),
 			}),
 		]),
-		v.transform((result) =>
-			result.environment === "local"
-				? // Supabase はローカル Docker で動作しているため、 localhost だとホストマシンに接続できない
-					{ cronSecret: "", url: "http://host.docker.internal:3000" }
-				: { cronSecret: result.cronSecret, url: `https://${result.vercelUrl}` },
-		),
+		v.transform((result) => {
+			switch (result.environment) {
+				case "local":
+					return { cronSecret: "", url: "http://host.docker.internal:3000" };
+				case "preview":
+					return { cronSecret: "", url: "" };
+				case "production":
+					return {
+						cronSecret: result.cronSecret,
+						url: `https://${result.vercelUrl}`,
+					};
+			}
+		}),
 	),
 	{
 		cronSecret: process.env["CRON_SECRET"],
@@ -62,6 +72,14 @@ async function setupPgmqQueue() {
 async function setupCronJob() {
 	console.log("⭐️ pg_cronジョブ設定");
 
+	if (!cronConfig.url) {
+		// preview 環境でも cron スケジュールを設定するとプレビューごとに AI 実行のリクエストが飛ぶようになってしまい
+		// リクエスト数を消費しすぎてしまうためジョブは設定しない
+		// デメリットとしてプレビュー環境では自動で AI アドバイスが生成できない
+		// 手動で /api/cron/generate-advice にリクエストを投げることで対応可能
+		console.log("⏩️ pg_cronジョブ設定をスキップ");
+		return;
+	}
 	// 既存のジョブを削除
 	await db.execute(sql`SELECT cron.unschedule(${CRON_JOB_NAME})`).catch(() => {
 		// ジョブが存在しない場合はエラーを無視
