@@ -8,7 +8,7 @@ export function HeroSection() {
 		<section className="py-16 px-4">
 			<div className="container mx-auto max-w-4xl text-center">
 				<div className="flex items-center justify-center gap-3 mb-8">
-					<Image alt="formawork ロゴ" height={48} src={icon} width={48} />
+					<Image alt="" height={48} src={icon} width={48} />
 					<span className="text-2xl font-mono">FORMAWORK.ai</span>
 				</div>
 				<h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-6">
