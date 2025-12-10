@@ -65,9 +65,9 @@ export async function proxy(request: NextRequest) {
 	const { response, userId } = await updateSession(request);
 	const path = request.nextUrl.pathname;
 	const isLoggedIn = userId !== null;
-	const isLoginPage = path === "/login";
+	const isPublicPage = path === "/login" || path === "/lp";
 
-	if (!isLoggedIn && !isLoginPage) {
+	if (!isLoggedIn && !isPublicPage) {
 		const redirectResponse = NextResponse.redirect(
 			new URL("/login", request.url),
 		);
