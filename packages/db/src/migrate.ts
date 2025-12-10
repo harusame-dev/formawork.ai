@@ -16,7 +16,7 @@ const cronConfig = v.parse(
 					v.string("CRON_SECRET は文字列である必要があります"),
 					v.minLength(1, "CRON_SECRET は必須です"),
 				),
-				environment: v.picklist(["production"]),
+				environment: v.literal("production"),
 				vercelUrl: v.pipe(
 					v.string("VERCEL_URL は文字列である必要があります"),
 					v.minLength(1, "VERCEL_URL は必須です"),
@@ -30,7 +30,8 @@ const cronConfig = v.parse(
 			}),
 		]),
 		v.transform((result) => {
-			switch (result.environment) {
+			const environment = result.environment;
+			switch (environment) {
 				case "local":
 					return { cronSecret: "", url: "http://host.docker.internal:3000" };
 				case "preview":
@@ -40,6 +41,10 @@ const cronConfig = v.parse(
 						cronSecret: result.cronSecret,
 						url: `https://${result.vercelUrl}`,
 					};
+				default:
+					throw new Error(
+						`Unexpected environment: ${environment satisfies never}`,
+					);
 			}
 		}),
 	),
@@ -73,7 +78,7 @@ async function setupCronJob() {
 	console.log("⭐️ pg_cronジョブ設定");
 
 	if (!cronConfig.url) {
-		// preview 環境でも cron スケジュールを設定するとプレビューごとに AI 実行のリクエストが飛ぶようになってしまい
+		// preview 環境でも cron スケジュールを設定するとプレビューごとに AI アドバイス実行のリクエストが飛ぶようになってしまい
 		// リクエスト数を消費しすぎてしまうためジョブは設定しない
 		// デメリットとしてプレビュー環境では自動で AI アドバイスが生成できない
 		// 手動で /api/cron/generate-advice にリクエストを投げることで対応可能
