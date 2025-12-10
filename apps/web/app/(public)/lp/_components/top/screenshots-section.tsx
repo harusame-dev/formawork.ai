@@ -29,10 +29,10 @@ export function ScreenshotsSection() {
 			<div className="grid gap-8 md:grid-cols-2">
 				{screenshots.map((screenshot) => (
 					<Card className="overflow-hidden" key={screenshot.title}>
-						<div className="aspect-video bg-muted relative m-4">
+						<div className="aspect-video relative m-4">
 							<Image
 								alt={screenshot.alt}
-								className="rounded-2xl object-cover"
+								className="rounded-2xl object-cover shadow-md"
 								fill
 								sizes="(max-width: 768px) 100vw, 50vw"
 								src={screenshot.image}
