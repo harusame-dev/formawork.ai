@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
 		dangerouslyAllowLocalIP: true,
 		remotePatterns: [
 			{
+				hostname: "paqxpxuxtypgoujythgz.supabase.co",
+				protocol: "https",
+			},
+			{
 				hostname: "placehold.co",
 				protocol: "https",
 			},
