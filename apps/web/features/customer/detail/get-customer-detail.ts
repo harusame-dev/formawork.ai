@@ -3,6 +3,8 @@ import { customersTable } from "@workspace/db/schema/customer";
 import { eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
+import * as v from "valibot";
+import { genderSchema } from "../schema";
 import { tagByCustomerId } from "../tag";
 
 export const getCustomerDetail = cache(async (customerId: string) => {
@@ -16,5 +18,10 @@ export const getCustomerDetail = cache(async (customerId: string) => {
 		.where(eq(customersTable.customerId, customerId))
 		.limit(1);
 
-	return customers[0] ?? null;
+	return customers[0]
+		? {
+				...customers[0],
+				gender: v.parse(genderSchema, customers[0].gender),
+			}
+		: null;
 });
