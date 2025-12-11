@@ -24,7 +24,7 @@ import { useForm } from "react-hook-form";
 import { editCustomerAction } from "@/features/customer/edit/edit-customer-action";
 import { useIsHydrated } from "@/libs/use-is-hydrated";
 import type { EditCustomerParams } from "../edit/schema";
-import { GENDER, GENDER_LABELS, type Gender } from "../schema";
+import { GENDER, GENDER_LABELS } from "../schema";
 import { registerCustomerAction } from "./register-customer-action";
 import { type RegisterCustomerParams, registerCustomerSchema } from "./schema";
 
@@ -305,7 +305,7 @@ export function EditCustomerForm(
 												className="cursor-pointer"
 												htmlFor={`gender-${genderValue}`}
 											>
-												{GENDER_LABELS[genderValue as Gender]}
+												{GENDER_LABELS[genderValue]}
 											</label>
 										</div>
 									))}

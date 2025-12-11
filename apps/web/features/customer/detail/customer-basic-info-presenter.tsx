@@ -10,7 +10,7 @@ type Customer = {
 	email: string;
 	firstName: string;
 	firstNameKana: string;
-	gender: number;
+	gender: Gender;
 	lastName: string;
 	lastNameKana: string;
 	phone: string;
@@ -74,7 +74,7 @@ export function CustomerBasicInfoPresenter({
 		},
 		{
 			label: "性別",
-			value: GENDER_LABELS[customer.gender as Gender] || "未登録",
+			value: GENDER_LABELS[customer.gender] || "未登録",
 		},
 		{
 			label: "備考",

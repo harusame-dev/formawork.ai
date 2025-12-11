@@ -8,7 +8,8 @@ import {
 } from "@workspace/db/schema/customer-note-advice";
 import { sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
-import type { Gender } from "@/features/customer/schema";
+import * as v from "valibot";
+import { genderSchema } from "@/features/customer/schema";
 import { CustomerTag } from "@/features/customer/tag";
 import { generateAdvice } from "./generate-advice";
 
@@ -149,7 +150,7 @@ async function processMessage(
 		customer: {
 			birthDate: note.birthDate,
 			firstName: note.firstName,
-			gender: note.gender as Gender,
+			gender: v.parse(genderSchema, note.gender),
 			lastName: note.lastName,
 			remarks: note.remarks,
 		},
