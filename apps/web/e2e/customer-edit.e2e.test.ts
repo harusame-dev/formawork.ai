@@ -98,11 +98,11 @@ test("管理者が必須フィールドを全て入力して編集できる", as
 		phone: `${Math.floor(Math.random() * 1000000000)}`,
 	};
 	await test.step("顧客情報を編集", async () => {
-		await page.getByLabel("姓").clear();
-		await page.getByLabel("姓").fill(newCustomer.lastName);
+		await page.getByLabel("姓", { exact: true }).clear();
+		await page.getByLabel("姓", { exact: true }).fill(newCustomer.lastName);
 
-		await page.getByLabel("名").clear();
-		await page.getByLabel("名").fill(newCustomer.firstName);
+		await page.getByLabel("名", { exact: true }).clear();
+		await page.getByLabel("名", { exact: true }).fill(newCustomer.firstName);
 
 		await page.getByLabel("メールアドレス").clear();
 		await page.getByLabel("メールアドレス").fill(newCustomer.email);
