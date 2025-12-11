@@ -9,21 +9,21 @@ const CUSTOMER_ADDRESS_MAX_LENGTH = 200;
 const CUSTOMER_REMARKS_MAX_LENGTH = 4096;
 
 // ISO 5218 性別コード定数
-export const GENDER = {
-	FEMALE: 2,
-	MALE: 1,
-	NOT_APPLICABLE: 9,
-	UNKNOWN: 0,
+export const Gender = {
+	Female: 2,
+	Male: 1,
+	NotApplicable: 9,
+	Unknown: 0,
 } as const;
 
-const GENDER_VALUES = [0, 1, 2, 9] as const;
-export type Gender = (typeof GENDER_VALUES)[number];
+const genders = [0, 1, 2, 9] as const;
+export type Gender = (typeof genders)[number];
 
 export const GENDER_LABELS: Record<Gender, string> = {
-	[GENDER.UNKNOWN]: "不明",
-	[GENDER.MALE]: "男性",
-	[GENDER.FEMALE]: "女性",
-	[GENDER.NOT_APPLICABLE]: "適用不能",
+	[Gender.Unknown]: "不明",
+	[Gender.Male]: "男性",
+	[Gender.Female]: "女性",
+	[Gender.NotApplicable]: "適用不能",
 };
 
 export const emailSchema = v.union([
@@ -76,7 +76,7 @@ export const birthDateSchema = v.union([
 	),
 ]);
 
-export const genderSchema = v.picklist(GENDER_VALUES, "性別を選択してください");
+export const genderSchema = v.picklist(genders, "性別を選択してください");
 
 export const remarksSchema = v.union([
 	v.literal(""),
