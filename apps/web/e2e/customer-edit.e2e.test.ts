@@ -6,11 +6,17 @@ import { v4 } from "uuid";
 
 type Fixtures = {
 	customer: {
+		address: string;
+		birthDate: string | null;
 		customerId: string;
 		email: string;
 		firstName: string;
+		firstNameKana: string;
+		gender: number;
 		lastName: string;
+		lastNameKana: string;
 		phone: string;
+		remarks: string;
 	};
 	adminUserPage: Page;
 	normalUserPage: Page;
@@ -37,11 +43,17 @@ const test = base.extend<Fixtures>({
 	// biome-ignore lint/correctness/noEmptyPattern: The first argument inside a fixture must use object destructuring pattern, e.g. ({ test } => {}). Instead, received "_".
 	async customer({}, use) {
 		const customer = {
+			address: "",
+			birthDate: null,
 			customerId: v4(),
 			email: `${v4()}@example.com`,
 			firstName: v4().slice(0, 12),
+			firstNameKana: "",
+			gender: 1,
 			lastName: v4().slice(0, 12),
+			lastNameKana: "",
 			phone: `${Math.floor(Math.random() * 1000000000)}`,
+			remarks: "",
 		};
 
 		await db.insert(customersTable).values(customer);
@@ -86,11 +98,13 @@ test("管理者が必須フィールドを全て入力して編集できる", as
 		phone: `${Math.floor(Math.random() * 1000000000)}`,
 	};
 	await test.step("顧客情報を編集", async () => {
-		await page.getByLabel("姓").clear();
-		await page.getByLabel("姓").fill(newCustomer.lastName);
+		// 負の先読みを使用して「姓」だけにマッチさせる（「姓（かな）」を除外）
+		await page.getByLabel(/^姓(?!（かな）)/).clear();
+		await page.getByLabel(/^姓(?!（かな）)/).fill(newCustomer.lastName);
 
-		await page.getByLabel("名").clear();
-		await page.getByLabel("名").fill(newCustomer.firstName);
+		// 負の先読みを使用して「名」だけにマッチさせる（「名（かな）」を除外）
+		await page.getByLabel(/^名(?!（かな）)/).clear();
+		await page.getByLabel(/^名(?!（かな）)/).fill(newCustomer.firstName);
 
 		await page.getByLabel("メールアドレス").clear();
 		await page.getByLabel("メールアドレス").fill(newCustomer.email);

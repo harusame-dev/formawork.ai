@@ -23,19 +23,25 @@ const editCustomerNoteSchema = v.object({
 	),
 	keepImagePaths: v.optional(v.array(v.string()), []),
 	noteId: v.pipe(v.string(), v.uuid()),
+	serviceDate: v.pipe(
+		v.string(),
+		v.regex(/^\d{4}-\d{2}-\d{2}$/, "正しい日付形式で入力してください"),
+	),
 	uploadImages: v.optional(v.array(uploadImageSchema), []),
 });
 
 export const editCustomerNoteAction = createServerAction(
-	async (input, { role, userId }) => {
-		const { content, keepImagePaths, noteId, uploadImages } = input;
-
+	async (
+		{ content, keepImagePaths, noteId, serviceDate, uploadImages },
+		{ role, userId },
+	) => {
 		// biome-ignore lint/style/noNonNullAssertion: isPublic: false のため認証済みで非null
 		const user = { role: role!, userId: userId! };
 		const result = await editCustomerNote({
 			content,
 			customerNoteId: noteId,
 			keepImagePaths,
+			serviceDate,
 			uploadImages,
 			user,
 		});

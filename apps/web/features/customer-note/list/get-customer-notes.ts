@@ -107,6 +107,7 @@ export async function getCustomerNotes(
 					'createdAt', ${customerNoteImagesTable.createdAt}
 				) ORDER BY ${customerNoteImagesTable.displayOrder}
 			) FILTER (WHERE ${customerNoteImagesTable.customerNoteId} IS NOT NULL), '[]')`,
+			serviceDate: customerNotesTable.serviceDate,
 			staffId: customerNotesTable.staffId,
 			staffName: sql<string>`CONCAT(${staffsTable.lastName}, ' ', ${staffsTable.firstName})`,
 			updatedAt: customerNotesTable.updatedAt,
@@ -122,6 +123,7 @@ export async function getCustomerNotes(
 			customerNotesTable.id,
 			customerNotesTable.content,
 			customerNotesTable.customerId,
+			customerNotesTable.serviceDate,
 			customerNotesTable.staffId,
 			customerNotesTable.createdAt,
 			customerNotesTable.updatedAt,

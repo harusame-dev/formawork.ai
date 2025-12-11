@@ -14,11 +14,17 @@ test("存在しない顧客IDを指定した場合にエラーが返される", 
 	const nonExistentCustomerId = "99999999-9999-9999-9999-999999999999";
 
 	const result = await editCustomer({
+		address: "",
+		birthDate: "",
 		customerId: nonExistentCustomerId,
 		email: "test@example.com",
 		firstName: "太郎",
+		firstNameKana: "",
+		gender: 1,
 		lastName: "テスト",
+		lastNameKana: "",
 		phone: "090-0000-0000",
+		remarks: "",
 	});
 
 	expect(result.success).toBe(false);

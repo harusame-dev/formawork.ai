@@ -9,11 +9,17 @@ const CUSTOMER_NOT_FOUND_ERROR_MESSAGE =
 	"指定された顧客が見つかりません" as const;
 
 export async function editCustomer({
+	address,
+	birthDate,
 	customerId,
 	email,
 	firstName,
+	firstNameKana,
+	gender,
 	lastName,
+	lastNameKana,
 	phone,
+	remarks,
 }: EditCustomerParams): Promise<
 	Result<undefined, typeof CUSTOMER_NOT_FOUND_ERROR_MESSAGE>
 > {
@@ -33,10 +39,16 @@ export async function editCustomer({
 	await db
 		.update(customersTable)
 		.set({
+			address,
+			birthDate: birthDate || null,
 			email,
 			firstName,
+			firstNameKana,
+			gender,
 			lastName,
+			lastNameKana,
 			phone,
+			remarks,
 		})
 		.where(eq(customersTable.customerId, customerId));
 

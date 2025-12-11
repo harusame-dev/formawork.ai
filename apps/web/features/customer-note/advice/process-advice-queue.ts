@@ -8,6 +8,8 @@ import {
 } from "@workspace/db/schema/customer-note-advice";
 import { sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
+import * as v from "valibot";
+import { genderSchema } from "@/features/customer/schema";
 import { CustomerTag } from "@/features/customer/tag";
 import { generateAdvice } from "./generate-advice";
 
@@ -28,12 +30,16 @@ type RecentNote = {
 };
 
 type NoteWithRecentNotes = {
+	birthDate: string | null;
 	content: string;
 	customerId: string;
 	firstName: string;
+	gender: number;
 	id: string;
 	lastName: string;
 	recentNotes: RecentNote[] | null;
+	remarks: string | null;
+	serviceDate: string;
 };
 
 async function readMessagesFromQueue(): Promise<QueueMessage[]> {
@@ -50,8 +56,12 @@ async function fetchNotesWithRecentNotes(
 			cn.id,
 			cn.customer_id as "customerId",
 			cn.content,
+			cn.service_date as "serviceDate",
 			c.first_name as "firstName",
 			c.last_name as "lastName",
+			c.birth_date as "birthDate",
+			c.gender,
+			c.remarks,
 			(
 				SELECT COALESCE(json_agg(
 					json_build_object('content', rn.content, 'createdAt', rn.created_at)
@@ -137,9 +147,16 @@ async function processMessage(
 	}));
 
 	const advice = await generateAdvice({
-		customer: { firstName: note.firstName, lastName: note.lastName },
+		customer: {
+			birthDate: note.birthDate,
+			firstName: note.firstName,
+			gender: v.parse(genderSchema, note.gender),
+			lastName: note.lastName,
+			remarks: note.remarks,
+		},
 		noteContent: note.content,
 		recentNotes,
+		serviceDate: note.serviceDate,
 	});
 
 	await saveAdvice(customerNoteId, advice);

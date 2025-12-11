@@ -31,8 +31,9 @@ type UploadImage = {
 type EditCustomerNoteInput = {
 	customerNoteId: string;
 	content: string;
-	uploadImages: UploadImage[];
 	keepImagePaths: string[]; // 保持する既存画像のパス
+	serviceDate: string;
+	uploadImages: UploadImage[];
 	user: {
 		role: UserRole;
 		userId: string;
@@ -43,11 +44,17 @@ type EditCustomerNoteSuccess = {
 	customerId: string;
 };
 
-export async function editCustomerNote(
-	input: EditCustomerNoteInput,
-): Promise<Result<EditCustomerNoteSuccess, EditCustomerNoteErrorMessage>> {
+export async function editCustomerNote({
+	content,
+	customerNoteId,
+	keepImagePaths,
+	serviceDate,
+	uploadImages,
+	user,
+}: EditCustomerNoteInput): Promise<
+	Result<EditCustomerNoteSuccess, EditCustomerNoteErrorMessage>
+> {
 	const logger = await getLogger("editCustomerNote");
-	const { customerNoteId, content, uploadImages, keepImagePaths, user } = input;
 
 	try {
 		// ノートの取得と認可チェック
@@ -102,6 +109,7 @@ export async function editCustomerNote(
 				.update(customerNotesTable)
 				.set({
 					content,
+					serviceDate,
 					updatedAt: new Date(),
 				})
 				.where(eq(customerNotesTable.id, customerNoteId));
