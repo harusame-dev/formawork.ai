@@ -98,11 +98,13 @@ test("管理者が必須フィールドを全て入力して編集できる", as
 		phone: `${Math.floor(Math.random() * 1000000000)}`,
 	};
 	await test.step("顧客情報を編集", async () => {
-		await page.getByLabel("姓", { exact: true }).clear();
-		await page.getByLabel("姓", { exact: true }).fill(newCustomer.lastName);
+		// 負の先読みを使用して「姓」だけにマッチさせる（「姓（かな）」を除外）
+		await page.getByLabel(/^姓(?!（かな）)/).clear();
+		await page.getByLabel(/^姓(?!（かな）)/).fill(newCustomer.lastName);
 
-		await page.getByLabel("名", { exact: true }).clear();
-		await page.getByLabel("名", { exact: true }).fill(newCustomer.firstName);
+		// 負の先読みを使用して「名」だけにマッチさせる（「名（かな）」を除外）
+		await page.getByLabel(/^名(?!（かな）)/).clear();
+		await page.getByLabel(/^名(?!（かな）)/).fill(newCustomer.firstName);
 
 		await page.getByLabel("メールアドレス").clear();
 		await page.getByLabel("メールアドレス").fill(newCustomer.email);
