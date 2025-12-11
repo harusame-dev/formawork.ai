@@ -29,9 +29,9 @@ const test = base.extend<{
 	},
 });
 
-// name属性を使用してフォームフィールドを取得するヘルパー
-const getLastNameInput = () => page.locator('input[name="lastName"]');
-const getFirstNameInput = () => page.locator('input[name="firstName"]');
+// 負の先読みを使用して「姓」だけにマッチさせる（「姓（かな）」を除外）
+const getLastNameInput = () => page.getByLabelText(/^姓(?!（かな）)/);
+const getFirstNameInput = () => page.getByLabelText(/^名(?!（かな）)/);
 
 test("姓名が空の場合、エラーが表示される", async () => {
 	render(<EditCustomerForm />);
