@@ -30,6 +30,8 @@ const test = base.extend<{
 });
 
 test("姓名が空の場合、エラーが表示される", async () => {
+	render(<EditCustomerForm />);
+
 	// ハイドレーション完了を待つ
 	await expect
 		.element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
