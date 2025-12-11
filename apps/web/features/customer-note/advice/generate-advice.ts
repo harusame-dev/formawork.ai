@@ -3,10 +3,14 @@ import { getLogger } from "@repo/logger/nextjs/server";
 import type { AdviceContent } from "@workspace/db/schema/customer-note-advice";
 import { generateObject } from "ai";
 import * as v from "valibot";
+import { GENDER_LABELS, type Gender } from "@/features/customer/schema";
 
 type CustomerInfo = {
+	birthDate: string | null;
 	firstName: string;
+	gender: Gender;
 	lastName: string;
+	remarks: string | null;
 };
 
 type RecentNote = {
@@ -18,6 +22,7 @@ type GenerateAdviceParams = {
 	customer: CustomerInfo;
 	noteContent: string;
 	recentNotes: RecentNote[];
+	serviceDate: string;
 };
 
 /**
@@ -71,6 +76,7 @@ function generatePrompt({
 	customer,
 	noteContent,
 	recentNotes,
+	serviceDate,
 }: GenerateAdviceParams): string {
 	const recentNotesSection =
 		recentNotes.length > 0
@@ -88,8 +94,14 @@ ${note.content}`,
 
 ---
 
+## 接客日
+${serviceDate}
+
 ## 顧客情報
 - 名前: ${customer.lastName} ${customer.firstName} 様
+- 生年月日: ${customer.birthDate || "未登録"}
+- 性別: ${GENDER_LABELS[customer.gender]}
+- 備考: ${customer.remarks || "なし"}
 
 ## 今回の接客メモ
 ${noteContent}
@@ -140,6 +152,26 @@ ${recentNotesSection}
 
 ---
 
+## 出力フォーマット（JSON）
+
+以下の形式で出力してください。すべてのフィールドは必須です。
+
+{
+  "currentEvaluation": {
+    "good": "今回の接客で良かった点。具体的な行動と顧客への影響を記述",
+    "improvement": "今回の接客の改善ポイント。課題と代替案を記述"
+  },
+  "nextAdvice": {
+    "openingTopics": "冒頭で触れるべきこと。前回からの繋がりを感じさせる話題",
+    "followUpItems": "確認・フォローすべきこと。未解決の要望、クレーム、宿題など",
+    "salesOpportunities": "提案の機会。顧客に提案できる商品・サービス・情報と理由",
+    "caution": "注意点・避けるべきこと。過去の反応から避けた方がよいアプローチ",
+    "nextActions": "次回に向けて確認しておくこと。接客の最後に確認・約束すべきこと"
+  }
+}
+
+---
+
 ## 注意事項
 - 情報が不足している項目は「情報不足のため判断不可」と明記
 - 推測で補う場合は「〜と推測されるため」と理由を明示
@@ -147,7 +179,8 @@ ${recentNotesSection}
 - 評価は批判ではなく、改善のためのフィードバックとして記述する
 - 抽象的な表現（「信頼関係を築けた」「丁寧に対応できた」など）は禁止
 - 必ず具体的な行動・発言レベルで記述
-- 各項目は簡潔に。1項目あたり1〜3文程度`;
+- 各項目は簡潔に。1項目あたり1〜3文程度
+- 必ず上記のJSON形式で出力すること`;
 }
 
 export async function generateAdvice(

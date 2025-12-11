@@ -19,6 +19,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@workspace/ui/components/form";
+import { Input } from "@workspace/ui/components/input";
 import { OptionalBadge } from "@workspace/ui/components/optional-badge";
 import { RequiredBadge } from "@workspace/ui/components/required-badge";
 import { Textarea } from "@workspace/ui/components/textarea";
@@ -39,6 +40,10 @@ const formSchema = v.object({
 		v.minLength(1, "内容を入力してください"),
 		v.maxLength(4096, "内容は4096文字以内で入力してください"),
 	),
+	serviceDate: v.pipe(
+		v.string(),
+		v.regex(/^\d{4}-\d{2}-\d{2}$/, "正しい日付形式で入力してください"),
+	),
 });
 
 type FormValues = v.InferOutput<typeof formSchema>;
@@ -47,6 +52,7 @@ type EditCustomerNoteDialogProps = {
 	customerId: string;
 	noteId: string;
 	initialContent: string;
+	initialServiceDate: string;
 	initialImages: CustomerNoteImageWithUrl[];
 };
 
@@ -54,6 +60,7 @@ export function EditCustomerNoteDialog({
 	customerId,
 	noteId,
 	initialContent,
+	initialServiceDate,
 	initialImages,
 }: EditCustomerNoteDialogProps) {
 	const router = useRouter();
@@ -107,6 +114,7 @@ export function EditCustomerNoteDialog({
 	const form = useForm<FormValues>({
 		defaultValues: {
 			content: initialContent,
+			serviceDate: initialServiceDate,
 		},
 		resolver: valibotResolver(formSchema),
 	});
@@ -140,6 +148,7 @@ export function EditCustomerNoteDialog({
 				content: values.content,
 				keepImagePaths,
 				noteId,
+				serviceDate: values.serviceDate,
 				uploadImages,
 			});
 
@@ -159,6 +168,7 @@ export function EditCustomerNoteDialog({
 		if (!open) {
 			form.reset({
 				content: initialContent,
+				serviceDate: initialServiceDate,
 			});
 			clearImages();
 			setKeepImagePaths(initialImages.map((img) => img.path));
@@ -196,6 +206,28 @@ export function EditCustomerNoteDialog({
 								<p>{errorMessage}</p>
 							</div>
 						)}
+
+						<FormField
+							control={form.control}
+							name="serviceDate"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="flex items-center gap-2">
+										接客日
+										<RequiredBadge />
+									</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											className="w-40"
+											disabled={isProcessing}
+											type="date"
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
 						<FormField
 							control={form.control}

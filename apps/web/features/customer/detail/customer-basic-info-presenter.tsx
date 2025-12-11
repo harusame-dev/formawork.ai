@@ -1,13 +1,20 @@
 import type { ReactNode } from "react";
 import { DateTime } from "@/components/date-time";
+import { GENDER_LABELS, type Gender } from "../schema";
 
 type Customer = {
+	address: string | null;
+	birthDate: string | null;
 	createdAt: Date;
 	customerId: string;
 	email: string | null;
 	firstName: string;
+	firstNameKana: string | null;
+	gender: number;
 	lastName: string;
+	lastNameKana: string | null;
 	phone: string | null;
+	remarks: string | null;
 	updatedAt: Date;
 };
 
@@ -23,7 +30,20 @@ type CustomerField = {
 export function CustomerBasicInfoPresenter({
 	customer,
 }: CustomerBasicInfoPresenterProps) {
+	const kanaName =
+		customer.lastNameKana || customer.firstNameKana
+			? `${customer.lastNameKana || ""} ${customer.firstNameKana || ""}`.trim()
+			: null;
+
 	const fields: CustomerField[] = [
+		...(kanaName
+			? [
+					{
+						label: "ふりがな",
+						value: kanaName,
+					},
+				]
+			: []),
 		{
 			label: "メールアドレス",
 			value: customer.email ? (
@@ -43,6 +63,22 @@ export function CustomerBasicInfoPresenter({
 			) : (
 				"未登録"
 			),
+		},
+		{
+			label: "住所",
+			value: customer.address || "未登録",
+		},
+		{
+			label: "生年月日",
+			value: customer.birthDate || "未登録",
+		},
+		{
+			label: "性別",
+			value: GENDER_LABELS[customer.gender as Gender] || "未登録",
+		},
+		{
+			label: "備考",
+			value: customer.remarks || "未登録",
 		},
 		{
 			label: "登録日",

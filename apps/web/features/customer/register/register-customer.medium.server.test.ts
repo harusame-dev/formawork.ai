@@ -4,12 +4,24 @@ import { eq } from "drizzle-orm";
 import { expect, test } from "vitest";
 import { registerCustomer } from "./register-customer";
 
+const baseInput = {
+	address: "",
+	birthDate: "",
+	email: "",
+	firstName: "太郎",
+	firstNameKana: "",
+	gender: 1,
+	lastName: "テスト",
+	lastNameKana: "",
+	phone: "",
+	remarks: "",
+};
+
 test("lastName が24文字（境界値）で登録できる", async () => {
 	const input = {
+		...baseInput,
 		email: `test-last-name-24-${Date.now()}@example.com`,
-		firstName: "太郎",
 		lastName: "あ".repeat(24),
-		phone: "",
 	};
 
 	const result = await registerCustomer(input);
@@ -30,10 +42,8 @@ test("lastName が24文字（境界値）で登録できる", async () => {
 
 test("email が254文字（境界値）で登録できる", async () => {
 	const input = {
+		...baseInput,
 		email: `${"a".repeat(242)}@example.com`,
-		firstName: "太郎",
-		lastName: "テスト",
-		phone: "",
 	};
 
 	const result = await registerCustomer(input);
@@ -54,9 +64,8 @@ test("email が254文字（境界値）で登録できる", async () => {
 
 test("phone が20文字（境界値）で登録できる", async () => {
 	const input = {
+		...baseInput,
 		email: `test-phone-20-${Date.now()}@example.com`,
-		firstName: "太郎",
-		lastName: "テスト",
 		phone: "0".repeat(20),
 	};
 

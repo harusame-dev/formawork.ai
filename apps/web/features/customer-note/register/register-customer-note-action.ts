@@ -29,12 +29,16 @@ const registerCustomerNoteSchema = v.object({
 		v.maxLength(4096, "内容は4096文字以内で入力してください"),
 	),
 	customerId: v.pipe(v.string(), v.uuid()),
+	serviceDate: v.pipe(
+		v.string(),
+		v.regex(/^\d{4}-\d{2}-\d{2}$/, "正しい日付形式で入力してください"),
+	),
 	uploadImages: v.optional(v.array(uploadImageSchema), []),
 });
 
 export const registerCustomerNoteAction = createServerAction(
 	async (input, { logger, userId }) => {
-		const { content, customerId, uploadImages } = input;
+		const { content, customerId, serviceDate, uploadImages } = input;
 		// biome-ignore lint/style/noNonNullAssertion: isPublic: false のため認証済みで非null
 		const staffId = userId!;
 
@@ -46,6 +50,7 @@ export const registerCustomerNoteAction = createServerAction(
 				content,
 				customerId,
 				id: noteId,
+				serviceDate,
 				staffId,
 			});
 

@@ -6,11 +6,17 @@ import { v4 } from "uuid";
 
 type Fixtures = {
 	customer: {
+		address: string | null;
+		birthDate: string | null;
 		customerId: string;
 		email: string;
 		firstName: string;
+		firstNameKana: string | null;
+		gender: number;
 		lastName: string;
+		lastNameKana: string | null;
 		phone: string;
+		remarks: string | null;
 	};
 	adminUserPage: Page;
 	normalUserPage: Page;
@@ -37,11 +43,17 @@ const test = base.extend<Fixtures>({
 	// biome-ignore lint/correctness/noEmptyPattern: The first argument inside a fixture must use object destructuring pattern, e.g. ({ test } => {}). Instead, received "_".
 	async customer({}, use) {
 		const customer = {
+			address: null,
+			birthDate: null,
 			customerId: v4(),
 			email: `${v4()}@example.com`,
 			firstName: v4().slice(0, 12),
+			firstNameKana: null,
+			gender: 1,
 			lastName: v4().slice(0, 12),
+			lastNameKana: null,
 			phone: `${Math.floor(Math.random() * 1000000000)}`,
+			remarks: null,
 		};
 
 		await db.insert(customersTable).values(customer);

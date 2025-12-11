@@ -55,11 +55,17 @@ const test = base.extend<{
 });
 
 const validInput = {
+	address: "",
+	birthDate: "",
 	customerId: "00000000-0000-0000-0000-000000000001",
 	email: "test@example.com",
 	firstName: "太郎",
+	firstNameKana: "",
+	gender: 1,
 	lastName: "テスト",
+	lastNameKana: "",
 	phone: "09012345678",
+	remarks: "",
 };
 
 test("一般ユーザーロールの場合、権限エラーが返される", async ({

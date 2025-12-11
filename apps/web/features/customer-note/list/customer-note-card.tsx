@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
-import { CalendarClock, UserPen } from "lucide-react";
+import { Calendar, CalendarClock, UserPen } from "lucide-react";
 import { DateTime } from "@/components/date-time";
 import { CustomerNoteAdvice } from "@/features/customer-note/advice/customer-note-advice";
 import { DeleteCustomerNoteDialog } from "@/features/customer-note/delete/delete-customer-note-dialog";
@@ -25,6 +25,10 @@ export function CustomerNoteCard({
 			<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
 				<div className="space-y-1">
 					<div className="text-sm flex gap-2">
+						<Calendar className="size-4" />
+						接客日: {note.serviceDate}
+					</div>
+					<div className="text-sm text-muted-foreground flex gap-2">
 						<CalendarClock className="size-4" />
 						<DateTime date={new Date(note.createdAt)} />
 					</div>
@@ -40,6 +44,7 @@ export function CustomerNoteCard({
 							customerId={note.customerId}
 							initialContent={note.content}
 							initialImages={note.images}
+							initialServiceDate={note.serviceDate}
 							// 古い state が残ってしまい、編集後に再度ダイアログを開いたときに新しい状態にならないため、
 							// updatedAt をキーにして変更があった際にコンポーネントを再マウントさせる
 							// updatedAt.getTime() は UNIX タイムスタンプでタイムゾーン非依存のためハイドレーションエラーなし

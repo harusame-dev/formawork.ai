@@ -19,6 +19,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@workspace/ui/components/form";
+import { Input } from "@workspace/ui/components/input";
 import { OptionalBadge } from "@workspace/ui/components/optional-badge";
 import { RequiredBadge } from "@workspace/ui/components/required-badge";
 import { Textarea } from "@workspace/ui/components/textarea";
@@ -31,11 +32,25 @@ import { CustomerNoteImageInput } from "../list/customer-note-image-input";
 import { registerCustomerNoteAction } from "./register-customer-note-action";
 import { useImageUpload } from "./use-image-upload";
 
+function getTodayString(): string {
+	return new Date()
+		.toLocaleDateString("ja-JP", {
+			day: "2-digit",
+			month: "2-digit",
+			year: "numeric",
+		})
+		.replace(/\//g, "-");
+}
+
 const formSchema = v.object({
 	content: v.pipe(
 		v.string(),
 		v.minLength(1, "内容を入力してください"),
 		v.maxLength(4096, "内容は4096文字以内で入力してください"),
+	),
+	serviceDate: v.pipe(
+		v.string(),
+		v.regex(/^\d{4}-\d{2}-\d{2}$/, "正しい日付形式で入力してください"),
 	),
 });
 
@@ -97,6 +112,7 @@ export function RegisterCustomerNoteDialog({
 	const form = useForm<FormValues>({
 		defaultValues: {
 			content: "",
+			serviceDate: getTodayString(),
 		},
 		resolver: valibotResolver(formSchema),
 	});
@@ -119,6 +135,7 @@ export function RegisterCustomerNoteDialog({
 			const result = await registerCustomerNoteAction({
 				content: values.content,
 				customerId,
+				serviceDate: values.serviceDate,
 				uploadImages,
 			});
 
@@ -168,6 +185,28 @@ export function RegisterCustomerNoteDialog({
 								<p>{errorMessage}</p>
 							</div>
 						)}
+
+						<FormField
+							control={form.control}
+							name="serviceDate"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="flex items-center gap-2">
+										接客日
+										<RequiredBadge />
+									</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											className="w-40"
+											disabled={isProcessing}
+											type="date"
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
 						<FormField
 							control={form.control}

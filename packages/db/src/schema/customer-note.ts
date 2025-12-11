@@ -1,4 +1,5 @@
 import {
+	date,
 	index,
 	integer,
 	pgSchema,
@@ -20,6 +21,7 @@ export const customerNotesTable = pgSchema(schemaName).table(
 			.notNull()
 			.references(() => customersTable.customerId, { onDelete: "cascade" }),
 		id: uuid("id").primaryKey().defaultRandom(),
+		serviceDate: date("service_date").notNull(),
 		staffId: uuid("staff_id")
 			.notNull()
 			.references(() => staffsTable.staffId, { onDelete: "cascade" }),
