@@ -19,17 +19,17 @@ export async function registerCustomer({
 	const customerId = generateUniqueId();
 
 	await db.insert(customersTable).values({
-		address: address || null,
+		address,
 		birthDate: birthDate || null,
 		customerId,
 		email,
 		firstName,
-		firstNameKana: firstNameKana || null,
+		firstNameKana,
 		gender,
 		lastName,
-		lastNameKana: lastNameKana || null,
+		lastNameKana,
 		phone,
-		remarks: remarks || null,
+		remarks,
 	});
 
 	return succeed({ customerId });

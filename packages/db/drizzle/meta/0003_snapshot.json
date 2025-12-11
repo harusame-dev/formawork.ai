@@ -1,5 +1,5 @@
 {
-  "id": "c937b54e-b1e3-4f5c-b0c2-f08e47415e82",
+  "id": "2d70440a-5d82-4639-934a-1533420c0df7",
   "prevId": "b947c449-c792-5a8b-9335-7628606e5c86",
   "version": "7",
   "dialect": "postgresql",
@@ -12,7 +12,8 @@
           "name": "address",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "birth_date": {
           "name": "birth_date",
@@ -49,7 +50,8 @@
           "name": "first_name_kana",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "gender": {
           "name": "gender",
@@ -68,7 +70,8 @@
           "name": "last_name_kana",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "phone": {
           "name": "phone",
@@ -80,7 +83,8 @@
           "name": "remarks",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "''"
         },
         "updated_at": {
           "name": "updated_at",
@@ -188,6 +192,12 @@
           "primaryKey": true,
           "notNull": true,
           "default": "gen_random_uuid()"
+        },
+        "service_date": {
+          "name": "service_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
         },
         "staff_id": {
           "name": "staff_id",

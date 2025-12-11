@@ -19,16 +19,16 @@ export async function CustomerEditFormContainer({
 		<EditCustomerForm
 			customerId={customer.customerId}
 			initialValues={{
-				address: customer.address || "",
+				address: customer.address,
 				birthDate: customer.birthDate || "",
 				email: customer.email,
 				firstName: customer.firstName,
-				firstNameKana: customer.firstNameKana || "",
+				firstNameKana: customer.firstNameKana,
 				gender: customer.gender,
 				lastName: customer.lastName,
-				lastNameKana: customer.lastNameKana || "",
+				lastNameKana: customer.lastNameKana,
 				phone: customer.phone,
-				remarks: customer.remarks || "",
+				remarks: customer.remarks,
 			}}
 		/>
 	);

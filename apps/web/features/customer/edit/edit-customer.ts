@@ -39,16 +39,16 @@ export async function editCustomer({
 	await db
 		.update(customersTable)
 		.set({
-			address: address || null,
+			address,
 			birthDate: birthDate || null,
 			email,
 			firstName,
-			firstNameKana: firstNameKana || null,
+			firstNameKana,
 			gender,
 			lastName,
-			lastNameKana: lastNameKana || null,
+			lastNameKana,
 			phone,
-			remarks: remarks || null,
+			remarks,
 		})
 		.where(eq(customersTable.customerId, customerId));
 

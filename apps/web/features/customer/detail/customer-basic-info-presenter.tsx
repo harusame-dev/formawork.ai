@@ -3,18 +3,18 @@ import { DateTime } from "@/components/date-time";
 import { GENDER_LABELS, type Gender } from "../schema";
 
 type Customer = {
-	address: string | null;
+	address: string;
 	birthDate: string | null;
 	createdAt: Date;
 	customerId: string;
-	email: string | null;
+	email: string;
 	firstName: string;
-	firstNameKana: string | null;
+	firstNameKana: string;
 	gender: number;
 	lastName: string;
-	lastNameKana: string | null;
-	phone: string | null;
-	remarks: string | null;
+	lastNameKana: string;
+	phone: string;
+	remarks: string;
 	updatedAt: Date;
 };
 
@@ -32,7 +32,7 @@ export function CustomerBasicInfoPresenter({
 }: CustomerBasicInfoPresenterProps) {
 	const kanaName =
 		customer.lastNameKana || customer.firstNameKana
-			? `${customer.lastNameKana || ""} ${customer.firstNameKana || ""}`.trim()
+			? `${customer.lastNameKana} ${customer.firstNameKana}`.trim()
 			: null;
 
 	const fields: CustomerField[] = [

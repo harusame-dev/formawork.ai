@@ -9,18 +9,18 @@ import {
 import { schemaName } from "../pgschema";
 
 export const customersTable = pgSchema(schemaName).table("customers", {
-	address: text("address"),
+	address: text("address").notNull().default(""),
 	birthDate: date("birth_date"),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	customerId: uuid("customer_id").primaryKey(),
 	email: text("email").notNull(),
 	firstName: text("first_name").notNull(),
-	firstNameKana: text("first_name_kana"),
+	firstNameKana: text("first_name_kana").notNull().default(""),
 	gender: smallint("gender").notNull().default(1),
 	lastName: text("last_name").notNull(),
-	lastNameKana: text("last_name_kana"),
+	lastNameKana: text("last_name_kana").notNull().default(""),
 	phone: text("phone").notNull(),
-	remarks: text("remarks"),
+	remarks: text("remarks").notNull().default(""),
 	updatedAt: timestamp("updated_at")
 		.defaultNow()
 		.notNull()
