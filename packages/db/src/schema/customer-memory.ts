@@ -24,7 +24,7 @@ export const MemoryCategory = {
 export type MemoryCategory =
 	(typeof MemoryCategory)[keyof typeof MemoryCategory];
 
-export const MEMORY_CATEGORY_LABELS: Record<MemoryCategory, string> = {
+export const MEMORY_CATEGORY_LABEL: Record<MemoryCategory, string> = {
 	[MemoryCategory.Personal]: "パーソナル情報",
 	[MemoryCategory.Preference]: "趣味趣向",
 	[MemoryCategory.Conversion]: "コンバージョン傾向",
