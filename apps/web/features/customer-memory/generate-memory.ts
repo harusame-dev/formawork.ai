@@ -1,7 +1,7 @@
 import { getLogger } from "@repo/logger/nextjs/server";
 import {
-	MEMORY_CATEGORY,
-	MEMORY_CATEGORY_LABELS,
+	MemoryCategory,
+	MemoryCategoryLabels,
 	type MemoryCategory,
 } from "@workspace/db/schema/customer-memory";
 import { generateObject, jsonSchema } from "ai";
@@ -183,8 +183,8 @@ ${note.content}`,
 		)
 		.join("\n\n");
 
-	const categoryDescriptions = Object.entries(MEMORY_CATEGORY)
-		.map(([_key, value]) => `${value}: ${MEMORY_CATEGORY_LABELS[value]}`)
+	const categoryDescriptions = Object.entries(MemoryCategory)
+		.map(([_key, value]) => `${value}: ${MemoryCategoryLabels[value]}`)
 		.join("\n");
 
 	const existingMemoriesSection =
@@ -192,7 +192,7 @@ ${note.content}`,
 			? existingMemories
 					.map(
 						(memory) =>
-							`- [ID: ${memory.id}] [カテゴリ: ${MEMORY_CATEGORY_LABELS[memory.category]}] [重要度: ${memory.importance}] ${memory.content}`,
+							`- [ID: ${memory.id}] [カテゴリ: ${MemoryCategoryLabels[memory.category]}] [重要度: ${memory.importance}] ${memory.content}`,
 					)
 					.join("\n")
 			: "なし";

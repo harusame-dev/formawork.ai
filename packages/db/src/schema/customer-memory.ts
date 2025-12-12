@@ -12,25 +12,25 @@ import { customersTable } from "./customer";
 /**
  * メモリーカテゴリ定義
  */
-export const MEMORY_CATEGORY = {
-	COMMUNICATION: 4,
-	CONVERSION: 3,
-	EVENT: 5,
-	HEALTH: 6,
-	PERSONAL: 1,
-	PREFERENCE: 2,
+export const MemoryCategory = {
+	Communication: 4,
+	Conversion: 3,
+	Event: 5,
+	Health: 6,
+	Personal: 1,
+	Preference: 2,
 } as const;
 
 export type MemoryCategory =
-	(typeof MEMORY_CATEGORY)[keyof typeof MEMORY_CATEGORY];
+	(typeof MemoryCategory)[keyof typeof MemoryCategory];
 
 export const MEMORY_CATEGORY_LABELS: Record<MemoryCategory, string> = {
-	[MEMORY_CATEGORY.PERSONAL]: "パーソナル情報",
-	[MEMORY_CATEGORY.PREFERENCE]: "趣味趣向",
-	[MEMORY_CATEGORY.CONVERSION]: "コンバージョン傾向",
-	[MEMORY_CATEGORY.COMMUNICATION]: "コミュニケーション特性",
-	[MEMORY_CATEGORY.EVENT]: "重要イベント",
-	[MEMORY_CATEGORY.HEALTH]: "健康・身体的配慮",
+	[MemoryCategory.Personal]: "パーソナル情報",
+	[MemoryCategory.Preference]: "趣味趣向",
+	[MemoryCategory.Conversion]: "コンバージョン傾向",
+	[MemoryCategory.Communication]: "コミュニケーション特性",
+	[MemoryCategory.Event]: "重要イベント",
+	[MemoryCategory.Health]: "健康・身体的配慮",
 };
 
 export const customerMemoriesTable = pgSchema(schemaName).table(

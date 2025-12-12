@@ -55,6 +55,42 @@ const cronConfig = v.parse(
 		vercelUrl: process.env["VERCEL_URL"],
 	},
 );
+async function setupPgmqQueue() {
+	console.log("⭐️ pgmqキュー作成");
+
+	await createQueueIfNotExists(ADVICE_QUEUE_NAME);
+	await createQueueIfNotExists(MEMORY_QUEUE_NAME);
+}
+
+async function setupCronJob() {
+	console.log("⭐️ pg_cronジョブ設定");
+
+	if (!cronConfig.url) {
+		// preview 環境でも cron スケジュールを設定するとプレビューごとに AI 実行のリクエストが飛ぶようになってしまい
+		// リクエスト数を消費しすぎてしまうためジョブは設定しない
+		// デメリットとしてプレビュー環境では自動で AI 生成ができない
+		// 手動で /api/cron/generate-* にリクエストを投げることで対応可能
+		console.log("⏩️ pg_cronジョブ設定をスキップ");
+		return;
+	}
+
+	// アドバイス生成: 毎分
+	await scheduleCronJob(
+		ADVICE_CRON_JOB_NAME,
+		"*/1 * * * *",
+		"/api/cron/generate-advice",
+	);
+
+	// メモリー生成: 4時間毎（本番）/ 毎分（ローカル）
+	// ローカル環境ではリクエスト数が多くても問題ないの DX を考慮して１分ごと
+	const memorySchedule =
+		cronConfig.cronSecret === "" ? "*/1 * * * *" : "0 */4 * * *";
+	await scheduleCronJob(
+		MEMORY_CRON_JOB_NAME,
+		memorySchedule,
+		"/api/cron/generate-memory",
+	);
+}
 
 async function createQueueIfNotExists(queueName: string) {
 	const result = await db.execute<{ exists: boolean }>(sql`
@@ -70,13 +106,6 @@ async function createQueueIfNotExists(queueName: string) {
 
 	await db.execute(sql`SELECT pgmq.create(${queueName})`);
 	console.log(`  ✅️ キュー "${queueName}" を作成しました`);
-}
-
-async function setupPgmqQueue() {
-	console.log("⭐️ pgmqキュー作成");
-
-	await createQueueIfNotExists(ADVICE_QUEUE_NAME);
-	await createQueueIfNotExists(MEMORY_QUEUE_NAME);
 }
 
 async function scheduleCronJob(
@@ -109,35 +138,6 @@ async function scheduleCronJob(
 
 	console.log(
 		`  ✅️ cronジョブ "${jobName}" を設定しました (schedule: ${schedule}, URL: ${cronConfig.url}${endpoint})`,
-	);
-}
-
-async function setupCronJob() {
-	console.log("⭐️ pg_cronジョブ設定");
-
-	if (!cronConfig.url) {
-		// preview 環境でも cron スケジュールを設定するとプレビューごとに AI 実行のリクエストが飛ぶようになってしまい
-		// リクエスト数を消費しすぎてしまうためジョブは設定しない
-		// デメリットとしてプレビュー環境では自動で AI 生成ができない
-		// 手動で /api/cron/generate-* にリクエストを投げることで対応可能
-		console.log("⏩️ pg_cronジョブ設定をスキップ");
-		return;
-	}
-
-	// アドバイス生成: 毎分
-	await scheduleCronJob(
-		ADVICE_CRON_JOB_NAME,
-		"*/1 * * * *",
-		"/api/cron/generate-advice",
-	);
-
-	// メモリー生成: 4時間毎（本番）/ 毎分（ローカル）
-	const memorySchedule =
-		cronConfig.cronSecret === "" ? "*/1 * * * *" : "0 */4 * * *";
-	await scheduleCronJob(
-		MEMORY_CRON_JOB_NAME,
-		memorySchedule,
-		"/api/cron/generate-memory",
 	);
 }
 
