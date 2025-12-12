@@ -1,11 +1,12 @@
 import { getLogger } from "@repo/logger/nextjs/server";
 import { db } from "@workspace/db/client";
-import { schemaName } from "@workspace/db/pgschema";
+import { customersTable } from "@workspace/db/schema/customer";
 import {
 	customerMemoriesTable,
 	type MemoryCategory,
 } from "@workspace/db/schema/customer-memory";
-import { eq, sql } from "drizzle-orm";
+import { customerNotesTable } from "@workspace/db/schema/customer-note";
+import { asc, count, desc, eq, inArray } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import * as v from "valibot";
 import { genderSchema } from "@/features/customer/schema";
@@ -16,35 +17,7 @@ import {
 	type MemoryOperation,
 } from "./generate-memory";
 
-const CONTEXT_NOTES_LIMIT = 10;
 const MAX_MEMORIES_PER_CUSTOMER = 100;
-
-type CustomerData = {
-	customerId: string;
-	firstName: string;
-	lastName: string;
-	birthDate: string | null;
-	gender: number;
-	remarks: string;
-};
-
-type NoteData = {
-	id: string;
-	content: string;
-	serviceDate: string;
-};
-
-type ContextNote = {
-	content: string;
-	createdAt: Date;
-};
-
-type ExistingMemory = {
-	id: string;
-	category: MemoryCategory;
-	content: string;
-	importance: number;
-};
 
 export class CustomerNotFoundError extends Error {
 	constructor(customerId: string) {
@@ -60,175 +33,146 @@ export class NotesNotFoundError extends Error {
 	}
 }
 
-async function fetchCustomerData(
-	customerId: string,
-): Promise<CustomerData | null> {
-	const results = await db.execute<CustomerData>(sql`
-		SELECT
-			customer_id as "customerId",
-			first_name as "firstName",
-			last_name as "lastName",
-			birth_date as "birthDate",
-			gender,
-			remarks
-		FROM ${sql.identifier(schemaName)}.customers
-		WHERE customer_id = ${customerId}::uuid
-	`);
+async function fetchCustomerData(customerId: string) {
+	const results = await db
+		.select({
+			birthDate: customersTable.birthDate,
+			firstName: customersTable.firstName,
+			gender: customersTable.gender,
+			lastName: customersTable.lastName,
+			remarks: customersTable.remarks,
+		})
+		.from(customersTable)
+		.where(eq(customersTable.customerId, customerId));
 	return results[0] ?? null;
 }
 
-async function fetchNotesData(noteIds: string[]): Promise<NoteData[]> {
+async function fetchNotesData(noteIds: string[]) {
 	if (noteIds.length === 0) return [];
 
-	return db.execute<NoteData>(sql`
-		SELECT
-			id,
-			content,
-			service_date as "serviceDate"
-		FROM ${sql.identifier(schemaName)}.customer_notes
-		WHERE id IN (${sql.join(
-			noteIds.map((id) => sql`${id}::uuid`),
-			sql`, `,
-		)})
-	`);
+	return db
+		.select({
+			content: customerNotesTable.content,
+			id: customerNotesTable.id,
+			serviceDate: customerNotesTable.serviceDate,
+		})
+		.from(customerNotesTable)
+		.where(inArray(customerNotesTable.id, noteIds));
 }
 
-async function fetchContextNotes(
-	customerId: string,
-	excludeNoteIds: string[],
-): Promise<ContextNote[]> {
-	const excludeCondition =
-		excludeNoteIds.length > 0
-			? sql`AND id NOT IN (${sql.join(
-					excludeNoteIds.map((id) => sql`${id}::uuid`),
-					sql`, `,
-				)})`
-			: sql``;
-
-	const results = await db.execute<{ content: string; createdAt: Date }>(sql`
-		SELECT content, created_at as "createdAt"
-		FROM ${sql.identifier(schemaName)}.customer_notes
-		WHERE customer_id = ${customerId}::uuid
-		${excludeCondition}
-		ORDER BY created_at DESC
-		LIMIT ${CONTEXT_NOTES_LIMIT}
-	`);
+async function fetchExistingMemories(customerId: string) {
+	const results = await db
+		.select({
+			category: customerMemoriesTable.category,
+			content: customerMemoriesTable.content,
+			id: customerMemoriesTable.id,
+			importance: customerMemoriesTable.importance,
+		})
+		.from(customerMemoriesTable)
+		.where(eq(customerMemoriesTable.customerId, customerId))
+		.orderBy(
+			desc(customerMemoriesTable.importance),
+			desc(customerMemoriesTable.createdAt),
+		);
 
 	return results.map((r) => ({
-		content: r.content,
-		createdAt: new Date(r.createdAt),
-	}));
-}
-
-async function fetchExistingMemories(
-	customerId: string,
-): Promise<ExistingMemory[]> {
-	const results = await db.execute<ExistingMemory>(sql`
-		SELECT
-			id,
-			category,
-			content,
-			importance
-		FROM ${sql.identifier(schemaName)}.customer_memories
-		WHERE customer_id = ${customerId}::uuid
-		ORDER BY importance DESC, created_at DESC
-	`);
-
-	return results.map((r) => ({
+		...r,
 		category: r.category as MemoryCategory,
-		content: r.content,
-		id: r.id,
-		importance: r.importance,
 	}));
 }
 
-async function executeOperations(
+async function executeOperation(
 	customerId: string,
-	operations: MemoryOperation[],
+	operation: MemoryOperation,
 	sourceNoteId: string | null,
 ): Promise<void> {
-	const logger = await getLogger("executeMemoryOperations");
+	const logger = await getLogger("executeMemoryOperation");
 
-	for (const op of operations) {
-		switch (op.operation) {
-			case "create":
-				await db.insert(customerMemoriesTable).values({
-					category: op.category as MemoryCategory,
-					content: op.content,
-					customerId,
-					importance: op.importance,
-					sourceNoteId,
-				});
-				logger.info("メモリー作成", {
-					category: op.category,
-					content: op.content,
-					customerId,
-					reason: op.reason,
-				});
-				break;
+	switch (operation.operation) {
+		case "create":
+			await db.insert(customerMemoriesTable).values({
+				category: operation.category as MemoryCategory,
+				content: operation.content,
+				customerId,
+				importance: operation.importance,
+				sourceNoteId,
+			});
+			logger.info("メモリー作成", {
+				category: operation.category,
+				content: operation.content,
+				customerId,
+				reason: operation.reason,
+			});
+			break;
 
-			case "update":
-				{
-					const updateData: Record<string, unknown> = {};
-					if (op.newContent !== undefined) {
-						// biome-ignore lint/complexity/useLiteralKeys: ts4111
-						updateData["content"] = op.newContent;
-					}
-					if (op.newImportance !== undefined) {
-						// biome-ignore lint/complexity/useLiteralKeys: ts4111
-						updateData["importance"] = op.newImportance;
-					}
-					if (Object.keys(updateData).length > 0) {
-						await db
-							.update(customerMemoriesTable)
-							.set(updateData)
-							.where(eq(customerMemoriesTable.id, op.memoryId));
-						logger.info("メモリー更新", {
-							memoryId: op.memoryId,
-							reason: op.reason,
-							updates: updateData,
-						});
-					}
+		case "update":
+			{
+				const updateData: Record<string, unknown> = {};
+				if (operation.newContent !== undefined) {
+					// biome-ignore lint/complexity/useLiteralKeys: ts4111
+					updateData["content"] = operation.newContent;
 				}
-				break;
+				if (operation.newImportance !== undefined) {
+					// biome-ignore lint/complexity/useLiteralKeys: ts4111
+					updateData["importance"] = operation.newImportance;
+				}
+				if (Object.keys(updateData).length > 0) {
+					await db
+						.update(customerMemoriesTable)
+						.set(updateData)
+						.where(eq(customerMemoriesTable.id, operation.memoryId));
+					logger.info("メモリー更新", {
+						memoryId: operation.memoryId,
+						reason: operation.reason,
+						updates: updateData,
+					});
+				}
+			}
+			break;
 
-			case "delete":
-				await db
-					.delete(customerMemoriesTable)
-					.where(eq(customerMemoriesTable.id, op.memoryId));
-				logger.info("メモリー削除", {
-					memoryId: op.memoryId,
-					reason: op.reason,
-				});
-				break;
-		}
+		case "delete":
+			await db
+				.delete(customerMemoriesTable)
+				.where(eq(customerMemoriesTable.id, operation.memoryId));
+			logger.info("メモリー削除", {
+				memoryId: operation.memoryId,
+				reason: operation.reason,
+			});
+			break;
 	}
 }
 
 async function enforceMemoryLimit(customerId: string): Promise<void> {
 	const logger = await getLogger("enforceMemoryLimit");
 
-	const countResult = await db.execute<{ count: string }>(sql`
-		SELECT COUNT(*) as count
-		FROM ${sql.identifier(schemaName)}.customer_memories
-		WHERE customer_id = ${customerId}::uuid
-	`);
+	const countResult = await db
+		.select({ count: count() })
+		.from(customerMemoriesTable)
+		.where(eq(customerMemoriesTable.customerId, customerId));
 
-	const currentCount = Number(countResult[0]?.count ?? 0);
+	const currentCount = countResult[0]?.count ?? 0;
 
 	if (currentCount > MAX_MEMORIES_PER_CUSTOMER) {
 		const deleteCount = currentCount - MAX_MEMORIES_PER_CUSTOMER;
 
-		await db.execute(sql`
-			DELETE FROM ${sql.identifier(schemaName)}.customer_memories
-			WHERE id IN (
-				SELECT id
-				FROM ${sql.identifier(schemaName)}.customer_memories
-				WHERE customer_id = ${customerId}::uuid
-				ORDER BY importance ASC, created_at ASC
-				LIMIT ${deleteCount}
+		const idsToDelete = await db
+			.select({ id: customerMemoriesTable.id })
+			.from(customerMemoriesTable)
+			.where(eq(customerMemoriesTable.customerId, customerId))
+			.orderBy(
+				asc(customerMemoriesTable.importance),
+				asc(customerMemoriesTable.createdAt),
 			)
-		`);
+			.limit(deleteCount);
+
+		if (idsToDelete.length > 0) {
+			await db.delete(customerMemoriesTable).where(
+				inArray(
+					customerMemoriesTable.id,
+					idsToDelete.map((r) => r.id),
+				),
+			);
+		}
 
 		logger.info("メモリー件数制限適用", {
 			customerId,
@@ -260,11 +204,9 @@ export async function updateCustomerMemories(
 		throw new NotesNotFoundError(noteIds);
 	}
 
-	const contextNotes = await fetchContextNotes(customerId, noteIds);
 	const existingMemories = await fetchExistingMemories(customerId);
 
 	const params: GenerateMemoryOperationsParams = {
-		contextNotes,
 		customer: {
 			birthDate: customerData.birthDate,
 			firstName: customerData.firstName,
@@ -284,7 +226,11 @@ export async function updateCustomerMemories(
 
 	if (result.operations.length > 0) {
 		const primaryNoteId = targetNotes[0]?.id ?? null;
-		await executeOperations(customerId, result.operations, primaryNoteId);
+		await Promise.allSettled(
+			result.operations.map((op) =>
+				executeOperation(customerId, op, primaryNoteId),
+			),
+		);
 		await enforceMemoryLimit(customerId);
 		revalidateTag(CustomerTag.MemoryCrud(customerId), { expire: 0 });
 	}

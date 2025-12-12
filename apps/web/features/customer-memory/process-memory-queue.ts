@@ -119,5 +119,35 @@ export async function processMemoryQueue(): Promise<void> {
 			processCustomerMessages(customerId, groupedByCustomer[customerId] ?? []),
 		),
 	);
-	logger.info("処理完了", { results });
+
+	const serializedResults = results.map((result, index) => {
+		if (result.status === "fulfilled") {
+			return { status: "fulfilled" };
+		}
+		const error = result.reason;
+		return {
+			customerId: customerIds[index],
+			error: {
+				cause: error.cause,
+				message: error.message,
+				name: error.name,
+				stack: error.stack,
+			},
+			status: "rejected",
+		};
+	});
+
+	const failedCount = serializedResults.filter(
+		(r) => r.status === "rejected",
+	).length;
+
+	if (failedCount > 0) {
+		logger.error("処理完了（エラーあり）", {
+			failedCount,
+			results: serializedResults,
+			successCount: results.length - failedCount,
+		});
+	} else {
+		logger.info("処理完了", { successCount: results.length });
+	}
 }
