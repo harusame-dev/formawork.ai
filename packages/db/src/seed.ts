@@ -1,10 +1,12 @@
 import { db } from "./client.js";
+import { customerMemoriesFixture } from "./fixtures/customer-memories.js";
 import { customerNoteAdviceFixture } from "./fixtures/customer-note-advice.js";
 import { customerNoteImagesFixture } from "./fixtures/customer-note-images.js";
 import { customerNotesFixture } from "./fixtures/customer-notes.js";
 import { customersFixture } from "./fixtures/customers.js";
 import { staffsFixture } from "./fixtures/staffs.js";
 import { customersTable } from "./schema/customer.js";
+import { customerMemoriesTable } from "./schema/customer-memory.js";
 import {
 	customerNoteImagesTable,
 	customerNotesTable,
@@ -34,6 +36,10 @@ async function seed() {
 	// 接客アドバイスデータを投入
 	await db.insert(customerNoteAdviceTable).values(customerNoteAdviceFixture);
 	console.log(`💾 接客アドバイス追加： ${customerNoteAdviceFixture.length} 件`);
+
+	// 顧客メモリーデータを投入
+	await db.insert(customerMemoriesTable).values(customerMemoriesFixture);
+	console.log(`💾 顧客メモリー追加： ${customerMemoriesFixture.length} 件`);
 }
 
 seed()

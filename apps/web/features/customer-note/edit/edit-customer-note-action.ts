@@ -2,7 +2,10 @@
 
 import { succeed } from "@harusame0616/result";
 import { db } from "@workspace/db/client";
-import { ADVICE_QUEUE_NAME } from "@workspace/db/queue-names";
+import {
+	ADVICE_QUEUE_NAME,
+	MEMORY_QUEUE_NAME,
+} from "@workspace/db/queue-names";
 import { sql } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import * as v from "valibot";
@@ -50,6 +53,8 @@ export const editCustomerNoteAction = createServerAction(
 			return result;
 		}
 
+		const customerId = result.data.customerId;
+
 		await db.execute(sql`
 			SELECT pgmq.send(
 				${ADVICE_QUEUE_NAME},
@@ -57,7 +62,14 @@ export const editCustomerNoteAction = createServerAction(
 			)
 		`);
 
-		return succeed({ customerId: result.data.customerId });
+		await db.execute(sql`
+			SELECT pgmq.send(
+				${MEMORY_QUEUE_NAME},
+				${JSON.stringify({ customerId, serviceNoteId: noteId })}::jsonb
+			)
+		`);
+
+		return succeed({ customerId });
 	},
 	{
 		name: "editCustomerNoteAction",

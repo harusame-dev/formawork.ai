@@ -4,9 +4,10 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import * as v from "valibot";
 import { databaseUrl, db } from "./client";
 import { schemaName } from "./pgschema";
-import { ADVICE_QUEUE_NAME } from "./queue-names";
+import { ADVICE_QUEUE_NAME, MEMORY_QUEUE_NAME } from "./queue-names";
 
-const CRON_JOB_NAME = `${schemaName}_generate-advice-cron`;
+const ADVICE_CRON_JOB_NAME = `${schemaName}_generate-advice-cron`;
+const MEMORY_CRON_JOB_NAME = `${schemaName}_generate-memory-cron`;
 
 const cronConfig = v.parse(
 	v.pipe(
@@ -55,54 +56,50 @@ const cronConfig = v.parse(
 	},
 );
 
-async function setupPgmqQueue() {
-	console.log("⭐️ pgmqキュー作成");
-
-	// キューが存在しない場合のみ作成
+async function createQueueIfNotExists(queueName: string) {
 	const result = await db.execute<{ exists: boolean }>(sql`
 		SELECT EXISTS (
-			SELECT 1 FROM pgmq.meta WHERE queue_name = ${ADVICE_QUEUE_NAME}
+			SELECT 1 FROM pgmq.meta WHERE queue_name = ${queueName}
 		) as exists
 	`);
 
 	if (result[0]?.exists) {
-		console.log(`  ⏭️ キュー "${ADVICE_QUEUE_NAME}" は既に存在します`);
+		console.log(`  ⏭️ キュー "${queueName}" は既に存在します`);
 		return;
 	}
 
-	await db.execute(sql`SELECT pgmq.create(${ADVICE_QUEUE_NAME})`);
-	console.log(`  ✅️ キュー "${ADVICE_QUEUE_NAME}" を作成しました`);
+	await db.execute(sql`SELECT pgmq.create(${queueName})`);
+	console.log(`  ✅️ キュー "${queueName}" を作成しました`);
 }
 
-async function setupCronJob() {
-	console.log("⭐️ pg_cronジョブ設定");
+async function setupPgmqQueue() {
+	console.log("⭐️ pgmqキュー作成");
 
-	if (!cronConfig.url) {
-		// preview 環境でも cron スケジュールを設定するとプレビューごとに AI アドバイス実行のリクエストが飛ぶようになってしまい
-		// リクエスト数を消費しすぎてしまうためジョブは設定しない
-		// デメリットとしてプレビュー環境では自動で AI アドバイスが生成できない
-		// 手動で /api/cron/generate-advice にリクエストを投げることで対応可能
-		console.log("⏩️ pg_cronジョブ設定をスキップ");
-		return;
-	}
-	// 既存のジョブを削除
-	await db.execute(sql`SELECT cron.unschedule(${CRON_JOB_NAME})`).catch(() => {
-		// ジョブが存在しない場合はエラーを無視
-	});
+	await createQueueIfNotExists(ADVICE_QUEUE_NAME);
+	await createQueueIfNotExists(MEMORY_QUEUE_NAME);
+}
 
+async function scheduleCronJob(
+	jobName: string,
+	schedule: string,
+	endpoint: string,
+) {
 	const headers = {
 		Authorization: `Bearer ${cronConfig.cronSecret}`,
 	};
 
-	// 新しいジョブを作成
+	await db.execute(sql`SELECT cron.unschedule(${jobName})`).catch(() => {
+		// ジョブが存在しない場合はエラーを無視
+	});
+
 	await db.execute(
 		sql.raw(`
 			SELECT cron.schedule(
-				'${CRON_JOB_NAME}',
-				'*/1 * * * *',
+				'${jobName}',
+				'${schedule}',
 				$$
 				SELECT net.http_get(
-					url := '${cronConfig.url}/api/cron/generate-advice',
+					url := '${cronConfig.url}${endpoint}',
 					headers := '${JSON.stringify(headers)}'::jsonb
 				) AS request_id;
 				$$
@@ -111,7 +108,36 @@ async function setupCronJob() {
 	);
 
 	console.log(
-		`  ✅️ cronジョブ "${CRON_JOB_NAME}" を設定しました (URL: ${cronConfig.url})`,
+		`  ✅️ cronジョブ "${jobName}" を設定しました (schedule: ${schedule}, URL: ${cronConfig.url}${endpoint})`,
+	);
+}
+
+async function setupCronJob() {
+	console.log("⭐️ pg_cronジョブ設定");
+
+	if (!cronConfig.url) {
+		// preview 環境でも cron スケジュールを設定するとプレビューごとに AI 実行のリクエストが飛ぶようになってしまい
+		// リクエスト数を消費しすぎてしまうためジョブは設定しない
+		// デメリットとしてプレビュー環境では自動で AI 生成ができない
+		// 手動で /api/cron/generate-* にリクエストを投げることで対応可能
+		console.log("⏩️ pg_cronジョブ設定をスキップ");
+		return;
+	}
+
+	// アドバイス生成: 毎分
+	await scheduleCronJob(
+		ADVICE_CRON_JOB_NAME,
+		"*/1 * * * *",
+		"/api/cron/generate-advice",
+	);
+
+	// メモリー生成: 4時間毎（本番）/ 毎分（ローカル）
+	const memorySchedule =
+		cronConfig.cronSecret === "" ? "*/1 * * * *" : "0 */4 * * *";
+	await scheduleCronJob(
+		MEMORY_CRON_JOB_NAME,
+		memorySchedule,
+		"/api/cron/generate-memory",
 	);
 }
 

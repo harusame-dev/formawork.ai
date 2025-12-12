@@ -4,7 +4,10 @@ import { randomUUID } from "node:crypto";
 import { succeed } from "@harusame0616/result";
 import { createAdminClient } from "@repo/supabase/admin";
 import { db } from "@workspace/db/client";
-import { ADVICE_QUEUE_NAME } from "@workspace/db/queue-names";
+import {
+	ADVICE_QUEUE_NAME,
+	MEMORY_QUEUE_NAME,
+} from "@workspace/db/queue-names";
 import {
 	customerNoteImagesTable,
 	customerNotesTable,
@@ -92,6 +95,9 @@ export const registerCustomerNoteAction = createServerAction(
 			}
 			await tx.execute(
 				sql`SELECT pgmq.send( ${ADVICE_QUEUE_NAME}, ${JSON.stringify({ customerNoteId: noteId })}::jsonb)`,
+			);
+			await tx.execute(
+				sql`SELECT pgmq.send( ${MEMORY_QUEUE_NAME}, ${JSON.stringify({ customerId, serviceNoteId: noteId })}::jsonb)`,
 			);
 		});
 
