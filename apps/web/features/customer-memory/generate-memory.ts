@@ -14,7 +14,7 @@ type CustomerInfo = {
 	firstName: string;
 	gender: Gender;
 	lastName: string;
-	remarks: string | null;
+	remarks: string;
 };
 
 type NoteInfo = {

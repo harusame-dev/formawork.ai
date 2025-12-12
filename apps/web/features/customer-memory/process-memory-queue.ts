@@ -36,7 +36,7 @@ type CustomerData = {
 	lastName: string;
 	birthDate: string | null;
 	gender: number;
-	remarks: string | null;
+	remarks: string;
 };
 
 type NoteData = {
