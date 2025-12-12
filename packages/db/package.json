@@ -16,6 +16,7 @@
 		"./pgschema": "./src/pgschema.ts",
 		"./queue-names": "./src/queue-names.ts",
 		"./schema/customer": "./src/schema/customer.ts",
+		"./schema/customer-memory": "./src/schema/customer-memory.ts",
 		"./schema/customer-note": "./src/schema/customer-note.ts",
 		"./schema/customer-note-advice": "./src/schema/customer-note-advice.ts",
 		"./schema/staff": "./src/schema/staff.ts"
