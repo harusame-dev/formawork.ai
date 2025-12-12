@@ -186,10 +186,12 @@ async function executeOperations(
 				{
 					const updateData: Record<string, unknown> = {};
 					if (op.newContent !== undefined) {
-						updateData.content = op.newContent;
+						// biome-ignore lint/complexity/useLiteralKeys: ts4111
+						updateData["content"] = op.newContent;
 					}
 					if (op.newImportance !== undefined) {
-						updateData.importance = op.newImportance;
+						// biome-ignore lint/complexity/useLiteralKeys: ts4111
+						updateData["importance"] = op.newImportance;
 					}
 					if (Object.keys(updateData).length > 0) {
 						await db
@@ -361,24 +363,5 @@ export async function processMemoryQueue(): Promise<void> {
 			processCustomerMessages(customerId, groupedByCustomer[customerId] ?? []),
 		),
 	);
-
-	const failures = results
-		.map((r, i) =>
-			r.status === "rejected" ? { index: i, reason: r.reason } : null,
-		)
-		.filter((f): f is { index: number; reason: unknown } => f !== null);
-
-	if (failures.length > 0) {
-		for (const failure of failures) {
-			const customerId = customerIds[failure.index];
-			logger.error("顧客のメモリー処理失敗", {
-				customerId,
-				err: failure.reason,
-			});
-		}
-		logger.warn("一部の処理に失敗", {
-			failed: failures.length,
-			total: customerIds.length,
-		});
-	}
+	logger.info("処理完了", { results });
 }
