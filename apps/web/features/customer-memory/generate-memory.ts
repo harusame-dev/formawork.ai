@@ -23,7 +23,7 @@ type NoteInfo = {
 	serviceDate: string;
 };
 
-type RecentNote = {
+type ContextNote = {
 	content: string;
 	createdAt: Date;
 };
@@ -35,11 +35,11 @@ type ExistingMemory = {
 	importance: number;
 };
 
-export type GenerateMemoryParams = {
+export type GenerateMemoryOperationsParams = {
+	contextNotes: ContextNote[];
 	customer: CustomerInfo;
-	targetNotes: NoteInfo[];
-	recentNotes: RecentNote[];
 	existingMemories: ExistingMemory[];
+	targetNotes: NoteInfo[];
 };
 
 const createOperationSchema = v.object({
@@ -107,11 +107,11 @@ export type MemoryOperation = v.InferOutput<typeof memoryOperationSchema>;
 type MemoryResult = v.InferOutput<typeof memoryResultSchema>;
 
 function generatePrompt({
+	contextNotes,
 	customer,
-	targetNotes,
-	recentNotes,
 	existingMemories,
-}: GenerateMemoryParams): string {
+	targetNotes,
+}: GenerateMemoryOperationsParams): string {
 	const targetNotesSection = targetNotes
 		.map(
 			(note, index) =>
@@ -120,9 +120,9 @@ ${note.content}`,
 		)
 		.join("\n\n");
 
-	const recentNotesSection =
-		recentNotes.length > 0
-			? recentNotes
+	const contextNotesSection =
+		contextNotes.length > 0
+			? contextNotes
 					.map(
 						(note, index) =>
 							`--- ${index + 1}件目 (${note.createdAt.toLocaleDateString("ja-JP")}) ---
@@ -159,8 +159,8 @@ ${note.content}`,
 ## 今回処理する接客ノート
 ${targetNotesSection}
 
-## 直近10回の接客メモ（参考情報、新しい順）
-${recentNotesSection}
+## その他の接客メモ（参考情報、最大10件、新しい順）
+${contextNotesSection}
 
 ## 既存メモリー（現在 ${existingMemories.length}件 / 最大100件）
 ${existingMemoriesSection}
@@ -263,10 +263,10 @@ ${categoryDescriptions}
 - カテゴリは最も適切なものを1つ選択`;
 }
 
-export async function generateMemory(
-	params: GenerateMemoryParams,
+export async function generateMemoryOperations(
+	params: GenerateMemoryOperationsParams,
 ): Promise<MemoryResult> {
-	const logger = await getLogger("generateMemory");
+	const logger = await getLogger("generateMemoryOperations");
 
 	const options = {
 		experimental_telemetry: { isEnabled: true },
