@@ -25,7 +25,7 @@ type ExistingMemory = {
 	category: MemoryCategory;
 	content: string;
 	importance: number;
-	isLocked: boolean;
+	isProtected: boolean;
 };
 
 export type GenerateMemoryOperationsParams = {
@@ -192,7 +192,7 @@ ${note.content}`,
 			? existingMemories
 					.map(
 						(memory) =>
-							`- [ID: ${memory.id}] [カテゴリ: ${MEMORY_CATEGORY_LABEL[memory.category]}] [重要度: ${memory.importance}]${memory.isLocked ? " [ロック済み]" : ""} ${memory.content}`,
+							`- [ID: ${memory.id}] [カテゴリ: ${MEMORY_CATEGORY_LABEL[memory.category]}] [重要度: ${memory.importance}]${memory.isProtected ? " [保護済み]" : ""} ${memory.content}`,
 					)
 					.join("\n")
 			: "なし";
@@ -265,7 +265,7 @@ ${categoryDescriptions}
 
 ### 重要なルール
 
-- **ロック済みメモリーの保護**: [ロック済み]と表示されているメモリーは更新（update）・削除（delete）禁止
+- **保護済みメモリーの保護**: [保護済み]と表示されているメモリーは更新（update）・削除（delete）禁止
 - **重複禁止**: 既存メモリーと実質的に同じ内容は登録しない
 - **事実ベース**: 接客ノートから確実に読み取れる情報のみ登録
 - **推測禁止**: 曖昧な情報や推測は登録しない

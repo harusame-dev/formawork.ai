@@ -1,1 +1,1 @@
-ALTER TABLE "customer_memories" ADD COLUMN "is_locked" boolean DEFAULT false NOT NULL;
+ALTER TABLE "customer_memories" ADD COLUMN "is_protected" boolean DEFAULT false NOT NULL;

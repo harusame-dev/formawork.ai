@@ -45,7 +45,7 @@ export const customerMemoriesTable = pgSchema(schemaName).table(
 			.references(() => customersTable.customerId, { onDelete: "cascade" }),
 		id: uuid("id").primaryKey().defaultRandom(),
 		importance: smallint("importance").notNull().default(5),
-		isLocked: boolean("is_locked").notNull().default(false),
+		isProtected: boolean("is_protected").notNull().default(false),
 		sourceNoteId: uuid("source_note_id"),
 		updatedAt: timestamp("updated_at")
 			.defaultNow()

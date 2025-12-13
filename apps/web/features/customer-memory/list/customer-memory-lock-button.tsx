@@ -7,21 +7,22 @@ import { toggleCustomerMemoryLockAction } from "../toggle-lock/toggle-customer-m
 
 type CustomerMemoryLockButtonProps = {
 	customerId: string;
-	isLocked: boolean;
+	isProtected: boolean;
 	memoryId: string;
 };
 
 export function CustomerMemoryLockButton({
 	customerId,
-	isLocked,
+	isProtected,
 	memoryId,
 }: CustomerMemoryLockButtonProps) {
 	const [isPending, startTransition] = useTransition();
-	const [optimisticIsLocked, setOptimisticIsLocked] = useOptimistic(isLocked);
+	const [optimisticIsProtected, setOptimisticIsProtected] =
+		useOptimistic(isProtected);
 
 	function handleToggle() {
 		startTransition(async () => {
-			setOptimisticIsLocked(!optimisticIsLocked);
+			setOptimisticIsProtected(!optimisticIsProtected);
 			await toggleCustomerMemoryLockAction({ customerId, memoryId });
 		});
 	}
@@ -33,13 +34,13 @@ export function CustomerMemoryLockButton({
 			size="sm"
 			variant="ghost"
 		>
-			{optimisticIsLocked ? (
+			{optimisticIsProtected ? (
 				<Lock className="h-4 w-4 text-amber-500" />
 			) : (
 				<Unlock className="h-4 w-4 text-muted-foreground" />
 			)}
 			<span className="sr-only">
-				{optimisticIsLocked ? "ロック解除" : "ロック"}
+				{optimisticIsProtected ? "保護解除" : "保護"}
 			</span>
 		</Button>
 	);

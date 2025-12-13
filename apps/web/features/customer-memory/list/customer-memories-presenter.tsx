@@ -82,7 +82,7 @@ export function CustomerMemoriesPresenter({
 										{memory && (
 											<CustomerMemoryLockButton
 												customerId={customerId}
-												isLocked={memory.isLocked}
+												isProtected={memory.isProtected}
 												memoryId={memory.id}
 											/>
 										)}

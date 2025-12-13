@@ -67,7 +67,7 @@ async function fetchExistingMemories(customerId: string) {
 			content: customerMemoriesTable.content,
 			id: customerMemoriesTable.id,
 			importance: customerMemoriesTable.importance,
-			isLocked: customerMemoriesTable.isLocked,
+			isProtected: customerMemoriesTable.isProtected,
 		})
 		.from(customerMemoriesTable)
 		.where(eq(customerMemoriesTable.customerId, customerId))
@@ -142,15 +142,15 @@ async function executeOperation(
 	}
 }
 
-function filterLockedOperations(
+function filterProtectedOperations(
 	operations: MemoryOperation[],
-	lockedMemoryIds: Set<string>,
+	protectedMemoryIds: Set<string>,
 ): MemoryOperation[] {
 	return operations.filter((op) => {
 		if (op.operation === "create") {
 			return true;
 		}
-		return !lockedMemoryIds.has(op.memoryId);
+		return !protectedMemoryIds.has(op.memoryId);
 	});
 }
 
@@ -173,7 +173,7 @@ async function enforceMemoryLimit(customerId: string): Promise<void> {
 			.where(
 				and(
 					eq(customerMemoriesTable.customerId, customerId),
-					eq(customerMemoriesTable.isLocked, false),
+					eq(customerMemoriesTable.isProtected, false),
 				),
 			)
 			.orderBy(
@@ -222,8 +222,8 @@ export async function updateCustomerMemories(
 	}
 
 	const existingMemories = await fetchExistingMemories(customerId);
-	const lockedMemoryIds = new Set(
-		existingMemories.filter((m) => m.isLocked).map((m) => m.id),
+	const protectedMemoryIds = new Set(
+		existingMemories.filter((m) => m.isProtected).map((m) => m.id),
 	);
 
 	const params: GenerateMemoryOperationsParams = {
@@ -244,9 +244,9 @@ export async function updateCustomerMemories(
 
 	const result = await generateMemoryOperations(params);
 	// プロンプトだけだと AI が守らない可能性もあるため、プログラム的にも保護
-	const executableOperations = filterLockedOperations(
+	const executableOperations = filterProtectedOperations(
 		result.operations,
-		lockedMemoryIds,
+		protectedMemoryIds,
 	);
 
 	if (executableOperations.length > 0) {

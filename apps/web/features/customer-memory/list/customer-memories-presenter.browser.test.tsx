@@ -15,7 +15,7 @@ const createMockMemory = (
 	category: number,
 	content: string,
 	importance: number,
-	isLocked = false,
+	isProtected = false,
 ) => ({
 	category,
 	content,
@@ -23,7 +23,7 @@ const createMockMemory = (
 	customerId: TEST_CUSTOMER_ID,
 	id,
 	importance,
-	isLocked,
+	isProtected,
 	sourceNoteId: null,
 	updatedAt: new Date(),
 });
@@ -89,7 +89,7 @@ test("テーブルヘッダーが正しく表示される", async () => {
 		.element(page.getByRole("columnheader", { name: "#" }))
 		.toBeInTheDocument();
 	await expect
-		.element(page.getByRole("columnheader", { name: "ロック" }))
+		.element(page.getByRole("columnheader", { name: "保護" }))
 		.toBeInTheDocument();
 	await expect
 		.element(page.getByRole("columnheader", { name: "カテゴリ" }))

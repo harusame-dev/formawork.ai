@@ -145,8 +145,8 @@
           "notNull": true,
           "default": 5
         },
-        "is_locked": {
-          "name": "is_locked",
+        "is_protected": {
+          "name": "is_protected",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,

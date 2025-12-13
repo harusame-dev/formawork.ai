@@ -5,9 +5,9 @@ import { eq } from "drizzle-orm";
 
 export async function toggleCustomerMemoryLock(
 	memoryId: string,
-): Promise<Result<{ isLocked: boolean }, "メモリが存在しません">> {
+): Promise<Result<{ isProtected: boolean }, "メモリが存在しません">> {
 	const memories = await db
-		.select({ isLocked: customerMemoriesTable.isLocked })
+		.select({ isProtected: customerMemoriesTable.isProtected })
 		.from(customerMemoriesTable)
 		.where(eq(customerMemoriesTable.id, memoryId))
 		.limit(1);
@@ -16,12 +16,12 @@ export async function toggleCustomerMemoryLock(
 		return fail("メモリが存在しません");
 	}
 
-	const newIsLocked = !memories[0].isLocked;
+	const newIsProtected = !memories[0].isProtected;
 
 	await db
 		.update(customerMemoriesTable)
-		.set({ isLocked: newIsLocked })
+		.set({ isProtected: newIsProtected })
 		.where(eq(customerMemoriesTable.id, memoryId));
 
-	return succeed({ isLocked: newIsLocked });
+	return succeed({ isProtected: newIsProtected });
 }

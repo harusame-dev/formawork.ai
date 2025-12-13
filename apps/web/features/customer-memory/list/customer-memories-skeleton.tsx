@@ -25,7 +25,7 @@ export function CustomerMemoriesSkeleton() {
 								重要度
 							</th>
 							<th className="w-12 py-2 px-2 text-center" scope="col">
-								ロック
+								保護
 							</th>
 						</tr>
 					</thead>
