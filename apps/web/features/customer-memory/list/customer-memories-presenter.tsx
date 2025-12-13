@@ -4,8 +4,7 @@ import {
 	type SelectCustomerMemory,
 } from "@workspace/db/schema/customer-memory";
 import { Card, CardContent } from "@workspace/ui/components/card";
-
-const MAX_ROWS = 100;
+import { MAX_MEMORIES } from "./constants";
 
 type CustomerMemoriesPresenterProps = {
 	memories: SelectCustomerMemory[];
@@ -38,7 +37,7 @@ export function CustomerMemoriesPresenter({
 						</tr>
 					</thead>
 					<tbody>
-						{Array.from({ length: MAX_ROWS }, (_, index) => {
+						{Array.from({ length: MAX_MEMORIES }, (_, index) => {
 							const memory = memories[index];
 							const category = memory
 								? MEMORY_CATEGORY_LABEL[memory.category as MemoryCategory]

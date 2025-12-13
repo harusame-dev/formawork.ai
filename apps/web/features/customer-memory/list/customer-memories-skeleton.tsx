@@ -26,7 +26,7 @@ export function CustomerMemoriesSkeleton() {
 						</tr>
 					</thead>
 					<tbody>
-						{Array.from({ length: 100 }).map((_, index) => (
+						{Array.from({ length: 15 }).map((_, index) => (
 							<tr
 								className="border-b last:border-b-0 flex flex-wrap sm:table-row py-2 sm:py-0 min-h-14 sm:min-h-0"
 								key={index}
