@@ -1,4 +1,5 @@
 import {
+	boolean,
 	index,
 	pgSchema,
 	smallint,
@@ -44,6 +45,7 @@ export const customerMemoriesTable = pgSchema(schemaName).table(
 			.references(() => customersTable.customerId, { onDelete: "cascade" }),
 		id: uuid("id").primaryKey().defaultRandom(),
 		importance: smallint("importance").notNull().default(5),
+		isProtected: boolean("is_protected").notNull().default(false),
 		sourceNoteId: uuid("source_note_id"),
 		updatedAt: timestamp("updated_at")
 			.defaultNow()
