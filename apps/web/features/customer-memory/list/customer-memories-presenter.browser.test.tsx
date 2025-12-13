@@ -20,7 +20,7 @@ const createMockMemory = (
 	updatedAt: new Date(),
 });
 
-test("100行分表示される", async () => {
+test("100行分表示される", { timeout: 5000 }, async () => {
 	const memories = [
 		createMockMemory("1", MemoryCategory.Personal, "テスト内容1", 5),
 		createMockMemory("2", MemoryCategory.Preference, "テスト内容2", 7),
