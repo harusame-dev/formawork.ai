@@ -27,6 +27,11 @@ export function CustomerDetailTabs({
 			label: "ノート",
 			value: "notes",
 		},
+		{
+			href: `/customers/${customerId}/memories`,
+			label: "メモリ",
+			value: "memories",
+		},
 	] as const;
 
 	const activeTab =
@@ -34,7 +39,7 @@ export function CustomerDetailTabs({
 
 	return (
 		<Tabs className="w-full" value={activeTab}>
-			<TabsList className="grid grid-cols-2 bg-muted-foreground/10 w-full">
+			<TabsList className="grid grid-cols-3 bg-muted-foreground/10 w-full">
 				{tabs.map((tab) => (
 					<TabsTrigger asChild key={tab.value} value={tab.value}>
 						<Link

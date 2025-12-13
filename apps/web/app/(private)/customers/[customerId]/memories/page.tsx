@@ -1,0 +1,15 @@
+import { Suspense } from "react";
+import { CustomerMemoriesContainer } from "@/features/customer-memory/list/customer-memories-container";
+import { CustomerMemoriesSkeleton } from "@/features/customer-memory/list/customer-memories-skeleton";
+
+export default async function CustomerMemoriesPage({
+	params,
+}: PageProps<"/customers/[customerId]/memories">) {
+	const customerIdPromise = params.then(({ customerId }) => customerId);
+
+	return (
+		<Suspense fallback={<CustomerMemoriesSkeleton />}>
+			<CustomerMemoriesContainer customerIdPromise={customerIdPromise} />
+		</Suspense>
+	);
+}
