@@ -11,5 +11,7 @@ export async function CustomerMemoriesContainer({
 	const customerId = await customerIdPromise;
 	const memories = await getCustomerMemories(customerId);
 
-	return <CustomerMemoriesPresenter memories={memories} />;
+	return (
+		<CustomerMemoriesPresenter customerId={customerId} memories={memories} />
+	);
 }

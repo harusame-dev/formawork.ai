@@ -5,12 +5,15 @@ import {
 } from "@workspace/db/schema/customer-memory";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { MAX_MEMORIES } from "./constants";
+import { CustomerMemoryLockButton } from "./customer-memory-lock-button";
 
 type CustomerMemoriesPresenterProps = {
+	customerId: string;
 	memories: SelectCustomerMemory[];
 };
 
 export function CustomerMemoriesPresenter({
+	customerId,
 	memories,
 }: CustomerMemoriesPresenterProps) {
 	return (
@@ -33,6 +36,9 @@ export function CustomerMemoriesPresenter({
 							</th>
 							<th className="w-16 py-2 px-2 text-center" scope="col">
 								重要度
+							</th>
+							<th className="w-14 py-2 px-2 text-center" scope="col">
+								保護
 							</th>
 						</tr>
 					</thead>
@@ -71,6 +77,15 @@ export function CustomerMemoriesPresenter({
 									</td>
 									<td className="text-sm text-center hidden sm:table-cell sm:w-16 sm:py-2 sm:px-2">
 										{importance}
+									</td>
+									<td className="ml-auto sm:ml-0 text-center sm:table-cell sm:w-12 sm:py-2 sm:px-2">
+										{memory && (
+											<CustomerMemoryLockButton
+												customerId={customerId}
+												isLocked={memory.isLocked}
+												memoryId={memory.id}
+											/>
+										)}
 									</td>
 								</tr>
 							);

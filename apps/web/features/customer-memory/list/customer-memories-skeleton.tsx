@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import { MAX_MEMORIES } from "./constants";
 
 export function CustomerMemoriesSkeleton() {
 	return (
@@ -23,10 +24,13 @@ export function CustomerMemoriesSkeleton() {
 							<th className="w-16 py-2 px-2 text-center" scope="col">
 								重要度
 							</th>
+							<th className="w-12 py-2 px-2 text-center" scope="col">
+								ロック
+							</th>
 						</tr>
 					</thead>
 					<tbody>
-						{Array.from({ length: 15 }).map((_, index) => (
+						{Array.from({ length: MAX_MEMORIES }).map((_, index) => (
 							<tr
 								className="border-b last:border-b-0 flex flex-wrap sm:table-row py-2 sm:py-0 min-h-14 sm:min-h-0"
 								key={index}
@@ -52,6 +56,9 @@ export function CustomerMemoriesSkeleton() {
 								</td>
 								<td className="text-sm text-center hidden sm:table-cell sm:w-16 sm:py-2 sm:px-2">
 									<Skeleton className="mt-1 h-4 w-6 mx-auto" />
+								</td>
+								<td className="ml-auto sm:ml-0 text-center sm:table-cell sm:w-12 sm:py-2 sm:px-2">
+									<Skeleton className="h-8 w-8 mx-auto rounded" />
 								</td>
 							</tr>
 						))}

@@ -1,21 +1,29 @@
 import { MemoryCategory } from "@workspace/db/schema/customer-memory";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { CustomerMemoriesPresenter } from "./customer-memories-presenter";
+
+vi.mock("../toggle-lock/toggle-customer-memory-lock-action", () => ({
+	toggleCustomerMemoryLockAction: vi.fn(),
+}));
+
+const TEST_CUSTOMER_ID = "test-customer-id";
 
 const createMockMemory = (
 	id: string,
 	category: number,
 	content: string,
 	importance: number,
+	isLocked = false,
 ) => ({
 	category,
 	content,
 	createdAt: new Date(),
-	customerId: "test-customer-id",
+	customerId: TEST_CUSTOMER_ID,
 	id,
 	importance,
+	isLocked,
 	sourceNoteId: null,
 	updatedAt: new Date(),
 });
@@ -27,7 +35,12 @@ test("100行分表示される", { timeout: 5000 }, async () => {
 		createMockMemory("3", MemoryCategory.Conversion, "テスト内容3", 8),
 	];
 
-	render(<CustomerMemoriesPresenter memories={memories} />);
+	render(
+		<CustomerMemoriesPresenter
+			customerId={TEST_CUSTOMER_ID}
+			memories={memories}
+		/>,
+	);
 
 	const table = page.getByRole("table");
 	await expect.element(table).toBeInTheDocument();
@@ -43,7 +56,12 @@ test("未登録行は内容が「-」で表示される", async () => {
 		createMockMemory("1", MemoryCategory.Personal, "登録済み内容", 5),
 	];
 
-	render(<CustomerMemoriesPresenter memories={memories} />);
+	render(
+		<CustomerMemoriesPresenter
+			customerId={TEST_CUSTOMER_ID}
+			memories={memories}
+		/>,
+	);
 
 	// 登録済みの行が表示されていること
 	await expect.element(page.getByText("登録済み内容")).toBeInTheDocument();
@@ -60,10 +78,18 @@ test("未登録行は内容が「-」で表示される", async () => {
 test("テーブルヘッダーが正しく表示される", async () => {
 	const memories: ReturnType<typeof createMockMemory>[] = [];
 
-	render(<CustomerMemoriesPresenter memories={memories} />);
+	render(
+		<CustomerMemoriesPresenter
+			customerId={TEST_CUSTOMER_ID}
+			memories={memories}
+		/>,
+	);
 
 	await expect
 		.element(page.getByRole("columnheader", { name: "#" }))
+		.toBeInTheDocument();
+	await expect
+		.element(page.getByRole("columnheader", { name: "ロック" }))
 		.toBeInTheDocument();
 	await expect
 		.element(page.getByRole("columnheader", { name: "カテゴリ" }))
@@ -82,7 +108,12 @@ test("カテゴリと重要度が正しく表示される", async () => {
 		createMockMemory("2", MemoryCategory.Preference, "好みの内容", 8),
 	];
 
-	render(<CustomerMemoriesPresenter memories={memories} />);
+	render(
+		<CustomerMemoriesPresenter
+			customerId={TEST_CUSTOMER_ID}
+			memories={memories}
+		/>,
+	);
 
 	// カテゴリラベルが表示される
 	await expect.element(page.getByText("パーソナル情報")).toBeInTheDocument();

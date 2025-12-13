@@ -6,7 +6,7 @@ import {
 	type MemoryCategory,
 } from "@workspace/db/schema/customer-memory";
 import { customerNotesTable } from "@workspace/db/schema/customer-note";
-import { asc, count, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import * as v from "valibot";
 import { genderSchema } from "@/features/customer/schema";
@@ -67,6 +67,7 @@ async function fetchExistingMemories(customerId: string) {
 			content: customerMemoriesTable.content,
 			id: customerMemoriesTable.id,
 			importance: customerMemoriesTable.importance,
+			isLocked: customerMemoriesTable.isLocked,
 		})
 		.from(customerMemoriesTable)
 		.where(eq(customerMemoriesTable.customerId, customerId))
@@ -105,30 +106,29 @@ async function executeOperation(
 			});
 			break;
 
-		case "update":
-			{
-				const updateData: Record<string, unknown> = {};
-				if (operation.newContent !== undefined) {
-					// biome-ignore lint/complexity/useLiteralKeys: ts4111
-					updateData["content"] = operation.newContent;
-				}
-				if (operation.newImportance !== undefined) {
-					// biome-ignore lint/complexity/useLiteralKeys: ts4111
-					updateData["importance"] = operation.newImportance;
-				}
-				if (Object.keys(updateData).length > 0) {
-					await db
-						.update(customerMemoriesTable)
-						.set(updateData)
-						.where(eq(customerMemoriesTable.id, operation.memoryId));
-					logger.info("メモリー更新", {
-						memoryId: operation.memoryId,
-						reason: operation.reason,
-						updates: updateData,
-					});
-				}
+		case "update": {
+			const updateData: Record<string, unknown> = {};
+			if (operation.newContent !== undefined) {
+				// biome-ignore lint/complexity/useLiteralKeys: ts4111
+				updateData["content"] = operation.newContent;
+			}
+			if (operation.newImportance !== undefined) {
+				// biome-ignore lint/complexity/useLiteralKeys: ts4111
+				updateData["importance"] = operation.newImportance;
+			}
+			if (Object.keys(updateData).length > 0) {
+				await db
+					.update(customerMemoriesTable)
+					.set(updateData)
+					.where(eq(customerMemoriesTable.id, operation.memoryId));
+				logger.info("メモリー更新", {
+					memoryId: operation.memoryId,
+					reason: operation.reason,
+					updates: updateData,
+				});
 			}
 			break;
+		}
 
 		case "delete":
 			await db
@@ -140,6 +140,18 @@ async function executeOperation(
 			});
 			break;
 	}
+}
+
+function filterLockedOperations(
+	operations: MemoryOperation[],
+	lockedMemoryIds: Set<string>,
+): MemoryOperation[] {
+	return operations.filter((op) => {
+		if (op.operation === "create") {
+			return true;
+		}
+		return !lockedMemoryIds.has(op.memoryId);
+	});
 }
 
 async function enforceMemoryLimit(customerId: string): Promise<void> {
@@ -158,7 +170,12 @@ async function enforceMemoryLimit(customerId: string): Promise<void> {
 		const idsToDelete = await db
 			.select({ id: customerMemoriesTable.id })
 			.from(customerMemoriesTable)
-			.where(eq(customerMemoriesTable.customerId, customerId))
+			.where(
+				and(
+					eq(customerMemoriesTable.customerId, customerId),
+					eq(customerMemoriesTable.isLocked, false),
+				),
+			)
 			.orderBy(
 				asc(customerMemoriesTable.importance),
 				asc(customerMemoriesTable.createdAt),
@@ -176,7 +193,7 @@ async function enforceMemoryLimit(customerId: string): Promise<void> {
 
 		logger.info("メモリー件数制限適用", {
 			customerId,
-			deletedCount: deleteCount,
+			deletedCount: idsToDelete.length,
 			previousCount: currentCount,
 		});
 	}
@@ -205,6 +222,9 @@ export async function updateCustomerMemories(
 	}
 
 	const existingMemories = await fetchExistingMemories(customerId);
+	const lockedMemoryIds = new Set(
+		existingMemories.filter((m) => m.isLocked).map((m) => m.id),
+	);
 
 	const params: GenerateMemoryOperationsParams = {
 		customer: {
@@ -223,11 +243,16 @@ export async function updateCustomerMemories(
 	};
 
 	const result = await generateMemoryOperations(params);
+	// プロンプトだけだと AI が守らない可能性もあるため、プログラム的にも保護
+	const executableOperations = filterLockedOperations(
+		result.operations,
+		lockedMemoryIds,
+	);
 
-	if (result.operations.length > 0) {
+	if (executableOperations.length > 0) {
 		const primaryNoteId = targetNotes[0]?.id ?? null;
 		await Promise.allSettled(
-			result.operations.map((op) =>
+			executableOperations.map((op) =>
 				executeOperation(customerId, op, primaryNoteId),
 			),
 		);
@@ -237,7 +262,7 @@ export async function updateCustomerMemories(
 
 	logger.info("メモリー更新完了", {
 		customerId,
-		operationsCount: result.operations.length,
+		executedCount: executableOperations.length,
 	});
 
 	return { operationsCount: result.operations.length };

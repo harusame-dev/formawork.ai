@@ -57,30 +57,35 @@ const test = base.extend<Fixtures>({
 				content: "趣味趣向B（重要度低）",
 				customerId,
 				importance: 3,
+				isLocked: false,
 			},
 			{
 				category: MemoryCategory.Conversion,
 				content: "コンバージョン傾向（単独）",
 				customerId,
 				importance: 7,
+				isLocked: false,
 			},
 			{
 				category: MemoryCategory.Personal,
 				content: "パーソナル情報B（重要度低）",
 				customerId,
 				importance: 5,
+				isLocked: false,
 			},
 			{
 				category: MemoryCategory.Preference,
 				content: "趣味趣向A（重要度高）",
 				customerId,
 				importance: 8,
+				isLocked: false,
 			},
 			{
 				category: MemoryCategory.Personal,
 				content: "パーソナル情報A（重要度高）",
 				customerId,
 				importance: 9,
+				isLocked: false,
 			},
 		]);
 
@@ -135,4 +140,35 @@ test("メモリがカテゴリ順・重要度順で表示される", async ({
 	await expect(row5).toContainText("コンバージョン傾向");
 	await expect(row5).toContainText("コンバージョン傾向（単独）");
 	await expect(row5).toContainText("7");
+});
+
+test("ロックボタンでメモリをロック・解除できる", async ({
+	customerMemoriesPage,
+	testCustomer,
+}) => {
+	await customerMemoriesPage.goto(
+		`/customers/${testCustomer.customerId}/memories`,
+	);
+	await expect(customerMemoriesPage.getByRole("table")).toBeVisible();
+
+	const table = customerMemoriesPage.getByRole("table");
+	const rows = table.getByRole("row");
+
+	// 1行目のロックボタンを取得（初期状態は未ロック）
+	const row1 = rows.nth(1);
+	const lockButton = row1.getByRole("button", { name: "ロック" });
+	await expect(lockButton).toBeVisible();
+
+	// ロックボタンをクリック
+	await lockButton.click();
+
+	// ロック状態になったことを確認（ボタンのラベルが「ロック解除」に変わる）
+	const unlockButton = row1.getByRole("button", { name: "ロック解除" });
+	await expect(unlockButton).toBeVisible();
+
+	// 再度クリックして解除
+	await unlockButton.click();
+
+	// 未ロック状態に戻ったことを確認
+	await expect(row1.getByRole("button", { name: "ロック" })).toBeVisible();
 });
