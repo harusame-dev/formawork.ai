@@ -49,30 +49,21 @@ export async function processAdviceQueue(): Promise<void> {
 	}
 	logger.info("メッセージの処理を開始", { messages });
 
-	const results = await Promise.allSettled(
-		messages.map((msg) => processMessage(msg)),
-	);
+	const results = await Promise.allSettled(messages.map(processMessage));
 
 	const failures = results
 		.map((r, i) =>
-			r.status === "rejected" ? { index: i, reason: r.reason } : null,
+			r.status === "rejected"
+				? {
+						customerNoteId: messages[i]?.message.customerNoteId,
+						err: r.reason,
+						msgId: messages[i]?.msg_id,
+					}
+				: null,
 		)
-		.filter((f): f is { index: number; reason: unknown } => f !== null);
+		.filter((f) => f !== null);
 
 	if (failures.length > 0) {
-		for (const failure of failures) {
-			const msg = messages[failure.index];
-			if (msg) {
-				logger.error("メッセージ処理失敗", {
-					customerNoteId: msg.message.customerNoteId,
-					err: failure.reason,
-					msgId: msg.msg_id,
-				});
-			}
-		}
-		logger.warn("一部の処理に失敗", {
-			failed: failures.length,
-			total: messages.length,
-		});
+		logger.error("メッセージ処理失敗", { failures });
 	}
 }

@@ -30,8 +30,23 @@ async function processCustomerMessages(
 	try {
 		const result = await updateCustomerMemories(customerId, noteIds);
 
-		for (const msg of messages) {
-			await memoryQueue.deleteMessage(msg.msg_id);
+		const deleteResults = await Promise.allSettled(
+			messages.map((msg) => memoryQueue.deleteMessage(msg.msg_id)),
+		);
+
+		const deleteFailures = deleteResults
+			.map((r, i) =>
+				r.status === "rejected"
+					? { err: r.reason, msgId: messages[i]?.msg_id }
+					: null,
+			)
+			.filter((f) => f !== null);
+
+		if (deleteFailures.length > 0) {
+			logger.error("メッセージ削除失敗", {
+				customerId,
+				failures: deleteFailures,
+			});
 		}
 
 		logger.info("顧客のメモリー処理完了", {
@@ -47,8 +62,23 @@ async function processCustomerMessages(
 				customerId,
 				error: error.message,
 			});
-			for (const msg of messages) {
-				await memoryQueue.archiveMessage(msg.msg_id);
+			const archiveResults = await Promise.allSettled(
+				messages.map((msg) => memoryQueue.archiveMessage(msg.msg_id)),
+			);
+
+			const archiveFailures = archiveResults
+				.map((r, i) =>
+					r.status === "rejected"
+						? { err: r.reason, msgId: messages[i]?.msg_id }
+						: null,
+				)
+				.filter((f) => f !== null);
+
+			if (archiveFailures.length > 0) {
+				logger.error("メッセージアーカイブ失敗", {
+					customerId,
+					failures: archiveFailures,
+				});
 			}
 			return;
 		}
