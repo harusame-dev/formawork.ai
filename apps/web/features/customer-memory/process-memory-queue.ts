@@ -7,8 +7,6 @@ import {
 	updateCustomerMemories,
 } from "./update-customer-memories";
 
-const MAX_RETRY_COUNT = 3;
-
 type MemoryQueuePayload = {
 	customerId: string;
 	serviceNoteId: string;
@@ -26,18 +24,6 @@ async function processCustomerMessages(
 		customerId,
 		messageCount: messages.length,
 	});
-
-	const maxReadCount = Math.max(...messages.map((m) => m.read_ct));
-	if (maxReadCount > MAX_RETRY_COUNT) {
-		logger.error("最大リトライ回数超過のためアーカイブ", {
-			customerId,
-			maxReadCount,
-		});
-		for (const msg of messages) {
-			await memoryQueue.archiveMessage(msg.msg_id);
-		}
-		return;
-	}
 
 	const noteIds = messages.map((m) => m.message.serviceNoteId);
 
@@ -73,7 +59,7 @@ async function processCustomerMessages(
 export async function processMemoryQueue(): Promise<void> {
 	const logger = await getLogger("processMemoryQueue");
 
-	const messages = await memoryQueue.readMessages();
+	const messages = await memoryQueue.readMessagesExponentialBackoff();
 	logger.info("メッセージ読み取り", { messageCount: messages.length });
 
 	if (messages.length === 0) {

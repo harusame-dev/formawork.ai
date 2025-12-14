@@ -5,8 +5,6 @@ import { CustomerTag } from "@/features/customer/tag";
 import { type PgmqMessage, PgmqQueue } from "@/libs/queue";
 import { generateServiceAdvice } from "./generate-service-advice";
 
-const MAX_RETRY_COUNT = 3;
-
 type AdviceQueuePayload = {
 	customerNoteId: string;
 };
@@ -23,16 +21,6 @@ async function processMessage(
 		customerNoteId,
 		readCount: msg.read_ct,
 	});
-
-	if (msg.read_ct > MAX_RETRY_COUNT) {
-		logger.error("最大リトライ回数超過のためアーカイブ", {
-			customerNoteId,
-			msgId: msg.msg_id,
-			readCount: msg.read_ct,
-		});
-		await adviceQueue.archiveMessage(msg.msg_id);
-		return;
-	}
 
 	const result = await generateServiceAdvice(customerNoteId);
 
@@ -53,7 +41,7 @@ async function processMessage(
 export async function processAdviceQueue(): Promise<void> {
 	const logger = await getLogger("processAdviceQueue");
 
-	const messages = await adviceQueue.readMessages();
+	const messages = await adviceQueue.readMessagesExponentialBackoff();
 
 	if (messages.length === 0) {
 		logger.info("メッセージ０件のため終了");
