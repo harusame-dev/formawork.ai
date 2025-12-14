@@ -23,7 +23,7 @@ const MAX_MEMORIES_PER_CUSTOMER = 100;
 const CUSTOMER_NOT_FOUND_ERROR = "顧客が見つかりません" as const;
 const NOTES_NOT_FOUND_ERROR = "ノートが見つかりません" as const;
 
-export type UpdateCustomerMemoriesError =
+type UpdateCustomerMemoriesError =
 	| typeof CUSTOMER_NOT_FOUND_ERROR
 	| typeof NOTES_NOT_FOUND_ERROR;
 
