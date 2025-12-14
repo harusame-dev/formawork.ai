@@ -8,9 +8,12 @@ import {
 } from "@workspace/db/queue-names";
 import { sql } from "drizzle-orm";
 import { updateTag } from "next/cache";
+import { after } from "next/server";
 import * as v from "valibot";
 import { CustomerTag } from "@/features/customer/tag";
+import { processMemoryQueue } from "@/features/customer-memory/process-memory-queue";
 import { createServerAction } from "@/libs/create-server-action";
+import { processAdviceQueue } from "../advice/process-advice-queue";
 import { editCustomerNote } from "./edit-customer-note";
 
 const uploadImageSchema = v.object({
@@ -68,6 +71,12 @@ export const editCustomerNoteAction = createServerAction(
 				${JSON.stringify({ customerId, serviceNoteId: noteId })}::jsonb
 			)
 		`);
+
+		// トリガーはするがエラーのリトライなどはキューの定期処理で行うため、
+		// 実行結果のハンドリングは不要
+		after(async () => {
+			await Promise.allSettled([processAdviceQueue(), processMemoryQueue()]);
+		});
 
 		return succeed({ customerId });
 	},

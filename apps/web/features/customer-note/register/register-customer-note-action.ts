@@ -14,9 +14,12 @@ import {
 } from "@workspace/db/schema/customer-note";
 import { sql } from "drizzle-orm";
 import { updateTag } from "next/cache";
+import { after } from "next/server";
 import * as v from "valibot";
 import { CustomerTag } from "@/features/customer/tag";
+import { processMemoryQueue } from "@/features/customer-memory/process-memory-queue";
 import { createServerAction } from "@/libs/create-server-action";
+import { processAdviceQueue } from "../advice/process-advice-queue";
 
 const BUCKET_NAME = "customer-note-attachments";
 
@@ -99,6 +102,12 @@ export const registerCustomerNoteAction = createServerAction(
 			await tx.execute(
 				sql`SELECT pgmq.send( ${MEMORY_QUEUE_NAME}, ${JSON.stringify({ customerId, serviceNoteId: noteId })}::jsonb)`,
 			);
+		});
+
+		// トリガーはするがエラーのリトライなどはキューの定期処理で行うため、
+		// 実行結果のハンドリングは不要
+		after(async () => {
+			await Promise.allSettled([processAdviceQueue(), processMemoryQueue()]);
 		});
 
 		return succeed();
