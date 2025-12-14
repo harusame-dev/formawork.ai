@@ -1,8 +1,8 @@
 import { type DbExecutor, db } from "@workspace/db/client";
 import { sql } from "drizzle-orm";
 
-const DEFAULT_VISIBILITY_TIMEOUT_SECONDS = 30;
-const DEFAULT_READ_QUANTITY = 10;
+const VISIBILITY_TIMEOUT_SECONDS = 30;
+const READ_QUANTITY = 100;
 
 /** Exponential backoff で実行する read_ct の値（1, 2, 4, 8） */
 const EXPONENTIAL_BACKOFF_READ_COUNTS = new Set([1, 2, 4, 8]);
@@ -15,13 +15,6 @@ export type PgmqMessage<T> = {
 	message: T;
 };
 
-type ReadOptions = {
-	/** メッセージの可視化タイムアウト（秒） */
-	visibilityTimeout?: number;
-	/** 一度に読み取るメッセージ数 */
-	quantity?: number;
-};
-
 export class PgmqQueue<TMessage> {
 	private readonly queueName: string;
 	private readonly executor: DbExecutor;
@@ -31,12 +24,9 @@ export class PgmqQueue<TMessage> {
 		this.executor = executor;
 	}
 
-	async readMessages(options?: ReadOptions): Promise<PgmqMessage<TMessage>[]> {
-		const visibilityTimeout =
-			options?.visibilityTimeout ?? DEFAULT_VISIBILITY_TIMEOUT_SECONDS;
-		const quantity = options?.quantity ?? DEFAULT_READ_QUANTITY;
+	async readMessages(): Promise<PgmqMessage<TMessage>[]> {
 		return this.executor.execute<PgmqMessage<TMessage>>(sql`
-			SELECT * FROM pgmq.read(${this.queueName}::text, ${visibilityTimeout}::integer, ${quantity}::integer)
+			SELECT * FROM pgmq.read(${this.queueName}::text, ${VISIBILITY_TIMEOUT_SECONDS}::integer, ${READ_QUANTITY}::integer)
 		`);
 	}
 
@@ -67,10 +57,7 @@ export class PgmqQueue<TMessage> {
 	 * @returns 処理対象のメッセージのみを返す
 	 */
 	async readMessagesExponentialBackoff(): Promise<PgmqMessage<TMessage>[]> {
-		const messages = await this.readMessages({
-			quantity: 100,
-			visibilityTimeout: 30,
-		});
+		const messages = await this.readMessages();
 
 		const result: PgmqMessage<TMessage>[] = [];
 
