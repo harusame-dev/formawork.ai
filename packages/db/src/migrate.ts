@@ -74,20 +74,22 @@ async function setupCronJob() {
 		return;
 	}
 
-	// アドバイス生成: 毎分
+	// ローカル環境では1分ごと、本番環境では10分ごと
+	// ローカル環境ではリクエスト数が多くても問題ないので DX を考慮して短い間隔に
+	const isLocal = cronConfig.cronSecret === "";
+	const schedule = isLocal ? "*/1 * * * *" : "*/10 * * * *";
+
+	// アドバイス生成
 	await scheduleCronJob(
 		ADVICE_CRON_JOB_NAME,
-		"*/1 * * * *",
+		schedule,
 		"/api/cron/generate-advice",
 	);
 
-	// メモリー生成: 4時間毎（本番）/ 毎分（ローカル）
-	// ローカル環境ではリクエスト数が多くても問題ないの DX を考慮して１分ごと
-	const memorySchedule =
-		cronConfig.cronSecret === "" ? "*/1 * * * *" : "0 */4 * * *";
+	// メモリー生成
 	await scheduleCronJob(
 		MEMORY_CRON_JOB_NAME,
-		memorySchedule,
+		schedule,
 		"/api/cron/generate-memory",
 	);
 }

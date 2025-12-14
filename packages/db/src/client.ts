@@ -27,3 +27,6 @@ export const db = globalForDb.db || drizzle(client, { schema });
 if (process.env["NODE_ENV"] !== "production") globalForDb.db = db;
 
 export type DbClient = typeof db;
+export type DbExecutor =
+	| typeof db
+	| Parameters<Parameters<typeof db.transaction>[0]>[0];

@@ -1,45 +1,18 @@
 import { getLogger } from "@repo/logger/nextjs/server";
-import { db } from "@workspace/db/client";
 import { MEMORY_QUEUE_NAME } from "@workspace/db/queue-names";
-import { sql } from "drizzle-orm";
-import {
-	CustomerNotFoundError,
-	NotesNotFoundError,
-	updateCustomerMemories,
-} from "./update-customer-memories";
+import { type PgmqMessage, PgmqQueue } from "@/libs/queue";
+import { updateCustomerMemories } from "./update-customer-memories";
 
-const MAX_RETRY_COUNT = 3;
-
-type QueueMessage = {
-	msg_id: number;
-	read_ct: number;
-	message: {
-		customerId: string;
-		serviceNoteId: string;
-	};
+type MemoryQueuePayload = {
+	customerId: string;
+	serviceNoteId: string;
 };
 
-async function readMessagesFromQueue(): Promise<QueueMessage[]> {
-	return db.execute<QueueMessage>(sql`
-		SELECT * FROM pgmq.read(${MEMORY_QUEUE_NAME}, 30, 10)
-	`);
-}
-
-async function archiveMessage(msgId: number): Promise<void> {
-	await db.execute(
-		sql.raw(`SELECT * FROM pgmq.archive('${MEMORY_QUEUE_NAME}', ${msgId})`),
-	);
-}
-
-async function deleteMessage(msgId: number): Promise<void> {
-	await db.execute(
-		sql.raw(`SELECT * FROM pgmq.delete('${MEMORY_QUEUE_NAME}', ${msgId})`),
-	);
-}
+const memoryQueue = new PgmqQueue<MemoryQueuePayload>(MEMORY_QUEUE_NAME);
 
 async function processCustomerMessages(
 	customerId: string,
-	messages: QueueMessage[],
+	messages: PgmqMessage<MemoryQueuePayload>[],
 ): Promise<void> {
 	const logger = await getLogger("processMemoryQueue");
 
@@ -48,53 +21,63 @@ async function processCustomerMessages(
 		messageCount: messages.length,
 	});
 
-	const maxReadCount = Math.max(...messages.map((m) => m.read_ct));
-	if (maxReadCount > MAX_RETRY_COUNT) {
-		logger.error("最大リトライ回数超過のためアーカイブ", {
+	const noteIds = messages.map((m) => m.message.serviceNoteId);
+
+	const result = await updateCustomerMemories(customerId, noteIds);
+
+	if (!result.success) {
+		logger.warn("データなしのためアーカイブ", {
 			customerId,
-			maxReadCount,
+			error: result.error,
 		});
-		for (const msg of messages) {
-			await archiveMessage(msg.msg_id);
+
+		const archiveResults = await Promise.allSettled(
+			messages.map((msg) => memoryQueue.archiveMessage(msg.msg_id)),
+		);
+
+		const archiveFailures = archiveResults
+			.map((r, i) =>
+				r.status === "rejected"
+					? { err: r.reason, msgId: messages[i]?.msg_id }
+					: null,
+			)
+			.filter((f) => f !== null);
+
+		if (archiveFailures.length > 0) {
+			logger.error("メッセージアーカイブ失敗", {
+				customerId,
+				failures: archiveFailures,
+			});
 		}
 		return;
 	}
 
-	const noteIds = messages.map((m) => m.message.serviceNoteId);
+	const deleteResults = await Promise.allSettled(
+		messages.map((msg) => memoryQueue.deleteMessage(msg.msg_id)),
+	);
 
-	try {
-		const result = await updateCustomerMemories(customerId, noteIds);
+	const deleteFailures = deleteResults
+		.map((r, i) =>
+			r.status === "rejected"
+				? { err: r.reason, msgId: messages[i]?.msg_id }
+				: null,
+		)
+		.filter((f) => f !== null);
 
-		for (const msg of messages) {
-			await deleteMessage(msg.msg_id);
-		}
-
-		logger.info("顧客のメモリー処理完了", {
+	if (deleteFailures.length > 0) {
+		logger.error("メッセージ削除失敗", {
 			customerId,
-			operationsCount: result.operationsCount,
+			failures: deleteFailures,
 		});
-	} catch (error) {
-		if (
-			error instanceof CustomerNotFoundError ||
-			error instanceof NotesNotFoundError
-		) {
-			logger.warn("データなしのためアーカイブ", {
-				customerId,
-				error: error.message,
-			});
-			for (const msg of messages) {
-				await archiveMessage(msg.msg_id);
-			}
-			return;
-		}
-		throw error;
 	}
+
+	logger.info("顧客のメモリー処理完了", { customerId });
 }
 
 export async function processMemoryQueue(): Promise<void> {
 	const logger = await getLogger("processMemoryQueue");
 
-	const messages = await readMessagesFromQueue();
+	const messages = await memoryQueue.readMessagesExponentialBackoff();
 	logger.info("メッセージ読み取り", { messageCount: messages.length });
 
 	if (messages.length === 0) {

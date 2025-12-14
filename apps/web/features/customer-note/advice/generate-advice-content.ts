@@ -183,10 +183,10 @@ ${recentNotesSection}
 - 必ず上記のJSON形式で出力すること`;
 }
 
-export async function generateAdvice(
+export async function generateAdviceContent(
 	params: GenerateAdviceParams,
 ): Promise<AdviceContent> {
-	const logger = await getLogger("generateAdvice");
+	const logger = await getLogger("generateAdviceContent");
 
 	const options = {
 		experimental_telemetry: { isEnabled: true },
