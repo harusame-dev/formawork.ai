@@ -1,10 +1,8 @@
 import type { SelectCustomerNoteAdvice } from "@workspace/db/schema/customer-note-advice";
 import {
-	AlertTriangle,
 	CheckCircle2,
 	ClipboardList,
 	Lightbulb,
-	Loader2,
 	MessageSquare,
 	ShieldAlert,
 	Sparkles,
@@ -12,8 +10,7 @@ import {
 } from "lucide-react";
 
 type Props = {
-	advice: SelectCustomerNoteAdvice | null;
-	isTimeout?: boolean;
+	advice: SelectCustomerNoteAdvice;
 };
 
 function AdviceSection({
@@ -36,27 +33,7 @@ function AdviceSection({
 	);
 }
 
-export function CustomerNoteAdvice({ advice, isTimeout = false }: Props) {
-	if (!advice) {
-		if (isTimeout) {
-			return (
-				<div className="flex items-center gap-2 text-destructive text-sm">
-					<AlertTriangle className="size-4" />
-					<span>
-						アドバイスの生成中にエラーが発生した可能性があります。ノートを編集して保存すると再生成されます。
-					</span>
-				</div>
-			);
-		}
-
-		return (
-			<div className="flex items-center gap-2 text-muted-foreground text-sm">
-				<Loader2 className="size-4 animate-spin" />
-				<span>AIアドバイスを生成中です</span>
-			</div>
-		);
-	}
-
+export function CustomerNoteAdvicePresenter({ advice }: Props) {
 	const { currentEvaluation, nextAdvice } = advice.advice;
 
 	return (
@@ -66,7 +43,6 @@ export function CustomerNoteAdvice({ advice, isTimeout = false }: Props) {
 				<span>AIアドバイス</span>
 			</div>
 
-			{/* 今回の接客評価 */}
 			<div className="space-y-3">
 				<h4 className="text-xs font-semibold text-foreground/70 border-b border-border pb-1">
 					今回の接客振り返り
@@ -79,7 +55,6 @@ export function CustomerNoteAdvice({ advice, isTimeout = false }: Props) {
 				</AdviceSection>
 			</div>
 
-			{/* 次回の接客アドバイス */}
 			<div className="space-y-3">
 				<h4 className="text-xs font-semibold text-foreground/70 border-b border-border pb-1">
 					次回の接客アドバイス
