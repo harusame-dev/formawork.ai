@@ -25,7 +25,7 @@ export async function editCustomerMemory(
 		return fail("メモリが存在しません");
 	}
 
-	const updated = await db
+	await db
 		.update(customerMemoriesTable)
 		.set({
 			category: input.category,
@@ -33,10 +33,6 @@ export async function editCustomerMemory(
 			importance: input.importance,
 		})
 		.where(eq(customerMemoriesTable.id, input.memoryId));
-
-	if (!updated[0]) {
-		return fail("メモリの更新に失敗しました");
-	}
 
 	return succeed();
 }
