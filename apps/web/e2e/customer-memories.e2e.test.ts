@@ -172,3 +172,78 @@ test("保護ボタンでメモリを保護・解除できる", async ({
 	// 未保護状態に戻ったことを確認
 	await expect(row1.getByRole("button", { name: "保護" })).toBeVisible();
 });
+
+test("メモリを登録・編集・削除できる", async ({
+	customerMemoriesPage,
+	testCustomer,
+}) => {
+	const registerContent = `E2Eテスト用メモリ-${v4()}`;
+	const registerImportance = "8";
+	const editContent = `編集後の内容-${v4()}`;
+	const editImportance = "10";
+
+	await customerMemoriesPage.goto(
+		`/customers/${testCustomer.customerId}/memories`,
+	);
+	await expect(customerMemoriesPage.getByRole("table")).toBeVisible();
+
+	await test.step("登録ダイアログを開く", async () => {
+		await customerMemoriesPage
+			.getByRole("button", { name: "メモリを追加" })
+			.click();
+		await expect(customerMemoriesPage.getByRole("dialog")).toBeVisible();
+	});
+
+	await test.step("登録フォームに入力する", async () => {
+		const dialog = customerMemoriesPage.getByRole("dialog");
+		await dialog.getByLabel("カテゴリ").click();
+		await customerMemoriesPage
+			.getByRole("option", { name: "健康・身体的配慮" })
+			.click();
+		await dialog.getByLabel("内容").fill(registerContent);
+		await dialog.getByLabel("重要度").fill(registerImportance);
+	});
+
+	await test.step("登録を実行し、登録されたことを確認する", async () => {
+		await customerMemoriesPage.getByRole("button", { name: "登録" }).click();
+		await expect(customerMemoriesPage.getByRole("dialog")).not.toBeVisible();
+		await expect(customerMemoriesPage.getByText(registerContent)).toBeVisible();
+	});
+
+	await test.step("編集ダイアログを開く", async () => {
+		const table = customerMemoriesPage.getByRole("table");
+		const rows = table.getByRole("row");
+		const targetRow = rows.filter({ hasText: registerContent }).first();
+		await targetRow.getByRole("button", { name: "編集" }).click();
+		await expect(customerMemoriesPage.getByRole("dialog")).toBeVisible();
+	});
+
+	await test.step("編集フォームを入力する", async () => {
+		const dialog = customerMemoriesPage.getByRole("dialog");
+		await dialog.getByLabel("内容").fill(editContent);
+		await dialog.getByLabel("重要度").fill(editImportance);
+	});
+
+	await test.step("更新を実行し、更新されたことを確認する", async () => {
+		await customerMemoriesPage.getByRole("button", { name: "更新" }).click();
+		await expect(customerMemoriesPage.getByRole("dialog")).not.toBeVisible();
+		await expect(customerMemoriesPage.getByText(editContent)).toBeVisible();
+	});
+
+	await test.step("削除確認ダイアログを開く", async () => {
+		const table = customerMemoriesPage.getByRole("table");
+		const rows = table.getByRole("row");
+		const editedRow = rows.filter({ hasText: editContent }).first();
+		await editedRow.getByRole("button", { name: "削除" }).click();
+		await expect(customerMemoriesPage.getByRole("dialog")).toBeVisible();
+	});
+
+	await test.step("削除を実行し、削除されたことを確認する", async () => {
+		await customerMemoriesPage
+			.getByRole("dialog")
+			.getByRole("button", { name: "削除" })
+			.click();
+		await expect(customerMemoriesPage.getByRole("dialog")).not.toBeVisible();
+		await expect(customerMemoriesPage.getByText(editContent)).not.toBeVisible();
+	});
+});

@@ -4,8 +4,8 @@ import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { CustomerMemoriesPresenter } from "./customer-memories-presenter";
 
-vi.mock("../toggle-lock/toggle-customer-memory-lock-action", () => ({
-	toggleCustomerMemoryLockAction: vi.fn(),
+vi.mock("./customer-memory-action-buttons", () => ({
+	CustomerMemoryActionButtons: () => <div data-testid="action-buttons" />,
 }));
 
 const TEST_CUSTOMER_ID = "test-customer-id";
@@ -89,7 +89,7 @@ test("テーブルヘッダーが正しく表示される", async () => {
 		.element(page.getByRole("columnheader", { name: "#" }))
 		.toBeInTheDocument();
 	await expect
-		.element(page.getByRole("columnheader", { name: "保護" }))
+		.element(page.getByRole("columnheader", { name: "操作" }))
 		.toBeInTheDocument();
 	await expect
 		.element(page.getByRole("columnheader", { name: "カテゴリ" }))

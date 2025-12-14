@@ -8,7 +8,7 @@ import {
 import { asc, desc, eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { CustomerTag } from "@/features/customer/tag";
-import { MAX_MEMORIES } from "./constants";
+import { MAX_MEMORIES } from "../customer-memory";
 
 export async function getCustomerMemories(
 	customerId: string,
