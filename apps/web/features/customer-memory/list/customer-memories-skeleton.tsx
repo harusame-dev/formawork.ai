@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
-import { MAX_MEMORIES } from "./constants";
+import { MAX_MEMORIES } from "../customer-memory";
 
 export function CustomerMemoriesSkeleton() {
 	return (
@@ -24,8 +24,8 @@ export function CustomerMemoriesSkeleton() {
 							<th className="w-16 py-2 px-2 text-center" scope="col">
 								重要度
 							</th>
-							<th className="w-12 py-2 px-2 text-center" scope="col">
-								保護
+							<th className="w-28 py-2 px-2 text-center" scope="col">
+								操作
 							</th>
 						</tr>
 					</thead>
@@ -57,8 +57,8 @@ export function CustomerMemoriesSkeleton() {
 								<td className="text-sm text-center hidden sm:table-cell sm:w-16 sm:py-2 sm:px-2">
 									<Skeleton className="mt-1 h-4 w-6 mx-auto" />
 								</td>
-								<td className="ml-auto sm:ml-0 text-center sm:table-cell sm:w-12 sm:py-2 sm:px-2">
-									<Skeleton className="h-8 w-8 mx-auto rounded" />
+								<td className="ml-auto sm:ml-0 text-center sm:table-cell sm:w-28 sm:py-2 sm:px-2">
+									<Skeleton className="h-8 w-16 mx-auto rounded" />
 								</td>
 							</tr>
 						))}

@@ -4,8 +4,8 @@ import {
 	type SelectCustomerMemory,
 } from "@workspace/db/schema/customer-memory";
 import { Card, CardContent } from "@workspace/ui/components/card";
-import { MAX_MEMORIES } from "./constants";
-import { CustomerMemoryLockButton } from "./customer-memory-lock-button";
+import { MAX_MEMORIES } from "../customer-memory";
+import { CustomerMemoryActionButtons } from "./customer-memory-action-buttons";
 
 type CustomerMemoriesPresenterProps = {
 	customerId: string;
@@ -37,8 +37,8 @@ export function CustomerMemoriesPresenter({
 							<th className="w-16 py-2 px-2 text-center" scope="col">
 								重要度
 							</th>
-							<th className="w-14 py-2 px-2 text-center" scope="col">
-								保護
+							<th className="w-28 py-2 px-2 text-center" scope="col">
+								操作
 							</th>
 						</tr>
 					</thead>
@@ -72,18 +72,17 @@ export function CustomerMemoriesPresenter({
 										重要度:
 										<span className="ml-1 inline-block w-3">{importance}</span>
 									</td>
-									<td className="text-sm w-full sm:w-auto sm:table-cell sm:py-2 sm:px-2 pl-6 sm:pl-2 mt-1 sm:mt-0 text-muted-foreground sm:text-foreground">
+									<td className="text-sm w-full sm:w-auto sm:table-cell sm:py-2 sm:px-2 pl-6 sm:pl-2 mt-1 sm:mt-0 text-muted-foreground sm:text-foreground break-all">
 										{content}
 									</td>
 									<td className="text-sm text-center hidden sm:table-cell sm:w-16 sm:py-2 sm:px-2">
 										{importance}
 									</td>
-									<td className="ml-auto sm:ml-0 text-center sm:table-cell sm:w-12 sm:py-2 sm:px-2">
+									<td className="ml-auto sm:ml-0 text-center sm:table-cell sm:w-28 sm:py-2 sm:px-2">
 										{memory && (
-											<CustomerMemoryLockButton
+											<CustomerMemoryActionButtons
 												customerId={customerId}
-												isProtected={memory.isProtected}
-												memoryId={memory.id}
+												memory={memory}
 											/>
 										)}
 									</td>
