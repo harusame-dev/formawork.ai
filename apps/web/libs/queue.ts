@@ -59,12 +59,13 @@ export class PgmqQueue<TMessage> {
 	async readMessagesExponentialBackoff(): Promise<PgmqMessage<TMessage>[]> {
 		const messages = await this.readMessages();
 
+		const archiveTargets: number[] = [];
 		const result: PgmqMessage<TMessage>[] = [];
 
 		for (const msg of messages) {
 			if (msg.read_ct >= MAX_READ_COUNT_BEFORE_ARCHIVE) {
 				// 9回以上読み取られたメッセージは自動アーカイブ
-				await this.archiveMessage(msg.msg_id);
+				archiveTargets.push(msg.msg_id);
 				continue;
 			}
 
@@ -74,6 +75,11 @@ export class PgmqQueue<TMessage> {
 			}
 			// それ以外（3, 5, 6, 7）はスキップ（次回の cron で再度 read される）
 		}
+
+		// アーカイブを並列実行
+		await Promise.allSettled(
+			archiveTargets.map((msgId) => this.archiveMessage(msgId)),
+		);
 
 		return result;
 	}
