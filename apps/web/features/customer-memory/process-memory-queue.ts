@@ -36,11 +36,11 @@ async function processCustomerMessages(
 		);
 
 		const archiveFailures = archiveResults
-			.map((r, i) =>
-				r.status === "rejected"
-					? { err: r.reason, msgId: messages[i]?.msg_id }
-					: null,
-			)
+			.map((r, i) => {
+				return r.status === "fulfilled"
+					? null
+					: { error: r.reason, message: messages[i] };
+			})
 			.filter((f) => f !== null);
 
 		if (archiveFailures.length > 0) {

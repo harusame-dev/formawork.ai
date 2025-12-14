@@ -320,7 +320,7 @@ export async function generateMemoryOperations(
 
 	const options = {
 		experimental_telemetry: { isEnabled: true },
-		maxOutputTokens: 2048,
+		maxOutputTokens: 8192,
 		model: "google/gemini-2.5-flash",
 		prompt: generatePrompt(params),
 		schema: memoryResultJsonSchema,
