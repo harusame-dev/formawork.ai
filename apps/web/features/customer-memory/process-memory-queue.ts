@@ -1,11 +1,7 @@
 import { getLogger } from "@repo/logger/nextjs/server";
 import { MEMORY_QUEUE_NAME } from "@workspace/db/queue-names";
 import { type PgmqMessage, PgmqQueue } from "@/libs/queue";
-import {
-	CustomerNotFoundError,
-	NotesNotFoundError,
-	updateCustomerMemories,
-} from "./update-customer-memories";
+import { updateCustomerMemories } from "./update-customer-memories";
 
 type MemoryQueuePayload = {
 	customerId: string;
@@ -27,14 +23,19 @@ async function processCustomerMessages(
 
 	const noteIds = messages.map((m) => m.message.serviceNoteId);
 
-	try {
-		const result = await updateCustomerMemories(customerId, noteIds);
+	const result = await updateCustomerMemories(customerId, noteIds);
 
-		const deleteResults = await Promise.allSettled(
-			messages.map((msg) => memoryQueue.deleteMessage(msg.msg_id)),
+	if (!result.success) {
+		logger.warn("データなしのためアーカイブ", {
+			customerId,
+			error: result.error,
+		});
+
+		const archiveResults = await Promise.allSettled(
+			messages.map((msg) => memoryQueue.archiveMessage(msg.msg_id)),
 		);
 
-		const deleteFailures = deleteResults
+		const archiveFailures = archiveResults
 			.map((r, i) =>
 				r.status === "rejected"
 					? { err: r.reason, msgId: messages[i]?.msg_id }
@@ -42,48 +43,35 @@ async function processCustomerMessages(
 			)
 			.filter((f) => f !== null);
 
-		if (deleteFailures.length > 0) {
-			logger.error("メッセージ削除失敗", {
+		if (archiveFailures.length > 0) {
+			logger.error("メッセージアーカイブ失敗", {
 				customerId,
-				failures: deleteFailures,
+				failures: archiveFailures,
 			});
 		}
-
-		logger.info("顧客のメモリー処理完了", {
-			customerId,
-			operationsCount: result.operationsCount,
-		});
-	} catch (error) {
-		if (
-			error instanceof CustomerNotFoundError ||
-			error instanceof NotesNotFoundError
-		) {
-			logger.warn("データなしのためアーカイブ", {
-				customerId,
-				error: error.message,
-			});
-			const archiveResults = await Promise.allSettled(
-				messages.map((msg) => memoryQueue.archiveMessage(msg.msg_id)),
-			);
-
-			const archiveFailures = archiveResults
-				.map((r, i) =>
-					r.status === "rejected"
-						? { err: r.reason, msgId: messages[i]?.msg_id }
-						: null,
-				)
-				.filter((f) => f !== null);
-
-			if (archiveFailures.length > 0) {
-				logger.error("メッセージアーカイブ失敗", {
-					customerId,
-					failures: archiveFailures,
-				});
-			}
-			return;
-		}
-		throw error;
+		return;
 	}
+
+	const deleteResults = await Promise.allSettled(
+		messages.map((msg) => memoryQueue.deleteMessage(msg.msg_id)),
+	);
+
+	const deleteFailures = deleteResults
+		.map((r, i) =>
+			r.status === "rejected"
+				? { err: r.reason, msgId: messages[i]?.msg_id }
+				: null,
+		)
+		.filter((f) => f !== null);
+
+	if (deleteFailures.length > 0) {
+		logger.error("メッセージ削除失敗", {
+			customerId,
+			failures: deleteFailures,
+		});
+	}
+
+	logger.info("顧客のメモリー処理完了", { customerId });
 }
 
 export async function processMemoryQueue(): Promise<void> {

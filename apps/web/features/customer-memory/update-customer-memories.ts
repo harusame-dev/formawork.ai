@@ -1,3 +1,4 @@
+import { fail, type Result, succeed } from "@harusame0616/result";
 import { getLogger } from "@repo/logger/nextjs/server";
 import { db } from "@workspace/db/client";
 import { customersTable } from "@workspace/db/schema/customer";
@@ -19,19 +20,12 @@ import {
 
 const MAX_MEMORIES_PER_CUSTOMER = 100;
 
-export class CustomerNotFoundError extends Error {
-	constructor(customerId: string) {
-		super(`Customer not found: ${customerId}`);
-		this.name = "CustomerNotFoundError";
-	}
-}
+const CUSTOMER_NOT_FOUND_ERROR = "顧客が見つかりません" as const;
+const NOTES_NOT_FOUND_ERROR = "ノートが見つかりません" as const;
 
-export class NotesNotFoundError extends Error {
-	constructor(noteIds: string[]) {
-		super(`Notes not found: ${noteIds.join(", ")}`);
-		this.name = "NotesNotFoundError";
-	}
-}
+export type UpdateCustomerMemoriesError =
+	| typeof CUSTOMER_NOT_FOUND_ERROR
+	| typeof NOTES_NOT_FOUND_ERROR;
 
 async function fetchCustomerData(customerId: string) {
 	const results = await db
@@ -199,26 +193,22 @@ async function enforceMemoryLimit(customerId: string): Promise<void> {
 	}
 }
 
-type UpdateCustomerMemoriesResult = {
-	operationsCount: number;
-};
-
 export async function updateCustomerMemories(
 	customerId: string,
 	noteIds: string[],
-): Promise<UpdateCustomerMemoriesResult> {
+): Promise<Result<void, UpdateCustomerMemoriesError>> {
 	const logger = await getLogger("updateCustomerMemories");
 
 	logger.info("メモリー更新開始", { customerId, noteIds });
 
 	const customerData = await fetchCustomerData(customerId);
 	if (!customerData) {
-		throw new CustomerNotFoundError(customerId);
+		return fail(CUSTOMER_NOT_FOUND_ERROR);
 	}
 
 	const targetNotes = await fetchNotesData(noteIds);
 	if (targetNotes.length === 0) {
-		throw new NotesNotFoundError(noteIds);
+		return fail(NOTES_NOT_FOUND_ERROR);
 	}
 
 	const existingMemories = await fetchExistingMemories(customerId);
@@ -265,5 +255,5 @@ export async function updateCustomerMemories(
 		executedCount: executableOperations.length,
 	});
 
-	return { operationsCount: result.operations.length };
+	return succeed();
 }
