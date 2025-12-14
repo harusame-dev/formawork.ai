@@ -11,18 +11,17 @@ import { revalidateTag } from "next/cache";
 import * as v from "valibot";
 import { genderSchema } from "@/features/customer/schema";
 import { CustomerTag } from "@/features/customer/tag";
+import { type PgmqMessage, PgmqQueue } from "@/libs/queue";
 import { generateAdvice } from "./generate-advice";
 
 const RECENT_NOTES_LIMIT = 10;
 const MAX_RETRY_COUNT = 3;
 
-type QueueMessage = {
-	msg_id: number;
-	read_ct: number;
-	message: {
-		customerNoteId: string;
-	};
+type AdviceQueuePayload = {
+	customerNoteId: string;
 };
+
+const adviceQueue = new PgmqQueue<AdviceQueuePayload>(ADVICE_QUEUE_NAME);
 
 type RecentNote = {
 	content: string;
@@ -41,12 +40,6 @@ type NoteWithRecentNotes = {
 	remarks: string | null;
 	serviceDate: string;
 };
-
-async function readMessagesFromQueue(): Promise<QueueMessage[]> {
-	return db.execute<QueueMessage>(sql`
-		SELECT * FROM pgmq.read(${ADVICE_QUEUE_NAME}, 30, 10)
-	`);
-}
 
 async function fetchNotesWithRecentNotes(
 	customerNoteIds: string[],
@@ -85,18 +78,6 @@ async function fetchNotesWithRecentNotes(
 	`);
 }
 
-async function archiveMessage(msgId: number): Promise<void> {
-	await db.execute(
-		sql.raw(`SELECT * FROM pgmq.archive('${ADVICE_QUEUE_NAME}', ${msgId})`),
-	);
-}
-
-async function deleteMessage(msgId: number): Promise<void> {
-	await db.execute(
-		sql.raw(`SELECT * FROM pgmq.delete('${ADVICE_QUEUE_NAME}', ${msgId})`),
-	);
-}
-
 async function saveAdvice(
 	customerNoteId: string,
 	advice: AdviceContent,
@@ -108,7 +89,7 @@ async function saveAdvice(
 }
 
 async function processMessage(
-	msg: QueueMessage,
+	msg: PgmqMessage<AdviceQueuePayload>,
 	noteMap: Map<string, NoteWithRecentNotes>,
 ): Promise<void> {
 	const logger = await getLogger("generateAdviceCron");
@@ -126,7 +107,7 @@ async function processMessage(
 			msgId: msg.msg_id,
 			readCount: msg.read_ct,
 		});
-		await archiveMessage(msg.msg_id);
+		await adviceQueue.archiveMessage(msg.msg_id);
 		return;
 	}
 
@@ -137,7 +118,7 @@ async function processMessage(
 			customerNoteId,
 			msgId: msg.msg_id,
 		});
-		await archiveMessage(msg.msg_id);
+		await adviceQueue.archiveMessage(msg.msg_id);
 		return;
 	}
 
@@ -161,13 +142,13 @@ async function processMessage(
 
 	await saveAdvice(customerNoteId, advice);
 	revalidateTag(CustomerTag.NoteCrud(note.customerId), { expire: 0 });
-	await deleteMessage(msg.msg_id);
+	await adviceQueue.deleteMessage(msg.msg_id);
 }
 
 export async function processAdviceQueue(): Promise<void> {
 	const logger = await getLogger("processAdviceQueue");
 
-	const messages = await readMessagesFromQueue();
+	const messages = await adviceQueue.readMessages();
 	logger.info("メッセージ読み取り", {
 		messages,
 	});

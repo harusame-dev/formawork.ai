@@ -1,20 +1,27 @@
 "use server";
 
 import { succeed } from "@harusame0616/result";
-import { db } from "@workspace/db/client";
 import {
 	ADVICE_QUEUE_NAME,
 	MEMORY_QUEUE_NAME,
 } from "@workspace/db/queue-names";
-import { sql } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { after } from "next/server";
 import * as v from "valibot";
 import { CustomerTag } from "@/features/customer/tag";
 import { processMemoryQueue } from "@/features/customer-memory/process-memory-queue";
 import { createServerAction } from "@/libs/create-server-action";
+import { PgmqQueue } from "@/libs/queue";
 import { processAdviceQueue } from "../advice/process-advice-queue";
 import { editCustomerNote } from "./edit-customer-note";
+
+const adviceQueue = new PgmqQueue<{ customerNoteId: string }>(
+	ADVICE_QUEUE_NAME,
+);
+const memoryQueue = new PgmqQueue<{
+	customerId: string;
+	serviceNoteId: string;
+}>(MEMORY_QUEUE_NAME);
 
 const uploadImageSchema = v.object({
 	permanentPath: v.string(),
@@ -58,19 +65,8 @@ export const editCustomerNoteAction = createServerAction(
 
 		const customerId = result.data.customerId;
 
-		await db.execute(sql`
-			SELECT pgmq.send(
-				${ADVICE_QUEUE_NAME},
-				${JSON.stringify({ customerNoteId: noteId })}::jsonb
-			)
-		`);
-
-		await db.execute(sql`
-			SELECT pgmq.send(
-				${MEMORY_QUEUE_NAME},
-				${JSON.stringify({ customerId, serviceNoteId: noteId })}::jsonb
-			)
-		`);
+		await adviceQueue.sendMessage({ customerNoteId: noteId });
+		await memoryQueue.sendMessage({ customerId, serviceNoteId: noteId });
 
 		// トリガーはするがエラーのリトライなどはキューの定期処理で行うため、
 		// 実行結果のハンドリングは不要

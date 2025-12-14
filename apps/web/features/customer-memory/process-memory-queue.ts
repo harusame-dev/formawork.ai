@@ -1,7 +1,6 @@
 import { getLogger } from "@repo/logger/nextjs/server";
-import { db } from "@workspace/db/client";
 import { MEMORY_QUEUE_NAME } from "@workspace/db/queue-names";
-import { sql } from "drizzle-orm";
+import { type PgmqMessage, PgmqQueue } from "@/libs/queue";
 import {
 	CustomerNotFoundError,
 	NotesNotFoundError,
@@ -10,36 +9,16 @@ import {
 
 const MAX_RETRY_COUNT = 3;
 
-type QueueMessage = {
-	msg_id: number;
-	read_ct: number;
-	message: {
-		customerId: string;
-		serviceNoteId: string;
-	};
+type MemoryQueuePayload = {
+	customerId: string;
+	serviceNoteId: string;
 };
 
-async function readMessagesFromQueue(): Promise<QueueMessage[]> {
-	return db.execute<QueueMessage>(sql`
-		SELECT * FROM pgmq.read(${MEMORY_QUEUE_NAME}, 30, 10)
-	`);
-}
-
-async function archiveMessage(msgId: number): Promise<void> {
-	await db.execute(
-		sql.raw(`SELECT * FROM pgmq.archive('${MEMORY_QUEUE_NAME}', ${msgId})`),
-	);
-}
-
-async function deleteMessage(msgId: number): Promise<void> {
-	await db.execute(
-		sql.raw(`SELECT * FROM pgmq.delete('${MEMORY_QUEUE_NAME}', ${msgId})`),
-	);
-}
+const memoryQueue = new PgmqQueue<MemoryQueuePayload>(MEMORY_QUEUE_NAME);
 
 async function processCustomerMessages(
 	customerId: string,
-	messages: QueueMessage[],
+	messages: PgmqMessage<MemoryQueuePayload>[],
 ): Promise<void> {
 	const logger = await getLogger("processMemoryQueue");
 
@@ -55,7 +34,7 @@ async function processCustomerMessages(
 			maxReadCount,
 		});
 		for (const msg of messages) {
-			await archiveMessage(msg.msg_id);
+			await memoryQueue.archiveMessage(msg.msg_id);
 		}
 		return;
 	}
@@ -66,7 +45,7 @@ async function processCustomerMessages(
 		const result = await updateCustomerMemories(customerId, noteIds);
 
 		for (const msg of messages) {
-			await deleteMessage(msg.msg_id);
+			await memoryQueue.deleteMessage(msg.msg_id);
 		}
 
 		logger.info("顧客のメモリー処理完了", {
@@ -83,7 +62,7 @@ async function processCustomerMessages(
 				error: error.message,
 			});
 			for (const msg of messages) {
-				await archiveMessage(msg.msg_id);
+				await memoryQueue.archiveMessage(msg.msg_id);
 			}
 			return;
 		}
@@ -94,7 +73,7 @@ async function processCustomerMessages(
 export async function processMemoryQueue(): Promise<void> {
 	const logger = await getLogger("processMemoryQueue");
 
-	const messages = await readMessagesFromQueue();
+	const messages = await memoryQueue.readMessages();
 	logger.info("メッセージ読み取り", { messageCount: messages.length });
 
 	if (messages.length === 0) {
