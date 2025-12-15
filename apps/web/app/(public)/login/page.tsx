@@ -17,7 +17,6 @@ export const metadata: Metadata = {
 export default function LoginPage() {
 	return (
 		<main className="flex flex-col min-h-screen items-center p-4 bg-background">
-			
 			<div className="w-16 mx-auto mt-16">
 				<Image alt="" sizes="64px" src={Logo} />
 			</div>
