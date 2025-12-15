@@ -14,6 +14,7 @@
 		"react": "catalog:",
 		"react-dom": "catalog:",
 		"react-hook-form": "catalog:",
+		"swr": "catalog:",
 		"uuid": "catalog:",
 		"valibot": "catalog:"
 	},
@@ -29,11 +30,17 @@
 		"@vitest/ui": "catalog:",
 		"@workspace/tsconfig": "workspace:",
 		"drizzle-orm": "catalog:",
+		"msw": "catalog:",
 		"pino-pretty": "catalog:",
 		"tailwindcss": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vitest-browser-react": "catalog:"
+	},
+	"msw": {
+		"workerDirectory": [
+			"public"
+		]
 	},
 	"name": "web",
 	"private": true,

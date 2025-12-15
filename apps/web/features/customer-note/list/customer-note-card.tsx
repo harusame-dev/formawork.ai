@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
 import { Calendar, CalendarClock, UserPen } from "lucide-react";
 import { DateTime } from "@/components/date-time";
-import { CustomerNoteAdvice } from "@/features/customer-note/advice/customer-note-advice";
+import { CustomerNoteAdviceContainer } from "@/features/customer-note/advice/customer-note-advice-container";
 import { DeleteCustomerNoteDialog } from "@/features/customer-note/delete/delete-customer-note-dialog";
 import { EditCustomerNoteDialog } from "@/features/customer-note/edit/edit-customer-note-dialog";
 import { CustomerNoteImageGallery } from "./customer-note-image-gallery";
@@ -59,7 +59,11 @@ export function CustomerNoteCard({
 			<CardContent className="space-y-4">
 				<p className="whitespace-pre-wrap text-sm">{note.content}</p>
 				<CustomerNoteImageGallery images={note.images} />
-				<CustomerNoteAdvice advice={note.advice} isTimeout={isAdviceTimeout} />
+				<CustomerNoteAdviceContainer
+					advice={note.advice}
+					isTimeout={isAdviceTimeout}
+					noteId={note.id}
+				/>
 			</CardContent>
 		</Card>
 	);

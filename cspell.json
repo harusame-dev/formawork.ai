@@ -1,5 +1,6 @@
 {
 	"ignorePaths": [
+		"mockServiceWorker.js",
 		"**/*.svg",
 		"**/*tsconfig.tsbuildinfo",
 		"pnpm-lock.yaml",
