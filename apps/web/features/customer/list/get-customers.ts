@@ -1,7 +1,7 @@
 import { db } from "@workspace/db/client";
 import type { SelectCustomer } from "@workspace/db/schema/customer";
 import { customersTable } from "@workspace/db/schema/customer";
-import { asc, eq, or } from "drizzle-orm";
+import { asc, like, or } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { CustomerTag } from "../tag";
 import type { CustomersCondition } from "./schema";
@@ -23,8 +23,18 @@ export async function getCustomers({
 	const pageSize = 20;
 	const whereConditions = keyword
 		? or(
-				eq(customersTable.firstName, keyword),
-				eq(customersTable.lastName, keyword),
+				// 姓・名（個別）
+				like(customersTable.lastName, `${keyword}%`),
+				like(customersTable.firstName, `${keyword}%`),
+				// セイ・メイ（個別）
+				like(customersTable.lastNameKana, `${keyword}%`),
+				like(customersTable.firstNameKana, `${keyword}%`),
+				// 姓名・セイメイ（結合）
+				like(customersTable.fullName, `${keyword}%`),
+				like(customersTable.fullNameKana, `${keyword}%`),
+				// 電話・メール
+				like(customersTable.phone, `${keyword}%`),
+				like(customersTable.email, `${keyword}%`),
 			)
 		: undefined;
 
@@ -32,7 +42,7 @@ export async function getCustomers({
 		.select()
 		.from(customersTable)
 		.where(whereConditions)
-		.orderBy(asc(customersTable.lastName), asc(customersTable.firstName))
+		.orderBy(asc(customersTable.fullName), asc(customersTable.customerId))
 		.limit(pageSize)
 		.offset((page - 1) * pageSize);
 

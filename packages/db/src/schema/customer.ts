@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
 	date,
 	pgSchema,
@@ -16,6 +17,15 @@ export const customersTable = pgSchema(schemaName).table("customers", {
 	email: text("email").notNull(),
 	firstName: text("first_name").notNull(),
 	firstNameKana: text("first_name_kana").notNull().default(""),
+	// Generated Columns（検索用）
+	fullName: text("full_name").generatedAlwaysAs(
+		(): ReturnType<typeof sql> =>
+			sql`${customersTable.lastName} || ${customersTable.firstName}`,
+	),
+	fullNameKana: text("full_name_kana").generatedAlwaysAs(
+		(): ReturnType<typeof sql> =>
+			sql`${customersTable.lastNameKana} || ${customersTable.firstNameKana}`,
+	),
 	gender: smallint("gender").notNull().default(1),
 	lastName: text("last_name").notNull(),
 	lastNameKana: text("last_name_kana").notNull().default(""),
