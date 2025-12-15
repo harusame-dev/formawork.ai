@@ -5,6 +5,7 @@ import {
 } from "@workspace/db/schema/customer-memory";
 import { generateObject, jsonSchema } from "ai";
 import { GENDER_LABELS, type Gender } from "@/features/customer/schema";
+import { constructProtectedPrompt } from "@/libs/ai/prompt";
 
 type CustomerInfo = {
 	birthDate: string | null;
@@ -170,51 +171,12 @@ const memoryResultJsonSchema = jsonSchema<MemoryResult>({
 	type: "object",
 });
 
-function generatePrompt({
-	customer,
-	existingMemories,
-	targetNotes,
-}: GenerateMemoryOperationsParams): string {
-	const targetNotesSection = targetNotes
-		.map(
-			(note, index) =>
-				`--- ${index + 1}件目 (${note.serviceDate}) ---
-${note.content}`,
-		)
-		.join("\n\n");
-
+function buildSystemInstructions(): string {
 	const categoryDescriptions = Object.entries(MemoryCategory)
 		.map(([_key, value]) => `${value}: ${MEMORY_CATEGORY_LABEL[value]}`)
 		.join("\n");
 
-	const existingMemoriesSection =
-		existingMemories.length > 0
-			? existingMemories
-					.map(
-						(memory) =>
-							`- [ID: ${memory.id}] [カテゴリ: ${MEMORY_CATEGORY_LABEL[memory.category]}] [重要度: ${memory.importance}]${memory.isProtected ? " [保護済み]" : ""} ${memory.content}`,
-					)
-					.join("\n")
-			: "なし";
-
-	return `あなたは顧客情報管理AIです。
-接客ノートから顧客の重要な情報を抽出し、メモリーとして管理してください。
-
----
-
-## 顧客情報
-- 名前: ${customer.lastName} ${customer.firstName} 様
-- 生年月日: ${customer.birthDate || "未登録"}
-- 性別: ${GENDER_LABELS[customer.gender]}
-- 備考: ${customer.remarks || "なし"}
-
-## 今回処理する接客ノート
-${targetNotesSection}
-
-## 既存メモリー（現在 ${existingMemories.length}件 / 最大100件）
-${existingMemoriesSection}
-
----
+	return `あなたは顧客情報管理AIとして、接客ノートから顧客の重要な情報を抽出しメモリーとして管理するタスクを実行します。
 
 ## カテゴリ定義
 ${categoryDescriptions}
@@ -245,8 +207,6 @@ ${categoryDescriptions}
 アレルギー、体質、施術上の注意点など
 例：「金属アレルギーあり」「頭皮が敏感」「肩こりがひどい」
 
----
-
 ## 重要度ガイドライン（1-10）
 
 - **10**: 接客に直結する最重要情報（アレルギー、強いNG項目、クレーム履歴）
@@ -254,8 +214,6 @@ ${categoryDescriptions}
 - **6-7**: 提案や会話に活用できる情報（趣味、家族の状況）
 - **4-5**: 知っていると良い一般情報（職業、住んでいるエリア）
 - **1-3**: 補助的な情報（一度だけ言及された話題など）
-
----
 
 ## タスク
 
@@ -273,8 +231,6 @@ ${categoryDescriptions}
 - **100件制限**: 既存が90件以上の場合、重要度の低いものの削除も検討
 - **更新は慎重に**: 古い情報でも履歴として価値がある場合は残す
 - **操作不要の場合**: 空の operations 配列を返す
-
----
 
 ## 出力フォーマット（JSON）
 
@@ -302,8 +258,6 @@ ${categoryDescriptions}
   ]
 }
 
----
-
 ## 注意事項
 
 - 1回の接客で抽出するメモリーは通常0〜3件程度
@@ -311,6 +265,47 @@ ${categoryDescriptions}
 - 将来の接客で活用できる情報のみ登録
 - 既存メモリーと矛盾する情報は、どちらが正しいか判断してから操作
 - カテゴリは最も適切なものを1つ選択`;
+}
+
+function generatePrompt({
+	customer,
+	existingMemories,
+	targetNotes,
+}: GenerateMemoryOperationsParams): string {
+	const targetNotesSection = targetNotes
+		.map(
+			(note, index) =>
+				`--- ${index + 1}件目 (${note.serviceDate}) ---
+${note.content}`,
+		)
+		.join("\n\n");
+
+	const existingMemoriesSection =
+		existingMemories.length > 0
+			? existingMemories
+					.map(
+						(memory) =>
+							`- [ID: ${memory.id}] [カテゴリ: ${MEMORY_CATEGORY_LABEL[memory.category]}] [重要度: ${memory.importance}]${memory.isProtected ? " [保護済み]" : ""} ${memory.content}`,
+					)
+					.join("\n")
+			: "なし";
+
+	const userInput = `[顧客情報]
+名前: ${customer.lastName} ${customer.firstName} 様
+生年月日: ${customer.birthDate || "未登録"}
+性別: ${GENDER_LABELS[customer.gender]}
+備考: ${customer.remarks || "なし"}
+
+[今回処理する接客ノート]
+${targetNotesSection}
+
+[既存メモリー（現在 ${existingMemories.length}件 / 最大100件）]
+${existingMemoriesSection}`;
+
+	return constructProtectedPrompt({
+		systemInstructions: buildSystemInstructions(),
+		userInput,
+	});
 }
 
 export async function generateMemoryOperations(

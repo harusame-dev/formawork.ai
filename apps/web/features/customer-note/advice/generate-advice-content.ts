@@ -4,6 +4,7 @@ import type { AdviceContent } from "@workspace/db/schema/customer-note-advice";
 import { generateObject } from "ai";
 import * as v from "valibot";
 import { GENDER_LABELS, type Gender } from "@/features/customer/schema";
+import { constructProtectedPrompt } from "@/libs/ai/prompt";
 
 type CustomerInfo = {
 	birthDate: string | null;
@@ -72,44 +73,7 @@ const adviceSchema = v.object({
 	}),
 }) satisfies v.GenericSchema<AdviceContent>;
 
-function generatePrompt({
-	customer,
-	noteContent,
-	recentNotes,
-	serviceDate,
-}: GenerateAdviceParams): string {
-	const recentNotesSection =
-		recentNotes.length > 0
-			? recentNotes
-					.map(
-						(note, index) =>
-							`--- ${index + 1}件目 (${note.createdAt.toLocaleDateString("ja-JP")}) ---
-${note.content}`,
-					)
-					.join("\n\n")
-			: "なし";
-
-	return `あなたは接客コーチです。
-以下の情報をもとに、今回の接客の評価と、次回接客時のアドバイスを生成してください。
-
----
-
-## 接客日
-${serviceDate}
-
-## 顧客情報
-- 名前: ${customer.lastName} ${customer.firstName} 様
-- 生年月日: ${customer.birthDate || "未登録"}
-- 性別: ${GENDER_LABELS[customer.gender]}
-- 備考: ${customer.remarks || "なし"}
-
-## 今回の接客メモ
-${noteContent}
-
-## 直近10回の接客メモ（新しい順）
-${recentNotesSection}
-
----
+const SYSTEM_INSTRUCTIONS = `あなたは接客コーチとして、接客の評価とアドバイスを生成するタスクを実行します。
 
 ## 出力要件
 
@@ -127,8 +91,6 @@ ${recentNotesSection}
 
 ※接客メモは本人記録のため、記録されていない問題がある可能性があります。
 ※断定ではなく「〜の可能性がある」「〜だったかもしれない」の表現を使ってください。
-
----
 
 ### 次回の接客アドバイス (nextAdvice)
 
@@ -150,8 +112,6 @@ ${recentNotesSection}
 **次回に向けて確認しておくこと (nextActions)**
 今回の接客の最後に確認・約束しておくと良いこと。
 
----
-
 ## 出力フォーマット（JSON）
 
 以下の形式で出力してください。すべてのフィールドは必須です。
@@ -170,8 +130,6 @@ ${recentNotesSection}
   }
 }
 
----
-
 ## 注意事項
 - 情報が不足している項目は「情報不足のため判断不可」と明記
 - 推測で補う場合は「〜と推測されるため」と理由を明示
@@ -181,6 +139,43 @@ ${recentNotesSection}
 - 必ず具体的な行動・発言レベルで記述
 - 各項目は簡潔に。1項目あたり1〜3文程度
 - 必ず上記のJSON形式で出力すること`;
+
+function generatePrompt({
+	customer,
+	noteContent,
+	recentNotes,
+	serviceDate,
+}: GenerateAdviceParams): string {
+	const recentNotesSection =
+		recentNotes.length > 0
+			? recentNotes
+					.map(
+						(note, index) =>
+							`--- ${index + 1}件目 (${note.createdAt.toLocaleDateString("ja-JP")}) ---
+${note.content}`,
+					)
+					.join("\n\n")
+			: "なし";
+
+	const userInput = `[接客日]
+${serviceDate}
+
+[顧客情報]
+名前: ${customer.lastName} ${customer.firstName} 様
+生年月日: ${customer.birthDate || "未登録"}
+性別: ${GENDER_LABELS[customer.gender]}
+備考: ${customer.remarks || "なし"}
+
+[今回の接客メモ]
+${noteContent}
+
+[直近10回の接客メモ（新しい順）]
+${recentNotesSection}`;
+
+	return constructProtectedPrompt({
+		systemInstructions: SYSTEM_INSTRUCTIONS,
+		userInput,
+	});
 }
 
 export async function generateAdviceContent(
