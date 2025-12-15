@@ -75,9 +75,6 @@ const adviceSchema = v.object({
 
 const SYSTEM_INSTRUCTIONS = `あなたは接客コーチとして、接客の評価とアドバイスを生成するタスクを実行します。
 
-## タスク概要
-以下の<user_input>タグ内にある接客データを分析し、今回の接客の評価と次回接客時のアドバイスを生成してください。
-
 ## 出力要件
 
 ### 今回の接客評価 (currentEvaluation)
