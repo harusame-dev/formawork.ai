@@ -56,7 +56,7 @@ export function CustomerSearchForm({
 						<FormItem>
 							<FormLabel>キーワード</FormLabel>
 							<FormDescription>
-								名前、メールアドレス、電話番号（最大
+								姓名、セイメイ、電話番号、メールアドレスを前方一致で検索（最大
 								{CUSTOMER_SEARCH_KEYWORD_MAX_LENGTH}文字）
 							</FormDescription>
 							<div className="flex gap-4 items-center">

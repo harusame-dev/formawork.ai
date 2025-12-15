@@ -2,6 +2,7 @@ import { SearchPagination } from "@workspace/ui/components/search-pagination";
 import {
 	Table,
 	TableBody,
+	TableCaption,
 	TableCell,
 	TableHead,
 	TableHeader,
@@ -34,6 +35,7 @@ export function CustomersPresenter({
 	return (
 		<div className="space-y-4">
 			<Table>
+				<TableCaption className="sr-only"> 顧客検索結果</TableCaption>
 				<TableHeader>
 					<TableRow>
 						<TableHead>名前</TableHead>

@@ -4,6 +4,27 @@ import { db } from "@workspace/db/client";
 import { customersTable } from "@workspace/db/schema/customer";
 import { eq } from "drizzle-orm";
 
+/** ランダムなひらがな文字列を生成 */
+function generateRandomHiragana(length: number): string {
+	const hiragana =
+		"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん";
+	let result = "";
+	for (let i = 0; i < length; i++) {
+		result += hiragana[Math.floor(Math.random() * hiragana.length)];
+	}
+	return result;
+}
+
+type SearchTestCustomer = {
+	customerId: string;
+	lastName: string;
+	firstName: string;
+	lastNameKana: string;
+	firstNameKana: string;
+	phone: string;
+	email: string;
+};
+
 type CustomersPageFixture = {
 	customersPage: Page;
 	authenticatedPage: Page;
@@ -15,6 +36,7 @@ type CustomersPageFixture = {
 		keyword: string;
 		count: number;
 	};
+	searchTestCustomer: SearchTestCustomer;
 };
 
 const test = base.extend<CustomersPageFixture>({
@@ -60,6 +82,33 @@ const test = base.extend<CustomersPageFixture>({
 		await db
 			.delete(customersTable)
 			.where(eq(customersTable.firstName, keyword));
+	},
+	// biome-ignore lint/correctness/noEmptyPattern: fixtureの引数はオブジェクト分割が必要
+	searchTestCustomer: async ({}, use) => {
+		const uniqueId = randomUUID().slice(0, 8);
+		// 電話番号用のランダムな数字を生成（11桁）
+		const randomPhone = `090${Math.floor(Math.random() * 100000000)
+			.toString()
+			.padStart(8, "0")}`;
+		// カナ用のランダムなひらがなを生成（8文字）
+		const randomKana = generateRandomHiragana(8);
+		const customer: SearchTestCustomer = {
+			customerId: randomUUID(),
+			email: `${uniqueId}@example.com`,
+			firstName: `名${uniqueId}`,
+			firstNameKana: `めい${randomKana}`,
+			lastName: `姓${uniqueId}`,
+			lastNameKana: `せい${randomKana}`,
+			phone: randomPhone,
+		};
+
+		await db.insert(customersTable).values(customer);
+
+		await use(customer);
+
+		await db
+			.delete(customersTable)
+			.where(eq(customersTable.customerId, customer.customerId));
 	},
 	testUser: [
 		{
@@ -115,8 +164,174 @@ test("名前で検索できる", async ({ customersPage }) => {
 	});
 });
 
-test("メールアドレスで検索できる", async ({ customersPage }) => {
-	const searchKeyword = "admin";
+test("姓で前方一致検索できる", async ({
+	customersPage,
+	searchTestCustomer,
+}) => {
+	// 姓の前方6文字で検索（例: "姓abc12" で "姓abc12345" がヒット）
+	const searchKeyword = searchTestCustomer.lastName.slice(0, 6);
+
+	await test.step("姓で検索", async () => {
+		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage.getByRole("button", { name: "検索" }).click();
+		await customersPage.waitForURL("**/customers?keyword=*");
+		await expect(
+			customersPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
+	});
+
+	await test.step("検索結果を確認", async () => {
+		const table = customersPage.getByRole("table", { name: "顧客検索結果" });
+		await expect(table).toContainText(searchTestCustomer.lastName);
+		await expect(table).toContainText(searchTestCustomer.firstName);
+	});
+});
+
+test("名で前方一致検索できる", async ({
+	customersPage,
+	searchTestCustomer,
+}) => {
+	// 名の前方6文字で検索（例: "名abc12" で "名abc12345" がヒット）
+	const searchKeyword = searchTestCustomer.firstName.slice(0, 6);
+
+	await test.step("名で検索", async () => {
+		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage.getByRole("button", { name: "検索" }).click();
+		await customersPage.waitForURL("**/customers?keyword=*");
+		await expect(
+			customersPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
+	});
+
+	await test.step("検索結果を確認", async () => {
+		const table = customersPage.getByRole("table", { name: "顧客検索結果" });
+		await expect(table).toContainText(searchTestCustomer.lastName);
+		await expect(table).toContainText(searchTestCustomer.firstName);
+	});
+});
+
+test("せいで前方一致検索できる", async ({
+	customersPage,
+	searchTestCustomer,
+}) => {
+	const searchKeyword = searchTestCustomer.lastNameKana.slice(0, 7);
+
+	await test.step("せいで検索", async () => {
+		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage.getByRole("button", { name: "検索" }).click();
+		await customersPage.waitForURL("**/customers?keyword=*");
+		await expect(
+			customersPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
+	});
+
+	await test.step("検索結果を確認", async () => {
+		const table = customersPage.getByRole("table", { name: "顧客検索結果" });
+		await expect(table).toContainText(searchTestCustomer.lastName);
+		await expect(table).toContainText(searchTestCustomer.firstName);
+	});
+});
+
+test("めいで前方一致検索できる", async ({
+	customersPage,
+	searchTestCustomer,
+}) => {
+	// めいの前方7文字で検索（例: "めいabc12" で "めいabc12345" がヒット）
+	const searchKeyword = searchTestCustomer.firstNameKana.slice(0, 7);
+
+	await test.step("メイで検索", async () => {
+		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage.getByRole("button", { name: "検索" }).click();
+		await customersPage.waitForURL("**/customers?keyword=*");
+		await expect(
+			customersPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
+	});
+
+	await test.step("検索結果を確認", async () => {
+		const table = customersPage.getByRole("table", { name: "顧客検索結果" });
+		await expect(table).toContainText(searchTestCustomer.lastName);
+		await expect(table).toContainText(searchTestCustomer.firstName);
+	});
+});
+
+test("姓名（結合）で前方一致検索できる", async ({
+	customersPage,
+	searchTestCustomer,
+}) => {
+	// 姓名（結合）の前方部分で検索（例: "姓abc12345名" で "姓abc12345名abc12345" がヒット）
+	const fullName = `${searchTestCustomer.lastName}${searchTestCustomer.firstName}`;
+	const searchKeyword = fullName.slice(0, fullName.length - 4);
+
+	await test.step("姓名で検索", async () => {
+		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage.getByRole("button", { name: "検索" }).click();
+		await customersPage.waitForURL("**/customers?keyword=*");
+		await expect(
+			customersPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
+	});
+
+	await test.step("検索結果を確認", async () => {
+		const table = customersPage.getByRole("table", { name: "顧客検索結果" });
+		await expect(table).toContainText(searchTestCustomer.lastName);
+		await expect(table).toContainText(searchTestCustomer.firstName);
+	});
+});
+
+test("セイメイ（カナ結合）で前方一致検索できる", async ({
+	customersPage,
+	searchTestCustomer,
+}) => {
+	// セイメイ（結合）の前方部分で検索（例: "せいabc12345め" で "せいabc12345めいabc12345" がヒット）
+	const fullNameKana = `${searchTestCustomer.lastNameKana}${searchTestCustomer.firstNameKana}`;
+	const searchKeyword = fullNameKana.slice(0, fullNameKana.length - 4);
+
+	await test.step("セイメイで検索", async () => {
+		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage.getByRole("button", { name: "検索" }).click();
+		await customersPage.waitForURL("**/customers?keyword=*");
+		await expect(
+			customersPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
+	});
+
+	await test.step("検索結果を確認", async () => {
+		const table = customersPage.getByRole("table", { name: "顧客検索結果" });
+		await expect(table).toContainText(searchTestCustomer.lastName);
+		await expect(table).toContainText(searchTestCustomer.firstName);
+	});
+});
+
+test("電話番号で前方一致検索できる", async ({
+	customersPage,
+	searchTestCustomer,
+}) => {
+	// 電話番号の前方7桁で検索（例: "0901234" で "09012345678" がヒット）※ハイフンなし
+	const searchKeyword = searchTestCustomer.phone.slice(0, 7);
+
+	await test.step("電話番号で検索", async () => {
+		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage.getByRole("button", { name: "検索" }).click();
+		await customersPage.waitForURL("**/customers?keyword=*");
+		await expect(
+			customersPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
+	});
+
+	await test.step("検索結果を確認", async () => {
+		const table = customersPage.getByRole("table", { name: "顧客検索結果" });
+		await expect(table).toContainText(searchTestCustomer.lastName);
+		await expect(table).toContainText(searchTestCustomer.firstName);
+	});
+});
+
+test("メールアドレスで前方一致検索できる", async ({
+	customersPage,
+	searchTestCustomer,
+}) => {
+	// メールアドレスの前方5文字で検索（例: "abc12" で "abc12345@example.com" がヒット）
+	const searchKeyword = searchTestCustomer.email.slice(0, 5);
 
 	await test.step("メールアドレスで検索", async () => {
 		await customersPage.getByLabel("キーワード").fill(searchKeyword);
@@ -128,14 +343,9 @@ test("メールアドレスで検索できる", async ({ customersPage }) => {
 	});
 
 	await test.step("検索結果を確認", async () => {
-		// 表示されている全てのデータがキーワードを含んでいることを確認
-		const rows = customersPage.locator("table tbody tr");
-		const count = await rows.count();
-		for (let i = 0; i < count; i++) {
-			const row = rows.nth(i);
-			const text = await row.textContent();
-			expect(text).toContain(searchKeyword);
-		}
+		const table = customersPage.getByRole("table", { name: "顧客検索結果" });
+		await expect(table).toContainText(searchTestCustomer.lastName);
+		await expect(table).toContainText(searchTestCustomer.firstName);
 	});
 });
 

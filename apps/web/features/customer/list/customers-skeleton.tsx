@@ -28,10 +28,10 @@ export function CustomersSkeleton() {
 					{Array.from({ length: 5 }).map((_, index) => (
 						<TableRow key={index}>
 							<TableCell>
-								<Skeleton className="h-5 w-32" />
+								<Skeleton className="h-5 max-w-32 w-full" />
 							</TableCell>
 							<TableCell>
-								<Skeleton className="h-5 w-48" />
+								<Skeleton className="h-5 max-w-48 w-full" />
 							</TableCell>
 						</TableRow>
 					))}
@@ -41,15 +41,15 @@ export function CustomersSkeleton() {
 			<Pagination>
 				<PaginationContent>
 					<PaginationItem>
-						<Skeleton className="h-10 w-20" />
+						<Skeleton className="h-5 w-10" />
 					</PaginationItem>
 					{Array.from({ length: 5 }).map((_, index) => (
 						<PaginationItem key={index}>
-							<Skeleton className="h-10 w-10" />
+							<Skeleton className="h-5 w-4" />
 						</PaginationItem>
 					))}
 					<PaginationItem>
-						<Skeleton className="h-10 w-20" />
+						<Skeleton className="h-5 w-10" />
 					</PaginationItem>
 				</PaginationContent>
 			</Pagination>
