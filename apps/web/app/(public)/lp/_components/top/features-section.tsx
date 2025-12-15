@@ -5,7 +5,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@workspace/ui/components/card";
-import { FileText, Sparkles, Users } from "lucide-react";
+import { Brain, FileText, Sparkles, Users } from "lucide-react";
 import { LpSection } from "./lp-section";
 
 const features = [
@@ -22,9 +22,15 @@ const features = [
 	},
 	{
 		description:
-			"記録した接客内容を AI が分析。良かった点と改善点、次回の接客アドバイスを自動生成します。",
+			"接客ノートから AI が重要情報を自動抽出。6カテゴリで整理・蓄積します。",
+		icon: Brain,
+		title: "AI メモリ（自動情報抽出）",
+	},
+	{
+		description:
+			"接客内容を AI が分析。良かった点・改善点・次回アドバイスを自動生成。",
 		icon: Sparkles,
-		title: "AI による接客アドバイス",
+		title: "AI 接客アドバイス",
 	},
 ] as const;
 
@@ -32,9 +38,9 @@ export function FeaturesSection() {
 	return (
 		<LpSection
 			description="顧客管理の基本機能に加え、AI による接客支援機能を搭載しています。"
-			title="このデモで体験できること"
+			title="FORMAWORK.ai CRM の機能"
 		>
-			<div className="grid gap-6 md:grid-cols-3">
+			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 				{features.map((feature) => (
 					<Card key={feature.title}>
 						<CardHeader className="flex flex-row gap-2 items-center">

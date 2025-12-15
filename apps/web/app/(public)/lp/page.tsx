@@ -1,27 +1,31 @@
 import type { Metadata } from "next";
+import { AiAdviceSection } from "./_components/top/ai-advice-section";
+import { CustomerMemorySection } from "./_components/top/customer-memory-section";
 import { EndDemoSection } from "./_components/top/end-demo-section";
 import { FeaturesSection } from "./_components/top/features-section";
 import { HeroSection } from "./_components/top/hero-section";
-import { ScreenshotsSection } from "./_components/top/screenshots-section";
+import { PermissionSection } from "./_components/top/permission-section";
 import { TechStackSection } from "./_components/top/tech-stack-section";
 
 export const metadata: Metadata = {
 	description:
-		"顧客情報の管理から、次回接客のアドバイスまで。AI が日々の業務をスマートに支援する顧客管理システムのデモを体験できます。",
+		"FORMAWORK.ai CRM - 接客ノートを AI が分析し、顧客一人ひとりの「記憶」を自動で蓄積。次の接客に活かせる情報を届けます。",
 	openGraph: {
 		description:
-			"顧客情報の管理から、次回接客のアドバイスまで。AI が日々の業務をスマートに支援します。",
-		title: "AI が接客をサポートする顧客管理システム",
+			"接客ノートを AI が分析し、顧客一人ひとりの「記憶」を自動で蓄積。次の接客に活かせる情報を届けます。",
+		title: "FORMAWORK.ai CRM - AI があなたの接客を強くする顧客管理システム",
 		type: "website",
 	},
-	title: "AI が接客をサポートする顧客管理システム",
+	title: "FORMAWORK.ai CRM - AI があなたの接客を強くする顧客管理システム",
 };
 
 export default function Page() {
 	return (
 		<div className="overflow-auto h-dvh *:odd:bg-background">
 			<HeroSection />
-			<ScreenshotsSection />
+			<CustomerMemorySection />
+			<AiAdviceSection />
+			<PermissionSection />
 			<FeaturesSection />
 			<TechStackSection />
 			<EndDemoSection />
