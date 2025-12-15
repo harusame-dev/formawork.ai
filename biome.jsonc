@@ -18,7 +18,8 @@
 		"includes": [
 			"**",
 			// 自動生成なので除外
-			"!packages/db/drizzle"
+			"!packages/db/drizzle",
+			"!**/mockServiceWorker.js"
 		]
 	},
 	"linter": {

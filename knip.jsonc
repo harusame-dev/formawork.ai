@@ -5,10 +5,19 @@
 	"ignoreDependencies": [],
 	"workspaces": {
 		"apps/web": {
+			// MSW テスト用ファイルはブラウザテストから動的にインポートされるため除外
+			// mockServiceWorker.js は MSW が生成する Service Worker スクリプト
+			"ignore": [
+				"mocks/**",
+				"testing/msw-test.ts",
+				"public/mockServiceWorker.js"
+			],
 			"ignoreDependencies": [
 				"tailwindcss",
 				// Next で builtin されているため不要
-				"postcss"
+				"postcss",
+				// MSW はブラウザテストで使用（動的インポート）
+				"msw"
 			]
 		},
 		"packages/logger": {
