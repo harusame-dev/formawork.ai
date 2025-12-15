@@ -15,9 +15,7 @@
 			"ignoreDependencies": [
 				"tailwindcss",
 				// Next で builtin されているため不要
-				"postcss",
-				// MSW はブラウザテストで使用（動的インポート）
-				"msw"
+				"postcss"
 			]
 		},
 		"packages/logger": {
