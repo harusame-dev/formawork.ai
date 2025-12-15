@@ -1,0 +1,11 @@
+ALTER TABLE "local"."customers" ADD COLUMN "full_name" text GENERATED ALWAYS AS ("local"."customers"."last_name" || "local"."customers"."first_name") STORED;
+ALTER TABLE "local"."customers" ADD COLUMN "full_name_kana" text GENERATED ALWAYS AS ("local"."customers"."last_name_kana" || "local"."customers"."first_name_kana") STORED;
+CREATE INDEX "idx_customers_last_name_search" ON "local"."customers" USING btree ("last_name" text_pattern_ops);
+CREATE INDEX "idx_customers_first_name_search" ON "local"."customers" USING btree ("first_name" text_pattern_ops);
+CREATE INDEX "idx_customers_last_name_kana_search" ON "local"."customers" USING btree ("last_name_kana" text_pattern_ops);
+CREATE INDEX "idx_customers_first_name_kana_search" ON "local"."customers" USING btree ("first_name_kana" text_pattern_ops);
+CREATE INDEX "idx_customers_full_name_search" ON "local"."customers" USING btree ("full_name" text_pattern_ops);
+CREATE INDEX "idx_customers_full_name_kana_search" ON "local"."customers" USING btree ("full_name_kana" text_pattern_ops);
+CREATE INDEX "idx_customers_phone_search" ON "local"."customers" USING btree ("phone" text_pattern_ops);
+CREATE INDEX "idx_customers_email_search" ON "local"."customers" USING btree ("email" text_pattern_ops);
+CREATE INDEX "idx_customers_sort" ON "local"."customers" USING btree ("full_name","customer_id");

@@ -1,5 +1,5 @@
 {
-  "id": "c4629ab7-5cfd-442b-b9b3-bb95933f46f1",
+  "id": "0fb2bd1c-6943-4ee8-bce3-08f2d044bd00",
   "prevId": "c6732b9c-1c89-4412-9e6a-a8b99511a539",
   "version": "7",
   "dialect": "postgresql",
@@ -53,6 +53,26 @@
           "notNull": true,
           "default": "''"
         },
+        "full_name": {
+          "name": "full_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "generated": {
+            "as": "\"local\".\"customers\".\"last_name\" || \"local\".\"customers\".\"first_name\"",
+            "type": "stored"
+          }
+        },
+        "full_name_kana": {
+          "name": "full_name_kana",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "generated": {
+            "as": "\"local\".\"customers\".\"last_name_kana\" || \"local\".\"customers\".\"first_name_kana\"",
+            "type": "stored"
+          }
+        },
         "gender": {
           "name": "gender",
           "type": "smallint",
@@ -92,29 +112,159 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
-        },
-        "full_name": {
-          "name": "full_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "generated": {
-            "as": "\"local\".\"customers\".\"last_name\" || \"local\".\"customers\".\"first_name\"",
-            "type": "stored"
-          }
-        },
-        "full_name_kana": {
-          "name": "full_name_kana",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "generated": {
-            "as": "\"local\".\"customers\".\"last_name_kana\" || \"local\".\"customers\".\"first_name_kana\"",
-            "type": "stored"
-          }
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_customers_last_name_search": {
+          "name": "idx_customers_last_name_search",
+          "columns": [
+            {
+              "expression": "last_name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_pattern_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_customers_first_name_search": {
+          "name": "idx_customers_first_name_search",
+          "columns": [
+            {
+              "expression": "first_name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_pattern_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_customers_last_name_kana_search": {
+          "name": "idx_customers_last_name_kana_search",
+          "columns": [
+            {
+              "expression": "last_name_kana",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_pattern_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_customers_first_name_kana_search": {
+          "name": "idx_customers_first_name_kana_search",
+          "columns": [
+            {
+              "expression": "first_name_kana",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_pattern_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_customers_full_name_search": {
+          "name": "idx_customers_full_name_search",
+          "columns": [
+            {
+              "expression": "full_name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_pattern_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_customers_full_name_kana_search": {
+          "name": "idx_customers_full_name_kana_search",
+          "columns": [
+            {
+              "expression": "full_name_kana",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_pattern_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_customers_phone_search": {
+          "name": "idx_customers_phone_search",
+          "columns": [
+            {
+              "expression": "phone",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_pattern_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_customers_email_search": {
+          "name": "idx_customers_email_search",
+          "columns": [
+            {
+              "expression": "email",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_pattern_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_customers_sort": {
+          "name": "idx_customers_sort",
+          "columns": [
+            {
+              "expression": "full_name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "customer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
