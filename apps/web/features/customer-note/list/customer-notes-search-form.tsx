@@ -136,7 +136,7 @@ export function CustomerNotesSearchForm(props: CustomerNotesSearchFormProps) {
 											name="dateFrom"
 											render={({ field }) => (
 												<FormItem className="flex-1">
-													<FormLabel>記入日（開始）</FormLabel>
+													<FormLabel>接客日（開始）</FormLabel>
 													<FormDescription>
 														この日付以降のノート
 													</FormDescription>
@@ -155,7 +155,7 @@ export function CustomerNotesSearchForm(props: CustomerNotesSearchFormProps) {
 											name="dateTo"
 											render={({ field }) => (
 												<FormItem className="flex-1">
-													<FormLabel>記入日（終了）</FormLabel>
+													<FormLabel>接客日（終了）</FormLabel>
 													<FormDescription>
 														この日付より前のノート
 													</FormDescription>

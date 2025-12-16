@@ -55,7 +55,7 @@ export const registerCustomerNoteAction = createServerAction(
 			await tx.insert(customerNotesTable).values({
 				content,
 				customerId,
-				id: noteId,
+				customerNoteId: noteId,
 				serviceDate,
 				staffId,
 			});

@@ -28,8 +28,8 @@ import { getCustomerNoteImageUrl } from "./get-customer-note-image-url";
 
 export type CustomerNoteSearchCondition = {
 	customerId: string;
-	dateFrom?: Date;
-	dateTo?: Date;
+	dateFrom?: string;
+	dateTo?: string;
 	keyword?: string;
 	page?: number;
 };
@@ -76,11 +76,11 @@ export async function getCustomerNotes(
 	];
 
 	if (condition.dateFrom) {
-		filters.push(gte(customerNotesTable.createdAt, condition.dateFrom));
+		filters.push(gte(customerNotesTable.serviceDate, condition.dateFrom));
 	}
 
 	if (condition.dateTo) {
-		filters.push(lt(customerNotesTable.createdAt, condition.dateTo));
+		filters.push(lt(customerNotesTable.serviceDate, condition.dateTo));
 	}
 
 	if (condition.keyword) {
@@ -98,7 +98,7 @@ export async function getCustomerNotes(
 			content: customerNotesTable.content,
 			createdAt: customerNotesTable.createdAt,
 			customerId: customerNotesTable.customerId,
-			id: customerNotesTable.id,
+			customerNoteId: customerNotesTable.customerNoteId,
 			images: sql<RawCustomerNoteImage[]>`COALESCE(json_agg(
 				json_build_object(
 					'customerNoteId', ${customerNoteImagesTable.customerNoteId},
@@ -116,11 +116,14 @@ export async function getCustomerNotes(
 		.leftJoin(staffsTable, eq(customerNotesTable.staffId, staffsTable.staffId))
 		.leftJoin(
 			customerNoteImagesTable,
-			eq(customerNotesTable.id, customerNoteImagesTable.customerNoteId),
+			eq(
+				customerNotesTable.customerNoteId,
+				customerNoteImagesTable.customerNoteId,
+			),
 		)
 		.where(and(...filters))
 		.groupBy(
-			customerNotesTable.id,
+			customerNotesTable.customerNoteId,
 			customerNotesTable.content,
 			customerNotesTable.customerId,
 			customerNotesTable.serviceDate,
@@ -130,7 +133,7 @@ export async function getCustomerNotes(
 			staffsTable.lastName,
 			staffsTable.firstName,
 		)
-		.orderBy(desc(customerNotesTable.createdAt))
+		.orderBy(desc(customerNotesTable.serviceDate))
 		.limit(NOTES_PER_PAGE)
 		.offset(offset);
 
@@ -147,7 +150,7 @@ export async function getCustomerNotes(
 						url: await getCustomerNoteImageUrl(image.path),
 					})),
 				),
-				getLatestAdvice(note.id),
+				getLatestAdvice(note.customerNoteId),
 			]);
 
 			return {

@@ -50,6 +50,13 @@
       "when": 1765837483878,
       "tag": "0006_slim_mephisto",
       "breakpoints": false
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1765903843394,
+      "tag": "0007_natural_gorgon",
+      "breakpoints": false
     }
   ]
 }

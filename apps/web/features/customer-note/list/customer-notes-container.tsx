@@ -35,14 +35,7 @@ export async function CustomerNotesContainer({
 	// 検索条件を構築
 	const condition: CustomerNoteSearchCondition = {
 		customerId,
-		dateFrom: searchCondition.dateFrom
-			? new Date(searchCondition.dateFrom)
-			: undefined,
-		dateTo: searchCondition.dateTo
-			? new Date(searchCondition.dateTo)
-			: undefined,
-		keyword: searchCondition.keyword,
-		page: searchCondition.page,
+		...searchCondition,
 	};
 
 	const [

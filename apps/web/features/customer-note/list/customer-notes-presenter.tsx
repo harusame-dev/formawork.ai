@@ -37,7 +37,7 @@ export function CustomerNotesPresenter({
 
 			<ul className="space-y-4">
 				{notes.map((note) => (
-					<li key={note.id}>
+					<li key={note.customerNoteId}>
 						<CustomerNoteCard
 							authorName={note.authorName}
 							canEdit={note.canEdit}
