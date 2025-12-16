@@ -28,8 +28,8 @@ import { getCustomerNoteImageUrl } from "./get-customer-note-image-url";
 
 export type CustomerNoteSearchCondition = {
 	customerId: string;
-	dateFrom?: Date;
-	dateTo?: Date;
+	dateFrom?: string;
+	dateTo?: string;
 	keyword?: string;
 	page?: number;
 };
