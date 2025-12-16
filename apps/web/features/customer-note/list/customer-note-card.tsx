@@ -49,9 +49,9 @@ export function CustomerNoteCard({
 							// updatedAt をキーにして変更があった際にコンポーネントを再マウントさせる
 							// updatedAt.getTime() は UNIX タイムスタンプでタイムゾーン非依存のためハイドレーションエラーなし
 							key={note.updatedAt.getTime()}
-							noteId={note.id}
+							noteId={note.customerNoteId}
 						/>
-						<DeleteCustomerNoteDialog noteId={note.id} />
+						<DeleteCustomerNoteDialog noteId={note.customerNoteId} />
 					</div>
 				)}
 			</CardHeader>
@@ -62,7 +62,7 @@ export function CustomerNoteCard({
 				<CustomerNoteAdviceContainer
 					advice={note.advice}
 					isTimeout={isAdviceTimeout}
-					noteId={note.id}
+					noteId={note.customerNoteId}
 				/>
 			</CardContent>
 		</Card>

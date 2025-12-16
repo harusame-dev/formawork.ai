@@ -44,7 +44,7 @@ export async function deleteCustomerNote(
 	try {
 		// ノートの取得と認可チェック
 		const note = await db.query.customerNotesTable.findFirst({
-			where: eq(customerNotesTable.id, customerNoteId),
+			where: eq(customerNotesTable.customerNoteId, customerNoteId),
 		});
 
 		if (!note) {
@@ -77,7 +77,7 @@ export async function deleteCustomerNote(
 
 		await db
 			.delete(customerNotesTable)
-			.where(eq(customerNotesTable.id, customerNoteId));
+			.where(eq(customerNotesTable.customerNoteId, customerNoteId));
 
 		// Supabase Storage から画像ファイルを削除（並列処理）
 		if (images.length > 0) {

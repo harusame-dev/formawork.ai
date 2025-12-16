@@ -59,7 +59,7 @@ export async function editCustomerNote({
 	try {
 		// ノートの取得と認可チェック
 		const note = await db.query.customerNotesTable.findFirst({
-			where: eq(customerNotesTable.id, customerNoteId),
+			where: eq(customerNotesTable.customerNoteId, customerNoteId),
 		});
 
 		if (!note) {
@@ -112,7 +112,7 @@ export async function editCustomerNote({
 					serviceDate,
 					updatedAt: new Date(),
 				})
-				.where(eq(customerNotesTable.id, customerNoteId));
+				.where(eq(customerNotesTable.customerNoteId, customerNoteId));
 
 			// 既存の画像レコードを全て削除
 			await tx

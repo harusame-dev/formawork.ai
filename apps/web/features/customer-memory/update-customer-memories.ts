@@ -47,11 +47,11 @@ async function fetchNotesData(noteIds: string[]) {
 	return db
 		.select({
 			content: customerNotesTable.content,
-			id: customerNotesTable.id,
+			customerNoteId: customerNotesTable.customerNoteId,
 			serviceDate: customerNotesTable.serviceDate,
 		})
 		.from(customerNotesTable)
-		.where(inArray(customerNotesTable.id, noteIds));
+		.where(inArray(customerNotesTable.customerNoteId, noteIds));
 }
 
 async function fetchExistingMemories(customerId: string) {
@@ -227,7 +227,7 @@ export async function updateCustomerMemories(
 		existingMemories,
 		targetNotes: targetNotes.map((note) => ({
 			content: note.content,
-			id: note.id,
+			id: note.customerNoteId,
 			serviceDate: note.serviceDate,
 		})),
 	};
@@ -240,7 +240,7 @@ export async function updateCustomerMemories(
 	);
 
 	if (executableOperations.length > 0) {
-		const primaryNoteId = targetNotes[0]?.id ?? null;
+		const primaryNoteId = targetNotes[0]?.customerNoteId ?? null;
 		await Promise.allSettled(
 			executableOperations.map((op) =>
 				executeOperation(customerId, op, primaryNoteId),

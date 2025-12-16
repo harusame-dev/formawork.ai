@@ -54,7 +54,10 @@ export async function deleteCustomer({
 			.from(customerNoteImagesTable)
 			.innerJoin(
 				customerNotesTable,
-				eq(customerNoteImagesTable.customerNoteId, customerNotesTable.id),
+				eq(
+					customerNoteImagesTable.customerNoteId,
+					customerNotesTable.customerNoteId,
+				),
 			)
 			.where(eq(customerNotesTable.customerId, customerId));
 

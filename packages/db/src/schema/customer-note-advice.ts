@@ -66,17 +66,19 @@ export const customerNoteAdviceTable = pgSchema(schemaName).table(
 		createdAt: timestamp("created_at").defaultNow().notNull(),
 		customerNoteId: uuid("customer_note_id")
 			.notNull()
-			.references(() => customerNotesTable.id, { onDelete: "cascade" }),
+			.references(() => customerNotesTable.customerNoteId, {
+				onDelete: "cascade",
+			}),
 		id: uuid("id").primaryKey().defaultRandom(),
 	},
-	(table) => ({
+	(table) => [
 		// customerNoteId + createdAt DESC の複合インデックス
 		// customerNoteId だけの検索もこのインデックスでカバーされる
-		customerNoteCreatedIdx: index("idx_customer_note_advice_created").on(
+		index("idx_customer_note_advice_created").on(
 			table.customerNoteId,
 			table.createdAt.desc(),
 		),
-	}),
+	],
 );
 
 export type SelectCustomerNoteAdvice =
