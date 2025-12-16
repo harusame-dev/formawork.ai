@@ -1,5 +1,4 @@
 import { Button } from "@workspace/ui/components/button";
-import { Plus } from "lucide-react";
 import { Suspense } from "react";
 import { RegisterCustomerMemoryDialogContainer } from "@/features/customer-memory/register/register-customer-memory-dialog-container";
 
@@ -11,8 +10,7 @@ export default async function CustomerMemoriesActionPage({
 	return (
 		<Suspense
 			fallback={
-				<Button disabled>
-					<Plus className="size-4 mr-2" />
+				<Button disabled size="sm">
 					メモリを追加
 				</Button>
 			}
