@@ -4,8 +4,6 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 export function CustomerNotesSkeleton() {
 	return (
 		<div className="space-y-4">
-			<Skeleton className="h-4 w-32" />
-
 			{Array.from({ length: 3 }).map((_, index) => (
 				<Card key={index}>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
