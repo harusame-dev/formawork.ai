@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { LpSection } from "./lp-section";
-// TODO: 顧客メモリ画像を後で差し替え（customer-memory-thumbnail.png）
 import screenshotImage from "./ss-ai-memories.png";
 
 const categories = [
