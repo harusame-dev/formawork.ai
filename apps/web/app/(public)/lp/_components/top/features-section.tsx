@@ -37,7 +37,7 @@ const features = [
 export function FeaturesSection() {
 	return (
 		<LpSection
-			description="顧客管理の基本機能に加え、AI による接客支援機能を搭載しています。"
+			description="顧客関係管理の基本機能に加え、AI による接客支援機能を搭載しています。"
 			title="FORMAWORK.ai CRM の機能"
 		>
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
