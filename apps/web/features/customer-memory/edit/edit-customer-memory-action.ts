@@ -36,7 +36,7 @@ const schema = v.object({
 export const editCustomerMemoryAction = createServerAction(editCustomerMemory, {
 	name: "editCustomerMemoryAction",
 	onSuccess: ({ input: { customerId } }) => {
-		updateTag(CustomerTag.MemoryCrud(customerId));
+		updateTag(CustomerTag.MemoriesByCustomerId(customerId));
 	},
 	schema,
 });

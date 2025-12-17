@@ -28,22 +28,15 @@ export async function registerCustomerMemory(
 		return fail("メモリの登録上限（100件）に達しています");
 	}
 
-	const [memory] = await db
-		.insert(customerMemoriesTable)
-		.values({
-			category: input.category,
-			content: input.content,
-			customerId: input.customerId,
-			id: generateUniqueId(),
-			importance: input.importance,
-			isProtected: false,
-			sourceNoteId: null,
-		})
-		.returning({ id: customerMemoriesTable.id });
-
-	if (!memory) {
-		return fail("メモリの登録に失敗しました");
-	}
+	await db.insert(customerMemoriesTable).values({
+		category: input.category,
+		content: input.content,
+		customerId: input.customerId,
+		id: generateUniqueId(),
+		importance: input.importance,
+		isProtected: false,
+		sourceNoteId: null,
+	});
 
 	return succeed();
 }

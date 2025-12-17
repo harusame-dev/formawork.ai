@@ -3,11 +3,18 @@ import { db } from "@workspace/db/client";
 import { customerMemoriesTable } from "@workspace/db/schema/customer-memory";
 import { eq } from "drizzle-orm";
 
-export async function toggleCustomerMemoryLock(
-	memoryId: string,
-): Promise<Result<{ isProtected: boolean }, "メモリが存在しません">> {
+export async function toggleCustomerMemoryLock({
+	memoryId,
+}: {
+	memoryId: string;
+}): Promise<
+	Result<{ isProtected: boolean; customerId: string }, "メモリが存在しません">
+> {
 	const memories = await db
-		.select({ isProtected: customerMemoriesTable.isProtected })
+		.select({
+			customerId: customerMemoriesTable.customerId,
+			isProtected: customerMemoriesTable.isProtected,
+		})
 		.from(customerMemoriesTable)
 		.where(eq(customerMemoriesTable.id, memoryId))
 		.limit(1);
@@ -23,5 +30,8 @@ export async function toggleCustomerMemoryLock(
 		.set({ isProtected: newIsProtected })
 		.where(eq(customerMemoriesTable.id, memoryId));
 
-	return succeed({ isProtected: newIsProtected });
+	return succeed({
+		customerId: memories[0].customerId,
+		isProtected: newIsProtected,
+	});
 }

@@ -8,16 +8,14 @@ import { createServerAction } from "@/libs/create-server-action";
 import { deleteCustomerNote } from "./delete-customer-note";
 
 const deleteCustomerNoteSchema = v.object({
-	noteId: v.pipe(v.string(), v.uuid()),
+	customerNoteId: v.pipe(v.string(), v.uuid()),
 });
 
 export const deleteCustomerNoteAction = createServerAction(
 	async (input, { role, userId }) => {
-		// biome-ignore lint/style/noNonNullAssertion: isPublic: false のため認証済みで非null
-		const user = { role: role!, userId: userId! };
 		const result = await deleteCustomerNote({
-			customerNoteId: input.noteId,
-			user,
+			customerNoteId: input.customerNoteId,
+			user: { role, userId },
 		});
 
 		if (!result.success) {
@@ -28,8 +26,8 @@ export const deleteCustomerNoteAction = createServerAction(
 	},
 	{
 		name: "deleteCustomerNoteAction",
-		onSuccess: ({ result }) => {
-			updateTag(CustomerTag.NoteCrud(result.customerId));
+		onSuccess: ({ result: { customerId } }) => {
+			updateTag(CustomerTag.NotesByCustomerId(customerId));
 		},
 		schema: deleteCustomerNoteSchema,
 	},

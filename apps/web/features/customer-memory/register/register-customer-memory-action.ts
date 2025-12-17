@@ -37,7 +37,7 @@ export const registerCustomerMemoryAction = createServerAction(
 	{
 		name: "registerCustomerMemoryAction",
 		onSuccess: ({ input }) => {
-			updateTag(CustomerTag.MemoryCrud(input.customerId));
+			updateTag(CustomerTag.MemoriesByCustomerId(input.customerId));
 		},
 		schema,
 	},

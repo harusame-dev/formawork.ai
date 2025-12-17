@@ -34,8 +34,8 @@ const editCustomerNoteSchema = v.object({
 		v.minLength(1, "内容を入力してください"),
 		v.maxLength(4096, "内容は4096文字以内で入力してください"),
 	),
+	customerNoteId: v.pipe(v.string(), v.uuid()),
 	keepImagePaths: v.optional(v.array(v.string()), []),
-	noteId: v.pipe(v.string(), v.uuid()),
 	serviceDate: v.pipe(
 		v.string(),
 		v.regex(/^\d{4}-\d{2}-\d{2}$/, "正しい日付形式で入力してください"),
@@ -44,19 +44,10 @@ const editCustomerNoteSchema = v.object({
 });
 
 export const editCustomerNoteAction = createServerAction(
-	async (
-		{ content, keepImagePaths, noteId, serviceDate, uploadImages },
-		{ role, userId },
-	) => {
-		// biome-ignore lint/style/noNonNullAssertion: isPublic: false のため認証済みで非null
-		const user = { role: role!, userId: userId! };
+	async (params, { role, userId }) => {
 		const result = await editCustomerNote({
-			content,
-			customerNoteId: noteId,
-			keepImagePaths,
-			serviceDate,
-			uploadImages,
-			user,
+			...params,
+			user: { role, userId },
 		});
 
 		if (!result.success) {
@@ -65,8 +56,11 @@ export const editCustomerNoteAction = createServerAction(
 
 		const customerId = result.data.customerId;
 
-		await adviceQueue.sendMessage({ customerNoteId: noteId });
-		await memoryQueue.sendMessage({ customerId, serviceNoteId: noteId });
+		await adviceQueue.sendMessage({ customerNoteId: params.customerNoteId });
+		await memoryQueue.sendMessage({
+			customerId,
+			serviceNoteId: params.customerNoteId,
+		});
 
 		// トリガーはするがエラーのリトライなどはキューの定期処理で行うため、
 		// 実行結果のハンドリングは不要
@@ -79,7 +73,7 @@ export const editCustomerNoteAction = createServerAction(
 	{
 		name: "editCustomerNoteAction",
 		onSuccess: ({ result }) => {
-			updateTag(CustomerTag.NoteCrud(result.customerId));
+			updateTag(CustomerTag.NotesByCustomerId(result.customerId));
 		},
 		schema: editCustomerNoteSchema,
 	},

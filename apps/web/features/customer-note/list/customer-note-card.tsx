@@ -37,16 +37,16 @@ export function CustomerNoteCard({
 					<div className="flex gap-2">
 						<EditCustomerNoteDialog
 							customerId={note.customerId}
+							customerNoteId={note.customerNoteId}
 							initialContent={note.content}
 							initialImages={note.images}
-							initialServiceDate={note.serviceDate}
 							// 古い state が残ってしまい、編集後に再度ダイアログを開いたときに新しい状態にならないため、
 							// updatedAt をキーにして変更があった際にコンポーネントを再マウントさせる
 							// updatedAt.getTime() は UNIX タイムスタンプでタイムゾーン非依存のためハイドレーションエラーなし
+							initialServiceDate={note.serviceDate}
 							key={note.updatedAt.getTime()}
-							noteId={note.customerNoteId}
 						/>
-						<DeleteCustomerNoteDialog noteId={note.customerNoteId} />
+						<DeleteCustomerNoteDialog customerNoteId={note.customerNoteId} />
 					</div>
 				)}
 			</CardHeader>

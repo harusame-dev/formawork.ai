@@ -49,9 +49,7 @@ export function EditStaffForm({ disabled: disabledProp }: EditStaffFormProps) {
 
 		const result = await registerStaffAction(values);
 
-		if (result.success) {
-			router.push("/staffs");
-		} else {
+		if (!result.success) {
 			form.setError("root", {
 				message: result.error || "エラーが発生しました",
 			});

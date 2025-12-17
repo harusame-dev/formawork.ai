@@ -22,14 +22,9 @@ export async function deleteCustomerMemory(
 		return fail("メモリが存在しません");
 	}
 
-	const deleted = await db
+	await db
 		.delete(customerMemoriesTable)
-		.where(eq(customerMemoriesTable.id, input.memoryId))
-		.returning({ id: customerMemoriesTable.id });
-
-	if (!deleted[0]) {
-		return fail("メモリの削除に失敗しました");
-	}
+		.where(eq(customerMemoriesTable.id, input.memoryId));
 
 	return succeed();
 }

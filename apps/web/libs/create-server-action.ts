@@ -14,10 +14,16 @@ const FORBIDDEN_ERROR_MESSAGE = "この操作を実行する権限がありま�
 const INTERNAL_SERVER_ERROR_MESSAGE =
 	"サーバーエラーが発生しました。時間をおいて再度お試しください" as const;
 
-type ServerActionContext = {
+type PublicServerActionContext = {
 	logger: Logger;
-	role: UserRole | null;
-	userId: string | null;
+	role: null;
+	userId: null;
+};
+
+type PrivateServerActionContext<TRole extends UserRole = UserRole> = {
+	logger: Logger;
+	role: TRole;
+	userId: string;
 };
 
 type BaseOptions<
@@ -49,18 +55,11 @@ type PrivateOptions<
 	TSchema extends v.GenericSchema,
 	TData,
 	TError extends string,
+	TRole extends UserRole = UserRole,
 > = BaseOptions<TSchema, TData, TError> & {
 	isPublic?: false;
-	role?: UserRole[];
+	role?: TRole[];
 };
-
-type ServerActionOptions<
-	TSchema extends v.GenericSchema,
-	TData,
-	TError extends string,
-> =
-	| PublicOptions<TSchema, TData, TError>
-	| PrivateOptions<TSchema, TData, TError>;
 
 type ServerActionErrorMessage =
 	| typeof VALIDATION_ERROR_MESSAGE
@@ -68,7 +67,26 @@ type ServerActionErrorMessage =
 	| typeof FORBIDDEN_ERROR_MESSAGE
 	| typeof INTERNAL_SERVER_ERROR_MESSAGE;
 
-// schema ありの場合（引数あり）- より特定的なので先に配置
+// 1. Private + schema あり + role 指定あり
+export function createServerAction<
+	TSchema extends v.GenericSchema,
+	TData,
+	TError extends string,
+	TRole extends UserRole,
+>(
+	logicFunc: (
+		input: v.InferOutput<TSchema>,
+		context: PrivateServerActionContext<TRole>,
+	) => Promise<Result<TData, TError>>,
+	options: PrivateOptions<TSchema, TData, TError, TRole> & {
+		schema: TSchema;
+		role: TRole[];
+	},
+): (
+	input: v.InferInput<TSchema>,
+) => Promise<Result<TData, TError | ServerActionErrorMessage>>;
+
+// 2. Private + schema あり + role 指定なし
 export function createServerAction<
 	TSchema extends v.GenericSchema,
 	TData,
@@ -76,21 +94,71 @@ export function createServerAction<
 >(
 	logicFunc: (
 		input: v.InferOutput<TSchema>,
-		context: ServerActionContext,
+		context: PrivateServerActionContext,
 	) => Promise<Result<TData, TError>>,
-	options: ServerActionOptions<TSchema, TData, TError> & { schema: TSchema },
+	options: PrivateOptions<TSchema, TData, TError> & {
+		schema: TSchema;
+		role?: undefined;
+	},
 ): (
 	input: v.InferInput<TSchema>,
 ) => Promise<Result<TData, TError | ServerActionErrorMessage>>;
 
-// schema なしの場合（引数なし）
+// 3. Public + schema あり
+export function createServerAction<
+	TSchema extends v.GenericSchema,
+	TData,
+	TError extends string,
+>(
+	logicFunc: (
+		input: v.InferOutput<TSchema>,
+		context: PublicServerActionContext,
+	) => Promise<Result<TData, TError>>,
+	options: PublicOptions<TSchema, TData, TError> & { schema: TSchema },
+): (
+	input: v.InferInput<TSchema>,
+) => Promise<Result<TData, TError | ServerActionErrorMessage>>;
+
+// 4. Private + schema なし + role 指定あり
+export function createServerAction<
+	TData,
+	TError extends string,
+	TRole extends UserRole,
+>(
+	logicFunc: (
+		input: undefined,
+		context: PrivateServerActionContext<TRole>,
+	) => Promise<Result<TData, TError>>,
+	options: Omit<
+		PrivateOptions<v.UndefinedSchema<undefined>, TData, TError, TRole>,
+		"schema"
+	> & {
+		role: TRole[];
+	},
+): () => Promise<Result<TData, TError | ServerActionErrorMessage>>;
+
+// 5. Private + schema なし + role 指定なし
 export function createServerAction<TData, TError extends string>(
 	logicFunc: (
 		input: undefined,
-		context: ServerActionContext,
+		context: PrivateServerActionContext,
 	) => Promise<Result<TData, TError>>,
 	options: Omit<
-		ServerActionOptions<v.UndefinedSchema<undefined>, TData, TError>,
+		PrivateOptions<v.UndefinedSchema<undefined>, TData, TError>,
+		"schema"
+	> & {
+		role?: undefined;
+	},
+): () => Promise<Result<TData, TError | ServerActionErrorMessage>>;
+
+// 6. Public + schema なし
+export function createServerAction<TData, TError extends string>(
+	logicFunc: (
+		input: undefined,
+		context: PublicServerActionContext,
+	) => Promise<Result<TData, TError>>,
+	options: Omit<
+		PublicOptions<v.UndefinedSchema<undefined>, TData, TError>,
 		"schema"
 	>,
 ): () => Promise<Result<TData, TError | ServerActionErrorMessage>>;
@@ -101,11 +169,11 @@ export function createServerAction<
 	TData,
 	TError extends string,
 >(
-	logicFunc: (
-		input: v.InferOutput<TSchema> | undefined,
-		context: ServerActionContext,
-	) => Promise<Result<TData, TError>>,
-	options: ServerActionOptions<TSchema, TData, TError>,
+	// biome-ignore lint/suspicious/noExplicitAny: オーバーロードの実装のため any を許容
+	logicFunc: (input: any, context: any) => Promise<Result<TData, TError>>,
+	options:
+		| PublicOptions<TSchema, TData, TError>
+		| PrivateOptions<TSchema, TData, TError, UserRole>,
 ): (
 	input?: v.InferInput<TSchema>,
 ) => Promise<Result<TData, TError | ServerActionErrorMessage>> {
@@ -129,10 +197,11 @@ export function createServerAction<
 			validatedInput = parseResult.output;
 		}
 
-		let userId: string | null = null;
-		let role: UserRole | null = null;
-		if (!options.isPublic) {
-			userId = await getUserStaffId();
+		let context: PublicServerActionContext | PrivateServerActionContext;
+		if (options.isPublic) {
+			context = { logger, role: null, userId: null };
+		} else {
+			const userId = await getUserStaffId();
 			if (!userId) {
 				logger.warn("認証されていないアクセス", {
 					event: EventType.AuthenticationFailure,
@@ -140,7 +209,7 @@ export function createServerAction<
 				return fail(UNAUTHORIZED_ERROR_MESSAGE);
 			}
 
-			role = await getUserRole();
+			const role = await getUserRole();
 			if ("role" in options && options.role && options.role.length > 0) {
 				if (!options.role.includes(role)) {
 					logger.warn("権限がないアクセス", {
@@ -149,10 +218,11 @@ export function createServerAction<
 					return fail(FORBIDDEN_ERROR_MESSAGE);
 				}
 			}
+			context = { logger, role, userId };
 		}
 
 		try {
-			const result = await logicFunc(validatedInput, { logger, role, userId });
+			const result = await logicFunc(validatedInput, context);
 
 			if (result.success) {
 				logger.info(`${options.name} 成功`);

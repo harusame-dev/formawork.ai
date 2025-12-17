@@ -8,10 +8,8 @@ import {
 } from "@workspace/db/schema/customer-memory";
 import { customerNotesTable } from "@workspace/db/schema/customer-note";
 import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
 import * as v from "valibot";
 import { genderSchema } from "@/features/customer/schema";
-import { CustomerTag } from "@/features/customer/tag";
 import {
 	type GenerateMemoryOperationsParams,
 	generateMemoryOperations,
@@ -247,7 +245,6 @@ export async function updateCustomerMemories(
 			),
 		);
 		await enforceMemoryLimit(customerId);
-		revalidateTag(CustomerTag.MemoryCrud(customerId), { expire: 0 });
 	}
 
 	logger.info("メモリー更新完了", {

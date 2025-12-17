@@ -17,8 +17,9 @@ export async function getCustomers({
 	page,
 }: CustomersCondition): Promise<GetCustomersResult> {
 	"use cache";
+
 	cacheLife("permanent");
-	cacheTag(CustomerTag.crud);
+	cacheTag(CustomerTag.List);
 
 	const pageSize = 20;
 	const whereConditions = keyword

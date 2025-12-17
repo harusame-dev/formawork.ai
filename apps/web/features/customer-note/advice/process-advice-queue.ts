@@ -34,7 +34,12 @@ async function processMessage(
 		return;
 	}
 
-	revalidateTag(CustomerTag.NoteCrud(result.data.customerId), { expire: 0 });
+	revalidateTag(CustomerTag.NotesByCustomerId(result.data.customerId), {
+		expire: 0,
+	});
+	revalidateTag(CustomerTag.LatestAdviceByCustomerNoteId(customerNoteId), {
+		expire: 0,
+	});
 	await adviceQueue.deleteMessage(msg.msg_id);
 }
 

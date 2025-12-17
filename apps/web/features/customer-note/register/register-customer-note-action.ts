@@ -1,27 +1,13 @@
 "use server";
 
-import { randomUUID } from "node:crypto";
-import { succeed } from "@harusame0616/result";
-import { createAdminClient } from "@repo/supabase/admin";
-import { db } from "@workspace/db/client";
-import {
-	ADVICE_QUEUE_NAME,
-	MEMORY_QUEUE_NAME,
-} from "@workspace/db/queue-names";
-import {
-	customerNoteImagesTable,
-	customerNotesTable,
-} from "@workspace/db/schema/customer-note";
 import { updateTag } from "next/cache";
 import { after } from "next/server";
 import * as v from "valibot";
 import { CustomerTag } from "@/features/customer/tag";
 import { processMemoryQueue } from "@/features/customer-memory/process-memory-queue";
 import { createServerAction } from "@/libs/create-server-action";
-import { PgmqQueue } from "@/libs/queue";
 import { processAdviceQueue } from "../advice/process-advice-queue";
-
-const BUCKET_NAME = "customer-note-attachments";
+import { registerCustomerNote } from "./register-customer-note";
 
 const uploadImageSchema = v.object({
 	permanentPath: v.string(),
@@ -43,71 +29,15 @@ const registerCustomerNoteSchema = v.object({
 });
 
 export const registerCustomerNoteAction = createServerAction(
-	async (input, { logger, userId }) => {
-		const { content, customerId, serviceDate, uploadImages } = input;
-		// biome-ignore lint/style/noNonNullAssertion: isPublic: false のため認証済みで非null
-		const staffId = userId!;
-
-		const noteId = randomUUID();
-		const supabase = createAdminClient();
-
-		await db.transaction(async (tx) => {
-			await tx.insert(customerNotesTable).values({
-				content,
-				customerId,
-				customerNoteId: noteId,
-				serviceDate,
-				staffId,
-			});
-
-			if (uploadImages.length > 0) {
-				const moveResults = await Promise.all(
-					uploadImages.map(async (uploadImage, i) => {
-						const { permanentPath, temporaryPath } = uploadImage;
-
-						const { error: moveError } = await supabase.storage
-							.from(BUCKET_NAME)
-							.move(temporaryPath, permanentPath);
-
-						if (moveError) {
-							logger.error("Failed to move image file", {
-								displayOrder: i,
-								err: moveError,
-								permanentPath,
-								temporaryPath,
-							});
-							throw new Error(
-								`Failed to move image file: ${moveError.message}`,
-							);
-						}
-
-						return {
-							displayOrder: i,
-							path: permanentPath,
-						};
-					}),
-				);
-
-				await tx.insert(customerNoteImagesTable).values(
-					moveResults.map((result) => ({
-						customerNoteId: noteId,
-						displayOrder: result.displayOrder,
-						path: result.path,
-					})),
-				);
-			}
-			const adviceQueue = new PgmqQueue<{ customerNoteId: string }>(
-				ADVICE_QUEUE_NAME,
-				tx,
-			);
-			const memoryQueue = new PgmqQueue<{
-				customerId: string;
-				serviceNoteId: string;
-			}>(MEMORY_QUEUE_NAME, tx);
-
-			await adviceQueue.sendMessage({ customerNoteId: noteId });
-			await memoryQueue.sendMessage({ customerId, serviceNoteId: noteId });
+	async (input, { userId }) => {
+		const result = await registerCustomerNote({
+			...input,
+			staffId: userId,
 		});
+
+		if (!result.success) {
+			return result;
+		}
 
 		// トリガーはするがエラーのリトライなどはキューの定期処理で行うため、
 		// 実行結果のハンドリングは不要
@@ -115,12 +45,12 @@ export const registerCustomerNoteAction = createServerAction(
 			await Promise.allSettled([processAdviceQueue(), processMemoryQueue()]);
 		});
 
-		return succeed();
+		return result;
 	},
 	{
 		name: "registerCustomerNoteAction",
-		onSuccess: ({ input }) => {
-			updateTag(CustomerTag.NoteCrud(input.customerId));
+		onSuccess: ({ input: { customerId } }) => {
+			updateTag(CustomerTag.NotesByCustomerId(customerId));
 		},
 		schema: registerCustomerNoteSchema,
 	},
