@@ -6,13 +6,11 @@ import { useOptimistic, useTransition } from "react";
 import { toggleCustomerMemoryLockAction } from "../toggle-lock/toggle-customer-memory-lock-action";
 
 type CustomerMemoryLockButtonProps = {
-	customerId: string;
 	isProtected: boolean;
 	memoryId: string;
 };
 
 export function CustomerMemoryLockButton({
-	customerId,
 	isProtected,
 	memoryId,
 }: CustomerMemoryLockButtonProps) {
@@ -23,7 +21,7 @@ export function CustomerMemoryLockButton({
 	function handleToggle() {
 		startTransition(async () => {
 			setOptimisticIsProtected(!optimisticIsProtected);
-			await toggleCustomerMemoryLockAction({ customerId, memoryId });
+			await toggleCustomerMemoryLockAction({ memoryId });
 		});
 	}
 

@@ -55,7 +55,7 @@ export function StaffBasicInfoPresenter({
 	return (
 		<div className="space-y-4">
 			{fields.map((field) => (
-				<div className="grid gap-2" key={field.label}>
+				<div key={field.label}>
 					<div className="text-sm text-muted-foreground">{field.label}</div>
 					<div className="font-bold">{field.value}</div>
 				</div>

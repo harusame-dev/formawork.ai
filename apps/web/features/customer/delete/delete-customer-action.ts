@@ -14,9 +14,12 @@ const deleteCustomerSchema = v.object({
 
 export const deleteCustomerAction = createServerAction(deleteCustomer, {
 	name: "deleteCustomerAction",
-	onSuccess: ({ input }) => {
-		updateTag(CustomerTag.crud);
-		updateTag(CustomerTag.NoteCrud(input.customerId));
+	onSuccess: ({ input: { customerId } }) => {
+		updateTag(CustomerTag.List);
+		updateTag(CustomerTag.Detail(customerId));
+		updateTag(CustomerTag.NotesByCustomerId(customerId));
+		updateTag(CustomerTag.MemoriesByCustomerId(customerId));
+
 		redirect("/customers", RedirectType.replace);
 	},
 	role: [UserRole.Admin],

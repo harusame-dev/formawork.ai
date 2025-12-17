@@ -22,7 +22,6 @@ import {
 } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { CustomerTag } from "@/features/customer/tag";
-import { StaffTag } from "@/features/staff/tag";
 import { getLatestAdvice } from "../advice/get-latest-advice";
 import { getCustomerNoteImageUrl } from "./get-customer-note-image-url";
 
@@ -61,12 +60,11 @@ export async function getCustomerNotes(
 	condition: CustomerNoteSearchCondition,
 ): Promise<{
 	notes: CustomerNoteWithImages[];
-	totalCount: number;
 	currentPage: number;
 	totalPages: number;
 }> {
-	cacheTag(CustomerTag.NoteCrud(condition.customerId), StaffTag.Delete);
 	cacheLife("permanent");
+	cacheTag(CustomerTag.NotesByCustomerId(condition.customerId));
 
 	const page = condition.page ?? 1;
 	const offset = (page - 1) * NOTES_PER_PAGE;
@@ -175,7 +173,6 @@ export async function getCustomerNotes(
 	return {
 		currentPage: page,
 		notes: notesWithSignedUrls,
-		totalCount,
 		totalPages,
 	};
 }

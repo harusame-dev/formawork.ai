@@ -8,7 +8,7 @@ export function StaffInfoPresenter({
 	lastName,
 }: StaffInfoPresenterProps) {
 	return (
-		<h1 className="text-2xl font-bold h-9">
+		<h1 className="text-2xl font-bold h-8">
 			{lastName} {firstName}
 		</h1>
 	);

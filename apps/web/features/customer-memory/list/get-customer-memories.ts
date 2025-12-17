@@ -13,8 +13,9 @@ import { MAX_MEMORIES } from "../customer-memory";
 export async function getCustomerMemories(
 	customerId: string,
 ): Promise<SelectCustomerMemory[]> {
-	cacheTag(CustomerTag.MemoryCrud(customerId));
+	"use cache";
 	cacheLife("permanent");
+	cacheTag(CustomerTag.MemoriesByCustomerId(customerId));
 
 	const memories = await db
 		.select()

@@ -50,7 +50,7 @@ type FormValues = v.InferOutput<typeof formSchema>;
 
 type EditCustomerNoteDialogProps = {
 	customerId: string;
-	noteId: string;
+	customerNoteId: string;
 	initialContent: string;
 	initialServiceDate: string;
 	initialImages: CustomerNoteImageWithUrl[];
@@ -58,7 +58,7 @@ type EditCustomerNoteDialogProps = {
 
 export function EditCustomerNoteDialog({
 	customerId,
-	noteId,
+	customerNoteId,
 	initialContent,
 	initialServiceDate,
 	initialImages,
@@ -146,8 +146,8 @@ export function EditCustomerNoteDialog({
 
 			const result = await editCustomerNoteAction({
 				content: values.content,
+				customerNoteId: customerNoteId,
 				keepImagePaths,
-				noteId,
 				serviceDate: values.serviceDate,
 				uploadImages,
 			});

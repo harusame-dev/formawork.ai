@@ -1,4 +1,4 @@
 export const StaffTag = {
-	Crud: "STAFF_TAG_CRUD",
-	Delete: "STAFF_TAG_DELETE",
+	Detail: (staffId: string) => `STAFF_TAG_DETAIL_${staffId}`,
+	List: "STAFF_TAG_LIST",
 };

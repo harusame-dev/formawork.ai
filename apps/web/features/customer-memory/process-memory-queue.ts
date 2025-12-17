@@ -1,6 +1,8 @@
 import { getLogger } from "@repo/logger/nextjs/server";
 import { MEMORY_QUEUE_NAME } from "@workspace/db/queue-names";
+import { revalidateTag } from "next/cache";
 import { type PgmqMessage, PgmqQueue } from "@/libs/queue";
+import { CustomerTag } from "../customer/tag";
 import { updateCustomerMemories } from "./update-customer-memories";
 
 type MemoryQueuePayload = {
@@ -25,7 +27,11 @@ async function processCustomerMessages(
 
 	const result = await updateCustomerMemories(customerId, noteIds);
 
-	if (!result.success) {
+	if (result.success) {
+		revalidateTag(CustomerTag.MemoriesByCustomerId(customerId), {
+			expire: 0,
+		});
+	} else {
 		logger.warn("データなしのためアーカイブ", {
 			customerId,
 			error: result.error,

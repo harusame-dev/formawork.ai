@@ -67,9 +67,7 @@ export function EditCustomerForm(
 				})
 			: await registerCustomerAction(values);
 
-		if (result.success) {
-			router.push(`/customers/${result.data.customerId}`);
-		} else {
+		if (!result.success) {
 			form.setError("root", {
 				message: result?.error || "エラーが発生しました",
 			});

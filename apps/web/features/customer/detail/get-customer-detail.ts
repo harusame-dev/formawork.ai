@@ -5,12 +5,12 @@ import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 import * as v from "valibot";
 import { genderSchema } from "../schema";
-import { tagByCustomerId } from "../tag";
+import { CustomerTag } from "../tag";
 
 export const getCustomerDetail = cache(async (customerId: string) => {
 	"use cache";
 	cacheLife("permanent");
-	cacheTag(tagByCustomerId(customerId));
+	cacheTag(CustomerTag.Detail(customerId));
 
 	const customers = await db
 		.select()

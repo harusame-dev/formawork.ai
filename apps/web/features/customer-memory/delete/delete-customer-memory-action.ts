@@ -16,7 +16,7 @@ export const deleteCustomerMemoryAction = createServerAction(
 	{
 		name: "deleteCustomerMemoryAction",
 		onSuccess: ({ input: { customerId } }) => {
-			updateTag(CustomerTag.MemoryCrud(customerId));
+			updateTag(CustomerTag.MemoriesByCustomerId(customerId));
 		},
 		schema,
 	},

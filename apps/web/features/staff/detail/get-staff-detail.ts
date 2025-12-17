@@ -10,7 +10,7 @@ import { StaffTag } from "../tag";
 export const getStaffDetail = cache(async (staffId: string) => {
 	"use cache";
 	cacheLife("permanent");
-	cacheTag(StaffTag.Crud);
+	cacheTag(StaffTag.Detail(staffId));
 
 	const staffs = await db
 		.select({

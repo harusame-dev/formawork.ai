@@ -25,7 +25,7 @@ export async function getStaffs({
 }: StaffsCondition): Promise<GetStaffsResult> {
 	"use cache";
 	cacheLife("permanent");
-	cacheTag(StaffTag.Crud);
+	cacheTag(StaffTag.List);
 
 	const pageSize = 20;
 	const whereConditions = keyword

@@ -10,7 +10,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@workspace/ui/components/dialog";
-import { AlertCircle, Trash2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useState, useTransition } from "react";
 import { deleteStaffAction } from "./delete-staff-action";
 
@@ -49,7 +49,6 @@ export function DeleteStaffDialog({ staffId }: DeleteStaffDialogProps) {
 		<Dialog onOpenChange={handleOpenChange} open={open}>
 			<DialogTrigger asChild>
 				<Button size="sm" type="button" variant="destructive">
-					<Trash2 className="h-4 w-4 mr-1" />
 					削除
 				</Button>
 			</DialogTrigger>

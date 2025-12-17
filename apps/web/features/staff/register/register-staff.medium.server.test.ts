@@ -72,8 +72,10 @@ test("スタッフを正常に登録できる", async ({ cleanup }) => {
 	const { data } = await supabase.auth.admin.listUsers();
 	const user = data.users.find((u) => u.email === input.email);
 	expect(user).toBeDefined();
-	expect(user?.app_metadata?.role).toBe(input.role);
-	expect(user?.app_metadata?.staffId).toBe(result.data.staffId);
+	// biome-ignore lint/complexity/useLiteralKeys: ts4111
+	expect(user?.app_metadata?.["role"]).toBe(input.role);
+	// biome-ignore lint/complexity/useLiteralKeys: ts4111
+	expect(user?.app_metadata?.["staffId"]).toBe(result.data.staffId);
 });
 
 test("firstName と lastName が24文字（境界値）で登録できる", async ({
@@ -128,7 +130,8 @@ test("管理者ロールで登録できる", async ({ cleanup }) => {
 	const supabase = createAdminClient();
 	const { data } = await supabase.auth.admin.listUsers();
 	const user = data.users.find((u) => u.email === input.email);
-	expect(user?.app_metadata?.role).toBe("admin");
+	// biome-ignore lint/complexity/useLiteralKeys: ts4111
+	expect(user?.app_metadata?.["role"]).toBe("admin");
 });
 
 test("Supabase Auth に既に存在するメールアドレスで登録するとエラーになる", async ({

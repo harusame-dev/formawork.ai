@@ -1,11 +1,10 @@
 export const CustomerTag = {
-	// TODO: パスカルケースに修正
-	crud: "CUSTOMER_TAG_CRUD",
-	MemoryCrud: (customerId: string) => `CUSTOMER_TAG_MEMORY_CRUD_${customerId}`,
-	NoteCrud: (customerId: string) => `CUSTOMER_TAG_NOTE_CRUD_${customerId}`,
+	Detail: (customerId: string) => `CUSTOMER_TAG_DETAIL_${customerId}`,
+	LatestAdviceByCustomerNoteId: (customerNoteId: string) =>
+		`CUSTOMER_TAG_LATEST_ADVICE_BY_CUSTOMER_NOTE_ID_${customerNoteId}`,
+	List: "CUSTOMER_TAG_LIST",
+	MemoriesByCustomerId: (customerId: string) =>
+		`CUSTOMER_TAG_MEMORIES_BY_CUSTOMER_ID_${customerId}`,
+	NotesByCustomerId: (customerId: string) =>
+		`CUSTOMER_TAG_NOTES_BY_CUSTOMER_ID_${customerId}`,
 };
-
-// @knip-ignore - Used in get-customer-detail.ts (not in this PR)
-export function tagByCustomerId(customerId: string) {
-	return `CUSTOMER_TAG_${customerId}`;
-}

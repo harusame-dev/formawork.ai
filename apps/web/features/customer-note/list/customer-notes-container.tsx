@@ -39,7 +39,7 @@ export async function CustomerNotesContainer({
 	};
 
 	const [
-		{ notes, totalCount, currentPage, totalPages },
+		{ notes, currentPage, totalPages },
 		currentUserStaffId,
 		currentUserRole,
 	] = await Promise.all([

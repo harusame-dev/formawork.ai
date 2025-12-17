@@ -16,11 +16,11 @@ import { useState, useTransition } from "react";
 import { deleteCustomerNoteAction } from "./delete-customer-note-action";
 
 type DeleteCustomerNoteDialogProps = {
-	noteId: string;
+	customerNoteId: string;
 };
 
 export function DeleteCustomerNoteDialog({
-	noteId,
+	customerNoteId,
 }: DeleteCustomerNoteDialogProps) {
 	const router = useRouter();
 	const [open, setOpen] = useState(false);
@@ -31,7 +31,9 @@ export function DeleteCustomerNoteDialog({
 		setErrorMessage(null);
 
 		startTransition(async () => {
-			const result = await deleteCustomerNoteAction({ noteId });
+			const result = await deleteCustomerNoteAction({
+				customerNoteId,
+			});
 
 			if (!result.success) {
 				setErrorMessage(result.error);

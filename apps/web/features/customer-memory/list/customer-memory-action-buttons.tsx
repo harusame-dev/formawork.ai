@@ -22,7 +22,6 @@ export function CustomerMemoryActionButtons({
 				memoryId={memory.id}
 			/>
 			<CustomerMemoryLockButton
-				customerId={customerId}
 				isProtected={memory.isProtected}
 				memoryId={memory.id}
 			/>

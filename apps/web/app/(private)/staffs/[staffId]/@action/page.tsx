@@ -1,4 +1,4 @@
-import { Skeleton } from "@workspace/ui/components/skeleton";
+import { Button } from "@workspace/ui/components/button";
 import { Suspense } from "react";
 import { getUserRole, UserRole } from "@/features/auth/get-user-role";
 import { getUserStaffId } from "@/features/auth/get-user-staff-id";
@@ -8,7 +8,13 @@ export default function Page({ params }: PageProps<"/staffs/[staffId]">) {
 	const staffIdPromise = params.then(({ staffId }) => staffId);
 
 	return (
-		<Suspense fallback={<Skeleton className="h-8 w-20 bg-black/10" />}>
+		<Suspense
+			fallback={
+				<Button disabled size="sm" variant="destructive">
+					削除
+				</Button>
+			}
+		>
 			<Action staffIdPromise={staffIdPromise} />
 		</Suspense>
 	);
