@@ -209,28 +209,6 @@ export function EditCustomerNoteDialog({
 
 						<FormField
 							control={form.control}
-							name="serviceDate"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className="flex items-center gap-2">
-										接客日
-										<RequiredBadge />
-									</FormLabel>
-									<FormControl>
-										<Input
-											{...field}
-											className="w-40"
-											disabled={isProcessing}
-											type="date"
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<FormField
-							control={form.control}
 							name="content"
 							render={({ field }) => (
 								<FormItem>
@@ -246,6 +224,27 @@ export function EditCustomerNoteDialog({
 											className="max-h-32"
 											disabled={isProcessing}
 											maxLength={4096}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="serviceDate"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="flex items-center gap-2">
+										接客日
+										<RequiredBadge />
+									</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											className="w-40"
+											disabled={isProcessing}
+											type="date"
 										/>
 									</FormControl>
 									<FormMessage />

@@ -8,14 +8,12 @@ type CustomerNotesPresenterProps = {
 		canEdit: boolean;
 		isAdviceTimeout: boolean;
 	})[];
-	totalCount: number;
 	currentPage: number;
 	totalPages: number;
 };
 
 export function CustomerNotesPresenter({
 	notes,
-	totalCount,
 	currentPage,
 	totalPages,
 }: CustomerNotesPresenterProps) {
@@ -29,12 +27,6 @@ export function CustomerNotesPresenter({
 
 	return (
 		<div className="space-y-4">
-			<div className="flex items-center justify-between">
-				<p className="text-sm text-muted-foreground">
-					全{totalCount}件のノート
-				</p>
-			</div>
-
 			<ul className="space-y-4">
 				{notes.map((note) => (
 					<li key={note.customerNoteId}>

@@ -64,7 +64,6 @@ export async function CustomerNotesContainer({
 		<CustomerNotesPresenter
 			currentPage={currentPage}
 			notes={notesWithPermissions}
-			totalCount={totalCount}
 			totalPages={totalPages}
 		/>
 	);

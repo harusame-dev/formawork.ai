@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 	openGraph: {
 		description:
 			"接客ノートを AI が分析し、顧客一人ひとりの「記憶」を自動で蓄積。次の接客に活かせる情報を届けます。",
-		title: "FORMAWORK.ai CRM - AI があなたの接客を強くする顧客管理システム",
+		title: "FORMAWORK.ai CRM - AI があなたの接客を強くする顧客関係管理システム",
 		type: "website",
 	},
-	title: "FORMAWORK.ai CRM - AI があなたの接客を強くする顧客管理システム",
+	title: "FORMAWORK.ai CRM - AI があなたの接客を強くする顧客関係管理システム",
 };
 
 export default function Page() {

@@ -15,7 +15,7 @@ export default async function StaffDetailLayout({
 	const staffIdPromise = params.then(({ staffId }) => staffId);
 
 	return (
-		<div className="container mx-auto p-4 space-y-4">
+		<div className="container mx-auto p-2 space-y-4">
 			<div className="flex items-center justify-between">
 				<Suspense fallback={<StaffInfoSkeleton />}>
 					<StaffInfoContainer staffIdPromise={staffIdPromise} />

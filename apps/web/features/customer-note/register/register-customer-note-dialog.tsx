@@ -23,7 +23,7 @@ import { Input } from "@workspace/ui/components/input";
 import { OptionalBadge } from "@workspace/ui/components/optional-badge";
 import { RequiredBadge } from "@workspace/ui/components/required-badge";
 import { Textarea } from "@workspace/ui/components/textarea";
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -167,10 +167,7 @@ export function RegisterCustomerNoteDialog({
 	return (
 		<Dialog onOpenChange={handleOpenChange} open={open}>
 			<DialogTrigger asChild>
-				<Button>
-					<Plus className="mr-2 h-4 w-4" />
-					ノートを追加
-				</Button>
+				<Button size="sm">ノートを追加</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>

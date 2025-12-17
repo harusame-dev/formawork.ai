@@ -34,7 +34,7 @@ export function RegisterCustomerMemoryDialog({
 	return (
 		<Dialog onOpenChange={handleOpenChange} open={open}>
 			<DialogTrigger asChild>
-				<Button>メモリを追加</Button>
+				<Button size="sm">メモリを追加</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>

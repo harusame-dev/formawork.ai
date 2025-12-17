@@ -19,7 +19,7 @@ export function HeroSection() {
 				<h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-6">
 					AI があなたの接客を強くする
 					<br />
-					顧客管理システム
+					顧客関係管理システム
 				</h1>
 				<p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
 					接客ノートを AI が分析し、顧客一人ひとりの「記憶」を自動で蓄積。

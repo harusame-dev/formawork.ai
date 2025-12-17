@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
-import { Calendar, CalendarClock, UserPen } from "lucide-react";
-import { DateTime } from "@/components/date-time";
+import { Calendar, UserPen } from "lucide-react";
 import { CustomerNoteAdviceContainer } from "@/features/customer-note/advice/customer-note-advice-container";
 import { DeleteCustomerNoteDialog } from "@/features/customer-note/delete/delete-customer-note-dialog";
 import { EditCustomerNoteDialog } from "@/features/customer-note/edit/edit-customer-note-dialog";
@@ -26,11 +25,7 @@ export function CustomerNoteCard({
 				<div className="space-y-1">
 					<div className="text-sm flex gap-2">
 						<Calendar className="size-4" />
-						接客日: {note.serviceDate}
-					</div>
-					<div className="text-sm text-muted-foreground flex gap-2">
-						<CalendarClock className="size-4" />
-						<DateTime date={new Date(note.createdAt)} />
+						{note.serviceDate}
 					</div>
 					<div className="text-sm font-medium flex gap-2">
 						<UserPen className="size-4" />
