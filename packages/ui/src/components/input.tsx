@@ -16,7 +16,12 @@ const Input = forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
 
 		return (
 			<input
-				className={cn(INPUT_BASE_CLASSES, className)}
+				className={cn(
+					INPUT_BASE_CLASSES,
+					// mobile safari で大きさが異なってしまうのを防ぐため
+					type === "date" && "appearance-none",
+					className,
+				)}
 				ref={ref}
 				type={type}
 				{...props}
