@@ -53,9 +53,11 @@ export async function editCustomerNote({
 > {
 	const logger = await getLogger("editCustomerNote");
 
-	const note = await db.query.customerNotesTable.findFirst({
-		where: eq(customerNotesTable.customerNoteId, customerNoteId),
-	});
+	const [note] = await db
+		.select()
+		.from(customerNotesTable)
+		.where(eq(customerNotesTable.customerNoteId, customerNoteId))
+		.limit(1);
 
 	if (!note) {
 		logger.warn("ノートが見つかりません", {
