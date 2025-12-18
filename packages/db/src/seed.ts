@@ -19,7 +19,8 @@ import {
 import { customerNoteAdviceTable } from "./schema/customer-note-advice";
 import { staffsTable } from "./schema/staff";
 
-const isProduction = true;
+// biome-ignore lint/complexity/useLiteralKeys: ts4111
+const isProduction = process.env["VERCEL_ENV"];
 
 async function seed() {
 	console.log(`⭐️ シーディング（${isProduction}）`);
