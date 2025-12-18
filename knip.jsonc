@@ -18,6 +18,10 @@
 				"postcss"
 			]
 		},
+		"packages/db": {
+			// 本番環境用のフィクスチャデータは将来的な利用のため除外
+			"ignore": ["src/fixtures/production/**"]
+		},
 		"packages/logger": {
 			// テンプレートファイルのため除外
 			"ignore": ["src/nextjs/middleware.example.ts"],
