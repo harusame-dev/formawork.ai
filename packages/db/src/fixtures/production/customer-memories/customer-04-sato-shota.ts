@@ -1,0 +1,133 @@
+import { MemoryCategory } from "../../../schema/customer-memory";
+
+export const customer04SatoShotaMemories = [
+	{
+		category: MemoryCategory.Personal,
+		content: "彼女と同時来店することが多い",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000001",
+		importance: 8,
+	},
+	{
+		category: MemoryCategory.Personal,
+		content: "現在、転職活動中",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000002",
+		importance: 8,
+	},
+	{
+		category: MemoryCategory.Personal,
+		content: "彼女ができた",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000003",
+		importance: 7,
+	},
+	{
+		category: MemoryCategory.Preference,
+		content:
+			"ハイトーンカラーを好む。特にラベンダーアッシュを非常に気に入った。",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000004",
+		importance: 9,
+	},
+	{
+		category: MemoryCategory.Preference,
+		content: "ヘアカラーの色持ちを重視し、専用シャンプーを使用/購入する",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000005",
+		importance: 8,
+	},
+	{
+		category: MemoryCategory.Preference,
+		content: "トレンドに敏感でSNS映えを重視",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000006",
+		importance: 8,
+	},
+	{
+		category: MemoryCategory.Preference,
+		content:
+			"転職活動中は落ち着いたカラーを希望、決定後はハイトーンに戻したい意向",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000007",
+		importance: 8,
+	},
+	{
+		category: MemoryCategory.Preference,
+		content: "彼女と一緒に来店し、お揃いカラーを好む",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000008",
+		importance: 8,
+	},
+	{
+		category: MemoryCategory.Preference,
+		content: "眉カットを希望",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000009",
+		importance: 7,
+	},
+	{
+		category: MemoryCategory.Preference,
+		content: "季節によってヘアカラーのトーンや色味の好みが変化する傾向がある",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000010",
+		importance: 7,
+	},
+	{
+		category: MemoryCategory.Conversion,
+		content:
+			"パーマ希望だが、ブリーチ履歴でダメージリスク高いため、落ち着いてから検討",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000011",
+		importance: 8,
+	},
+	{
+		category: MemoryCategory.Conversion,
+		content: "新しい職場での印象アップを意識した商品提案が有効",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000012",
+		importance: 7,
+	},
+	{
+		category: MemoryCategory.Conversion,
+		content: "知人・友人に当サロンを紹介してくれる",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000013",
+		importance: 7,
+	},
+	{
+		category: MemoryCategory.Communication,
+		content: "SNS投稿OK",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000014",
+		importance: 8,
+	},
+	{
+		category: MemoryCategory.Communication,
+		content: "新しい職場に関する話題に興味がある",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000015",
+		importance: 6,
+	},
+	{
+		category: MemoryCategory.Event,
+		content: "夏祭りや花火大会など夏のイベントでデート予定がある",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000016",
+		importance: 7,
+	},
+	{
+		category: MemoryCategory.Event,
+		content: "次回も彼女と一緒に来店予定",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000017",
+		importance: 6,
+	},
+	{
+		category: MemoryCategory.Health,
+		content: "ヘアダメージケアに関心がある",
+		customerId: "00000000-0000-0000-0000-000000000004",
+		id: "00000001-0004-0000-0000-000000000018",
+		importance: 7,
+	},
+];
