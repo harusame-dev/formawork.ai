@@ -94,16 +94,17 @@ export function CustomerNoteImageGallery({
 
 					<div className="flex h-full flex-col items-center justify-center p-4">
 						<Carousel
-							className="w-full max-w-4xl"
+							className="w-full max-w-4xl flex-1"
 							opts={{ loop: true }}
 							setApi={setApi}
 						>
-							<CarouselContent>
+							<CarouselContent className="h-full" wrapperClassName="h-full">
 								{validImages.map((image) => (
 									<CarouselItem
+										className="h-full"
 										key={`${image.customerNoteId}-${image.displayOrder}`}
 									>
-										<div className="bg-muted relative aspect-video w-full overflow-hidden rounded-lg">
+										<div className="bg-muted relative h-full w-full overflow-hidden rounded-lg">
 											<Image
 												alt={`添付-${image.displayOrder + 1}`}
 												className="object-contain"
