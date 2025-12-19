@@ -17,8 +17,8 @@
 	"name": "@repo/logger",
 	"packageManager": "pnpm@10.12.4",
 	"peerDependencies": {
-		"next": "^16.0.0",
-		"pino": "^9.0.0"
+		"next": "catalog:",
+		"pino": "catalog:"
 	},
 	"peerDependenciesMeta": {
 		"next": {
