@@ -3,45 +3,45 @@ export const customerNoteImagesFixture = [
 	{
 		customerNoteId: "10000000-0000-0000-0000-000000000105",
 		displayOrder: 0,
-		path: "customers/00000000-0000-0000-0000-000000000011/notes/10000000-0000-0000-0000-000000000105/image-001",
+		path: "sample1.jpg",
 	},
 	{
 		customerNoteId: "10000000-0000-0000-0000-000000000103",
 		displayOrder: 0,
-		path: "customers/00000000-0000-0000-0000-000000000011/notes/10000000-0000-0000-0000-000000000103/image-001",
+		path: "sample2.jpg",
 	},
 	// テスト太郎さんのノート画像
 	{
 		customerNoteId: "10000000-0000-0000-0000-000000000005",
 		displayOrder: 0,
-		path: "customers/00000000-0000-0000-0000-000000000001/notes/10000000-0000-0000-0000-000000000005/image-001",
+		path: "sample2.jpg",
 	},
 	{
 		customerNoteId: "10000000-0000-0000-0000-000000000008",
 		displayOrder: 0,
-		path: "customers/00000000-0000-0000-0000-000000000001/notes/10000000-0000-0000-0000-000000000008/image-001",
+		path: "sample3.jpg",
 	},
 	// 山田花子さんのノート画像
 	{
 		customerNoteId: "10000000-0000-0000-0000-000000000203",
 		displayOrder: 0,
-		path: "customers/00000000-0000-0000-0000-000000000002/notes/10000000-0000-0000-0000-000000000203/image-001",
+		path: "sample4.jpg",
 	},
 	// 佐藤次郎さんのノート画像
 	{
 		customerNoteId: "10000000-0000-0000-0000-000000000302",
 		displayOrder: 0,
-		path: "customers/00000000-0000-0000-0000-000000000003/notes/10000000-0000-0000-0000-000000000302/image-001",
+		path: "sample5.jpg",
 	},
 	{
 		customerNoteId: "10000000-0000-0000-0000-000000000302",
 		displayOrder: 1,
-		path: "customers/00000000-0000-0000-0000-000000000003/notes/10000000-0000-0000-0000-000000000302/image-002",
+		path: "sample1.jpg",
 	},
 	// 加藤さくらさんのノート画像
 	{
 		customerNoteId: "10000000-0000-0000-0000-000000000902",
 		displayOrder: 0,
-		path: "customers/00000000-0000-0000-0000-000000000009/notes/10000000-0000-0000-0000-000000000902/image-001",
+		path: "sample2.jpg",
 	},
 ];
