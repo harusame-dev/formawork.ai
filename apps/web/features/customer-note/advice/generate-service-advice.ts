@@ -48,6 +48,7 @@ export async function generateServiceAdvice(
 			lastName: note.lastName,
 			remarks: note.remarks,
 		},
+		memories: note.memories || [],
 		noteContent: note.content,
 		recentNotes,
 		serviceDate: note.serviceDate,

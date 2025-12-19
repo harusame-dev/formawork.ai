@@ -1,5 +1,9 @@
 import { valibotSchema } from "@ai-sdk/valibot";
 import { getLogger } from "@repo/logger/nextjs/server";
+import {
+	MEMORY_CATEGORY_LABEL,
+	type MemoryCategory,
+} from "@workspace/db/schema/customer-memory";
 import type { AdviceContent } from "@workspace/db/schema/customer-note-advice";
 import { generateObject } from "ai";
 import * as v from "valibot";
@@ -14,6 +18,12 @@ type CustomerInfo = {
 	remarks: string | null;
 };
 
+type Memory = {
+	category: number;
+	content: string;
+	importance: number;
+};
+
 type RecentNote = {
 	content: string;
 	createdAt: Date;
@@ -21,6 +31,7 @@ type RecentNote = {
 
 type GenerateAdviceParams = {
 	customer: CustomerInfo;
+	memories: Memory[];
 	noteContent: string;
 	recentNotes: RecentNote[];
 	serviceDate: string;
@@ -73,7 +84,8 @@ const adviceSchema = v.object({
 	}),
 }) satisfies v.GenericSchema<AdviceContent>;
 
-const SYSTEM_INSTRUCTIONS = `あなたは接客コーチとして、接客の評価とアドバイスを生成するタスクを実行します。
+const SYSTEM_INSTRUCTIONS = `あなたは接客コーチとして、接客の評価とアドバイスを行います。
+顧客の情報や過去の接客ノート、顧客メモリをもとに顧客にパーソナライズされた評価、アドバイスを行なってください。
 
 ## 出力要件
 
@@ -89,28 +101,28 @@ const SYSTEM_INSTRUCTIONS = `あなたは接客コーチとして、接客の評
 - 具体的に何が課題か
 - どうすればより良かったか（代替案）
 
-※接客メモは本人記録のため、記録されていない問題がある可能性があります。
+※接客メモは接客者の記録のため、記録されていない問題がある可能性があります。
 ※断定ではなく「〜の可能性がある」「〜だったかもしれない」の表現を使ってください。
 
 ### 次回の接客アドバイス (nextAdvice)
 
 **冒頭で触れるべきこと (openingTopics)**
-前回からの繋がりを感じさせる話題や確認事項。
-「〇〇について、その後いかがですか？」のように具体的に。
+繋がりを感じさせる話題や確認事項を具体的に記載する
 
 **確認・フォローすべきこと (followUpItems)**
 未解決の要望、過去のクレーム、前回の宿題など。
 放置すると不満に繋がるものを優先。
 
 **提案の機会 (salesOpportunities)**
-顧客の状況・嗜好から、提案できそうな商品・サービス・情報。
+提案できそうな商品・サービス・情報。
 なぜその顧客に合うかの理由も添える。
 
 **注意点・避けるべきこと (caution)**
-過去の反応から、この顧客に対して避けた方がよいアプローチ。
+この顧客に対して避けた方がよいアプローチ。
 
 **次回に向けて確認しておくこと (nextActions)**
-今回の接客の最後に確認・約束しておくと良いこと。
+次回の接客までに確認、準備が必要なこと。
+
 
 ## 出力フォーマット（JSON）
 
@@ -122,11 +134,11 @@ const SYSTEM_INSTRUCTIONS = `あなたは接客コーチとして、接客の評
     "improvement": "今回の接客の改善ポイント。課題と代替案を記述"
   },
   "nextAdvice": {
-    "openingTopics": "冒頭で触れるべきこと。前回からの繋がりを感じさせる話題",
+    "openingTopics": "冒頭で触れるべきこと。繋がりを感じさせる話題",
     "followUpItems": "確認・フォローすべきこと。未解決の要望、クレーム、宿題など",
     "salesOpportunities": "提案の機会。顧客に提案できる商品・サービス・情報と理由",
-    "caution": "注意点・避けるべきこと。過去の反応から避けた方がよいアプローチ",
-    "nextActions": "次回に向けて確認しておくこと。接客の最後に確認・約束すべきこと"
+    "caution": "注意点・避けるべきこと",
+    "nextActions": "次回に向けて確認、準備しておくこと"
   }
 }
 
@@ -142,6 +154,7 @@ const SYSTEM_INSTRUCTIONS = `あなたは接客コーチとして、接客の評
 
 function generatePrompt({
 	customer,
+	memories,
 	noteContent,
 	recentNotes,
 	serviceDate,
@@ -157,6 +170,18 @@ ${note.content}`,
 					.join("\n\n")
 			: "なし";
 
+	const memoriesSection =
+		memories.length > 0
+			? memories
+					.map((memory) => {
+						const categoryLabel =
+							MEMORY_CATEGORY_LABEL[memory.category as MemoryCategory] ??
+							"その他";
+						return `- [${categoryLabel}] ${memory.content}`;
+					})
+					.join("\n")
+			: "なし";
+
 	const userInput = `[接客日]
 ${serviceDate}
 
@@ -165,6 +190,9 @@ ${serviceDate}
 生年月日: ${customer.birthDate || "未登録"}
 性別: ${GENDER_LABELS[customer.gender]}
 備考: ${customer.remarks || "なし"}
+
+[顧客メモリ（重要度順）]
+${memoriesSection}
 
 [今回の接客メモ]
 ${noteContent}

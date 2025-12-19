@@ -4,6 +4,12 @@ import { sql } from "drizzle-orm";
 
 const RECENT_NOTES_LIMIT = 10;
 
+type CustomerMemory = {
+	category: number;
+	content: string;
+	importance: number;
+};
+
 type RecentNote = {
 	content: string;
 	serviceDate: string;
@@ -17,6 +23,7 @@ type ServiceNoteData = {
 	gender: number;
 	id: string;
 	lastName: string;
+	memories: CustomerMemory[] | null;
 	recentNotes: RecentNote[] | null;
 	remarks: string | null;
 	serviceDate: string;
@@ -49,7 +56,15 @@ export async function fetchServiceNoteData(
 					ORDER BY created_at DESC
 					LIMIT ${RECENT_NOTES_LIMIT}
 				) recent
-			) as "recentNotes"
+			) as "recentNotes",
+			(
+				SELECT COALESCE(json_agg(
+					json_build_object('category', mem.category, 'content', mem.content, 'importance', mem.importance)
+					ORDER BY mem.importance DESC, mem.updated_at DESC
+				), '[]'::json)
+				FROM ${sql.identifier(schemaName)}.customer_memories mem
+				WHERE mem.customer_id = note.customer_id
+			) as "memories"
 		FROM ${sql.identifier(schemaName)}.customer_notes note
 		INNER JOIN ${sql.identifier(schemaName)}.customers customer ON note.customer_id = customer.customer_id
 		WHERE note.customer_note_id = ${serviceNoteId}::uuid
