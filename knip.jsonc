@@ -10,7 +10,9 @@
 			"ignore": [
 				"mocks/**",
 				"testing/msw-test.ts",
-				"public/mockServiceWorker.js"
+				"public/mockServiceWorker.js",
+				// playwright.config.ts で project として testMatch で参照される
+				"e2e/setups/user.setup.ts"
 			],
 			"ignoreDependencies": [
 				"tailwindcss",
