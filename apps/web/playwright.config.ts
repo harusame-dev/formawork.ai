@@ -32,6 +32,7 @@ export default defineConfig({
 			use: { ...devices["Desktop Chrome"] },
 		},
 		{
+			dependencies: [userSetupProject],
 			name: "webkit",
 			use: { ...devices["Desktop Safari"] },
 		},
