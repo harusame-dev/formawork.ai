@@ -22,6 +22,7 @@
 			"Bash(tree:*)",
 			"Bash(find:*)",
 			"Bash(git show:*)",
+			"Bash(git push:*)",
 			"Read(.env.sample)",
 			"Write(.env.sample)",
 			"Skill(validating-code)",
