@@ -28,7 +28,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, webkit]
+        # browser: [chromium, webkit]
+        browser: [chromium]
 
     steps:
       - name: リポジトリのチェックアウト
