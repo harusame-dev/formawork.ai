@@ -32,11 +32,11 @@ export default defineConfig({
 			name: "chromium",
 			use: { ...devices["Desktop Chrome"] },
 		},
-		{
-			dependencies: [userSetupProject],
-			name: "webkit",
-			use: { ...devices["Desktop Safari"] },
-		},
+		// {
+		// 	dependencies: [userSetupProject],
+		// 	name: "webkit",
+		// 	use: { ...devices["Desktop Safari"] },
+		// },
 
 		/* Test against mobile viewports. */
 		// {
