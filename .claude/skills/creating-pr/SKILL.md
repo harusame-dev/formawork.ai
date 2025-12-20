@@ -1,7 +1,7 @@
 ---
 name: creating-pr
 description: GitHub上にプルリクエストを自動作成・更新する。コミット履歴とコード差分を分析してPRタイトルと説明文を自動生成する。PR新規作成、既存PRの更新、または変更がレビュー対象になった時に使用する。
-allowed-tools: Bash, mcp__github__list_commits, mcp__github__create_pull_request, mcp__github__update_pull_request, mcp__github__get_me
+allowed-tools: Bash, Bash(git push:*), mcp__github__list_commits, mcp__github__create_pull_request, mcp__github__update_pull_request, mcp__github__get_me
 ---
 
 # GitHub プルリクエスト自動作成・更新
