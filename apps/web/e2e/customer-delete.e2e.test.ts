@@ -1,45 +1,27 @@
-import { test as base, expect, type Page } from "@playwright/test";
+import { randomUUID } from "node:crypto";
+import { expect } from "@playwright/test";
 import { db } from "@workspace/db/client";
 import { customersTable } from "@workspace/db/schema/customer";
 import { eq } from "drizzle-orm";
-import { v4 } from "uuid";
+import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-type Fixtures = {
-	customer: {
+const test = testWithAuthenticated.extend<{
+	testCustomer: {
 		customerId: string;
 		email: string;
 		firstName: string;
 		lastName: string;
 		phone: string;
 	};
-	adminUserPage: Page;
-	normalUserPage: Page;
-};
-
-const test = base.extend<Fixtures>({
-	async adminUserPage({ page }, use) {
-		const adminUser = {
-			email: "admin@example.com",
-			password: "Admin@789!",
-		};
-
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(adminUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(adminUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
-
-		await use(page);
-	},
-	// biome-ignore lint/correctness/noEmptyPattern: The first argument inside a fixture must use object destructuring pattern, e.g. ({ test } => {}). Instead, received "_".
-	async customer({}, use) {
+}>({
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
+	async testCustomer({}, use) {
+		const customerId = randomUUID();
 		const customer = {
-			customerId: v4(),
-			email: `${v4()}@example.com`,
-			firstName: v4().slice(0, 12),
-			lastName: v4().slice(0, 12),
+			customerId,
+			email: `${randomUUID()}@example.com`,
+			firstName: randomUUID().slice(0, 12),
+			lastName: randomUUID().slice(0, 12),
 			phone: `${Math.floor(Math.random() * 1000000000)}`,
 		};
 
@@ -47,31 +29,17 @@ const test = base.extend<Fixtures>({
 		await use(customer);
 		await db
 			.delete(customersTable)
-			.where(eq(customersTable.customerId, customer.customerId));
-	},
-
-	async normalUserPage({ page }, use) {
-		const testUser = {
-			email: "test1@example.com",
-			password: "Test@Pass123",
-		};
-
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(testUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(testUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
-
-		await use(page);
+			.where(eq(customersTable.customerId, customerId));
 	},
 });
 
-test("管理者が顧客を削除できる", async ({ adminUserPage: page, customer }) => {
+test("管理者が顧客を削除できる", async ({
+	pageWithAdminUser: page,
+	testCustomer,
+}) => {
 	await test.step("顧客詳細ページに遷移", async () => {
-		await page.goto(`/customers/${customer.customerId}`);
-		await page.waitForURL(`/customers/${customer.customerId}`);
+		await page.goto(`/customers/${testCustomer.customerId}`);
+		await page.waitForURL(`/customers/${testCustomer.customerId}`);
 	});
 
 	await test.step("削除実行", async () => {
@@ -84,7 +52,7 @@ test("管理者が顧客を削除できる", async ({ adminUserPage: page, custo
 	});
 
 	await test.step("削除された顧客を検索してもヒットしないことを確認", async () => {
-		await page.getByLabel("キーワード").fill(customer.lastName);
+		await page.getByLabel("キーワード").fill(testCustomer.lastName);
 		await page.getByRole("button", { name: "検索" }).click();
 
 		// 「顧客が見つかりませんでした」が表示される
@@ -93,12 +61,12 @@ test("管理者が顧客を削除できる", async ({ adminUserPage: page, custo
 });
 
 test("一般ユーザーには顧客編集・削除ボタンが表示されない", async ({
-	normalUserPage: page,
-	customer,
+	pageWithGenericUser: page,
+	testCustomer,
 }) => {
 	await test.step("顧客詳細ページに遷移", async () => {
-		await page.goto(`/customers/${customer.customerId}`);
-		await page.waitForURL(`/customers/${customer.customerId}`);
+		await page.goto(`/customers/${testCustomer.customerId}`);
+		await page.waitForURL(`/customers/${testCustomer.customerId}`);
 	});
 
 	await test.step("編集・削除ボタンが表示されないことを確認", async () => {

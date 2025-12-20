@@ -1,61 +1,33 @@
-import { test as base, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-type StaffsPageFixture = {
+const test = testWithAuthenticated.extend<{
 	staffsPage: Page;
-	authenticatedPage: Page;
-	testUser: {
-		email: string;
-		password: string;
-	};
-};
-
-const test = base.extend<StaffsPageFixture>({
-	authenticatedPage: async ({ page, testUser }, use) => {
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(testUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(testUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
+}>({
+	staffsPage: async ({ pageWithGenericUser: page }, use) => {
+		await page.goto("/staffs");
+		await page.waitForURL("/staffs");
+		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
 
 		await use(page);
 	},
-	staffsPage: async ({ authenticatedPage }, use) => {
-		await authenticatedPage.goto("/staffs");
-		await authenticatedPage.waitForURL("/staffs");
-		await expect(
-			authenticatedPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
-
-		await use(authenticatedPage);
-	},
-	testUser: [
-		{
-			email: "test1@example.com",
-			password: "Test@Pass123",
-		},
-		{ option: true },
-	],
 });
 
 test("メニューからスタッフ一覧ページに遷移できる", async ({
-	authenticatedPage,
+	pageWithGenericUser: page,
 }) => {
 	await test.step("メニューボタンをクリックしてメニューを開く", async () => {
-		await authenticatedPage
-			.getByRole("button", { name: /^メニューを開く$/ })
-			.click();
+		await page.getByRole("button", { name: /^メニューを開く$/ }).click();
 	});
 
 	await test.step("スタッフ一覧リンクをクリック", async () => {
-		await authenticatedPage.getByRole("link", { name: "スタッフ一覧" }).click();
+		await page.getByRole("link", { name: "スタッフ一覧" }).click();
 	});
 
 	await test.step("スタッフ一覧ページに遷移することを確認", async () => {
-		await expect(authenticatedPage).toHaveURL("/staffs");
+		await expect(page).toHaveURL("/staffs");
 		await expect(
-			authenticatedPage.getByRole("heading", { name: "スタッフ一覧" }),
+			page.getByRole("heading", { name: "スタッフ一覧" }),
 		).toBeVisible();
 	});
 });

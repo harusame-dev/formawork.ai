@@ -1,4 +1,5 @@
-import { test as base, expect, type Page } from "@playwright/test";
+import { randomUUID } from "node:crypto";
+import { expect, type Page } from "@playwright/test";
 import { db } from "@workspace/db/client";
 import { customersTable } from "@workspace/db/schema/customer";
 import {
@@ -6,42 +7,31 @@ import {
 	MemoryCategory,
 } from "@workspace/db/schema/customer-memory";
 import { eq } from "drizzle-orm";
-import { v4 } from "uuid";
+import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-type Fixtures = {
+const test = testWithAuthenticated.extend<{
 	customerMemoriesPage: Page;
 	testCustomer: {
 		customerId: string;
 	};
-};
-
-const test = base.extend<Fixtures>({
-	async customerMemoriesPage({ page }, use) {
-		const testUser = {
-			email: "test1@example.com",
-			password: "Test@Pass123",
-		};
-
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(testUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(testUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
-
+}>({
+	customerMemoriesPage: async (
+		{ pageWithGenericUser: page, testCustomer },
+		use,
+	) => {
+		await page.goto(`/customers/${testCustomer.customerId}/memories`);
+		await expect(page.getByRole("table")).toBeVisible();
 		await use(page);
 	},
-
-	// biome-ignore lint/correctness/noEmptyPattern: fixture requires object destructuring pattern
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
 	async testCustomer({}, use) {
-		const customerId = v4();
+		const customerId = randomUUID();
 
 		await db.insert(customersTable).values({
 			address: "",
 			birthDate: null,
 			customerId,
-			email: `${v4()}@example.com`,
+			email: `${randomUUID()}@example.com`,
 			firstName: "ソート確認",
 			firstNameKana: "",
 			gender: 9,
@@ -98,16 +88,10 @@ const test = base.extend<Fixtures>({
 });
 
 test("メモリがカテゴリ順・重要度順で表示される", async ({
-	customerMemoriesPage,
-	testCustomer,
+	customerMemoriesPage: page,
 }) => {
 	// 期待順序: カテゴリ昇順 → 同カテゴリ内で重要度降順
-	await customerMemoriesPage.goto(
-		`/customers/${testCustomer.customerId}/memories`,
-	);
-	await expect(customerMemoriesPage.getByRole("table")).toBeVisible();
-
-	const table = customerMemoriesPage.getByRole("table");
+	const table = page.getByRole("table");
 	const rows = table.getByRole("row");
 
 	// nth(0) はヘッダー行、nth(1) 以降がデータ行
@@ -143,15 +127,9 @@ test("メモリがカテゴリ順・重要度順で表示される", async ({
 });
 
 test("保護ボタンでメモリを保護・解除できる", async ({
-	customerMemoriesPage,
-	testCustomer,
+	customerMemoriesPage: page,
 }) => {
-	await customerMemoriesPage.goto(
-		`/customers/${testCustomer.customerId}/memories`,
-	);
-	await expect(customerMemoriesPage.getByRole("table")).toBeVisible();
-
-	const table = customerMemoriesPage.getByRole("table");
+	const table = page.getByRole("table");
 	const rows = table.getByRole("row");
 
 	// 1行目の保護ボタンを取得（初期状態は未保護）
@@ -174,76 +152,66 @@ test("保護ボタンでメモリを保護・解除できる", async ({
 });
 
 test("メモリを登録・編集・削除できる", async ({
-	customerMemoriesPage,
-	testCustomer,
+	customerMemoriesPage: page,
 }) => {
-	const registerContent = `E2Eテスト用メモリ-${v4()}`;
+	const registerContent = `E2Eテスト用メモリ-${randomUUID()}`;
 	const registerImportance = "8";
-	const editContent = `編集後の内容-${v4()}`;
+	const editContent = `編集後の内容-${randomUUID()}`;
 	const editImportance = "10";
 
-	await customerMemoriesPage.goto(
-		`/customers/${testCustomer.customerId}/memories`,
-	);
-	await expect(customerMemoriesPage.getByRole("table")).toBeVisible();
-
 	await test.step("登録ダイアログを開く", async () => {
-		await customerMemoriesPage
-			.getByRole("button", { name: "メモリを追加" })
-			.click();
-		await expect(customerMemoriesPage.getByRole("dialog")).toBeVisible();
+		await page.getByRole("button", { name: "メモリを追加" }).click();
+		await expect(page.getByRole("dialog")).toBeVisible();
 	});
 
 	await test.step("登録フォームに入力する", async () => {
-		const dialog = customerMemoriesPage.getByRole("dialog");
+		const dialog = page.getByRole("dialog");
 		await dialog.getByLabel("カテゴリ").click();
-		await customerMemoriesPage
-			.getByRole("option", { name: "健康・身体的配慮" })
-			.click();
+		await page.getByRole("option", { name: "健康・身体的配慮" }).click();
 		await dialog.getByLabel("内容").fill(registerContent);
 		await dialog.getByLabel("重要度").fill(registerImportance);
 	});
 
 	await test.step("登録を実行し、登録されたことを確認する", async () => {
-		await customerMemoriesPage.getByRole("button", { name: "登録" }).click();
-		await expect(customerMemoriesPage.getByRole("dialog")).not.toBeVisible();
-		await expect(customerMemoriesPage.getByText(registerContent)).toBeVisible();
+		await page.getByRole("button", { name: "登録" }).click();
+		await expect(page.getByRole("dialog")).not.toBeVisible();
+		await expect(page.getByText(registerContent)).toBeVisible();
 	});
 
 	await test.step("編集ダイアログを開く", async () => {
-		const table = customerMemoriesPage.getByRole("table");
+		const table = page.getByRole("table");
 		const rows = table.getByRole("row");
 		const targetRow = rows.filter({ hasText: registerContent }).first();
 		await targetRow.getByRole("button", { name: "編集" }).click();
-		await expect(customerMemoriesPage.getByRole("dialog")).toBeVisible();
+		await expect(page.getByRole("dialog")).toBeVisible();
 	});
 
 	await test.step("編集フォームを入力する", async () => {
-		const dialog = customerMemoriesPage.getByRole("dialog");
+		const dialog = page.getByRole("dialog");
 		await dialog.getByLabel("内容").fill(editContent);
 		await dialog.getByLabel("重要度").fill(editImportance);
 	});
 
 	await test.step("更新を実行し、更新されたことを確認する", async () => {
-		await customerMemoriesPage.getByRole("button", { name: "更新" }).click();
-		await expect(customerMemoriesPage.getByRole("dialog")).not.toBeVisible();
-		await expect(customerMemoriesPage.getByText(editContent)).toBeVisible();
+		await page.getByRole("button", { name: "更新" }).click();
+		await expect(page.getByRole("dialog")).not.toBeVisible();
+		await expect(page.getByText(editContent)).toBeVisible();
 	});
 
 	await test.step("削除確認ダイアログを開く", async () => {
-		const table = customerMemoriesPage.getByRole("table");
+		const table = page.getByRole("table");
 		const rows = table.getByRole("row");
 		const editedRow = rows.filter({ hasText: editContent }).first();
 		await editedRow.getByRole("button", { name: "削除" }).click();
-		await expect(customerMemoriesPage.getByRole("dialog")).toBeVisible();
+		await expect(page.getByRole("dialog")).toBeVisible();
 	});
 
 	await test.step("削除を実行し、削除されたことを確認する", async () => {
-		await customerMemoriesPage
+		await page
 			.getByRole("dialog")
 			.getByRole("button", { name: "削除" })
 			.click();
-		await expect(customerMemoriesPage.getByRole("dialog")).not.toBeVisible();
-		await expect(customerMemoriesPage.getByText(editContent)).not.toBeVisible();
+		await expect(page.getByRole("dialog")).not.toBeVisible();
+		await expect(page.getByText(editContent)).not.toBeVisible();
 	});
 });

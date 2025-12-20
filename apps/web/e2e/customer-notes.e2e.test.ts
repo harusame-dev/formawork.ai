@@ -1,37 +1,46 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
-import { test as base, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import { db } from "@workspace/db/client";
+import { customersTable } from "@workspace/db/schema/customer";
 import { customerNotesTable } from "@workspace/db/schema/customer-note";
 import { eq } from "drizzle-orm";
+import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-type CustomerNotesPageFixture = {
+const test = testWithAuthenticated.extend<{
 	customerNotesPage: Page;
-};
-
-const test = base.extend<CustomerNotesPageFixture>({
-	customerNotesPage: async ({ page }, use) => {
-		const customerId = "00000000-0000-0000-0000-000000000001";
-		const testUser = {
-			email: "test1@example.com",
-			password: "Test@Pass123",
-		};
-
-		// ログイン
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(testUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(testUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
-
-		// 顧客ノート一覧ページへ遷移
-		await page.goto(`/customers/${customerId}/notes`);
-		await page.waitForURL(`/customers/${customerId}/notes`);
+	testCustomer: { customerId: string };
+}>({
+	customerNotesPage: async (
+		{ pageWithGenericUser: page, testCustomer },
+		use,
+	) => {
+		await page.goto(`/customers/${testCustomer.customerId}/notes`);
+		await page.waitForURL(`/customers/${testCustomer.customerId}/notes`);
 		await expect(page.getByText("読み込み中")).toBeHidden();
-
 		await use(page);
+	},
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
+	testCustomer: async ({}, use) => {
+		const customerId = randomUUID();
+
+		await db.insert(customersTable).values({
+			customerId,
+			email: `${randomUUID()}@example.com`,
+			firstName: "ノート登録テスト",
+			lastName: "顧客",
+			phone: "000-0000-0000",
+		});
+
+		await use({ customerId });
+
+		// クリーンアップ: 関連ノートを削除してから顧客を削除
+		await db
+			.delete(customerNotesTable)
+			.where(eq(customerNotesTable.customerId, customerId));
+		await db
+			.delete(customersTable)
+			.where(eq(customersTable.customerId, customerId));
 	},
 });
 
@@ -40,12 +49,6 @@ test("正常系: 1文字（最小境界値）のノート登録成功", async ({
 }) => {
 	// ユニークな1文字を使用（テストの複数回実行で重複を避ける）
 	const noteContent = "§";
-
-	await test.step("既存の同一内容ノートを削除", async () => {
-		await db
-			.delete(customerNotesTable)
-			.where(eq(customerNotesTable.content, noteContent));
-	});
 
 	await test.step("ノート追加ダイアログを開く", async () => {
 		await customerNotesPage

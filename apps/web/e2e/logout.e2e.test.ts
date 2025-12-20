@@ -1,38 +1,25 @@
-import { test as base, expect, type Page } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-type LogoutFixture = {
-	authenticatedPage: Page;
-};
-
-const test = base.extend<LogoutFixture>({
-	authenticatedPage: async ({ page }, use) => {
-		// シードユーザー（admin@example.com）でログイン
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill("admin@example.com");
-		await page.getByRole("textbox", { name: "パスワード" }).fill("Admin@789!");
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
-		await use(page);
-	},
-});
+const test = testWithAuthenticated;
 
 test("ログイン後、ログアウトするとログインページにリダイレクトされ、バックしてもホームに戻らない", async ({
-	authenticatedPage,
+	pageWithAdminUser,
 }) => {
 	await test.step("ユーザーメニューを開く", async () => {
-		await authenticatedPage
+		await pageWithAdminUser
 			.getByRole("button", { name: "ユーザーメニューを開く" })
 			.click();
 	});
 
 	await test.step("ログアウトボタンをクリックしてログインページにリダイレクトされることを確認", async () => {
-		await authenticatedPage.getByRole("button", { name: "ログアウト" }).click();
-		await authenticatedPage.waitForURL("/login");
+		await pageWithAdminUser.getByRole("button", { name: "ログアウト" }).click();
+		await pageWithAdminUser.waitForURL("/login");
 	});
 
 	await test.step("ブラウザバックしてもホームページに戻らないことを確認", async () => {
-		await authenticatedPage.goBack();
+		await pageWithAdminUser.goBack();
 		// RedirectType.replace を使用しているため、ホームページには戻らない
-		await expect(authenticatedPage).not.toHaveURL("/");
+		await expect(pageWithAdminUser).not.toHaveURL("/");
 	});
 });

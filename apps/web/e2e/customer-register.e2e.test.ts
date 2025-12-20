@@ -1,45 +1,13 @@
 import { randomUUID } from "node:crypto";
-import { test as base, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-type Fixtures = {
+const test = testWithAuthenticated.extend<{
 	adminUserPage: Page;
-	normalUserPage: Page;
-};
-
-const test = base.extend<Fixtures>({
-	async adminUserPage({ page }, use) {
-		const adminUser = {
-			email: "admin@example.com",
-			password: "Admin@789!",
-		};
-
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(adminUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(adminUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
-
+}>({
+	async adminUserPage({ pageWithAdminUser: page }, use) {
 		await page.goto("/customers/new");
 		await page.waitForURL("/customers/new");
-
-		await use(page);
-	},
-
-	async normalUserPage({ page }, use) {
-		const testUser = {
-			email: "test1@example.com",
-			password: "Test@Pass123",
-		};
-
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(testUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(testUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
 
 		await use(page);
 	},
@@ -139,7 +107,7 @@ test("管理者が必須フィールドのみ入力して登録でき、詳細�
 });
 
 test("一般ユーザーには顧客一覧で新規登録リンクが表示されない", async ({
-	normalUserPage: page,
+	pageWithGenericUser: page,
 }) => {
 	await test.step("顧客一覧ページに遷移", async () => {
 		await page.goto("/customers");

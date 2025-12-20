@@ -1,25 +1,11 @@
 import { randomUUID } from "node:crypto";
-import { test as base, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-type RegisterStaffPageFixture = {
+const test = testWithAuthenticated.extend<{
 	registerStaffPage: Page;
-};
-
-const test = base.extend<RegisterStaffPageFixture>({
-	registerStaffPage: async ({ page }, use) => {
-		const adminUser = {
-			email: "admin@example.com",
-			password: "Admin@789!",
-		};
-
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(adminUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(adminUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
-
+}>({
+	registerStaffPage: async ({ pageWithAdminUser: page }, use) => {
 		await page.goto("/staffs/new");
 		await page.waitForURL("/staffs/new");
 
