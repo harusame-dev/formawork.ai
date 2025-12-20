@@ -155,7 +155,7 @@ git diff main...HEAD --stat
 # GitHub MCPを使用してPRを作成
 mcp__github__create_pull_request({
   owner: "harusame0616",
-  repo: "ai-formawork",
+  repo: "formawork.ai",
   title: "{生成された日本語タイトル}",
   head: "{current_branch}",
   base: "main",
@@ -175,7 +175,7 @@ mcp__github__create_pull_request({
 # GitHub MCPを使用して既存PRを更新
 mcp__github__update_pull_request({
   owner: "harusame0616",
-  repo: "ai-formawork",
+  repo: "formawork.ai",
   pullNumber: {ステップ4で取得したPR番号},
   title: "{生成された日本語タイトル}",
   body: "{生成された説明文}"
