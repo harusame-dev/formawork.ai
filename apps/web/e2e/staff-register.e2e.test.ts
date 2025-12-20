@@ -1,10 +1,46 @@
 import { randomUUID } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
+import { deleteStaff } from "@/features/staff/delete/delete-staff";
+import { registerStaff } from "@/features/staff/register/register-staff";
 import { testWithAuthenticated } from "./fixtures/authenticated-test";
+
+// シードデータで定義されている管理者スタッフID（佐藤次郎）
+const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
 
 const test = testWithAuthenticated.extend<{
 	registerStaffPage: Page;
+	existingStaff: {
+		email: string;
+		staffId: string;
+	};
 }>({
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
+	async existingStaff({}, use) {
+		const uniqueId = randomUUID().slice(0, 8);
+		const staffData = {
+			email: `existing-staff-${uniqueId}@example.com`,
+			firstName: "既存",
+			lastName: `スタッフ${uniqueId}`,
+			password: "ExistingPass123!",
+			role: "user" as const,
+		};
+
+		const result = await registerStaff(staffData);
+		if (!result.success) {
+			throw new Error(`既存スタッフの登録に失敗: ${result.error}`);
+		}
+
+		await use({
+			email: staffData.email,
+			staffId: result.data.staffId,
+		});
+
+		// テスト後にクリーンアップ
+		await deleteStaff({
+			currentUserStaffId: ADMIN_STAFF_ID,
+			staffId: result.data.staffId,
+		});
+	},
 	registerStaffPage: async ({ pageWithAdminUser: page }, use) => {
 		await page.goto("/staffs/new");
 		await page.waitForURL("/staffs/new");
@@ -122,9 +158,10 @@ test("一般ロールでスタッフを登録できる", async ({ registerStaffP
 
 test("重複するメールアドレスで登録するとエラーが表示される", async ({
 	registerStaffPage,
+	existingStaff,
 }) => {
 	const testData = {
-		email: "tanaka@staff.example.com",
+		email: existingStaff.email,
 		firstName: "テスト",
 		lastName: "重複",
 		password: "TestPassword123!",

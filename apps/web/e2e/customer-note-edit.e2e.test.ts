@@ -15,14 +15,27 @@ const test = testWithAuthenticated.extend<{
 	noteByGenericUser: { content: string; customerNoteId: string };
 	testCustomer: { customerId: string };
 }>({
-	adminNotesPage: async ({ pageWithAdminUser: page, testCustomer }, use) => {
+	adminNotesPage: async (
+		{
+			pageWithAdminUser: page,
+			testCustomer,
+			// 事前に依存に含めておかないとテスト側でアクセスした際に fixture を作成するのでキャッシュされて画面に表示されない
+			noteByGenericUser: _,
+		},
+		use,
+	) => {
 		await page.goto(`/customers/${testCustomer.customerId}/notes`);
 		await page.waitForURL(`/customers/${testCustomer.customerId}/notes`);
 		await expect(page.getByText("読み込み中")).toBeHidden();
 		await use(page);
 	},
 	genericUserNotesPage: async (
-		{ pageWithGenericUser: page, testCustomer },
+		{
+			pageWithGenericUser: page,
+			testCustomer,
+			// 事前に依存に含めておかないとテスト側でアクセスした際に fixture を作成するのでキャッシュされて画面に表示されない
+			noteByGenericUser: _,
+		},
 		use,
 	) => {
 		await page.goto(`/customers/${testCustomer.customerId}/notes`);

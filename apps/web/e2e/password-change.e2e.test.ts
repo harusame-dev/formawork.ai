@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
-import { db } from "@workspace/db/client";
-import { staffsTable } from "@workspace/db/schema/staff";
-import { eq } from "drizzle-orm";
 import { deleteStaff } from "@/features/staff/delete/delete-staff";
 import { registerStaff } from "@/features/staff/register/register-staff";
 import { testWithAuthenticated } from "./fixtures/authenticated-test";
+
+// シードデータで定義されている管理者スタッフID（佐藤次郎）
+const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
 
 // パスワード変更テストは動的にユーザーを作成する必要があるため、専用のfixtureを使用
 const test = testWithAuthenticated.extend<{
@@ -61,19 +61,8 @@ const test = testWithAuthenticated.extend<{
 			staffId: result.data.staffId,
 		});
 
-		// 削除用の管理者スタッフIDを動的に取得
-		const [adminStaff] = await db
-			.select({ staffId: staffsTable.staffId })
-			.from(staffsTable)
-			.where(eq(staffsTable.email, "admin@example.com"))
-			.limit(1);
-
-		if (!adminStaff) {
-			throw new Error("管理者スタッフの取得に失敗");
-		}
-
 		await deleteStaff({
-			currentUserStaffId: adminStaff.staffId,
+			currentUserStaffId: ADMIN_STAFF_ID,
 			staffId: result.data.staffId,
 		});
 	},

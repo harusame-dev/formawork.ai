@@ -1,4 +1,4 @@
-import { test as base, type Page } from "@playwright/test";
+import { test as base, expect, type Page } from "@playwright/test";
 import { adminUserAuthFile, genericUserAuthFile } from "../setups/auth-file";
 
 export const testWithAuthenticated = base.extend<{
@@ -12,25 +12,25 @@ export const testWithAuthenticated = base.extend<{
 		await use("00000000-0000-0000-0000-000000000003");
 	},
 	async pageWithAdminUser({ browser }, use) {
-		const page = await browser
-			.newContext({
-				storageState: adminUserAuthFile,
-			})
-			.then((context) => context.newPage());
+		const context = await browser.newContext({
+			storageState: adminUserAuthFile,
+		});
+		const page = await context.newPage();
 
 		await page.goto("/");
-		await page.waitForURL("/");
+		// ログインページにリダイレクトされた場合は認証状態が失われているので待機
+		await expect(page).toHaveURL("/");
 		await use(page);
 	},
 	async pageWithGenericUser({ browser }, use) {
-		const page = await browser
-			.newContext({
-				storageState: genericUserAuthFile,
-			})
-			.then((context) => context.newPage());
+		const context = await browser.newContext({
+			storageState: genericUserAuthFile,
+		});
+		const page = await context.newPage();
 
 		await page.goto("/");
-		await page.waitForURL("/");
+		// ログインページにリダイレクトされた場合は認証状態が失われているので待機
+		await expect(page).toHaveURL("/");
 		await use(page);
 	},
 });
