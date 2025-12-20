@@ -5,7 +5,6 @@
 			"mcp__github",
 			"mcp__context7",
 			"mcp__serena",
-			"Bash(git add:*)",
 			"Bash(pnpm -w dev:*)",
 			"Bash(pnpm -w build:*)",
 			"Bash(pnpm -w start:*)",
@@ -24,7 +23,9 @@
 			"Bash(find:*)",
 			"Bash(git show:*)",
 			"Read(.env.sample)",
-			"Write(.env.sample)"
+			"Write(.env.sample)",
+			"Skill(validating-code)",
+			"Skill(creating-pr)"
 		],
 		"ask": [],
 		"deny": ["Read(.env*)", "Write(.env*)", "Bash(rm -rf:*)"]
