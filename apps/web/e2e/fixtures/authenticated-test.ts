@@ -1,5 +1,5 @@
 import { test as base, type Page } from "@playwright/test";
-import { adminUserAuthFile, genericUserAuthFile } from "../auth-files";
+import { adminUserAuthFile, genericUserAuthFile } from "../user.setup";
 
 export const testWithAuthenticated = base.extend<{
 	pageWithAdminUser: Page;

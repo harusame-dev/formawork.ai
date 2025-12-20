@@ -24,7 +24,7 @@ export default defineConfig({
 	projects: [
 		{
 			name: userSetupProject,
-			testMatch: /setups\/user\.setup\.ts/,
+			testMatch: /user.setup.ts/,
 		},
 		{
 			dependencies: [userSetupProject],
