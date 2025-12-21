@@ -1,7 +1,7 @@
 ---
 name: creating-pr
 description: GitHub上にプルリクエストを自動作成・更新する。コミット履歴とコード差分を分析してPRタイトルと説明文を自動生成する。PR新規作成、既存PRの更新、または変更がレビュー対象になった時に使用する。
-allowed-tools: Bash, mcp__github__list_commits, mcp__github__create_pull_request, mcp__github__update_pull_request, mcp__github__get_me
+allowed-tools: Bash(git branch:*), Bash(git status:*), Bash(git --no-pager log:*), Bash(git --no-pager diff:*), Bash(git ls-remote:*), Bash(git push:*), Bash(pnpm -w validate:check:*), mcp__github
 ---
 
 # GitHub プルリクエスト自動作成・更新
@@ -166,7 +166,7 @@ mcp__github__create_pull_request({
 成功時の出力：
 ```
 ✅ PRが作成されました
-📍 URL: https://github.com/harusame0616/ai-formawork/pull/NNN
+📍 URL: https://github.com/harusame0616/formawork.ai/pull/NNN
 ```
 
 **パターンB: 既存PR更新（ステップ4で PRが見つかった場合）**
@@ -185,7 +185,7 @@ mcp__github__update_pull_request({
 成功時の出力：
 ```
 ✅ PRが更新されました
-📍 URL: https://github.com/harusame0616/ai-formawork/pull/NNN
+📍 URL: https://github.com/harusame0616/formawork.ai/pull/NNN
 ```
 
 ## エラーハンドリング
