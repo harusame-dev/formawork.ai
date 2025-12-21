@@ -1,100 +1,44 @@
-import { test as base, expect, type Page } from "@playwright/test";
+import { randomUUID } from "node:crypto";
+import { expect } from "@playwright/test";
 import { db } from "@workspace/db/client";
 import { customersTable } from "@workspace/db/schema/customer";
 import { eq } from "drizzle-orm";
-import { v4 } from "uuid";
+import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-type Fixtures = {
-	customer: {
-		address: string;
-		birthDate: string | null;
-		customerId: string;
-		email: string;
-		firstName: string;
-		firstNameKana: string;
-		gender: number;
-		lastName: string;
-		lastNameKana: string;
-		phone: string;
-		remarks: string;
-	};
-	adminUserPage: Page;
-	normalUserPage: Page;
-};
-
-const test = base.extend<Fixtures>({
-	async adminUserPage({ page }, use) {
-		const adminUser = {
-			email: "admin@example.com",
-			password: "Admin@789!",
-		};
-
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(adminUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(adminUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
-
-		await use(page);
-	},
-
-	// biome-ignore lint/correctness/noEmptyPattern: The first argument inside a fixture must use object destructuring pattern, e.g. ({ test } => {}). Instead, received "_".
-	async customer({}, use) {
-		const customer = {
-			address: "",
-			birthDate: null,
-			customerId: v4(),
-			email: `${v4()}@example.com`,
-			firstName: v4().slice(0, 12),
-			firstNameKana: "",
-			gender: 1,
-			lastName: v4().slice(0, 12),
-			lastNameKana: "",
+const test = testWithAuthenticated.extend<{
+	testCustomer: { customerId: string };
+}>({
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
+	async testCustomer({}, use) {
+		const customerId = randomUUID();
+		await db.insert(customersTable).values({
+			customerId,
+			email: `${randomUUID()}@example.com`,
+			firstName: randomUUID().slice(0, 12),
+			lastName: randomUUID().slice(0, 12),
 			phone: `${Math.floor(Math.random() * 1000000000)}`,
-			remarks: "",
-		};
-
-		await db.insert(customersTable).values(customer);
-		await use(customer);
+		});
+		await use({ customerId });
 		await db
 			.delete(customersTable)
-			.where(eq(customersTable.customerId, customer.customerId));
-	},
-
-	async normalUserPage({ page }, use) {
-		const testUser = {
-			email: "test1@example.com",
-			password: "Test@Pass123",
-		};
-
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(testUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(testUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
-
-		await use(page);
+			.where(eq(customersTable.customerId, customerId));
 	},
 });
 
 test("管理者が必須フィールドを全て入力して編集できる", async ({
-	adminUserPage: page,
-	customer,
+	pageWithAdminUser: page,
+	testCustomer,
 }) => {
 	await test.step("顧客編集ページへ遷移", async () => {
-		await page.goto(`/customers/${customer.customerId}/edit`);
-		await page.waitForURL(`/customers/${customer.customerId}/edit`);
+		await page.goto(`/customers/${testCustomer.customerId}/edit`);
+		await page.waitForURL(`/customers/${testCustomer.customerId}/edit`);
 		await expect(page.getByText("読み込み中")).toBeHidden();
 	});
 
 	const newCustomer = {
-		email: `${v4()}@example.com`,
-		firstName: v4().slice(0, 12),
-		lastName: v4().slice(0, 12),
+		email: `${randomUUID()}@example.com`,
+		firstName: randomUUID().slice(0, 12),
+		lastName: randomUUID().slice(0, 12),
 		phone: `${Math.floor(Math.random() * 1000000000)}`,
 	};
 	await test.step("顧客情報を編集", async () => {
@@ -116,7 +60,7 @@ test("管理者が必須フィールドを全て入力して編集できる", as
 	});
 
 	await test.step("顧客詳細ページにリダイレクトされる", async () => {
-		await page.waitForURL(`/customers/${customer.customerId}`);
+		await page.waitForURL(`/customers/${testCustomer.customerId}`);
 	});
 
 	await test.step("編集内容が反映されていることを確認", async () => {
@@ -131,12 +75,12 @@ test("管理者が必須フィールドを全て入力して編集できる", as
 });
 
 test("管理者が必須フィールド以外を空で編集できる", async ({
-	adminUserPage: page,
-	customer,
+	pageWithAdminUser: page,
+	testCustomer,
 }) => {
 	await test.step("編集ページへ遷移", async () => {
-		await page.goto(`/customers/${customer.customerId}/edit`);
-		await page.waitForURL(`/customers/${customer.customerId}/edit`);
+		await page.goto(`/customers/${testCustomer.customerId}/edit`);
+		await page.waitForURL(`/customers/${testCustomer.customerId}/edit`);
 		await expect(page.getByText("読み込み中")).toBeHidden();
 	});
 
@@ -150,7 +94,7 @@ test("管理者が必須フィールド以外を空で編集できる", async ({
 	});
 
 	await test.step("顧客詳細ページにリダイレクトされる", async () => {
-		await page.waitForURL(`/customers/${customer.customerId}`);
+		await page.waitForURL(`/customers/${testCustomer.customerId}`);
 	});
 
 	await test.step("メールアドレスと電話番号が「未登録」と表示されることを確認", async () => {
@@ -164,12 +108,12 @@ test("管理者が必須フィールド以外を空で編集できる", async ({
 });
 
 test("一般ユーザーには顧客詳細ページで編集リンクが表示されない", async ({
-	normalUserPage: page,
-	customer,
+	pageWithGenericUser: page,
+	testCustomer,
 }) => {
 	await test.step("顧客詳細ページに遷移", async () => {
-		await page.goto(`/customers/${customer.customerId}`);
-		await page.waitForURL(`/customers/${customer.customerId}`);
+		await page.goto(`/customers/${testCustomer.customerId}`);
+		await page.waitForURL(`/customers/${testCustomer.customerId}`);
 	});
 
 	await test.step("編集リンクが表示されないことを確認", async () => {

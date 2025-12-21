@@ -11,6 +11,8 @@ import { defineConfig, devices } from "@playwright/test";
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+const userSetupProject = "user-setup";
+
 export default defineConfig({
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
@@ -21,13 +23,20 @@ export default defineConfig({
 	/* Configure projects for major browsers */
 	projects: [
 		{
-			name: "chromium",
+			name: userSetupProject,
+			testMatch: /user.setup.ts/,
 			use: { ...devices["Desktop Chrome"] },
 		},
 		{
-			name: "webkit",
-			use: { ...devices["Desktop Safari"] },
+			dependencies: [userSetupProject],
+			name: "chromium",
+			use: { ...devices["Desktop Chrome"] },
 		},
+		// {
+		// 	dependencies: [userSetupProject],
+		// 	name: "webkit",
+		// 	use: { ...devices["Desktop Safari"] },
+		// },
 
 		/* Test against mobile viewports. */
 		// {

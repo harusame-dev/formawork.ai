@@ -1,8 +1,9 @@
 import { randomUUID } from "node:crypto";
-import { test as base, expect, type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import { db } from "@workspace/db/client";
 import { customersTable } from "@workspace/db/schema/customer";
 import { eq } from "drizzle-orm";
+import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
 /** ランダムなひらがな文字列を生成 */
 function generateRandomHiragana(length: number): string {
@@ -15,54 +16,31 @@ function generateRandomHiragana(length: number): string {
 	return result;
 }
 
-type SearchTestCustomer = {
-	customerId: string;
-	lastName: string;
-	firstName: string;
-	lastNameKana: string;
-	firstNameKana: string;
-	phone: string;
-	email: string;
-};
-
-type CustomersPageFixture = {
+const test = testWithAuthenticated.extend<{
 	customersPage: Page;
-	authenticatedPage: Page;
-	testUser: {
-		email: string;
-		password: string;
-	};
 	searchPaginationCustomers: {
 		keyword: string;
 		count: number;
 	};
-	searchTestCustomer: SearchTestCustomer;
-};
-
-const test = base.extend<CustomersPageFixture>({
-	authenticatedPage: async ({ page, testUser }, use) => {
-		// ログイン処理
-		await page.goto("/login");
-		await page.getByLabel("メールアドレス").fill(testUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(testUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
-		await page.waitForURL("/");
+	searchTestCustomer: {
+		customerId: string;
+		lastName: string;
+		firstName: string;
+		lastNameKana: string;
+		firstNameKana: string;
+		phone: string;
+		email: string;
+	};
+}>({
+	customersPage: async ({ pageWithGenericUser: page }, use) => {
+		// 顧客一覧ページに遷移
+		await page.goto("/customers");
+		await page.waitForURL("/customers");
+		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
 
 		await use(page);
 	},
-	customersPage: async ({ authenticatedPage }, use) => {
-		// 顧客一覧ページに遷移
-		await authenticatedPage.goto("/customers");
-		await authenticatedPage.waitForURL("/customers");
-		await expect(
-			authenticatedPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
-
-		await use(authenticatedPage);
-	},
-	// biome-ignore lint/correctness/noEmptyPattern: fixtureの引数はオブジェクト分割が必要
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
 	searchPaginationCustomers: async ({}, use) => {
 		const keyword = randomUUID().slice(0, 8);
 		const count = 40;
@@ -83,7 +61,7 @@ const test = base.extend<CustomersPageFixture>({
 			.delete(customersTable)
 			.where(eq(customersTable.firstName, keyword));
 	},
-	// biome-ignore lint/correctness/noEmptyPattern: fixtureの引数はオブジェクト分割が必要
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
 	searchTestCustomer: async ({}, use) => {
 		const uniqueId = randomUUID().slice(0, 8);
 		// 電話番号用のランダムな数字を生成（11桁）
@@ -92,7 +70,7 @@ const test = base.extend<CustomersPageFixture>({
 			.padStart(8, "0")}`;
 		// カナ用のランダムなひらがなを生成（8文字）
 		const randomKana = generateRandomHiragana(8);
-		const customer: SearchTestCustomer = {
+		const customer = {
 			customerId: randomUUID(),
 			email: `${uniqueId}@example.com`,
 			firstName: `名${uniqueId}`,
@@ -110,33 +88,22 @@ const test = base.extend<CustomersPageFixture>({
 			.delete(customersTable)
 			.where(eq(customersTable.customerId, customer.customerId));
 	},
-	testUser: [
-		{
-			email: "test1@example.com",
-			password: "Test@Pass123",
-		},
-		{ option: true },
-	],
 });
 
 test("メニューから顧客一覧ページに遷移できる", async ({
-	authenticatedPage,
+	pageWithGenericUser: page,
 }) => {
 	await test.step("メニューボタンをクリックしてメニューを開く", async () => {
-		await authenticatedPage
-			.getByRole("button", { name: /^メニューを開く$/ })
-			.click();
+		await page.getByRole("button", { name: /^メニューを開く$/ }).click();
 	});
 
 	await test.step("顧客一覧リンクをクリック", async () => {
-		await authenticatedPage.getByRole("link", { name: "顧客一覧" }).click();
+		await page.getByRole("link", { name: "顧客一覧" }).click();
 	});
 
 	await test.step("顧客一覧ページに遷移することを確認", async () => {
-		await expect(authenticatedPage).toHaveURL("/customers");
-		await expect(
-			authenticatedPage.getByRole("heading", { name: "顧客一覧" }),
-		).toBeVisible();
+		await expect(page).toHaveURL("/customers");
+		await expect(page.getByRole("heading", { name: "顧客一覧" })).toBeVisible();
 	});
 });
 

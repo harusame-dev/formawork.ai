@@ -9,7 +9,7 @@ const usersFixture = [
 		staffId: "00000000-0000-0000-0000-000000000001",
 	},
 	{
-		email: "test2@example.com",
+		email: "generic@example.com",
 		id: "a0000000-0000-0000-0000-000000000002",
 		password: "Secure@456",
 		role: "user",
