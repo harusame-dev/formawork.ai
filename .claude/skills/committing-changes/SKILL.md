@@ -1,6 +1,7 @@
 ---
 name: committing-changes
 description: 変更差分から自動でコミットメッセージを生成し、コミットする。論理的な最小編集単位の編集が完了した時や、ユーザーから明示的にコミットを指示された場合に使用する。
+allowed-tools: Bash(git status:*), Bash(git --no-pager diff:*), Bash(git --no-pager log:*), Bash(git add:*), Bash(git commit:*), Bash(echo:*)
 ---
 
 # 変更差分のコミット
