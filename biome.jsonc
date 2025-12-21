@@ -27,6 +27,11 @@
 			"next": "recommended",
 			"tailwind": "recommended",
 			"test": "recommended"
+		},
+		"rules": {
+			"complexity": {
+				"useLiteralKeys": "off"
+			}
 		}
 	},
 	"vcs": {
