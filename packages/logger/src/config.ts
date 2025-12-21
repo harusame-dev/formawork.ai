@@ -24,13 +24,9 @@ export function getLoggerConfig(): LoggerConfig {
 			service: v.string("サービス名は必須です"),
 		}),
 		{
-			// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 			application: process.env["APP_NAME"],
-			// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 			environment: process.env["HOST_ENVIRONMENT"],
-			// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 			level: process.env["LOG_LEVEL"],
-			// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 			service: process.env["SERVICE_NAME"],
 		},
 	);

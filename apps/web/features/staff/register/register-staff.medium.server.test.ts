@@ -72,9 +72,7 @@ test("スタッフを正常に登録できる", async ({ cleanup }) => {
 	const { data } = await supabase.auth.admin.listUsers();
 	const user = data.users.find((u) => u.email === input.email);
 	expect(user).toBeDefined();
-	// biome-ignore lint/complexity/useLiteralKeys: ts4111
 	expect(user?.app_metadata?.["role"]).toBe(input.role);
-	// biome-ignore lint/complexity/useLiteralKeys: ts4111
 	expect(user?.app_metadata?.["staffId"]).toBe(result.data.staffId);
 });
 
@@ -130,7 +128,6 @@ test("管理者ロールで登録できる", async ({ cleanup }) => {
 	const supabase = createAdminClient();
 	const { data } = await supabase.auth.admin.listUsers();
 	const user = data.users.find((u) => u.email === input.email);
-	// biome-ignore lint/complexity/useLiteralKeys: ts4111
 	expect(user?.app_metadata?.["role"]).toBe("admin");
 });
 

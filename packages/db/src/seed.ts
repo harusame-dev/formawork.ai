@@ -19,7 +19,6 @@ import {
 import { customerNoteAdviceTable } from "./schema/customer-note-advice";
 import { staffsTable } from "./schema/staff";
 
-// biome-ignore lint/complexity/useLiteralKeys: ts4111
 const isProduction = process.env["VERCEL_ENV"];
 
 async function seed() {

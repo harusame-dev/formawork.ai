@@ -29,18 +29,14 @@ type SupabasePrivateConfig = v.InferOutput<typeof supabasePrivateConfigSchema>;
 
 export function getSupabasePublicConfig(): SupabasePublicConfig {
 	return v.parse(supabasePublicConfigSchema, {
-		// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 		anonKey: process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"],
-		// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 		url: process.env["NEXT_PUBLIC_SUPABASE_URL"],
 	});
 }
 
 export function getSupabasePrivateConfig(): SupabasePrivateConfig {
 	return v.parse(supabasePrivateConfigSchema, {
-		// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 		serviceRoleKey: process.env["SUPABASE_SERVICE_ROLE_KEY"],
-		// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 		url: process.env["NEXT_PUBLIC_SUPABASE_URL"],
 	});
 }

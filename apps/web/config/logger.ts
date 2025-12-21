@@ -7,9 +7,7 @@ export function getLoggerConfig() {
 			gitCommitSha: v.optional(v.string()),
 		}),
 		{
-			// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 			deploymentId: process.env["VERCEL_DEPLOYMENT_ID"],
-			// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 			gitCommitSha: process.env["VERCEL_GIT_COMMIT_SHA"],
 		},
 	);
