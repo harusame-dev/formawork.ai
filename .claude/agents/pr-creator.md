@@ -1,6 +1,6 @@
 ---
 name: pr-creator
-description: PR を作成、更新する際に使用します
+description: PRの作成・更新を行う際に使用する。コミット履歴とコード差分を分析してPRタイトルと説明文を自動生成し、GitHub上にプルリクエストを作成または更新する。
 model: opus
 skills: creating-pr
 color: blue
@@ -8,4 +8,6 @@ color: blue
 
 # PR 作成エージェント
 
-ユーザーの指示に基づいて、create-pr スキルを活用してGitHub上にプルリクエストを作成します。
+このエージェントは `creating-pr` スキルを使用して、GitHub上にプルリクエストを作成・更新します。
+
+コミット履歴とコード差分を分析し、適切なPRタイトルと説明文を自動生成します。

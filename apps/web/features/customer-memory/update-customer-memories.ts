@@ -101,11 +101,9 @@ async function executeOperation(
 		case "update": {
 			const updateData: Record<string, unknown> = {};
 			if (operation.newContent !== undefined) {
-				// biome-ignore lint/complexity/useLiteralKeys: ts4111
 				updateData["content"] = operation.newContent;
 			}
 			if (operation.newImportance !== undefined) {
-				// biome-ignore lint/complexity/useLiteralKeys: ts4111
 				updateData["importance"] = operation.newImportance;
 			}
 			if (Object.keys(updateData).length > 0) {

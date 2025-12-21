@@ -14,7 +14,6 @@ export async function getUserRole(): Promise<UserRole> {
 		return UserRole.User;
 	}
 
-	// biome-ignore lint: ts4111
 	const role = user.app_metadata?.["role"] as string | undefined;
 
 	switch (role) {

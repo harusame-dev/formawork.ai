@@ -10,7 +10,6 @@ export const databaseUrl = new URL(
 			v.string("databaseUrl は文字列である必要があります"),
 			v.url("databaseUrl は URL 形式である必要があります"),
 		),
-		// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 		process.env["DATABASE_URL"],
 	),
 );
@@ -23,7 +22,6 @@ const client = postgres(databaseUrl.toString());
 
 export const db = globalForDb.db || drizzle(client, { schema });
 
-// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 if (process.env["NODE_ENV"] !== "production") globalForDb.db = db;
 
 export type DbClient = typeof db;

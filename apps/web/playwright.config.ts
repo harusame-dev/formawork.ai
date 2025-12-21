@@ -15,7 +15,6 @@ const userSetupProject = "user-setup";
 
 export default defineConfig({
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
-	// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 	forbidOnly: !!process.env["CI"],
 	/* Run tests in files in parallel */
 	fullyParallel: true,
@@ -61,7 +60,6 @@ export default defineConfig({
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: "html",
 	/* Retry on CI only */
-	// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 	retries: process.env["CI"] ? 2 : 0,
 	testDir: "./e2e",
 
@@ -78,13 +76,10 @@ export default defineConfig({
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 		command: process.env["CI"] ? "pnpm start" : "pnpm dev",
-		// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 		reuseExistingServer: !process.env["CI"],
 		url: "http://localhost:3000",
 	},
 	/* Opt out of parallel tests on CI. */
-	// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 	workers: process.env["CI"] ? 1 : undefined,
 });

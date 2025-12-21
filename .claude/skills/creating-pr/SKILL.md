@@ -1,7 +1,7 @@
 ---
 name: creating-pr
 description: GitHub上にプルリクエストを自動作成・更新する。コミット履歴とコード差分を分析してPRタイトルと説明文を自動生成する。PR新規作成、既存PRの更新、または変更がレビュー対象になった時に使用する。
-allowed-tools: Bash, mcp__github__list_commits, mcp__github__create_pull_request, mcp__github__update_pull_request, mcp__github__get_me
+allowed-tools: Bash(git branch:*), Bash(git status:*), Bash(git --no-pager log:*), Bash(git --no-pager diff:*), Bash(git ls-remote:*), Bash(git push:*), Bash(git remote:*), Bash(pnpm -w validate:check:*), mcp__github
 ---
 
 # GitHub プルリクエスト自動作成・更新
@@ -71,15 +71,23 @@ fi
 
 ### ステップ4: 既存PRの確認（作成 or 更新を判定）
 
-現在のブランチに対応する既存の PR が存在するか確認：
+現在のブランチに対応する既存の PR が存在するか確認。
 
-```bash
-# GitHub MCP で現在のブランチに対応する PR を検索
-# PR が見つかった場合: 既存 PR 番号を取得
-# PR が見つからない場合: 新規 PR 作成フロー
+**重要**: GitHub操作は必ず `mcp__github` ツールを使用すること（gh CLIは使用しない）
 
-# 検索例：
-# gh pr list --head $current_branch --state all --json number
+```
+# リポジトリ情報の取得
+git remote get-url origin
+# → 出力例: git@github.com:owner/repo.git または https://github.com/owner/repo.git
+# → owner と repo を抽出
+
+# GitHub MCPで現在のブランチに対応するPRを検索
+mcp__github__list_pull_requests({
+  owner: "{取得したowner}",
+  repo: "{取得したrepo}",
+  head: "{owner}:{current_branch}",
+  state: "all"
+})
 ```
 
 **判定結果:**
@@ -147,15 +155,19 @@ git diff main...HEAD --stat
 
 ### ステップ8: PR作成または更新
 
-ステップ4で判定した結果に基づいて、PR の作成または更新を実行：
+ステップ4で判定した結果に基づいて、PR の作成または更新を実行。
+
+**重要**:
+- GitHub操作は必ず `mcp__github` ツールを使用すること（gh CLIは使用しない）
+- リポジトリ情報はステップ4で `git remote get-url origin` から取得した値を使用すること
 
 **パターンA: 新規PR作成（ステップ4で PRが見つからない場合）**
 
-```bash
+```
 # GitHub MCPを使用してPRを作成
 mcp__github__create_pull_request({
-  owner: "harusame0616",
-  repo: "formawork.ai",
+  owner: "{ステップ4で取得したowner}",
+  repo: "{ステップ4で取得したrepo}",
   title: "{生成された日本語タイトル}",
   head: "{current_branch}",
   base: "main",
@@ -166,16 +178,16 @@ mcp__github__create_pull_request({
 成功時の出力：
 ```
 ✅ PRが作成されました
-📍 URL: https://github.com/harusame0616/ai-formawork/pull/NNN
+📍 URL: https://github.com/{owner}/{repo}/pull/NNN
 ```
 
 **パターンB: 既存PR更新（ステップ4で PRが見つかった場合）**
 
-```bash
+```
 # GitHub MCPを使用して既存PRを更新
 mcp__github__update_pull_request({
-  owner: "harusame0616",
-  repo: "formawork.ai",
+  owner: "{ステップ4で取得したowner}",
+  repo: "{ステップ4で取得したrepo}",
   pullNumber: {ステップ4で取得したPR番号},
   title: "{生成された日本語タイトル}",
   body: "{生成された説明文}"
@@ -185,7 +197,7 @@ mcp__github__update_pull_request({
 成功時の出力：
 ```
 ✅ PRが更新されました
-📍 URL: https://github.com/harusame0616/ai-formawork/pull/NNN
+📍 URL: https://github.com/{owner}/{repo}/pull/NNN
 ```
 
 ## エラーハンドリング

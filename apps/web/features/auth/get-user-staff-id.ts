@@ -11,7 +11,6 @@ export async function getUserStaffId(): Promise<string | null> {
 		return null;
 	}
 
-	// biome-ignore lint: ts4111
 	const staffId = user.app_metadata?.["staffId"] as string | undefined;
 
 	return staffId ?? null;

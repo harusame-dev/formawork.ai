@@ -46,9 +46,7 @@ const usersFixture = [
 ];
 
 async function seedUsers() {
-	// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 	const supabaseUrl = process.env["SUPABASE_URL"];
-	// biome-ignore lint/complexity/useLiteralKeys: ts(4111)
 	const supabaseServiceRoleKey = process.env["SUPABASE_SERVICE_ROLE_KEY"];
 
 	if (!supabaseUrl || !supabaseServiceRoleKey) {
