@@ -29,6 +29,7 @@
 			"Bash(git --no-pager diff:*)",
 			"Bash(git --no-pager log:*)",
 			"Bash(git branch:*)",
+			"Bash(git remote:*)",
 			"Read(.env.sample)",
 			"Write(.env.sample)",
 			"Skill(validating-code)",
