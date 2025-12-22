@@ -140,12 +140,18 @@ test("保護ボタンでメモリを保護・解除できる", async ({
 	// 保護ボタンをクリック
 	await lockButton.click();
 
+	// クリック後に元のボタンが消えることを明示的に待機
+	await expect(lockButton).toBeHidden();
+
 	// 保護状態になったことを確認（ボタンのラベルが「保護解除」に変わる）
 	const unlockButton = row1.getByRole("button", { name: "保護解除" });
 	await expect(unlockButton).toBeVisible();
 
 	// 再度クリックして解除
 	await unlockButton.click();
+
+	// クリック後に元のボタンが消えることを明示的に待機
+	await expect(unlockButton).toBeHidden();
 
 	// 未保護状態に戻ったことを確認
 	await expect(row1.getByRole("button", { name: "保護" })).toBeVisible();
