@@ -4,54 +4,35 @@
 
 E2E テストで複数のテストが不安定（flaky）な挙動を示している。実行ごとに異なるテストが失敗し、再現性が低い。
 
-## 影響を受けるテスト
+## テスト実行結果サマリ（7回実行）
 
-| ファイル | テスト名 | 行番号 | 重要度 |
-|---------|---------|--------|-------|
-| `e2e/customer-register.e2e.test.ts` | 管理者が全フィールドを境界値一杯で入力して顧客を登録し、詳細ページへ遷移し、一覧画面で検索できる | 16 | 高 |
-| `e2e/customer-notes.e2e.test.ts` | 正常系: 4096文字（最大境界値）のノート登録成功 | 82 | 中 |
-| `e2e/staffs.e2e.test.ts` | スタッフ一覧が表示される | 35 | 高 |
-| `e2e/customer-memories.e2e.test.ts` | 保護ボタンでメモリを保護・解除できる | 129 | 中 |
+### 失敗頻度による分類
 
-## 詳細分析
+| 分類 | ファイル | テスト名 | 行番号 | 失敗回数 |
+|-----|---------|---------|--------|---------|
+| **毎回失敗** | `e2e/customer-notes.e2e.test.ts` | 正常系: 4096文字（最大境界値）のノート登録成功 | 82 | 7/7 |
+| **毎回失敗** | `e2e/staffs.e2e.test.ts` | スタッフ一覧が表示される | 35 | 7/7 |
+| **Flaky** | `e2e/customer-memories.e2e.test.ts` | 保護ボタンでメモリを保護・解除できる | 129 | 2/7 |
+| **Flaky** | `e2e/customer-register.e2e.test.ts` | 管理者が全フィールドを境界値一杯で入力して顧客を登録... | 16 | 1/7 |
+| **Flaky** | `e2e/customer-register.e2e.test.ts` | 管理者が必須フィールドのみ入力して登録でき... | 77 | 1/7 |
 
-### 1. customer-register.e2e.test.ts:16
+### 各回の失敗テスト
 
-**エラーメッセージ:**
-```
-Error: strict mode violation: getByText('5c7c0ded-6b0 1572a004-972') resolved to 2 elements:
-    1) <h1 class="text-2xl font-bold h-8">...</h1>
-    2) <div role="alert" aria-live="assertive" id="__next-route-announcer__">...</div>
-```
-
-**原因:**
-Next.js の `__next-route-announcer__` がスクリーンリーダー向けにページタイトルを読み上げるため、顧客名が h1 タグと route-announcer の両方に表示される。`getByText()` が複数要素にマッチして strict mode violation が発生。
-
-**該当コード (e2e/customer-register.e2e.test.ts:44-46):**
-```typescript
-await expect(
-  page.getByText(`${testData.lastName} ${testData.firstName}`),
-).toBeVisible();
-```
-
-**表示コンポーネント (features/customer/detail/customer-info-presenter.tsx:10-12):**
-```typescript
-<h1 className="text-2xl font-bold h-8">
-  {lastName} {firstName}
-</h1>
-```
-
-**修正案:**
-```typescript
-// getByRole('heading') を使用して h1 要素のみを対象にする
-await expect(
-  page.getByRole('heading', { name: `${testData.lastName} ${testData.firstName}` }),
-).toBeVisible();
-```
+| 実行 | 失敗数 | 失敗したテスト |
+|-----|-------|--------------|
+| 1回目 | 3 | customer-register:16, customer-notes:82, staffs:35 |
+| 2回目 | 3 | customer-memories:129, customer-notes:82, staffs:35 |
+| 3回目 | 2 | customer-notes:82, staffs:35 |
+| 4回目 | 2 | customer-notes:82, staffs:35 |
+| 5回目 | 3 | customer-notes:82, customer-memories:129, staffs:35 |
+| 6回目 | 3 | customer-register:77, customer-notes:82, staffs:35 |
+| 7回目 | 2 | customer-notes:82, staffs:35 |
 
 ---
 
-### 2. customer-notes.e2e.test.ts:82
+## 詳細分析
+
+### 1. customer-notes.e2e.test.ts:82 【毎回失敗】
 
 **エラーメッセージ:**
 ```
@@ -78,14 +59,11 @@ const noteCard = customerNotesPage.getByRole("listitem").filter({
   has: customerNotesPage.getByText(noteContent.slice(0, 100)),
 });
 await expect(noteCard).toBeVisible();
-
-// 方法3: データ属性を使用（UI側の修正も必要）
-await expect(customerNotesPage.locator(`[data-note-content="${noteContent.slice(0, 50)}..."]`)).toBeVisible();
 ```
 
 ---
 
-### 3. staffs.e2e.test.ts:35
+### 2. staffs.e2e.test.ts:35 【毎回失敗】
 
 **エラーメッセージ:**
 ```
@@ -126,7 +104,7 @@ await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
 **修正案:**
 ```typescript
 // 方法1: テーブル行の存在を明示的に待機
-await expect(staffsPage.locator("table tbody tr")).toHaveCount.greaterThan(0);
+await staffsPage.locator("table tbody tr").first().waitFor();
 const targetRow = staffsPage
   .locator("table tbody tr")
   .filter({ hasText: "田中" })
@@ -147,7 +125,7 @@ const test = testWithAuthenticated.extend<{
 
 ---
 
-### 4. customer-memories.e2e.test.ts:129
+### 3. customer-memories.e2e.test.ts:129 【Flaky - 2/7】
 
 **エラー内容（推定）:**
 保護ボタンクリック後の状態更新が完了する前にアサーションが実行されている。
@@ -173,23 +151,87 @@ await expect(unlockButton).toBeVisible();
 
 ---
 
+### 4. customer-register.e2e.test.ts:16 【Flaky - 1/7】
+
+**エラーメッセージ:**
+```
+Error: strict mode violation: getByText('5c7c0ded-6b0 1572a004-972') resolved to 2 elements:
+    1) <h1 class="text-2xl font-bold h-8">...</h1>
+    2) <div role="alert" aria-live="assertive" id="__next-route-announcer__">...</div>
+```
+
+**原因:**
+Next.js の `__next-route-announcer__` がスクリーンリーダー向けにページタイトルを読み上げるため、顧客名が h1 タグと route-announcer の両方に表示される。`getByText()` が複数要素にマッチして strict mode violation が発生。
+
+**該当コード (e2e/customer-register.e2e.test.ts:44-46):**
+```typescript
+await expect(
+  page.getByText(`${testData.lastName} ${testData.firstName}`),
+).toBeVisible();
+```
+
+**表示コンポーネント (features/customer/detail/customer-info-presenter.tsx:10-12):**
+```typescript
+<h1 className="text-2xl font-bold h-8">
+  {lastName} {firstName}
+</h1>
+```
+
+**修正案:**
+```typescript
+// getByRole('heading') を使用して h1 要素のみを対象にする
+await expect(
+  page.getByRole('heading', { name: `${testData.lastName} ${testData.firstName}` }),
+).toBeVisible();
+```
+
+---
+
+### 5. customer-register.e2e.test.ts:77 【Flaky - 1/7】
+
+**エラーメッセージ:**
+```
+Error: expect(locator).toBeVisible() failed
+```
+
+**原因:**
+`customer-register.e2e.test.ts:16` と同様の問題。顧客名の表示確認で `getByText()` を使用しているため、`__next-route-announcer__` との重複が発生する可能性がある。
+
+**該当コード (e2e/customer-register.e2e.test.ts:101-103):**
+```typescript
+await expect(
+  page.getByText(`${testData.lastName} ${testData.firstName}`),
+).toBeVisible();
+```
+
+**修正案:**
+```typescript
+// getByRole('heading') を使用して h1 要素のみを対象にする
+await expect(
+  page.getByRole('heading', { name: `${testData.lastName} ${testData.firstName}` }),
+).toBeVisible();
+```
+
+---
+
 ## 共通の問題点
 
 1. **ロケータの特定性不足**: `getByText()` は複数要素にマッチしやすく、strict mode violation の原因になる
 2. **待機処理の不足**: 非同期操作後のUI更新を待たずにアサーションを実行している
 3. **シードデータ依存**: テストがシードデータに依存しており、並列実行時に競合が発生しやすい
 4. **タイムアウトの短さ**: デフォルトの5秒タイムアウトでは、遅いCI環境で失敗しやすい
+5. **長文テキスト検索**: 4096文字など長いテキストの完全一致検索は不安定
 
 ## 推奨される対応
 
-### 優先度: 高
+### 優先度: 最高（毎回失敗）
 
-1. **customer-register.e2e.test.ts:16** - `getByRole('heading')` への変更
+1. **customer-notes.e2e.test.ts:82** - 部分一致検索への変更
 2. **staffs.e2e.test.ts:35** - 待機処理の追加またはテスト用fixture作成
 
-### 優先度: 中
+### 優先度: 高（Flaky）
 
-3. **customer-notes.e2e.test.ts:82** - 部分一致検索への変更
+3. **customer-register.e2e.test.ts:16, 77** - `getByRole('heading')` への変更
 4. **customer-memories.e2e.test.ts:129** - 明示的な待機処理の追加
 
 ### 全体的な改善
@@ -197,28 +239,7 @@ await expect(unlockButton).toBeVisible();
 - Playwright の `test.setTimeout()` でテストごとのタイムアウトを調整
 - `toBeVisible({ timeout: 10000 })` で個別のアサーションタイムアウトを延長
 - シードデータに依存するテストは fixture でテストデータを作成・クリーンアップする
-
-## テスト実行結果
-
-### 1回目
-```
-3 failed
-- [chromium] › e2e/customer-register.e2e.test.ts:16:1
-- [chromium] › e2e/customer-notes.e2e.test.ts:82:1
-- [chromium] › e2e/staffs.e2e.test.ts:35:1
-59 passed (51.2s)
-```
-
-### 2回目
-```
-3 failed
-- [chromium] › e2e/customer-memories.e2e.test.ts:129:1
-- [chromium] › e2e/customer-notes.e2e.test.ts:82:1
-- [chromium] › e2e/staffs.e2e.test.ts:35:1
-59 passed (52.5s)
-```
-
-※ 実行ごとに異なるテストが失敗しており、flaky な挙動が確認された。
+- `getByText()` の代わりに `getByRole()` を優先使用する
 
 ## 関連ファイル
 
