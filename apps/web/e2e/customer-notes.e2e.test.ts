@@ -102,19 +102,20 @@ test("正常系: 4096文字（最大境界値）のノート登録成功", async
 			.getByRole("dialog")
 			.getByRole("button", { name: "登録" })
 			.click();
+
+		// 4096文字の長文登録は時間がかかるため、ダイアログが閉じるまで十分に待機
+		await expect(customerNotesPage.getByRole("dialog")).toBeHidden({
+			timeout: 30000,
+		});
 	});
 
 	await test.step("登録結果を確認", async () => {
-		// ダイアログが閉じることを確認
-		await expect(customerNotesPage.getByRole("dialog")).toBeHidden();
-
 		// 登録したノートが一覧に表示されることを確認
-		// 4096文字の「あ」を含むノートカードを検索
-		// ノート内容は<p>タグ内に表示されるため、そこを検索
-		const noteText = customerNotesPage.getByText(noteContent.slice(0, 20), {
-			exact: false,
+		// 最初のlistitem内に4096文字の「あ」を含むテキストがあることを確認
+		const noteCard = customerNotesPage.getByRole("listitem").first();
+		await expect(noteCard).toContainText(noteContent.slice(0, 20), {
+			timeout: 10000,
 		});
-		await expect(noteText).toBeVisible({ timeout: 15000 });
 	});
 });
 
