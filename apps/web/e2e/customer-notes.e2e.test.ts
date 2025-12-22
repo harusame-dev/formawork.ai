@@ -109,7 +109,11 @@ test("正常系: 4096文字（最大境界値）のノート登録成功", async
 		await expect(customerNotesPage.getByRole("dialog")).toBeHidden();
 
 		// 登録したノートが一覧に表示されることを確認
-		await expect(customerNotesPage.getByText(noteContent)).toBeVisible();
+		// 長文テキストは省略表示されるため、先頭100文字で部分一致検索
+		const noteCard = customerNotesPage.getByRole("listitem").filter({
+			has: customerNotesPage.getByText(noteContent.slice(0, 100)),
+		});
+		await expect(noteCard).toBeVisible();
 	});
 });
 
