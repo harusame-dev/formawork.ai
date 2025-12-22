@@ -1,8 +1,19 @@
+import { randomUUID } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
+import { db } from "@workspace/db/client";
+import { staffsTable } from "@workspace/db/schema/staff";
+import { eq } from "drizzle-orm";
+import { registerStaff } from "@/features/staff/register/register-staff";
 import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
 const test = testWithAuthenticated.extend<{
 	staffsPage: Page;
+	testStaff: {
+		email: string;
+		firstName: string;
+		lastName: string;
+		staffId: string;
+	};
 }>({
 	staffsPage: async ({ pageWithGenericUser: page }, use) => {
 		await page.goto("/staffs");
@@ -10,6 +21,34 @@ const test = testWithAuthenticated.extend<{
 		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
 
 		await use(page);
+	},
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
+	async testStaff({}, use) {
+		const uniqueId = randomUUID().slice(0, 8);
+		const staffData = {
+			email: `test-staff-${randomUUID()}@example.com`,
+			firstName: `一覧用${uniqueId}`,
+			lastName: `テスト${uniqueId}`,
+			password: "TestStaff@123",
+			role: "user" as const,
+		};
+
+		const result = await registerStaff(staffData);
+		if (!result.success) {
+			throw new Error(`テストスタッフの登録に失敗: ${result.error}`);
+		}
+
+		const staffId = result.data.staffId;
+
+		await use({
+			email: staffData.email,
+			firstName: staffData.firstName,
+			lastName: staffData.lastName,
+			staffId,
+		});
+
+		// クリーンアップ
+		await db.delete(staffsTable).where(eq(staffsTable.staffId, staffId));
 	},
 });
 
@@ -32,66 +71,90 @@ test("メニューからスタッフ一覧ページに遷移できる", async ({
 	});
 });
 
-test("スタッフ一覧が表示される", async ({ staffsPage }) => {
+test("スタッフ一覧が表示される", async ({
+	pageWithGenericUser: page,
+	testStaff,
+}) => {
+	await test.step("スタッフ一覧ページに遷移", async () => {
+		await page.goto("/staffs");
+		await page.waitForURL("/staffs");
+		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+	});
+
 	await test.step("スタッフが表示されていることを確認", async () => {
 		// テーブル行が読み込まれるまで待機
-		await staffsPage.locator("table tbody tr").first().waitFor();
-		const rows = staffsPage.locator("table tbody tr");
+		await page.locator("table tbody tr").first().waitFor();
+		const rows = page.locator("table tbody tr");
 		const count = await rows.count();
 		expect(count).toBeGreaterThan(0);
 	});
 
-	await test.step("姓、名とメールアドレスが表示されていることを確認", async () => {
-		const targetRow = staffsPage
+	await test.step("姓、名が表示されていることを確認", async () => {
+		// fixtureで作成したテスト用スタッフを検索
+		const targetRow = page
 			.locator("table tbody tr")
-			.filter({ hasText: "田中" })
-			.filter({ hasText: "太郎" });
+			.filter({ hasText: testStaff.lastName })
+			.filter({ hasText: testStaff.firstName });
 		await expect(targetRow).toBeVisible({ timeout: 10000 });
-		await expect(targetRow.getByRole("cell", { name: "田中" })).toBeVisible();
-		await expect(targetRow.getByRole("cell", { name: "太郎" })).toBeVisible();
-	});
-});
-
-test("姓で完全一致検索できる", async ({ staffsPage }) => {
-	const searchKeyword = "田中";
-
-	await test.step("姓を入力して検索", async () => {
-		await staffsPage.getByLabel("キーワード").fill(searchKeyword);
-		await staffsPage.getByRole("button", { name: "検索" }).click();
-		await staffsPage.waitForURL("**/staffs?keyword=*");
 		await expect(
-			staffsPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
-	});
-
-	await test.step("検索結果を確認", async () => {
-		const rows = staffsPage.locator("table tbody tr");
-		const count = await rows.count();
-		expect(count).toBeGreaterThan(0);
+			targetRow.getByRole("cell", { name: testStaff.lastName }),
+		).toBeVisible();
 		await expect(
-			staffsPage.getByRole("cell", { name: searchKeyword }),
+			targetRow.getByRole("cell", { name: testStaff.firstName }),
 		).toBeVisible();
 	});
 });
 
-test("名で完全一致検索できる", async ({ staffsPage }) => {
-	const searchKeyword = "太郎";
+test("姓で完全一致検索できる", async ({
+	pageWithGenericUser: page,
+	testStaff,
+}) => {
+	await test.step("スタッフ一覧ページに遷移", async () => {
+		await page.goto("/staffs");
+		await page.waitForURL("/staffs");
+		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+	});
 
-	await test.step("名を入力して検索", async () => {
-		await staffsPage.getByLabel("キーワード").fill(searchKeyword);
-		await staffsPage.getByRole("button", { name: "検索" }).click();
-		await staffsPage.waitForURL("**/staffs?keyword=*");
-		await expect(
-			staffsPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+	await test.step("姓を入力して検索", async () => {
+		await page.getByLabel("キーワード").fill(testStaff.lastName);
+		await page.getByRole("button", { name: "検索" }).click();
+		await page.waitForURL("**/staffs?keyword=*");
+		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
 	});
 
 	await test.step("検索結果を確認", async () => {
-		const rows = staffsPage.locator("table tbody tr");
+		const rows = page.locator("table tbody tr");
 		const count = await rows.count();
 		expect(count).toBeGreaterThan(0);
 		await expect(
-			staffsPage.getByRole("cell", { name: searchKeyword }),
+			page.getByRole("cell", { name: testStaff.lastName }),
+		).toBeVisible();
+	});
+});
+
+test("名で完全一致検索できる", async ({
+	pageWithGenericUser: page,
+	testStaff,
+}) => {
+	await test.step("スタッフ一覧ページに遷移", async () => {
+		await page.goto("/staffs");
+		await page.waitForURL("/staffs");
+		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+	});
+
+	await test.step("名を入力して検索", async () => {
+		await page.getByLabel("キーワード").fill(testStaff.firstName);
+		await page.getByRole("button", { name: "検索" }).click();
+		await page.waitForURL("**/staffs?keyword=*");
+		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+	});
+
+	await test.step("検索結果を確認", async () => {
+		const rows = page.locator("table tbody tr");
+		const count = await rows.count();
+		expect(count).toBeGreaterThan(0);
+		await expect(
+			page.getByRole("cell", { name: testStaff.firstName }),
 		).toBeVisible();
 	});
 });
