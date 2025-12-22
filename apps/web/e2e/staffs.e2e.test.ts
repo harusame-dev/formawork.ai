@@ -90,7 +90,12 @@ test("スタッフ一覧が表示される", async ({
 	});
 
 	await test.step("姓、名が表示されていることを確認", async () => {
-		// fixtureで作成したテスト用スタッフを検索
+		// fixtureで作成したテスト用スタッフを検索で探す（ページネーション対策）
+		await page.getByLabel("キーワード").fill(testStaff.lastName);
+		await page.getByRole("button", { name: "検索" }).click();
+		await page.waitForURL("**/staffs?keyword=*");
+		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+
 		const targetRow = page
 			.locator("table tbody tr")
 			.filter({ hasText: testStaff.lastName })

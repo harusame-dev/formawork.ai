@@ -136,22 +136,24 @@ test("保護ボタンでメモリを保護・解除できる", async ({
 	const row1 = rows.nth(1);
 	const lockButton = row1.getByRole("button", { name: "保護" });
 	await expect(lockButton).toBeVisible();
+	await expect(lockButton).toBeEnabled();
 
 	// 保護ボタンをクリック
 	await lockButton.click();
 
 	// 保護状態になったことを確認（ボタンのラベルが「保護解除」に変わる）
-	// ボタンはdisabled→enabled、ラベル変更の過程を経るため、新しいボタンを直接待機
+	// ボタンがenabledになるまで待機してからクリック
 	const unlockButton = row1.getByRole("button", { name: "保護解除" });
 	await expect(unlockButton).toBeVisible({ timeout: 10000 });
+	await expect(unlockButton).toBeEnabled({ timeout: 10000 });
 
 	// 再度クリックして解除
 	await unlockButton.click();
 
 	// 未保護状態に戻ったことを確認
-	await expect(row1.getByRole("button", { name: "保護" })).toBeVisible({
-		timeout: 10000,
-	});
+	const lockButtonAfter = row1.getByRole("button", { name: "保護" });
+	await expect(lockButtonAfter).toBeVisible({ timeout: 10000 });
+	await expect(lockButtonAfter).toBeEnabled({ timeout: 10000 });
 });
 
 test("メモリを登録・編集・削除できる", async ({
