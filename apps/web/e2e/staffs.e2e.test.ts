@@ -34,6 +34,8 @@ test("メニューからスタッフ一覧ページに遷移できる", async ({
 
 test("スタッフ一覧が表示される", async ({ staffsPage }) => {
 	await test.step("スタッフが表示されていることを確認", async () => {
+		// テーブル行が読み込まれるまで待機
+		await staffsPage.locator("table tbody tr").first().waitFor();
 		const rows = staffsPage.locator("table tbody tr");
 		const count = await rows.count();
 		expect(count).toBeGreaterThan(0);
@@ -44,7 +46,7 @@ test("スタッフ一覧が表示される", async ({ staffsPage }) => {
 			.locator("table tbody tr")
 			.filter({ hasText: "田中" })
 			.filter({ hasText: "太郎" });
-		await expect(targetRow).toBeVisible();
+		await expect(targetRow).toBeVisible({ timeout: 10000 });
 		await expect(targetRow.getByRole("cell", { name: "田中" })).toBeVisible();
 		await expect(targetRow.getByRole("cell", { name: "太郎" })).toBeVisible();
 	});
