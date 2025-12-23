@@ -1,6 +1,7 @@
 import * as v from "valibot";
 import { CustomerNotesContainer } from "@/features/customer-note/list/customer-notes-container";
 import { CustomerNotesSearchForm } from "@/features/customer-note/list/customer-notes-search-form";
+import { CustomerNotesSearchFormSkeleton } from "@/features/customer-note/list/customer-notes-search-form-skeleton";
 import { CustomerNotesSkeleton } from "@/features/customer-note/list/customer-notes-skeleton";
 import { SuspenseOnSearch } from "@/libs/suspense-on-search";
 
@@ -22,7 +23,7 @@ export default async function CustomerNotesPage({
 
 	return (
 		<div className="space-y-4">
-			<SuspenseOnSearch fallback={<CustomerNotesSearchForm disabled />}>
+			<SuspenseOnSearch fallback={<CustomerNotesSearchFormSkeleton />}>
 				<CustomerNotesSearchForm condition={searchConditionPromise} />
 			</SuspenseOnSearch>
 

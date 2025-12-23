@@ -6,7 +6,7 @@
 
 ## 背景
 
-現在、`CustomerSearchForm` と `StaffSearchForm` の Suspense fallback には disabled 状態のフォーム自体を渡している。これを `CustomerEditFormSkeleton` と同様に専用のスケルトンコンポーネントに置き換えることで、ローディング状態の視認性を向上させる。
+現在、`CustomerSearchForm`、`StaffSearchForm`、`CustomerNotesSearchForm` の Suspense fallback には disabled 状態のフォーム自体を渡している。これを `CustomerEditFormSkeleton` と同様に専用のスケルトンコンポーネントに置き換えることで、ローディング状態の視認性を向上させる。
 
 ## 要件
 
@@ -23,6 +23,7 @@
 |------|---------|----------------|
 | CustomerSearchForm | `apps/web/app/(private)/customers/page.tsx` | disabled 状態のフォーム |
 | StaffSearchForm | `apps/web/app/(private)/staffs/page.tsx` | disabled 状態のフォーム |
+| CustomerNotesSearchForm | `apps/web/app/(private)/customers/[customerId]/notes/page.tsx` | disabled 状態のフォーム |
 
 ---
 
@@ -50,6 +51,21 @@ FormItem (space-y-2)
 
 CustomerSearchForm と**同一の構造**。
 - FormDescription の内容のみ異なる: "姓または名で完全一致検索（最大300文字）"
+
+### 3. CustomerNotesSearchFormのDOM構造
+
+**ファイル**: `apps/web/features/customer-note/list/customer-notes-search-form.tsx`
+
+```
+Collapsible (デフォルト閉じ)
+└── Card
+    └── CardHeader (py-2, cursor-pointer)
+        ├── CardTitle ("検索", h-6)
+        ├── Badge (activeFilterCount > 0 の場合のみ)
+        └── ChevronDown/Up アイコン (h-5 w-5)
+```
+
+スケルトンは閉じた状態（CardHeader のみ）を再現する。
 
 ---
 
@@ -171,6 +187,8 @@ import { StaffSearchFormSkeleton } from "@/features/staff/list/staff-search-form
 |---------|------|
 | `apps/web/features/customer/list/customer-search-form-skeleton.tsx` | 新規作成: 顧客検索フォーム専用スケルトン |
 | `apps/web/features/staff/list/staff-search-form-skeleton.tsx` | 新規作成: スタッフ検索フォーム専用スケルトン |
+| `apps/web/features/customer-note/list/customer-notes-search-form-skeleton.tsx` | 新規作成: 顧客ノート検索フォーム専用スケルトン |
 | `apps/web/app/(private)/customers/page.tsx` | 変更: fallback をスケルトンに置換 |
 | `apps/web/app/(private)/staffs/page.tsx` | 変更: fallback をスケルトンに置換 |
+| `apps/web/app/(private)/customers/[customerId]/notes/page.tsx` | 変更: fallback をスケルトンに置換 |
 | `apps/web/features/customer/edit/customer-edit-form-skeleton.tsx` | 参考: 既存スケルトン実装パターン |
