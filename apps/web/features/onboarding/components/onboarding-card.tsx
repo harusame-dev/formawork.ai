@@ -8,16 +8,8 @@ import {
 	CardHeader,
 } from "@workspace/ui/components/card";
 import { X } from "lucide-react";
-import type { Route } from "next";
-import { useRouter } from "next/navigation";
 import type { CardComponentProps } from "onborda";
-import { OnboardingId } from "../constants/steps";
 import { useOnboarding } from "../hooks/use-onboarding";
-
-const MENU_BUTTON_STEP_INDEX = 2;
-const CUSTOMER_SELECT_STEP_INDEX = 5;
-const BASIC_INFO_STEP_INDEX = 6;
-const NOTES_STEP_INDEX = 7;
 
 export function OnboardingCard({
 	step,
@@ -26,84 +18,14 @@ export function OnboardingCard({
 	nextStep,
 	arrow,
 }: CardComponentProps) {
-	const router = useRouter();
 	const { complete } = useOnboarding();
 	const isLastStep = currentStep === totalSteps - 1;
 
-	function handleSkip() {
-		complete();
-	}
-
-	function handleComplete() {
-		complete();
-	}
-
 	function handleNext() {
 		if (isLastStep) {
-			handleComplete();
+			complete();
 			return;
 		}
-
-		if (currentStep === MENU_BUTTON_STEP_INDEX) {
-			// メニューは navigation-menu.tsx で currentStep を監視して自動で開く
-			nextStep();
-			return;
-		}
-
-		// Handle customer select step - navigate to the first customer's detail page
-		if (currentStep === CUSTOMER_SELECT_STEP_INDEX) {
-			const firstCustomerLink = document.getElementById(
-				OnboardingId.FirstCustomer,
-			) as HTMLAnchorElement | null;
-			if (firstCustomerLink?.href) {
-				router.push(firstCustomerLink.href as Route);
-				setTimeout(() => {
-					nextStep();
-				}, 500);
-				return;
-			}
-		}
-
-		// Handle basic info step - navigate to the notes page
-		if (currentStep === BASIC_INFO_STEP_INDEX) {
-			const notesTabLink = document.getElementById(
-				OnboardingId.NotesTab,
-			) as HTMLAnchorElement | null;
-			if (notesTabLink?.href) {
-				router.push(notesTabLink.href as Route);
-				setTimeout(() => {
-					nextStep();
-				}, 500);
-				return;
-			}
-		}
-
-		// Handle notes step - navigate to the memories page
-		if (currentStep === NOTES_STEP_INDEX) {
-			const memoriesTabLink = document.getElementById(
-				OnboardingId.MemoriesTab,
-			) as HTMLAnchorElement | null;
-			if (memoriesTabLink?.href) {
-				router.push(memoriesTabLink.href as Route);
-				setTimeout(() => {
-					nextStep();
-				}, 500);
-				return;
-			}
-		}
-
-		// Handle navigation for steps with nextRoute
-		if (step.nextRoute) {
-			// Close any open menus/sheets before navigating
-			window.dispatchEvent(new CustomEvent("onboarding-close-menu"));
-			router.push(step.nextRoute as Route);
-			// Wait for page navigation to complete before moving to next step
-			setTimeout(() => {
-				nextStep();
-			}, 500);
-			return;
-		}
-
 		nextStep();
 	}
 
@@ -118,7 +40,7 @@ export function OnboardingCard({
 					<Button
 						aria-label="スキップ"
 						className="h-6 w-6"
-						onClick={handleSkip}
+						onClick={complete}
 						size="icon"
 						variant="ghost"
 					>

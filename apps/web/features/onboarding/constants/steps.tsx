@@ -4,6 +4,7 @@ import {
 	Info,
 	Menu,
 	NotebookPen,
+	PartyPopperIcon,
 	Search,
 	TriangleAlert,
 	User,
@@ -24,11 +25,9 @@ export const OnboardingId = {
 	Welcome: "onboarding-welcome",
 } as const;
 
-export const onboardingSteps: Step[] = [
+export const steps: Step[] = [
 	{
-		content: (
-			<>FORMAWORK.AI CRMへようこそ！このガイドでは主要な機能をご紹介します。</>
-		),
+		content: <>FORMAWORK.AI CRMへようこそ！</>,
 		icon: <Hand className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
@@ -38,11 +37,7 @@ export const onboardingSteps: Step[] = [
 		title: "ようこそ！",
 	},
 	{
-		content: (
-			<>
-				【ご注意】このデモ環境は誰でも閲覧可能です。機密情報や実際の個人情報は登録しないでください。また、データは予告なくリセットされる場合があります。
-			</>
-		),
+		content: <>注意事項です。ご確認ください。</>,
 		icon: <TriangleAlert className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
@@ -66,7 +61,7 @@ export const onboardingSteps: Step[] = [
 	{
 		content: (
 			<>
-				顧客一覧では、登録されている顧客情報を確認できます。クリックして移動しましょう。
+				顧客の管理や接客ノートの記録、AIによる接客アドバイス・顧客メモリなどが確認できます。
 			</>
 		),
 		icon: <Users className="size-5" />,
@@ -79,11 +74,7 @@ export const onboardingSteps: Step[] = [
 		title: "顧客一覧",
 	},
 	{
-		content: (
-			<>
-				キーワード検索で顧客を絞り込めます。姓名、電話番号、メールアドレスで検索可能です。
-			</>
-		),
+		content: <>姓名、電話番号、メールアドレスで検索可能です。</>,
 		icon: <Search className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
@@ -93,22 +84,21 @@ export const onboardingSteps: Step[] = [
 		title: "顧客を検索",
 	},
 	{
-		content: <>顧客名をクリックして詳細を確認しましょう。</>,
+		content: <>顧客名を選択すると詳細画面に遷移します。</>,
 		icon: <User className="size-5" />,
+		nextRoute: "/customers/00000000-0000-0000-0000-000000000001",
 		pointerPadding: 10,
 		pointerRadius: 10,
 		selector: `#${OnboardingId.FirstCustomer}`,
 		showControls: true,
-		side: "bottom-left",
+		side: "top-left",
 		title: "顧客を選択",
 	},
 	{
-		content: (
-			<>
-				顧客の基本情報を確認できます。タブを切り替えて、ノートやメモリも確認できます。
-			</>
-		),
+		content: <>顧客の生年月日や住所など、基本情報が閲覧できます。</>,
 		icon: <Info className="size-5" />,
+
+		nextRoute: "/customers/00000000-0000-0000-0000-000000000001/notes",
 		pointerPadding: 10,
 		pointerRadius: 10,
 		selector: `#${OnboardingId.BasicInfoTab}`,
@@ -119,10 +109,12 @@ export const onboardingSteps: Step[] = [
 	{
 		content: (
 			<>
-				接客ノートで顧客との対応履歴を管理できます。画像の添付も可能で、記載したノートに対してAIが自動でアドバイスを提供します。
+				接客内容を記録できます。自動で AI
+				が接客内容のアドバイスと顧客情報をメモリに記録していきます。
 			</>
 		),
 		icon: <NotebookPen className="size-5" />,
+		nextRoute: "/customers/00000000-0000-0000-0000-000000000001/memories",
 		pointerPadding: 10,
 		pointerRadius: 10,
 		selector: `#${OnboardingId.NotesTab}`,
@@ -133,7 +125,12 @@ export const onboardingSteps: Step[] = [
 	{
 		content: (
 			<>
-				メモリは接客ノートからAIが自動で重要な事柄を記録します。手動での登録・編集・削除も可能です。ロック機能でAIによる削除を防ぐこともできます。記録されたメモリは接客アドバイスの生成にも活用されます。以上でガイドは終了です。FORMAWORK.AIをお楽しみください！
+				接客ノートからAIが自動で重要な事柄を記録します。手動での管理も行えます。
+				<br />
+				<br />
+				以上でツアーが完了です
+				<PartyPopperIcon />
+				ご自由にお試しください。
 			</>
 		),
 		icon: <Brain className="size-5" />,

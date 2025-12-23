@@ -4,7 +4,7 @@ import { Onborda, OnbordaProvider, useOnborda } from "onborda";
 import type { ReactNode } from "react";
 import { useEffect, useSyncExternalStore } from "react";
 import { OnboardingCard } from "../components/onboarding-card";
-import { onboardingSteps } from "../constants/steps";
+import { steps } from "../constants/steps";
 
 const TOUR_NAME = "main";
 const COMPLETE_EVENT = "onboarding-complete";
@@ -61,7 +61,7 @@ function OnboardingInner({ children }: { children: ReactNode }) {
 			shadowOpacity="0.5"
 			shadowRgb="0,0,0"
 			showOnborda={shouldShow}
-			steps={[{ steps: onboardingSteps, tour: TOUR_NAME }]}
+			steps={[{ steps: steps, tour: TOUR_NAME }]}
 		>
 			<OnboardingController shouldShow={shouldShow}>
 				{children}
