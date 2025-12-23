@@ -48,7 +48,7 @@ export function useOnboarding() {
 	const complete = useCallback(() => {
 		try {
 			localStorage.setItem(STORAGE_KEY, "true");
-			// 同一タブで再レンダリングをトリガーするためカスタムイベントを発火
+			// 同一タブで再レンダリングをトリガーし、onbordaを閉じるためカスタムイベントを発火
 			window.dispatchEvent(new Event(COMPLETE_EVENT));
 		} catch {
 			// localStorage が無効な場合は無視

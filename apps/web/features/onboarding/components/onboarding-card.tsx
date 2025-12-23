@@ -11,7 +11,6 @@ import { X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import type { CardComponentProps } from "onborda";
-import { useOnborda } from "onborda";
 import { useEffect } from "react";
 import { useOnboarding } from "../hooks/use-onboarding";
 
@@ -30,7 +29,6 @@ export function OnboardingCard({
 }: CardComponentProps) {
 	const router = useRouter();
 	const { complete } = useOnboarding();
-	const { closeOnborda } = useOnborda();
 	const isLastStep = currentStep === totalSteps - 1;
 
 	// スクロールしてフォーカス位置を調整
@@ -78,12 +76,10 @@ export function OnboardingCard({
 
 	function handleSkip() {
 		complete();
-		closeOnborda();
 	}
 
 	function handleComplete() {
 		complete();
-		closeOnborda();
 	}
 
 	function handleNext() {
