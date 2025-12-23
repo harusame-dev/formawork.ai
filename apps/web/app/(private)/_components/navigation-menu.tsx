@@ -11,26 +11,21 @@ import {
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
+
+// メニューを開く必要があるオンボーディングステップ
+const CUSTOMER_MENU_STEP_INDEX = 3;
 
 export function NavigationMenu() {
+	const { currentStep } = useOnboarding();
 	const [open, setOpen] = useState(false);
 
+	// オンボーディングのステップに応じてメニューを開閉
 	useEffect(() => {
-		function handleOpenMenu() {
+		if (currentStep === CUSTOMER_MENU_STEP_INDEX) {
 			setOpen(true);
 		}
-
-		function handleCloseMenu() {
-			setOpen(false);
-		}
-
-		window.addEventListener("onboarding-open-menu", handleOpenMenu);
-		window.addEventListener("onboarding-close-menu", handleCloseMenu);
-		return () => {
-			window.removeEventListener("onboarding-open-menu", handleOpenMenu);
-			window.removeEventListener("onboarding-close-menu", handleCloseMenu);
-		};
-	}, []);
+	}, [currentStep]);
 
 	return (
 		<Sheet onOpenChange={setOpen} open={open}>

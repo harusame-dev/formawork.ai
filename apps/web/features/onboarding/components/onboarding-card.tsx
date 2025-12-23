@@ -89,10 +89,8 @@ export function OnboardingCard({
 		}
 
 		if (currentStep === MENU_BUTTON_STEP_INDEX) {
-			window.dispatchEvent(new CustomEvent("onboarding-open-menu"));
-			setTimeout(() => {
-				nextStep();
-			}, 550);
+			// メニューは navigation-menu.tsx で currentStep を監視して自動で開く
+			nextStep();
 			return;
 		}
 

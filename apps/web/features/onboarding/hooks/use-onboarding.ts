@@ -1,5 +1,6 @@
 "use client";
 
+import { useOnborda } from "onborda";
 import { useCallback, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "onboarding-completed";
@@ -39,6 +40,7 @@ function subscribe(callback: () => void): () => void {
 }
 
 export function useOnboarding() {
+	const { currentStep } = useOnborda();
 	const isCompleted = useSyncExternalStore(
 		subscribe,
 		getSnapshot,
@@ -57,6 +59,7 @@ export function useOnboarding() {
 
 	return {
 		complete,
+		currentStep,
 		isCompleted,
 		shouldShow: !isCompleted,
 	};
