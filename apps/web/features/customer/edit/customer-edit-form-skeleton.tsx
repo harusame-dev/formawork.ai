@@ -1,6 +1,7 @@
 import { OptionalBadge } from "@workspace/ui/components/optional-badge";
 import { RequiredBadge } from "@workspace/ui/components/required-badge";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import { cn } from "@workspace/ui/lib/utils";
 
 function FormItemSkeleton({
 	label,
@@ -22,7 +23,7 @@ function FormItemSkeleton({
 			{description && (
 				<p className="text-sm text-muted-foreground">{description}</p>
 			)}
-			<Skeleton className={`h-9 rounded-md ${inputClassName}`} />
+			<Skeleton className={cn("h-9 rounded-md", inputClassName)} />
 		</div>
 	);
 }
