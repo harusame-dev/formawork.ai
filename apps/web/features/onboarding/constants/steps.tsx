@@ -96,7 +96,6 @@ export const steps: Step[] = [
 	{
 		content: <>顧客の生年月日や住所など、基本情報が閲覧できます。</>,
 		icon: <Info className="size-5" />,
-
 		nextRoute: "/customers/00000000-0000-0000-0000-000000000001/notes",
 		pointerPadding: 10,
 		pointerRadius: 10,

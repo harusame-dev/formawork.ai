@@ -28,10 +28,7 @@ export default function Page() {
 
 			<Card className="border-amber-200 bg-amber-50" id={OnboardingId.Caution}>
 				<CardHeader>
-					<CardTitle
-						className="flex items-center gap-2 text-amber-800"
-						id={OnboardingId.Caution}
-					>
+					<CardTitle className="flex items-center gap-2 text-amber-800">
 						<AlertTriangle className="h-5 w-5" />
 						ご注意ください
 					</CardTitle>
