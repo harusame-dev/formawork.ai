@@ -98,7 +98,7 @@ test("スタッフ一覧が表示される", async ({ staffsPage, testStaff }) =
 		await staffsPage.waitForURL("**/staffs?keyword=*");
 		await expect(
 			staffsPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+		).toHaveCount(0);
 
 		const targetRow = staffsPage
 			.locator("table tbody tr")
