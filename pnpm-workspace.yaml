@@ -59,6 +59,8 @@ catalog:
   '@ai-sdk/valibot': 1.0.19
   swr: 2.3.7
   msw: 2.12.4
+  onborda: 1.2.5
+  framer-motion: 12.23.26
 
 catalogMode: strict
 

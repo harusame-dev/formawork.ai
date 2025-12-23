@@ -33,6 +33,11 @@ const test = testWithAuthenticated.extend<{
 		// ホームにリダイレクトされるまで待機
 		await page.waitForURL("/");
 
+		// オンボーディングをスキップ状態に設定
+		await page.evaluate(() => {
+			localStorage.setItem("onboarding-completed", "true");
+		});
+
 		// パスワード変更ページに直接アクセス
 		await page.goto("/settings/password");
 		await page.waitForURL("/settings/password");

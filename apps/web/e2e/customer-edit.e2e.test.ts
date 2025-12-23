@@ -42,19 +42,20 @@ test("管理者が必須フィールドを全て入力して編集できる", as
 		phone: `${Math.floor(Math.random() * 1000000000)}`,
 	};
 	await test.step("顧客情報を編集", async () => {
+		const main = page.getByRole("main");
 		// 負の先読みを使用して「姓」だけにマッチさせる（「姓（かな）」を除外）
-		await page.getByLabel(/^姓(?!（かな）)/).clear();
-		await page.getByLabel(/^姓(?!（かな）)/).fill(newCustomer.lastName);
+		await main.getByLabel(/^姓(?!（かな）)/).clear();
+		await main.getByLabel(/^姓(?!（かな）)/).fill(newCustomer.lastName);
 
 		// 負の先読みを使用して「名」だけにマッチさせる（「名（かな）」を除外）
-		await page.getByLabel(/^名(?!（かな）)/).clear();
-		await page.getByLabel(/^名(?!（かな）)/).fill(newCustomer.firstName);
+		await main.getByLabel(/^名(?!（かな）)/).clear();
+		await main.getByLabel(/^名(?!（かな）)/).fill(newCustomer.firstName);
 
-		await page.getByLabel("メールアドレス").clear();
-		await page.getByLabel("メールアドレス").fill(newCustomer.email);
+		await main.getByLabel("メールアドレス").clear();
+		await main.getByLabel("メールアドレス").fill(newCustomer.email);
 
-		await page.getByLabel("電話番号").clear();
-		await page.getByLabel("電話番号").fill(newCustomer.phone);
+		await main.getByLabel("電話番号").clear();
+		await main.getByLabel("電話番号").fill(newCustomer.phone);
 
 		await page.getByRole("button", { name: "編集する" }).click();
 	});
@@ -85,8 +86,9 @@ test("管理者が必須フィールド以外を空で編集できる", async ({
 	});
 
 	await test.step("メールアドレスと電話番号をクリア", async () => {
-		await page.getByLabel("メールアドレス").clear();
-		await page.getByLabel("電話番号").clear();
+		const main = page.getByRole("main");
+		await main.getByLabel("メールアドレス").clear();
+		await main.getByLabel("電話番号").clear();
 	});
 
 	await test.step("更新ボタンをクリック", async () => {

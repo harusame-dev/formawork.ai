@@ -52,7 +52,9 @@ test("管理者がスタッフを削除できる", async ({
 		await page.goto(`/staffs/${testStaff.staffId}`);
 		await page.waitForURL(`/staffs/${testStaff.staffId}`);
 		await expect(
-			page.getByText(`${testStaff.lastName} ${testStaff.firstName}`),
+			page.getByRole("heading", {
+				name: `${testStaff.lastName} ${testStaff.firstName}`,
+			}),
 		).toBeVisible();
 	});
 
@@ -66,7 +68,10 @@ test("管理者がスタッフを削除できる", async ({
 	});
 
 	await test.step("削除されたスタッフを検索してもヒットしないことを確認", async () => {
-		await page.getByLabel("キーワード").fill(testStaff.lastName);
+		await page
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(testStaff.lastName);
 		await page.getByRole("button", { name: "検索" }).click();
 
 		await expect(
@@ -86,7 +91,9 @@ test("一般ユーザーにはスタッフ削除ボタンが表示されない",
 
 	await test.step("削除ボタンが表示されないことを確認", async () => {
 		await expect(
-			page.getByText(`${testStaff.lastName} ${testStaff.firstName}`),
+			page.getByRole("heading", {
+				name: `${testStaff.lastName} ${testStaff.firstName}`,
+			}),
 		).toBeVisible();
 		await expect(page.getByRole("button", { name: "削除" })).toBeHidden();
 	});

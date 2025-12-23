@@ -8,7 +8,7 @@ export function CustomerInfoPresenter({
 	lastName,
 }: CustomerInfoPresenterProps) {
 	return (
-		<h1 className="text-2xl font-bold h-8">
+		<h1 className="text-2xl font-bold min-h-8">
 			{lastName} {firstName}
 		</h1>
 	);

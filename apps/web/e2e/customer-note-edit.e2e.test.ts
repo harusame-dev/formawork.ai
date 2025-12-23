@@ -90,13 +90,18 @@ test("作成した本人が編集できる", async ({
 	const editedContent = `編集後のノート (${randomUUID()})`;
 
 	await test.step("テストノートが表示されることを確認", async () => {
-		await expect(page.getByText(testNote.content)).toBeVisible();
+		await expect(
+			page.getByRole("main").getByText(testNote.content),
+		).toBeVisible();
 	});
 
 	await test.step("編集ボタンをクリック", async () => {
-		const noteCard = page.getByRole("listitem").filter({
-			has: page.getByText(testNote.content),
-		});
+		const noteCard = page
+			.getByRole("main")
+			.getByRole("listitem")
+			.filter({
+				has: page.getByText(testNote.content),
+			});
 
 		await noteCard.getByRole("button", { name: "編集" }).click();
 
@@ -135,13 +140,18 @@ test("管理者が他人のノートを編集できる", async ({
 	const editedContent = `管理者が編集したノート (${randomUUID()})`;
 
 	await test.step("他人が作成したノートが表示されることを確認", async () => {
-		await expect(page.getByText(testNote.content)).toBeVisible();
+		await expect(
+			page.getByRole("main").getByText(testNote.content),
+		).toBeVisible();
 	});
 
 	await test.step("編集ボタンをクリックして編集", async () => {
-		const noteCard = page.getByRole("listitem").filter({
-			has: page.getByText(testNote.content),
-		});
+		const noteCard = page
+			.getByRole("main")
+			.getByRole("listitem")
+			.filter({
+				has: page.getByText(testNote.content),
+			});
 
 		// 編集ボタンが表示されることを確認
 		const editButton = noteCard.getByRole("button", { name: "編集" });

@@ -5,6 +5,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { use } from "react";
+import { OnboardingId } from "@/features/onboarding/constants/steps";
 
 type CustomerDetailTabsProps = {
 	customerIdPromise: Promise<string>;
@@ -19,16 +20,19 @@ export function CustomerDetailTabs({
 	const tabs = [
 		{
 			href: `/customers/${customerId}`,
+			id: OnboardingId.BasicInfoTab,
 			label: "基本情報",
 			value: "basic",
 		},
 		{
 			href: `/customers/${customerId}/notes`,
+			id: OnboardingId.NotesTab,
 			label: "ノート",
 			value: "notes",
 		},
 		{
 			href: `/customers/${customerId}/memories`,
+			id: OnboardingId.MemoriesTab,
 			label: "メモリ",
 			value: "memories",
 		},
@@ -45,6 +49,7 @@ export function CustomerDetailTabs({
 						<Link
 							aria-current={activeTab === tab.value ? "page" : undefined}
 							href={tab.href as Route}
+							id={tab.id}
 						>
 							{tab.label}
 						</Link>
