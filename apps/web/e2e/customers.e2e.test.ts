@@ -111,7 +111,10 @@ test("名前で検索できる", async ({ customersPage }) => {
 	const searchKeyword = "太郎";
 
 	await test.step("名前を入力して検索", async () => {
-		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(searchKeyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -139,7 +142,10 @@ test("姓で前方一致検索できる", async ({
 	const searchKeyword = searchTestCustomer.lastName.slice(0, 6);
 
 	await test.step("姓で検索", async () => {
-		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(searchKeyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -162,7 +168,10 @@ test("名で前方一致検索できる", async ({
 	const searchKeyword = searchTestCustomer.firstName.slice(0, 6);
 
 	await test.step("名で検索", async () => {
-		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(searchKeyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -184,7 +193,10 @@ test("せいで前方一致検索できる", async ({
 	const searchKeyword = searchTestCustomer.lastNameKana.slice(0, 7);
 
 	await test.step("せいで検索", async () => {
-		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(searchKeyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -207,7 +219,10 @@ test("めいで前方一致検索できる", async ({
 	const searchKeyword = searchTestCustomer.firstNameKana.slice(0, 7);
 
 	await test.step("メイで検索", async () => {
-		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(searchKeyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -231,7 +246,10 @@ test("姓名（結合）で前方一致検索できる", async ({
 	const searchKeyword = fullName.slice(0, fullName.length - 4);
 
 	await test.step("姓名で検索", async () => {
-		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(searchKeyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -255,7 +273,10 @@ test("セイメイ（カナ結合）で前方一致検索できる", async ({
 	const searchKeyword = fullNameKana.slice(0, fullNameKana.length - 4);
 
 	await test.step("セイメイで検索", async () => {
-		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(searchKeyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -278,7 +299,10 @@ test("電話番号で前方一致検索できる", async ({
 	const searchKeyword = searchTestCustomer.phone.slice(0, 7);
 
 	await test.step("電話番号で検索", async () => {
-		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(searchKeyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -301,7 +325,10 @@ test("メールアドレスで前方一致検索できる", async ({
 	const searchKeyword = searchTestCustomer.email.slice(0, 5);
 
 	await test.step("メールアドレスで検索", async () => {
-		await customersPage.getByLabel("キーワード").fill(searchKeyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(searchKeyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -320,7 +347,10 @@ test("該当する顧客がいない場合、メッセージが表示される",
 	customersPage,
 }) => {
 	await test.step("存在しないキーワードで検索", async () => {
-		await customersPage.getByLabel("キーワード").fill("存在しない顧客");
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill("存在しない顧客");
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
@@ -370,7 +400,10 @@ test("検索とページネーションを組み合わせて使用できる", as
 	const { keyword } = searchPaginationCustomers;
 
 	await test.step("キーワードで検索して1ページ目を表示", async () => {
-		await customersPage.getByLabel("キーワード").fill(keyword);
+		await customersPage
+			.getByRole("main")
+			.getByLabel("キーワード")
+			.fill(keyword);
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL(`**/customers?keyword=${keyword}`);
 		await expect(
@@ -401,7 +434,9 @@ test("検索とページネーションを組み合わせて使用できる", as
 		await expect(rows).toHaveCount(20);
 
 		// キーワードが保持されていることを確認
-		const searchInput = customersPage.getByLabel("キーワード");
+		const searchInput = customersPage
+			.getByRole("main")
+			.getByLabel("キーワード");
 		await expect(searchInput).toHaveValue(keyword);
 	});
 
@@ -416,7 +451,9 @@ test("検索とページネーションを組み合わせて使用できる", as
 		await expect(rows).toHaveCount(20);
 
 		// キーワードが保持されていることを確認
-		const searchInput = customersPage.getByLabel("キーワード");
+		const searchInput = customersPage
+			.getByRole("main")
+			.getByLabel("キーワード");
 		await expect(searchInput).toHaveValue(keyword);
 	});
 });
