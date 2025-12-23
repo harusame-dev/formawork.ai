@@ -31,7 +31,7 @@ export function CustomerDetailTabs({
 		},
 		{
 			href: `/customers/${customerId}/memories`,
-			id: undefined,
+			id: "onboarding-memories-tab",
 			label: "メモリ",
 			value: "memories",
 		},

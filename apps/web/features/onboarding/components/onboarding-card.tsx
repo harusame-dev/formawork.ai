@@ -16,6 +16,7 @@ import { useOnboarding } from "../hooks/use-onboarding";
 const MENU_BUTTON_STEP_INDEX = 2;
 const CUSTOMER_SELECT_STEP_INDEX = 5;
 const BASIC_INFO_STEP_INDEX = 6;
+const NOTES_STEP_INDEX = 7;
 
 export function OnboardingCard({
 	step,
@@ -87,6 +88,20 @@ export function OnboardingCard({
 			) as HTMLAnchorElement | null;
 			if (notesTabLink?.href) {
 				router.push(notesTabLink.href as Route);
+				setTimeout(() => {
+					nextStep();
+				}, 500);
+				return;
+			}
+		}
+
+		// Handle notes step - navigate to the memories page
+		if (currentStep === NOTES_STEP_INDEX) {
+			const memoriesTabLink = document.getElementById(
+				"onboarding-memories-tab",
+			) as HTMLAnchorElement | null;
+			if (memoriesTabLink?.href) {
+				router.push(memoriesTabLink.href as Route);
 				setTimeout(() => {
 					nextStep();
 				}, 500);

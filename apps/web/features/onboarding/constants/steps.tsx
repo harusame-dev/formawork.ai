@@ -96,7 +96,7 @@ export const onboardingSteps: Step[] = [
 	{
 		content: (
 			<>
-				接客ノートで顧客との対応履歴を管理できます。画像の添付も可能で、記載したノートに対してAIが自動でアドバイスを提供します。以上でガイドは終了です。FORMAWORK.AIをお楽しみください！
+				接客ノートで顧客との対応履歴を管理できます。画像の添付も可能で、記載したノートに対してAIが自動でアドバイスを提供します。
 			</>
 		),
 		icon: <>📝</>,
@@ -106,5 +106,19 @@ export const onboardingSteps: Step[] = [
 		showControls: true,
 		side: "bottom-left",
 		title: "接客ノート",
+	},
+	{
+		content: (
+			<>
+				メモリは接客ノートからAIが自動で重要な事柄を記録します。手動での登録・編集・削除も可能です。ロック機能でAIによる削除を防ぐこともできます。記録されたメモリは接客アドバイスの生成にも活用されます。以上でガイドは終了です。FORMAWORK.AIをお楽しみください！
+			</>
+		),
+		icon: <>🧠</>,
+		pointerPadding: 10,
+		pointerRadius: 10,
+		selector: "#onboarding-memories-tab",
+		showControls: true,
+		side: "bottom-right",
+		title: "メモリ",
 	},
 ];
