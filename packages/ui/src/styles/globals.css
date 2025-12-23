@@ -134,8 +134,12 @@
 
 [data-name="onborda-pointer"] {
 	z-index: 9999 !important;
+	/* Block clicks on highlighted elements - only onboarding card buttons should be clickable */
+	pointer-events: none !important;
 }
 
 [data-name="onborda-card"] {
 	z-index: 10000 !important;
+	/* Ensure the card is clickable */
+	pointer-events: auto !important;
 }
