@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
+import { createAdminClient } from "@repo/supabase/admin";
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
@@ -47,8 +48,18 @@ const test = testWithAuthenticated.extend<{
 			staffId,
 		});
 
-		// クリーンアップ
+		// クリーンアップ: DB スタッフと Supabase Auth ユーザーの両方を削除
+		const [staff] = await db
+			.select({ authUserId: staffsTable.authUserId })
+			.from(staffsTable)
+			.where(eq(staffsTable.staffId, staffId));
+
 		await db.delete(staffsTable).where(eq(staffsTable.staffId, staffId));
+
+		if (staff?.authUserId) {
+			const supabase = createAdminClient();
+			await supabase.auth.admin.deleteUser(staff.authUserId);
+		}
 	},
 });
 
@@ -100,7 +111,7 @@ test("スタッフ一覧が表示される", async ({
 			.locator("table tbody tr")
 			.filter({ hasText: testStaff.lastName })
 			.filter({ hasText: testStaff.firstName });
-		await expect(targetRow).toBeVisible({ timeout: 10000 });
+		await expect(targetRow).toBeVisible({ timeout: 10_000 });
 		await expect(
 			targetRow.getByRole("cell", { name: testStaff.lastName }),
 		).toBeVisible();

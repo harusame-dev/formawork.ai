@@ -103,9 +103,9 @@ test("正常系: 4096文字（最大境界値）のノート登録成功", async
 			.getByRole("button", { name: "登録" })
 			.click();
 
-		// 4096文字の長文登録は時間がかかるため、ダイアログが閉じるまで十分に待機
+		// ダイアログが閉じるまで待機
 		await expect(customerNotesPage.getByRole("dialog")).toBeHidden({
-			timeout: 30000,
+			timeout: 10_000,
 		});
 	});
 
@@ -114,7 +114,7 @@ test("正常系: 4096文字（最大境界値）のノート登録成功", async
 		// 最初のlistitem内に4096文字の「あ」を含むテキストがあることを確認
 		const noteCard = customerNotesPage.getByRole("listitem").first();
 		await expect(noteCard).toContainText(noteContent.slice(0, 20), {
-			timeout: 10000,
+			timeout: 10_000,
 		});
 	});
 });
@@ -157,9 +157,9 @@ test("正常系: 5枚の画像を含むノート登録成功", async ({ customer
 			.getByRole("button", { name: "登録" })
 			.click();
 
-		// アップロード完了まで待機（最大30秒）
+		// アップロード完了まで待機
 		await expect(customerNotesPage.getByRole("dialog")).toBeHidden({
-			timeout: 30000,
+			timeout: 10_000,
 		});
 	});
 
