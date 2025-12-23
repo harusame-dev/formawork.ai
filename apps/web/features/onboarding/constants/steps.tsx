@@ -114,7 +114,7 @@ export const onboardingSteps: Step[] = [
 		pointerRadius: 10,
 		selector: "#onboarding-notes-tab",
 		showControls: true,
-		side: "bottom-left",
+		side: "bottom",
 		title: "接客ノート",
 	},
 	{
