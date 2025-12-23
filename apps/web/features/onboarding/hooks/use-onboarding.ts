@@ -1,12 +1,16 @@
 "use client";
 
 import { useOnborda } from "onborda";
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "onboarding-completed";
 const COMPLETE_EVENT = "onboarding-complete";
 
+// ステップインデックス定数
+const CAUTION_STEP_INDEX = 1;
 export const CUSTOMER_MENU_STEP_INDEX = 3;
+const CUSTOMER_SELECT_STEP_INDEX = 5;
+const BASIC_INFO_STEP_INDEX = 6;
 
 function getSnapshot(): boolean {
 	try {
@@ -62,6 +66,49 @@ export function useOnboarding() {
 			// localStorage が無効な場合は無視
 		}
 	}, []);
+
+	// ステップに応じてスクロールとハイライト位置を調整
+	useEffect(() => {
+		// ステップ2（ご注意）
+		if (currentStep === CAUTION_STEP_INDEX) {
+			const timeoutId = setTimeout(() => {
+				const cautionElement = document.getElementById("onboarding-caution");
+				if (cautionElement) {
+					cautionElement.scrollIntoView({
+						behavior: "instant",
+						block: "start",
+					});
+					window.dispatchEvent(new Event("resize"));
+				}
+			}, 300);
+			return () => clearTimeout(timeoutId);
+		}
+
+		// ステップ6（顧客を選択）
+		if (currentStep === CUSTOMER_SELECT_STEP_INDEX) {
+			const timeoutId = setTimeout(() => {
+				const firstCustomerElement = document.getElementById(
+					"onboarding-first-customer",
+				);
+				if (firstCustomerElement) {
+					firstCustomerElement.scrollIntoView({
+						behavior: "instant",
+						block: "start",
+					});
+					window.dispatchEvent(new Event("resize"));
+				}
+			}, 300);
+			return () => clearTimeout(timeoutId);
+		}
+
+		// ステップ7（基本情報）- フォーカス位置のみ調整
+		if (currentStep === BASIC_INFO_STEP_INDEX) {
+			const timeoutId = setTimeout(() => {
+				window.dispatchEvent(new Event("resize"));
+			}, 300);
+			return () => clearTimeout(timeoutId);
+		}
+	}, [currentStep]);
 
 	return {
 		complete,

@@ -11,10 +11,8 @@ import { X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import type { CardComponentProps } from "onborda";
-import { useEffect } from "react";
 import { useOnboarding } from "../hooks/use-onboarding";
 
-const CAUTION_STEP_INDEX = 1;
 const MENU_BUTTON_STEP_INDEX = 2;
 const CUSTOMER_SELECT_STEP_INDEX = 5;
 const BASIC_INFO_STEP_INDEX = 6;
@@ -30,49 +28,6 @@ export function OnboardingCard({
 	const router = useRouter();
 	const { complete } = useOnboarding();
 	const isLastStep = currentStep === totalSteps - 1;
-
-	// スクロールしてフォーカス位置を調整
-	useEffect(() => {
-		// ステップ2（ご注意）
-		if (currentStep === CAUTION_STEP_INDEX) {
-			const timeoutId = setTimeout(() => {
-				const cautionElement = document.getElementById("onboarding-caution");
-				if (cautionElement) {
-					cautionElement.scrollIntoView({
-						behavior: "instant",
-						block: "start",
-					});
-					window.dispatchEvent(new Event("resize"));
-				}
-			}, 300);
-			return () => clearTimeout(timeoutId);
-		}
-
-		// ステップ6（顧客を選択）
-		if (currentStep === CUSTOMER_SELECT_STEP_INDEX) {
-			const timeoutId = setTimeout(() => {
-				const firstCustomerElement = document.getElementById(
-					"onboarding-first-customer",
-				);
-				if (firstCustomerElement) {
-					firstCustomerElement.scrollIntoView({
-						behavior: "instant",
-						block: "start",
-					});
-					window.dispatchEvent(new Event("resize"));
-				}
-			}, 300);
-			return () => clearTimeout(timeoutId);
-		}
-
-		// ステップ7（基本情報）- フォーカス位置のみ調整
-		if (currentStep === BASIC_INFO_STEP_INDEX) {
-			const timeoutId = setTimeout(() => {
-				window.dispatchEvent(new Event("resize"));
-			}, 300);
-			return () => clearTimeout(timeoutId);
-		}
-	}, [currentStep]);
 
 	function handleSkip() {
 		complete();
