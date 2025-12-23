@@ -66,6 +66,8 @@ export function OnboardingCard({
 
 		// Handle navigation for steps with nextRoute
 		if (step.nextRoute) {
+			// Close any open menus/sheets before navigating
+			window.dispatchEvent(new CustomEvent("onboarding-close-menu"));
 			router.push(step.nextRoute as Route);
 			// Wait for page navigation to complete before moving to next step
 			setTimeout(() => {

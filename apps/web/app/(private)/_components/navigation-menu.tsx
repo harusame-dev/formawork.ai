@@ -20,9 +20,15 @@ export function NavigationMenu() {
 			setOpen(true);
 		}
 
+		function handleCloseMenu() {
+			setOpen(false);
+		}
+
 		window.addEventListener("onboarding-open-menu", handleOpenMenu);
+		window.addEventListener("onboarding-close-menu", handleCloseMenu);
 		return () => {
 			window.removeEventListener("onboarding-open-menu", handleOpenMenu);
+			window.removeEventListener("onboarding-close-menu", handleCloseMenu);
 		};
 	}, []);
 
