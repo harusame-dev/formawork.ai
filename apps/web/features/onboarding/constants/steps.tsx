@@ -4,7 +4,6 @@ import {
 	Info,
 	Menu,
 	NotebookPen,
-	PartyPopperIcon,
 	Search,
 	TriangleAlert,
 	User,
@@ -124,14 +123,14 @@ export const steps: Step[] = [
 	},
 	{
 		content: (
-			<>
-				接客ノートからAIが自動で重要な事柄を記録します。手動での管理も行えます。
-				<br />
-				<br />
-				以上でツアーが完了です
-				<PartyPopperIcon />
-				ご自由にお試しください。
-			</>
+			<div>
+				<div>
+					接客ノートからAIが自動で重要な事柄を記録します。手動での管理も行えます。
+				</div>
+				<div className="mt-8">
+					以上で使い方ガイドは完了です。 ご自由にお試しください。
+				</div>
+			</div>
 		),
 		icon: <Brain className="size-5" />,
 		pointerPadding: 10,
