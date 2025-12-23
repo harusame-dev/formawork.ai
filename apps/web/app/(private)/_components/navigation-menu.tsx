@@ -11,21 +11,31 @@ import {
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
-
-// メニューを開く必要があるオンボーディングステップ
-const CUSTOMER_MENU_STEP_INDEX = 3;
+import {
+	CUSTOMER_MENU_STEP_INDEX,
+	useOnboarding,
+} from "@/features/onboarding/hooks/use-onboarding";
 
 export function NavigationMenu() {
-	const { currentStep } = useOnboarding();
+	const { currentStep, refreshHighlight } = useOnboarding();
 	const [open, setOpen] = useState(false);
 
 	// オンボーディングのステップに応じてメニューを開閉
 	useEffect(() => {
+		let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
 		if (currentStep === CUSTOMER_MENU_STEP_INDEX) {
 			setOpen(true);
+			// シートが開き切った後にハイライトのサイズを修正するために resize イベント発行
+			timeoutId = setTimeout(() => {
+				refreshHighlight();
+			}, 550);
 		}
-	}, [currentStep]);
+
+		return () => {
+			clearTimeout(timeoutId);
+		};
+	}, [currentStep, refreshHighlight]);
 
 	return (
 		<Sheet onOpenChange={setOpen} open={open}>

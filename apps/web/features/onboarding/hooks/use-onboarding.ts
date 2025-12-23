@@ -6,6 +6,8 @@ import { useCallback, useSyncExternalStore } from "react";
 const STORAGE_KEY = "onboarding-completed";
 const COMPLETE_EVENT = "onboarding-complete";
 
+export const CUSTOMER_MENU_STEP_INDEX = 3;
+
 function getSnapshot(): boolean {
 	try {
 		return localStorage.getItem(STORAGE_KEY) === "true";
@@ -47,6 +49,10 @@ export function useOnboarding() {
 		getServerSnapshot,
 	);
 
+	const refreshHighlight = useCallback(() => {
+		window.dispatchEvent(new Event("resize"));
+	}, []);
+
 	const complete = useCallback(() => {
 		try {
 			localStorage.setItem(STORAGE_KEY, "true");
@@ -61,6 +67,7 @@ export function useOnboarding() {
 		complete,
 		currentStep,
 		isCompleted,
+		refreshHighlight,
 		shouldShow: !isCompleted,
 	};
 }
