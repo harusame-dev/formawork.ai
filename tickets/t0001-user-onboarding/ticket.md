@@ -248,6 +248,8 @@ apps/web/features/onboarding/
 - [x] `user.setup.ts` でオンボーディングスキップ設定追加
 - [x] `logout.e2e.test.ts` でオンボーディングスキップ設定追加
 - [x] `password-change.e2e.test.ts` でオンボーディングスキップ設定追加
+- [x] オンボーディング実装の影響で発生した strict mode violation 対応（セレクタを `getByRole("main")` でスコープ化）
+  - 根本原因は不明だが、セレクタが2つの要素にマッチする問題が発生
 
 ---
 
@@ -305,3 +307,5 @@ apps/web/features/onboarding/
 | `950f307`             | オンボーディング最終ステップの文言とレイアウトを調整                     |
 | `49beb7c`             | E2Eテストのセットアップでオンボーディングをスキップ                      |
 | `b341e49`             | 独自ログインを行うE2Eテストでもオンボーディングをスキップ                |
+| `8a35d23`             | E2Eテストのセレクタをmainロールでスコープ化（strict mode violation対応） |
+| `082ec60`             | E2Eテストのセレクタをmainロールでスコープ化（追加修正）                  |
