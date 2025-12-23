@@ -15,6 +15,7 @@ import { useOnboarding } from "../hooks/use-onboarding";
 
 const MENU_BUTTON_STEP_INDEX = 2;
 const CUSTOMER_SELECT_STEP_INDEX = 5;
+const BASIC_INFO_STEP_INDEX = 6;
 
 export function OnboardingCard({
 	step,
@@ -72,6 +73,20 @@ export function OnboardingCard({
 			) as HTMLAnchorElement | null;
 			if (firstCustomerLink?.href) {
 				router.push(firstCustomerLink.href as Route);
+				setTimeout(() => {
+					nextStep();
+				}, 500);
+				return;
+			}
+		}
+
+		// Handle basic info step - navigate to the notes page
+		if (currentStep === BASIC_INFO_STEP_INDEX) {
+			const notesTabLink = document.getElementById(
+				"onboarding-notes-tab",
+			) as HTMLAnchorElement | null;
+			if (notesTabLink?.href) {
+				router.push(notesTabLink.href as Route);
 				setTimeout(() => {
 					nextStep();
 				}, 500);

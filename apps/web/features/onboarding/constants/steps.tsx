@@ -96,16 +96,15 @@ export const onboardingSteps: Step[] = [
 	{
 		content: (
 			<>
-				以上で主要機能のガイドは終了です。それでは FORMAWORK.AI
-				をお楽しみください！
+				接客ノートで顧客との対応履歴を管理できます。画像の添付も可能で、記載したノートに対してAIが自動でアドバイスを提供します。以上でガイドは終了です。FORMAWORK.AIをお楽しみください！
 			</>
 		),
-		icon: <>🎉</>,
+		icon: <>📝</>,
 		pointerPadding: 10,
 		pointerRadius: 10,
 		selector: "#onboarding-notes-tab",
 		showControls: true,
-		side: "bottom",
-		title: "ガイド完了！",
+		side: "bottom-left",
+		title: "接客ノート",
 	},
 ];
