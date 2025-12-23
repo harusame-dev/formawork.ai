@@ -1,4 +1,4 @@
-import { OnboardingWrapper } from "@/features/onboarding/providers/onboarding-provider";
+import { Onboarding } from "@/features/onboarding/providers/onboarding-provider";
 import { NavigationMenu } from "./_components/navigation-menu";
 import { UserMenu } from "./_components/user-menu";
 
@@ -8,7 +8,7 @@ export default function PrivateLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<OnboardingWrapper>
+		<Onboarding>
 			<div className="grid grid-rows-[auto_1fr] h-dvh">
 				<header className="border-b grid grid-cols-[auto_1fr_auto] h-16 items-center gap-4 px-4">
 					<NavigationMenu />
@@ -19,6 +19,6 @@ export default function PrivateLayout({
 					{children}
 				</main>
 			</div>
-		</OnboardingWrapper>
+		</Onboarding>
 	);
 }

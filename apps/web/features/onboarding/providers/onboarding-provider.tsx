@@ -43,7 +43,7 @@ function OnboardingInner({ children }: { children: ReactNode }) {
 	);
 }
 
-export function OnboardingWrapper({ children }: OnboardingWrapperProps) {
+export function Onboarding({ children }: OnboardingWrapperProps) {
 	return (
 		<OnbordaProvider>
 			<OnboardingInner>{children}</OnboardingInner>
