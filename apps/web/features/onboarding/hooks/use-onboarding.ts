@@ -43,7 +43,7 @@ function subscribe(callback: () => void): () => void {
 }
 
 export function useOnboarding() {
-	const { currentStep } = useOnborda();
+	const { currentStep, startOnborda, closeOnborda } = useOnborda();
 	const isCompleted = useSyncExternalStore(
 		subscribe,
 		getSnapshot,
@@ -58,20 +58,21 @@ export function useOnboarding() {
 	const complete = useCallback(() => {
 		try {
 			localStorage.setItem(STORAGE_KEY, "true");
-			// 同一タブで再レンダリングをトリガーし、onbordaを閉じるためカスタムイベントを発火
+			// 同一タブで再レンダリングをトリガー
 			window.dispatchEvent(new Event(COMPLETE_EVENT));
 		} catch {
 			// localStorage が無効な場合は無視
 		}
 	}, []);
 
-	// ステップに応じてスクロールとハイライト位置を調整
 	return {
+		closeTour: closeOnborda,
 		complete,
 		currentStep,
 		isCompleted,
 		isLastStep,
 		refreshHighlight,
 		shouldShow: !isCompleted,
+		startTour: startOnborda,
 	};
 }
