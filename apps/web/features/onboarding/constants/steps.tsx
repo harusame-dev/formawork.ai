@@ -76,7 +76,7 @@ export const onboardingSteps: Step[] = [
 		pointerRadius: 10,
 		selector: "#onboarding-first-customer",
 		showControls: true,
-		side: "bottom",
+		side: "bottom-left",
 		title: "顧客を選択",
 	},
 	{
