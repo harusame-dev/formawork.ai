@@ -14,6 +14,7 @@ import type { CardComponentProps } from "onborda";
 import { useOnboarding } from "../hooks/use-onboarding";
 
 const MENU_BUTTON_STEP_INDEX = 2;
+const CUSTOMER_SELECT_STEP_INDEX = 5;
 
 export function OnboardingCard({
 	step,
@@ -62,6 +63,20 @@ export function OnboardingCard({
 				nextStep();
 			}, 550);
 			return;
+		}
+
+		// Handle customer select step - navigate to the first customer's detail page
+		if (currentStep === CUSTOMER_SELECT_STEP_INDEX) {
+			const firstCustomerLink = document.getElementById(
+				"onboarding-first-customer",
+			) as HTMLAnchorElement | null;
+			if (firstCustomerLink?.href) {
+				router.push(firstCustomerLink.href as Route);
+				setTimeout(() => {
+					nextStep();
+				}, 500);
+				return;
+			}
 		}
 
 		// Handle navigation for steps with nextRoute
