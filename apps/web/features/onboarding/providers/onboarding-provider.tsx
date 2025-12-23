@@ -5,9 +5,7 @@ import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { OnboardingCard } from "../components/onboarding-card";
 import { steps } from "../constants/steps";
-import { useOnboarding } from "../hooks/use-onboarding";
-
-const TOUR_NAME = "main";
+import { TOUR_NAME, useOnboarding } from "../hooks/use-onboarding";
 
 type OnboardingWrapperProps = {
 	children: ReactNode;
