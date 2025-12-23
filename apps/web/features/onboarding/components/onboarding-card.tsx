@@ -11,10 +11,9 @@ import { X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import type { CardComponentProps } from "onborda";
-import { useEffect } from "react";
 import { useOnboarding } from "../hooks/use-onboarding";
 
-const CAUTION_STEP_INDEX = 1;
+const WELCOME_STEP_INDEX = 0;
 const MENU_BUTTON_STEP_INDEX = 2;
 const CUSTOMER_SELECT_STEP_INDEX = 5;
 const BASIC_INFO_STEP_INDEX = 6;
@@ -31,16 +30,6 @@ export function OnboardingCard({
 	const { complete } = useOnboarding();
 	const isLastStep = currentStep === totalSteps - 1;
 
-	// ステップ2（ご注意）でスクロール
-	useEffect(() => {
-		if (currentStep === CAUTION_STEP_INDEX) {
-			const cautionElement = document.getElementById("onboarding-caution");
-			if (cautionElement) {
-				cautionElement.scrollIntoView({ behavior: "smooth", block: "start" });
-			}
-		}
-	}, [currentStep]);
-
 	function handleSkip() {
 		complete();
 	}
@@ -53,6 +42,19 @@ export function OnboardingCard({
 		if (isLastStep) {
 			handleComplete();
 			return;
+		}
+
+		// ステップ1からステップ2へ移行する前にスクロールし、完了後にフォーカス
+		if (currentStep === WELCOME_STEP_INDEX) {
+			const cautionElement = document.getElementById("onboarding-caution");
+			if (cautionElement) {
+				cautionElement.scrollIntoView({ behavior: "smooth", block: "start" });
+				// スクロールアニメーション完了を待ってからフォーカス
+				setTimeout(() => {
+					nextStep();
+				}, 500);
+				return;
+			}
 		}
 
 		if (currentStep === MENU_BUTTON_STEP_INDEX) {
