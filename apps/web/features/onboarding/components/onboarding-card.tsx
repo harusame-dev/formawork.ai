@@ -64,6 +64,23 @@ export function OnboardingCard({
 			}, 300);
 			return () => clearTimeout(timeoutId);
 		}
+
+		// ステップ7（基本情報）
+		if (currentStep === BASIC_INFO_STEP_INDEX) {
+			const timeoutId = setTimeout(() => {
+				const basicInfoElement = document.getElementById(
+					"onboarding-basic-info-tab",
+				);
+				if (basicInfoElement) {
+					basicInfoElement.scrollIntoView({
+						behavior: "instant",
+						block: "start",
+					});
+					window.dispatchEvent(new Event("resize"));
+				}
+			}, 300);
+			return () => clearTimeout(timeoutId);
+		}
 	}, [currentStep]);
 
 	function handleSkip() {
