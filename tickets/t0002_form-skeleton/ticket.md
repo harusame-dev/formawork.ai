@@ -84,7 +84,7 @@ export function CustomerSearchFormSkeleton() {
       <div className="sr-only">読み込み中</div>
       <div className="space-y-2">
         {/* FormLabel */}
-        <div className="text-sm font-bold leading-none">キーワード</div>
+        <span className="text-sm font-bold leading-none">キーワード</span>
 
         {/* FormDescription */}
         <p className="text-sm text-muted-foreground">
@@ -115,7 +115,7 @@ export function StaffSearchFormSkeleton() {
       <div className="sr-only">読み込み中</div>
       <div className="space-y-2">
         {/* FormLabel */}
-        <div className="text-sm font-bold leading-none">キーワード</div>
+        <span className="text-sm font-bold leading-none">キーワード</span>
 
         {/* FormDescription */}
         <p className="text-sm text-muted-foreground">
@@ -138,7 +138,7 @@ export function StaffSearchFormSkeleton() {
 | 要素 | 実フォームのスタイル | スケルトンの対応 |
 |------|---------------------|-----------------|
 | FormItem | `space-y-2` | `space-y-2` |
-| FormLabel | `text-sm font-bold leading-none` | 同クラス + 実テキスト「キーワード」 |
+| FormLabel | `text-sm font-bold leading-none` | `text-sm font-bold leading-none` + 実テキスト「キーワード」 |
 | FormDescription | `text-sm text-muted-foreground` | 同クラス + 実テキスト |
 | Input | `h-9 w-full rounded-md` | `Skeleton className="h-9 w-full rounded-md"` |
 | Button | `h-9` + アイコン + テキスト | `Skeleton className="h-9 w-[76px] rounded-md"` |

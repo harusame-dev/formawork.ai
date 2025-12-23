@@ -7,9 +7,7 @@ export function StaffSearchFormSkeleton() {
 			<form>
 				<div className="space-y-2">
 					{/* FormLabel */}
-					<span className="text-sm font-medium leading-none font-bold">
-						キーワード
-					</span>
+					<span className="text-sm font-bold leading-none">キーワード</span>
 
 					{/* FormDescription */}
 					<p className="text-sm text-muted-foreground">
