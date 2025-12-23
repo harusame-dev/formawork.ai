@@ -3,6 +3,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "onboarding-completed";
+const COMPLETE_EVENT = "onboarding-complete";
 
 function getSnapshot(): boolean {
 	try {
@@ -17,14 +18,24 @@ function getServerSnapshot(): boolean {
 }
 
 function subscribe(callback: () => void): () => void {
+	// 他タブからのストレージ変更を検知
 	const handleStorageChange = (event: StorageEvent) => {
 		if (event.key === STORAGE_KEY) {
 			callback();
 		}
 	};
 
+	// 同一タブからの完了イベントを検知
+	const handleCompleteEvent = () => {
+		callback();
+	};
+
 	window.addEventListener("storage", handleStorageChange);
-	return () => window.removeEventListener("storage", handleStorageChange);
+	window.addEventListener(COMPLETE_EVENT, handleCompleteEvent);
+	return () => {
+		window.removeEventListener("storage", handleStorageChange);
+		window.removeEventListener(COMPLETE_EVENT, handleCompleteEvent);
+	};
 }
 
 export function useOnboarding() {
@@ -37,6 +48,8 @@ export function useOnboarding() {
 	const complete = useCallback(() => {
 		try {
 			localStorage.setItem(STORAGE_KEY, "true");
+			// 同一タブで再レンダリングをトリガーするためカスタムイベントを発火
+			window.dispatchEvent(new Event(COMPLETE_EVENT));
 		} catch {
 			// localStorage が無効な場合は無視
 		}
