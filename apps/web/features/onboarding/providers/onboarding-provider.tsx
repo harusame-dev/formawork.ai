@@ -1,8 +1,7 @@
 "use client";
 
 import { Onborda, OnbordaProvider } from "onborda";
-import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { type ReactNode, useCallback, useEffect, useRef } from "react";
 import { OnboardingCard } from "../components/onboarding-card";
 import { steps } from "../constants/steps";
 import { TOUR_NAME, useOnboarding } from "../hooks/use-onboarding";
@@ -13,14 +12,18 @@ type OnboardingWrapperProps = {
 
 function OnboardingInner({ children }: { children: ReactNode }) {
 	const { shouldShow, startTour, closeTour } = useOnboarding();
+	const initializedRef = useRef(false);
 
 	// オンボーディング開始（マウント時かつ未完了の場合）
-	// biome-ignore lint/correctness/useExhaustiveDependencies: マウント時のみ実行
-	useEffect(() => {
-		if (shouldShow) {
-			startTour(TOUR_NAME);
-		}
-	}, []);
+	const initRef = useCallback(
+		(node: HTMLDivElement | null) => {
+			if (node && shouldShow && !initializedRef.current) {
+				initializedRef.current = true;
+				startTour(TOUR_NAME);
+			}
+		},
+		[shouldShow, startTour],
+	);
 
 	// 完了時にonbordaを閉じる
 	useEffect(() => {
@@ -38,7 +41,7 @@ function OnboardingInner({ children }: { children: ReactNode }) {
 			showOnborda={shouldShow}
 			steps={[{ steps: steps, tour: TOUR_NAME }]}
 		>
-			{children}
+			<div ref={initRef}>{children}</div>
 		</Onborda>
 	);
 }
