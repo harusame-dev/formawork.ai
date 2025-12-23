@@ -88,9 +88,9 @@ export const onboardingSteps: Step[] = [
 		icon: <>📝</>,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-customer-info",
+		selector: "#onboarding-basic-info-tab",
 		showControls: true,
-		side: "bottom",
+		side: "bottom-left",
 		title: "顧客詳細",
 	},
 	{

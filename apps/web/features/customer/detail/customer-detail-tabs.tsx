@@ -19,7 +19,7 @@ export function CustomerDetailTabs({
 	const tabs = [
 		{
 			href: `/customers/${customerId}`,
-			id: undefined,
+			id: "onboarding-basic-info-tab",
 			label: "基本情報",
 			value: "basic",
 		},
