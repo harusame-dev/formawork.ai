@@ -14,38 +14,38 @@
 
 ## 機能要件
 
-### オンボーディングフロー（8ステップ）
+### オンボーディングフロー（9ステップ）
 
 | Step | ページ | 対象要素 | メッセージ内容 | 遷移設定 |
 |------|--------|----------|----------------|----------|
-| 1 | `/` | ウェルカムエリア | 「FORMAWORK.AI CRMへようこそ！このガイドでは主要な機能をご紹介します。」 | - |
-| 2 | `/` | 注意事項エリア | 「【ご注意】このデモ環境は誰でも閲覧可能です。機密情報や実際の個人情報は登録しないでください。また、データは予告なくリセットされる場合があります。」 | - |
+| 1 | `/` | ウェルカムエリア | 「FORMAWORK.AI CRMへようこそ！」 | - |
+| 2 | `/` | 注意事項エリア | 「注意事項です。ご確認ください。」 | - |
 | 3 | `/` | メニューボタン | 「左上のメニューボタンをクリックすると、各機能にアクセスできます。」 | メニュー自動オープン |
-| 4 | `/` | 顧客一覧リンク | 「顧客一覧では、登録されている顧客情報を確認できます。クリックして移動しましょう。」 | nextRoute: `/customers` |
-| 5 | `/customers` | 検索フォーム | 「キーワード検索で顧客を絞り込めます。姓名、電話番号、メールアドレスで検索可能です。」 | prevRoute: `/` |
-| 6 | `/customers` | 顧客テーブル | 「検索結果がこちらに表示されます。顧客名をクリックして詳細を確認しましょう。」 | - |
-| 7 | `/customers/[id]` | 顧客情報 | 「顧客の基本情報を確認できます。タブを切り替えて、ノートやメモリも確認できます。」 | - |
-| 8 | `/customers/[id]` | ノートタブ | 「以上で主要機能のガイドは終了です。それでは FORMAWORK.AI をお楽しみください！」 | - |
+| 4 | `/` | 顧客一覧リンク | 「顧客の管理や接客ノートの記録、AIによる接客アドバイス・顧客メモリなどが確認できます。」 | nextRoute: `/customers` |
+| 5 | `/customers` | 検索フォーム | 「姓名、電話番号、メールアドレスで検索可能です。」 | - |
+| 6 | `/customers` | 顧客リンク | 「顧客名を選択すると詳細画面に遷移します。」 | nextRoute: `/customers/[id]` |
+| 7 | `/customers/[id]` | 基本情報タブ | 「顧客の生年月日や住所など、基本情報が閲覧できます。」 | nextRoute: `/customers/[id]/notes` |
+| 8 | `/customers/[id]/notes` | ノートタブ | 「接客内容を記録できます。自動でAIが接客内容のアドバイスと顧客情報をメモリに記録していきます。」 | nextRoute: `/customers/[id]/memories` |
+| 9 | `/customers/[id]/memories` | メモリタブ | 「接客ノートからAIが自動で重要な事柄を記録します。手動での管理も行えます。以上で使い方ガイドは完了です。」 | - |
 
 ### 操作仕様
 
 | 項目 | 仕様 |
 |------|------|
 | スキップ機能 | あり（×ボタン）。スキップ時も完了として扱い、再表示しない |
-| 戻るボタン | あり（ステップ2以降で表示） |
+| 戻るボタン | なし（削除済み） |
 | 次へボタン | あり（最終ステップは「完了」ボタン） |
 | 完了状態の保存 | localStorage（キー: `onboarding-completed`） |
-| 再実行機能 | なし |
-| 顧客詳細への遷移 | ユーザーによる手動クリック |
+| 再実行機能 | あり（トップページの「使い方ガイドを見る」ボタン） |
+| 顧客詳細への遷移 | 自動遷移（ステップ6で次へクリック時） |
 
 ### エッジケース対応
 
 | ケース | 対応 |
 |--------|------|
-| 顧客が0件の場合 | ステップ6で「まだ顧客が登録されていません。新規登録から始めましょう。」と表示し、ステップ6で完了 |
+| 顧客が0件の場合 | シードデータで顧客が存在するため、このケースは発生しない |
 | localStorage無効 | オンボーディングは毎回表示される（エラーにはしない） |
 | ページ離脱・リロード | 完了していなければ最初から再開 |
-| 戻るボタンでページ遷移が必要 | prevRouteで自動遷移 |
 | オンボーディング中にログアウト | 完了していなければ次回ログイン時に再開 |
 
 ---
@@ -78,13 +78,12 @@
 ```
 ┌─────────────────────────────────────┐
 │ [アイコン] タイトル           [×]  │  ← CardHeader
-│ ステップ N / 8                     │
 ├─────────────────────────────────────┤
 │                                     │
 │ メッセージ内容                      │  ← CardContent
 │                                     │
 ├─────────────────────────────────────┤
-│ [戻る]                    [次へ]   │  ← CardFooter
+│ N / 9                     [次へ]   │  ← CardFooter
 └─────────────────────────────────────┘
          ▼ （矢印: onborda提供）
 ```
@@ -94,22 +93,23 @@
 | ボタン | ラベル | スタイル | サイズ |
 |--------|--------|----------|--------|
 | 次へ | 「次へ」 | Button (default) | sm |
-| 戻る | 「戻る」 | Button (outline) | sm |
 | 完了 | 「完了」 | Button (default) | sm |
 | スキップ | X アイコン | Button (ghost, icon) | h-6 w-6 |
+| 再開 | 「使い方ガイドを見る」 | Button (outline) | default |
 
-### ステップアイコン
+### ステップアイコン（Lucide React）
 
 | Step | アイコン | タイトル |
 |------|----------|----------|
-| 1 | 👋 | ようこそ！ |
-| 2 | ⚠️ | ご注意 |
-| 3 | 📋 | メニューを開く |
-| 4 | 👥 | 顧客一覧 |
-| 5 | 🔍 | 顧客を検索 |
-| 6 | 📊 | 顧客一覧テーブル |
-| 7 | 📝 | 顧客詳細 |
-| 8 | 🎉 | ガイド完了！ |
+| 1 | `Hand` | ようこそ！ |
+| 2 | `TriangleAlert` | ご注意 |
+| 3 | `Menu` | メニューを開く |
+| 4 | `Users` | 顧客一覧 |
+| 5 | `Search` | 顧客を検索 |
+| 6 | `User` | 顧客を選択 |
+| 7 | `Info` | 顧客詳細 |
+| 8 | `NotebookPen` | 接客ノート |
+| 9 | `Brain` | メモリ |
 
 ---
 
@@ -140,7 +140,7 @@
 ```tsx
 {
   tour: "main",
-  steps: [ /* 8ステップ */ ]
+  steps: [ /* 9ステップ */ ]
 }
 ```
 
@@ -158,11 +158,12 @@ content: [
 ```
 apps/web/features/onboarding/
 ├── components/
-│   └── onboarding-card.tsx      # カスタムカード（shadcn/ui）
+│   ├── onboarding-card.tsx      # カスタムカード（shadcn/ui）
+│   └── start-tour-button.tsx    # ツアー開始ボタン
 ├── hooks/
 │   └── use-onboarding.ts        # localStorage 状態管理
 ├── constants/
-│   └── steps.tsx                # ステップ定義
+│   └── steps.tsx                # ステップ定義・オンボーディングID定数
 └── providers/
     └── onboarding-provider.tsx  # OnbordaProvider ラッパー
 ```
@@ -176,84 +177,95 @@ apps/web/features/onboarding/
 | メニューボタン | `onboarding-menu-button` | `navigation-menu.tsx` |
 | 顧客一覧リンク | `onboarding-customer-menu` | `navigation-menu.tsx` |
 | 検索フォーム | `onboarding-search-form` | `customers/page.tsx` |
-| 顧客テーブル | `onboarding-customer-table` | `customers/page.tsx` |
-| 顧客情報エリア | `onboarding-customer-info` | `customers/[customerId]/layout.tsx` |
+| 顧客リンク | `onboarding-first-customer` | `customers/page.tsx` |
+| 基本情報タブ | `onboarding-basic-info-tab` | `customer-detail-tabs.tsx` |
 | ノートタブ | `onboarding-notes-tab` | `customer-detail-tabs.tsx` |
+| メモリタブ | `onboarding-memories-tab` | `customer-detail-tabs.tsx` |
 
 ---
 
 ## ファイル変更一覧
 
-### 新規作成ファイル（4ファイル）
+### 新規作成ファイル（5ファイル）
 
 | ファイル | 説明 |
 |----------|------|
-| `features/onboarding/hooks/use-onboarding.ts` | localStorage 完了状態管理 |
-| `features/onboarding/constants/steps.tsx` | 8ステップ定義 |
+| `features/onboarding/hooks/use-onboarding.ts` | localStorage 完了状態管理・スクロール・ハイライト調整 |
+| `features/onboarding/constants/steps.tsx` | 9ステップ定義・オンボーディングID定数 |
 | `features/onboarding/components/onboarding-card.tsx` | カスタムカード |
+| `features/onboarding/components/start-tour-button.tsx` | ツアー開始ボタン |
 | `features/onboarding/providers/onboarding-provider.tsx` | Provider ラッパー |
 
-### 修正ファイル（7ファイル）
+### 修正ファイル
 
 | ファイル | 変更内容 |
 |----------|----------|
 | `tailwind.config.ts` | onborda クラス読み込み設定追加 |
-| `app/(private)/layout.tsx` | OnboardingWrapper でラップ |
-| `app/(private)/page.tsx` | ウェルカム・注意事項メッセージ表示、ID 付与 |
+| `app/(private)/layout.tsx` | Onboarding でラップ |
+| `app/(private)/page.tsx` | ウェルカム・注意事項メッセージ表示、ID 付与、ツアー開始ボタン追加 |
 | `app/(private)/_components/navigation-menu.tsx` | ID 付与、自動オープンロジック |
-| `app/(private)/customers/page.tsx` | 検索フォーム・テーブルに ID 付与 |
-| `app/(private)/customers/[customerId]/layout.tsx` | 顧客情報エリアに ID 付与 |
-| `features/customer/detail/customer-detail-tabs.tsx` | ノートタブに ID 付与 |
+| `app/(private)/_components/header.tsx` | トップページへのリンク追加 |
+| `app/(private)/customers/page.tsx` | 検索フォーム・顧客リンクに ID 付与 |
+| `features/customer/detail/customer-detail-tabs.tsx` | 基本情報・ノート・メモリタブに ID 付与 |
+| `e2e/setups/user.setup.ts` | E2Eテストでオンボーディングスキップ設定追加 |
+| `e2e/logout.e2e.test.ts` | E2Eテストでオンボーディングスキップ設定追加 |
+| `e2e/password-change.e2e.test.ts` | E2Eテストでオンボーディングスキップ設定追加 |
 
 ---
 
 ## 実装タスク
 
 ### Phase 1: 基盤構築
-- [ ] `onborda` `framer-motion` パッケージのインストール
-- [ ] `tailwind.config.ts` に onborda クラス読み込み設定追加
-- [ ] `use-onboarding.ts` フック実装
-- [ ] `steps.tsx` ステップ定義（8ステップ）
-- [ ] `onboarding-card.tsx` カスタムカード実装
-- [ ] `onboarding-provider.tsx` Provider 実装
+- [x] `onborda` `framer-motion` パッケージのインストール
+- [x] `tailwind.config.ts` に onborda クラス読み込み設定追加
+- [x] `use-onboarding.ts` フック実装
+- [x] `steps.tsx` ステップ定義（9ステップ）・ID定数定義
+- [x] `onboarding-card.tsx` カスタムカード実装
+- [x] `onboarding-provider.tsx` Provider 実装
+- [x] `start-tour-button.tsx` ツアー開始ボタン実装
 
 ### Phase 2: 既存コンポーネント修正
-- [ ] `app/(private)/layout.tsx` に Provider 設置
-- [ ] `app/(private)/page.tsx` ウェルカム・注意事項メッセージ追加 + ID
-- [ ] `navigation-menu.tsx` に ID + 自動オープンロジック
-- [ ] `customers/page.tsx` に ID 付与
-- [ ] `customers/[customerId]/layout.tsx` に ID 付与
-- [ ] `customer-detail-tabs.tsx` に ID 付与
+- [x] `app/(private)/layout.tsx` に Provider 設置
+- [x] `app/(private)/page.tsx` ウェルカム・注意事項メッセージ追加 + ID + ツアー開始ボタン
+- [x] `navigation-menu.tsx` に ID + 自動オープンロジック
+- [x] `header.tsx` にトップページへのリンク追加
+- [x] `customers/page.tsx` に ID 付与
+- [x] `customer-detail-tabs.tsx` に ID 付与
 
-### Phase 3: テスト・検証
-- [ ] 全8ステップの動作確認
-- [ ] スキップ機能の動作確認（完了扱いになること）
-- [ ] 戻るボタンの動作確認（ページ遷移含む）
-- [ ] エッジケース：顧客0件の動作確認
-- [ ] localStorage 完了状態の永続化確認
-- [ ] キーボード操作（Tab, Enter, Escape）の確認
-- [ ] 主要ブラウザでの動作確認
+### Phase 3: UI改善・調整
+- [x] アイコンを絵文字から Lucide React アイコンに変更
+- [x] カードのレイアウトをコンパクト化
+- [x] アニメーション速度の調整
+- [x] スクロール・ハイライト位置調整ロジックの実装
+- [x] 戻るボタンの削除
+
+### Phase 4: E2Eテスト対応
+- [x] `user.setup.ts` でオンボーディングスキップ設定追加
+- [x] `logout.e2e.test.ts` でオンボーディングスキップ設定追加
+- [x] `password-change.e2e.test.ts` でオンボーディングスキップ設定追加
 
 ---
 
 ## 受け入れ条件
 
 ### 機能要件
-- [ ] 初回ログイン後、オンボーディングが自動開始される
-- [ ] 8ステップが順番に表示される
-- [ ] ステップ2でデモ環境の注意事項が表示される
-- [ ] 各ステップでスキップボタン（×）が機能し、完了扱いになる
-- [ ] ステップ2以降で戻るボタンが機能する
-- [ ] 完了後、再度ログインしてもオンボーディングが表示されない
-- [ ] ステップ3でメニューが自動で開く
-- [ ] ステップ4「次へ」で顧客一覧ページに自動遷移する
-- [ ] ステップ6から7はユーザーが顧客をクリックして手動遷移
-- [ ] 顧客0件の場合、ステップ6で適切なメッセージが表示され完了できる
+- [x] 初回ログイン後、オンボーディングが自動開始される
+- [x] 9ステップが順番に表示される
+- [x] ステップ2でデモ環境の注意事項が表示される
+- [x] 各ステップでスキップボタン（×）が機能し、完了扱いになる
+- [x] 完了後、再度ログインしてもオンボーディングが表示されない
+- [x] ステップ3でメニューが自動で開く
+- [x] ステップ4「次へ」で顧客一覧ページに自動遷移する
+- [x] ステップ6「次へ」で顧客詳細ページに自動遷移する
+- [x] トップページの「使い方ガイドを見る」ボタンでオンボーディングを再開できる
 
 ### 非機能要件
-- [ ] キーボード操作（Tab, Enter, Escape）で操作できる
-- [ ] アニメーションがスムーズに動作する
-- [ ] Chrome, Firefox, Safari, Edge で正常に動作する
+- [x] キーボード操作（Tab, Enter, Escape）で操作できる
+- [x] アニメーションがスムーズに動作する
+- [x] Chrome で正常に動作する
+
+### E2Eテスト対応
+- [x] E2Eテストでオンボーディングがスキップされ、テストが正常に実行される
 
 ---
 
@@ -263,3 +275,28 @@ apps/web/features/onboarding/
 - 対象要素には `id="onboarding-xxx"` 形式で ID を付与
 - 将来的に他のツアー（スタッフ管理など）を追加する可能性あり
 - ツアー名は `"main"` を使用
+
+---
+
+## 実装完了コミット一覧
+
+| コミットハッシュ | 内容 |
+|-----------------|------|
+| `05c92ee` | ユーザーオンボーディング機能のチケットを追加 |
+| `f342414` | ユーザーオンボーディング機能を追加 |
+| `c607149` | ページ遷移時にナビゲーションメニューのSheetを閉じるよう修正 |
+| `7d753bf` | オンボーディング中のハイライト要素へのクリックをブロック |
+| `a185066` - `d69faf3` | ステップ遷移・自動遷移の実装 |
+| `9bb6d10` | オンボーディングにメモリステップを追加 |
+| `68c2fae` | オンボーディングステップのアイコンを絵文字からLucide Reactアイコンに変更 |
+| `73a683d` | オンボーディングカードから戻るボタンを削除 |
+| `2264299` - `60de5e0` | スクロール・表示改善 |
+| `9064b9d` - `9bdf61d` | オンボーディング開始ボタンをホーム画面に移動 |
+| `e364a72` | オンボーディング状態管理をuseOnboardingに統合 |
+| `caa4584` | オンボーディングフローを簡素化し、ステップ内容を更新 |
+| `2868814` | オンボーディングIDを定数化してコンポーネント間で共有 |
+| `16ae085` | ヘッダータイトルとナビゲーションメニューにトップページへのリンクを追加 |
+| `51bd39b` | オンボーディングカードのレイアウトをコンパクト化 |
+| `950f307` | オンボーディング最終ステップの文言とレイアウトを調整 |
+| `49beb7c` | E2Eテストのセットアップでオンボーディングをスキップ |
+| `b341e49` | 独自ログインを行うE2Eテストでもオンボーディングをスキップ |
