@@ -28,7 +28,7 @@ export default function Page({ searchParams }: PageProps<"/customers">) {
 					<CustomerSearchFormContainer conditionPromise={validatedCondition} />
 				</SuspenseOnSearch>
 			</Card>
-			<Card className="py-2 w-full" id="onboarding-customer-table">
+			<Card className="py-2 w-full">
 				<SuspenseOnSearch fallback={<CustomersSkeleton />}>
 					<CustomersContainer condition={validatedCondition} />
 				</SuspenseOnSearch>

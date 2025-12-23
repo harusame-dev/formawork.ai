@@ -70,18 +70,14 @@ export const onboardingSteps: Step[] = [
 		title: "顧客を検索",
 	},
 	{
-		content: (
-			<>
-				検索結果がこちらに表示されます。顧客名をクリックして詳細を確認しましょう。
-			</>
-		),
-		icon: <>📊</>,
+		content: <>顧客名をクリックして詳細を確認しましょう。</>,
+		icon: <>👤</>,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-customer-table",
+		selector: "#onboarding-first-customer",
 		showControls: true,
-		side: "top",
-		title: "顧客一覧テーブル",
+		side: "bottom",
+		title: "顧客を選択",
 	},
 	{
 		content: (
