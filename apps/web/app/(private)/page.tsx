@@ -5,6 +5,7 @@ import {
 	CardTitle,
 } from "@workspace/ui/components/card";
 import { AlertTriangle, Sparkles } from "lucide-react";
+import { StartTourButton } from "@/features/onboarding/components/start-tour-button";
 import { OnboardingId } from "@/features/onboarding/constants/steps";
 
 export default function Page() {
@@ -42,6 +43,9 @@ export default function Page() {
 					</p>
 				</CardContent>
 			</Card>
+
+			{/* 使い方ガイドボタン */}
+			<StartTourButton />
 
 			{/* オンボーディング用スペーサー */}
 			<div aria-hidden="true" className="h-[50dvh]" />
