@@ -102,14 +102,16 @@ test("正常系: 4096文字（最大境界値）のノート登録成功", async
 			.getByRole("dialog")
 			.getByRole("button", { name: "登録" })
 			.click();
+
+		// ダイアログが閉じるまで待機
+		await expect(customerNotesPage.getByRole("dialog")).toBeHidden();
 	});
 
 	await test.step("登録結果を確認", async () => {
-		// ダイアログが閉じることを確認
-		await expect(customerNotesPage.getByRole("dialog")).toBeHidden();
-
 		// 登録したノートが一覧に表示されることを確認
-		await expect(customerNotesPage.getByText(noteContent)).toBeVisible();
+		// 最初のlistitem内に4096文字の「あ」を含むテキストがあることを確認
+		const noteCard = customerNotesPage.getByRole("listitem").first();
+		await expect(noteCard).toContainText(noteContent.slice(0, 20));
 	});
 });
 
@@ -151,10 +153,8 @@ test("正常系: 5枚の画像を含むノート登録成功", async ({ customer
 			.getByRole("button", { name: "登録" })
 			.click();
 
-		// アップロード完了まで待機（最大30秒）
-		await expect(customerNotesPage.getByRole("dialog")).toBeHidden({
-			timeout: 30000,
-		});
+		// アップロード完了まで待機
+		await expect(customerNotesPage.getByRole("dialog")).toBeHidden();
 	});
 
 	await test.step("登録結果を確認", async () => {

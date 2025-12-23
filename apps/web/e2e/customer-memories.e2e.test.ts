@@ -136,19 +136,24 @@ test("保護ボタンでメモリを保護・解除できる", async ({
 	const row1 = rows.nth(1);
 	const lockButton = row1.getByRole("button", { name: "保護" });
 	await expect(lockButton).toBeVisible();
+	await expect(lockButton).toBeEnabled();
 
 	// 保護ボタンをクリック
 	await lockButton.click();
 
 	// 保護状態になったことを確認（ボタンのラベルが「保護解除」に変わる）
+	// Optimistic UIにより即座に表示されるが、処理完了までenabledを待機
 	const unlockButton = row1.getByRole("button", { name: "保護解除" });
 	await expect(unlockButton).toBeVisible();
+	await expect(unlockButton).toBeEnabled();
 
 	// 再度クリックして解除
 	await unlockButton.click();
 
 	// 未保護状態に戻ったことを確認
-	await expect(row1.getByRole("button", { name: "保護" })).toBeVisible();
+	const lockButtonAfter = row1.getByRole("button", { name: "保護" });
+	await expect(lockButtonAfter).toBeVisible();
+	await expect(lockButtonAfter).toBeEnabled();
 });
 
 test("メモリを登録・編集・削除できる", async ({
