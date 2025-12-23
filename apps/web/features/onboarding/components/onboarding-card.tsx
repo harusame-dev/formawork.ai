@@ -31,10 +31,10 @@ export function OnboardingCard({
 	const { complete } = useOnboarding();
 	const isLastStep = currentStep === totalSteps - 1;
 
-	// ステップ2（ご注意）でonbordaのフォーカス完了後にスクロール
+	// スクロールしてフォーカス位置を調整
 	useEffect(() => {
+		// ステップ2（ご注意）
 		if (currentStep === CAUTION_STEP_INDEX) {
-			// onbordaのフォーカス・スクロール完了を待ってから目的の位置にスクロール
 			const timeoutId = setTimeout(() => {
 				const cautionElement = document.getElementById("onboarding-caution");
 				if (cautionElement) {
@@ -42,7 +42,23 @@ export function OnboardingCard({
 						behavior: "instant",
 						block: "start",
 					});
-					// スクロール後にonbordaのポジションを再計算させる
+					window.dispatchEvent(new Event("resize"));
+				}
+			}, 300);
+			return () => clearTimeout(timeoutId);
+		}
+
+		// ステップ6（顧客を選択）
+		if (currentStep === CUSTOMER_SELECT_STEP_INDEX) {
+			const timeoutId = setTimeout(() => {
+				const firstCustomerElement = document.getElementById(
+					"onboarding-first-customer",
+				);
+				if (firstCustomerElement) {
+					firstCustomerElement.scrollIntoView({
+						behavior: "instant",
+						block: "start",
+					});
 					window.dispatchEvent(new Event("resize"));
 				}
 			}, 300);
