@@ -5,11 +5,12 @@ import {
 	CardTitle,
 } from "@workspace/ui/components/card";
 import { AlertTriangle, Sparkles } from "lucide-react";
+import { OnboardingId } from "@/features/onboarding/constants/steps";
 
 export default function Page() {
 	return (
 		<div className="container mx-auto p-4 space-y-4">
-			<Card id="onboarding-welcome">
+			<Card id={OnboardingId.Welcome}>
 				<CardHeader>
 					<CardTitle className="flex items-center gap-2">
 						<Sparkles className="h-5 w-5" />
@@ -24,7 +25,7 @@ export default function Page() {
 				</CardContent>
 			</Card>
 
-			<Card className="border-amber-200 bg-amber-50" id="onboarding-caution">
+			<Card className="border-amber-200 bg-amber-50" id={OnboardingId.Caution}>
 				<CardHeader>
 					<CardTitle className="flex items-center gap-2 text-amber-800">
 						<AlertTriangle className="h-5 w-5" />

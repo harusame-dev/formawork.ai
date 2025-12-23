@@ -11,6 +11,19 @@ import {
 } from "lucide-react";
 import type { Step } from "onborda";
 
+/** オンボーディングで使用する要素のID定数 */
+export const OnboardingId = {
+	BasicInfoTab: "onboarding-basic-info-tab",
+	Caution: "onboarding-caution",
+	CustomerMenu: "onboarding-customer-menu",
+	FirstCustomer: "onboarding-first-customer",
+	MemoriesTab: "onboarding-memories-tab",
+	MenuButton: "onboarding-menu-button",
+	NotesTab: "onboarding-notes-tab",
+	SearchForm: "onboarding-search-form",
+	Welcome: "onboarding-welcome",
+} as const;
+
 export const onboardingSteps: Step[] = [
 	{
 		content: (
@@ -19,7 +32,7 @@ export const onboardingSteps: Step[] = [
 		icon: <Hand className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-welcome",
+		selector: `#${OnboardingId.Welcome}`,
 		showControls: true,
 		side: "bottom",
 		title: "ようこそ！",
@@ -33,7 +46,7 @@ export const onboardingSteps: Step[] = [
 		icon: <TriangleAlert className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-caution",
+		selector: `#${OnboardingId.Caution}`,
 		showControls: true,
 		side: "bottom",
 		title: "ご注意",
@@ -45,7 +58,7 @@ export const onboardingSteps: Step[] = [
 		icon: <Menu className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-menu-button",
+		selector: `#${OnboardingId.MenuButton}`,
 		showControls: true,
 		side: "bottom-left",
 		title: "メニューを開く",
@@ -60,7 +73,7 @@ export const onboardingSteps: Step[] = [
 		nextRoute: "/customers",
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-customer-menu",
+		selector: `#${OnboardingId.CustomerMenu}`,
 		showControls: true,
 		side: "bottom-left",
 		title: "顧客一覧",
@@ -74,7 +87,7 @@ export const onboardingSteps: Step[] = [
 		icon: <Search className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-search-form",
+		selector: `#${OnboardingId.SearchForm}`,
 		showControls: true,
 		side: "bottom",
 		title: "顧客を検索",
@@ -84,7 +97,7 @@ export const onboardingSteps: Step[] = [
 		icon: <User className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-first-customer",
+		selector: `#${OnboardingId.FirstCustomer}`,
 		showControls: true,
 		side: "bottom-left",
 		title: "顧客を選択",
@@ -98,7 +111,7 @@ export const onboardingSteps: Step[] = [
 		icon: <Info className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-basic-info-tab",
+		selector: `#${OnboardingId.BasicInfoTab}`,
 		showControls: true,
 		side: "bottom-left",
 		title: "顧客詳細",
@@ -112,7 +125,7 @@ export const onboardingSteps: Step[] = [
 		icon: <NotebookPen className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-notes-tab",
+		selector: `#${OnboardingId.NotesTab}`,
 		showControls: true,
 		side: "bottom",
 		title: "接客ノート",
@@ -126,7 +139,7 @@ export const onboardingSteps: Step[] = [
 		icon: <Brain className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		selector: "#onboarding-memories-tab",
+		selector: `#${OnboardingId.MemoriesTab}`,
 		showControls: true,
 		side: "bottom-right",
 		title: "メモリ",

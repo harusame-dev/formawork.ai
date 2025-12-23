@@ -8,6 +8,7 @@ import { CustomerSearchFormSkeleton } from "@/features/customer/list/customer-se
 import { CustomersContainer } from "@/features/customer/list/customers-container";
 import { CustomersSkeleton } from "@/features/customer/list/customers-skeleton";
 import { parseCustomersConditionSearchParams } from "@/features/customer/list/schema";
+import { OnboardingId } from "@/features/onboarding/constants/steps";
 import { SuspenseOnSearch } from "@/libs/suspense-on-search";
 
 export default function Page({ searchParams }: PageProps<"/customers">) {
@@ -23,7 +24,7 @@ export default function Page({ searchParams }: PageProps<"/customers">) {
 					<RegisterLink />
 				</Suspense>
 			</div>
-			<Card className="p-4 w-full" id="onboarding-search-form">
+			<Card className="p-4 w-full" id={OnboardingId.SearchForm}>
 				<SuspenseOnSearch fallback={<CustomerSearchFormSkeleton />}>
 					<CustomerSearchFormContainer conditionPromise={validatedCondition} />
 				</SuspenseOnSearch>

@@ -2,6 +2,7 @@
 
 import { useOnborda } from "onborda";
 import { useCallback, useEffect, useSyncExternalStore } from "react";
+import { OnboardingId } from "../constants/steps";
 
 const STORAGE_KEY = "onboarding-completed";
 const COMPLETE_EVENT = "onboarding-complete";
@@ -72,7 +73,7 @@ export function useOnboarding() {
 		// ステップ2（ご注意）
 		if (currentStep === CAUTION_STEP_INDEX) {
 			const timeoutId = setTimeout(() => {
-				const cautionElement = document.getElementById("onboarding-caution");
+				const cautionElement = document.getElementById(OnboardingId.Caution);
 				if (cautionElement) {
 					cautionElement.scrollIntoView({
 						behavior: "instant",
@@ -88,7 +89,7 @@ export function useOnboarding() {
 		if (currentStep === CUSTOMER_SELECT_STEP_INDEX) {
 			const timeoutId = setTimeout(() => {
 				const firstCustomerElement = document.getElementById(
-					"onboarding-first-customer",
+					OnboardingId.FirstCustomer,
 				);
 				if (firstCustomerElement) {
 					firstCustomerElement.scrollIntoView({

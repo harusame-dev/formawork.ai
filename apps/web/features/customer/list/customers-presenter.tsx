@@ -9,6 +9,7 @@ import {
 	TableRow,
 } from "@workspace/ui/components/table";
 import Link from "next/link";
+import { OnboardingId } from "@/features/onboarding/constants/steps";
 import type { CustomersListItem } from "./schema";
 
 type CustomersPresenterProps = {
@@ -49,7 +50,7 @@ export function CustomersPresenter({
 								<Link
 									className="text-primary underline break-all"
 									href={`/customers/${customer.customerId}`}
-									id={index === 0 ? "onboarding-first-customer" : undefined}
+									id={index === 0 ? OnboardingId.FirstCustomer : undefined}
 								>
 									{customer.lastName} {customer.firstName}
 								</Link>

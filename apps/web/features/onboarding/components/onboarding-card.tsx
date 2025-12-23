@@ -11,6 +11,7 @@ import { X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import type { CardComponentProps } from "onborda";
+import { OnboardingId } from "../constants/steps";
 import { useOnboarding } from "../hooks/use-onboarding";
 
 const MENU_BUTTON_STEP_INDEX = 2;
@@ -52,7 +53,7 @@ export function OnboardingCard({
 		// Handle customer select step - navigate to the first customer's detail page
 		if (currentStep === CUSTOMER_SELECT_STEP_INDEX) {
 			const firstCustomerLink = document.getElementById(
-				"onboarding-first-customer",
+				OnboardingId.FirstCustomer,
 			) as HTMLAnchorElement | null;
 			if (firstCustomerLink?.href) {
 				router.push(firstCustomerLink.href as Route);
@@ -66,7 +67,7 @@ export function OnboardingCard({
 		// Handle basic info step - navigate to the notes page
 		if (currentStep === BASIC_INFO_STEP_INDEX) {
 			const notesTabLink = document.getElementById(
-				"onboarding-notes-tab",
+				OnboardingId.NotesTab,
 			) as HTMLAnchorElement | null;
 			if (notesTabLink?.href) {
 				router.push(notesTabLink.href as Route);
@@ -80,7 +81,7 @@ export function OnboardingCard({
 		// Handle notes step - navigate to the memories page
 		if (currentStep === NOTES_STEP_INDEX) {
 			const memoriesTabLink = document.getElementById(
-				"onboarding-memories-tab",
+				OnboardingId.MemoriesTab,
 			) as HTMLAnchorElement | null;
 			if (memoriesTabLink?.href) {
 				router.push(memoriesTabLink.href as Route);

@@ -11,6 +11,7 @@ import {
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { OnboardingId } from "@/features/onboarding/constants/steps";
 import {
 	CUSTOMER_MENU_STEP_INDEX,
 	useOnboarding,
@@ -40,7 +41,7 @@ export function NavigationMenu() {
 	return (
 		<Sheet onOpenChange={setOpen} open={open}>
 			<SheetTrigger asChild>
-				<Button id="onboarding-menu-button" size="icon" variant="ghost">
+				<Button id={OnboardingId.MenuButton} size="icon" variant="ghost">
 					<Menu className="size-6" />
 					<span className="sr-only">メニューを開く</span>
 				</Button>
@@ -55,7 +56,7 @@ export function NavigationMenu() {
 							<Link
 								className="block rounded-md px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
 								href="/customers"
-								id="onboarding-customer-menu"
+								id={OnboardingId.CustomerMenu}
 								onClick={() => setOpen(false)}
 							>
 								顧客一覧

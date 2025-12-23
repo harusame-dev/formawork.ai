@@ -18,10 +18,7 @@ export default async function CustomerDetailLayout({
 
 	return (
 		<div className="container mx-auto p-2 space-y-4">
-			<div
-				className="flex items-center justify-between"
-				id="onboarding-customer-info"
-			>
+			<div className="flex items-center justify-between">
 				<Suspense fallback={<CustomerInfoSkeleton />}>
 					<CustomerInfoContainer customerIdPromise={customerIdPromise} />
 				</Suspense>

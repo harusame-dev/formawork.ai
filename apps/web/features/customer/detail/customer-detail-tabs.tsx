@@ -5,6 +5,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { use } from "react";
+import { OnboardingId } from "@/features/onboarding/constants/steps";
 
 type CustomerDetailTabsProps = {
 	customerIdPromise: Promise<string>;
@@ -19,19 +20,19 @@ export function CustomerDetailTabs({
 	const tabs = [
 		{
 			href: `/customers/${customerId}`,
-			id: "onboarding-basic-info-tab",
+			id: OnboardingId.BasicInfoTab,
 			label: "基本情報",
 			value: "basic",
 		},
 		{
 			href: `/customers/${customerId}/notes`,
-			id: "onboarding-notes-tab",
+			id: OnboardingId.NotesTab,
 			label: "ノート",
 			value: "notes",
 		},
 		{
 			href: `/customers/${customerId}/memories`,
-			id: "onboarding-memories-tab",
+			id: OnboardingId.MemoriesTab,
 			label: "メモリ",
 			value: "memories",
 		},
