@@ -74,7 +74,6 @@ export const onboardingSteps: Step[] = [
 		icon: <Search className="size-5" />,
 		pointerPadding: 10,
 		pointerRadius: 10,
-		prevRoute: "/",
 		selector: "#onboarding-search-form",
 		showControls: true,
 		side: "bottom",

@@ -23,12 +23,10 @@ export function OnboardingCard({
 	currentStep,
 	totalSteps,
 	nextStep,
-	prevStep,
 	arrow,
 }: CardComponentProps) {
 	const router = useRouter();
 	const { complete } = useOnboarding();
-	const isFirstStep = currentStep === 0;
 	const isLastStep = currentStep === totalSteps - 1;
 
 	function handleSkip() {
@@ -37,20 +35,6 @@ export function OnboardingCard({
 
 	function handleComplete() {
 		complete();
-	}
-
-	function handlePrev() {
-		// Handle navigation for steps with prevRoute
-		if (step.prevRoute) {
-			router.push(step.prevRoute as Route);
-			// Wait for page navigation to complete before moving to previous step
-			setTimeout(() => {
-				prevStep();
-			}, 500);
-			return;
-		}
-
-		prevStep();
 	}
 
 	function handleNext() {
@@ -149,14 +133,7 @@ export function OnboardingCard({
 			<CardContent className="pb-4">
 				<div className="text-sm">{step.content}</div>
 			</CardContent>
-			<CardFooter className="flex justify-between pt-0">
-				{!isFirstStep ? (
-					<Button onClick={handlePrev} size="sm" variant="outline">
-						戻る
-					</Button>
-				) : (
-					<div />
-				)}
+			<CardFooter className="flex justify-end pt-0">
 				<Button onClick={handleNext} size="sm">
 					{isLastStep ? "完了" : "次へ"}
 				</Button>
