@@ -82,36 +82,29 @@ test("メニューからスタッフ一覧ページに遷移できる", async ({
 	});
 });
 
-test("スタッフ一覧が表示される", async ({
-	pageWithGenericUser: page,
-	testStaff,
-}) => {
-	await test.step("スタッフ一覧ページに遷移", async () => {
-		await page.goto("/staffs");
-		await page.waitForURL("/staffs");
-		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
-	});
-
+test("スタッフ一覧が表示される", async ({ staffsPage, testStaff }) => {
 	await test.step("スタッフが表示されていることを確認", async () => {
 		// テーブル行が読み込まれるまで待機
-		await page.locator("table tbody tr").first().waitFor();
-		const rows = page.locator("table tbody tr");
+		await staffsPage.locator("table tbody tr").first().waitFor();
+		const rows = staffsPage.locator("table tbody tr");
 		const count = await rows.count();
 		expect(count).toBeGreaterThan(0);
 	});
 
 	await test.step("姓、名が表示されていることを確認", async () => {
 		// fixtureで作成したテスト用スタッフを検索で探す（ページネーション対策）
-		await page.getByLabel("キーワード").fill(testStaff.lastName);
-		await page.getByRole("button", { name: "検索" }).click();
-		await page.waitForURL("**/staffs?keyword=*");
-		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+		await staffsPage.getByLabel("キーワード").fill(testStaff.lastName);
+		await staffsPage.getByRole("button", { name: "検索" }).click();
+		await staffsPage.waitForURL("**/staffs?keyword=*");
+		await expect(
+			staffsPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
 
-		const targetRow = page
+		const targetRow = staffsPage
 			.locator("table tbody tr")
 			.filter({ hasText: testStaff.lastName })
 			.filter({ hasText: testStaff.firstName });
-		await expect(targetRow).toBeVisible({ timeout: 10_000 });
+		await expect(targetRow).toBeVisible();
 		await expect(
 			targetRow.getByRole("cell", { name: testStaff.lastName }),
 		).toBeVisible();
@@ -121,56 +114,42 @@ test("スタッフ一覧が表示される", async ({
 	});
 });
 
-test("姓で完全一致検索できる", async ({
-	pageWithGenericUser: page,
-	testStaff,
-}) => {
-	await test.step("スタッフ一覧ページに遷移", async () => {
-		await page.goto("/staffs");
-		await page.waitForURL("/staffs");
-		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
-	});
-
+test("姓で完全一致検索できる", async ({ staffsPage, testStaff }) => {
 	await test.step("姓を入力して検索", async () => {
-		await page.getByLabel("キーワード").fill(testStaff.lastName);
-		await page.getByRole("button", { name: "検索" }).click();
-		await page.waitForURL("**/staffs?keyword=*");
-		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+		await staffsPage.getByLabel("キーワード").fill(testStaff.lastName);
+		await staffsPage.getByRole("button", { name: "検索" }).click();
+		await staffsPage.waitForURL("**/staffs?keyword=*");
+		await expect(
+			staffsPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
 	});
 
 	await test.step("検索結果を確認", async () => {
-		const rows = page.locator("table tbody tr");
+		const rows = staffsPage.locator("table tbody tr");
 		const count = await rows.count();
 		expect(count).toBeGreaterThan(0);
 		await expect(
-			page.getByRole("cell", { name: testStaff.lastName }),
+			staffsPage.getByRole("cell", { name: testStaff.lastName }),
 		).toBeVisible();
 	});
 });
 
-test("名で完全一致検索できる", async ({
-	pageWithGenericUser: page,
-	testStaff,
-}) => {
-	await test.step("スタッフ一覧ページに遷移", async () => {
-		await page.goto("/staffs");
-		await page.waitForURL("/staffs");
-		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
-	});
-
+test("名で完全一致検索できる", async ({ staffsPage, testStaff }) => {
 	await test.step("名を入力して検索", async () => {
-		await page.getByLabel("キーワード").fill(testStaff.firstName);
-		await page.getByRole("button", { name: "検索" }).click();
-		await page.waitForURL("**/staffs?keyword=*");
-		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+		await staffsPage.getByLabel("キーワード").fill(testStaff.firstName);
+		await staffsPage.getByRole("button", { name: "検索" }).click();
+		await staffsPage.waitForURL("**/staffs?keyword=*");
+		await expect(
+			staffsPage.getByRole("main").getByText("読み込み中"),
+		).toBeHidden();
 	});
 
 	await test.step("検索結果を確認", async () => {
-		const rows = page.locator("table tbody tr");
+		const rows = staffsPage.locator("table tbody tr");
 		const count = await rows.count();
 		expect(count).toBeGreaterThan(0);
 		await expect(
-			page.getByRole("cell", { name: testStaff.firstName }),
+			staffsPage.getByRole("cell", { name: testStaff.firstName }),
 		).toBeVisible();
 	});
 });
