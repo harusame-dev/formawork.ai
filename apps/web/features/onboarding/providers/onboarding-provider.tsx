@@ -32,7 +32,7 @@ function OnboardingInner({ children }: { children: ReactNode }) {
 	return (
 		<Onborda
 			cardComponent={OnboardingCard}
-			cardTransition={{ duration: 0.3, type: "spring" }}
+			cardTransition={{ duration: 0.6, type: "spring" }}
 			shadowOpacity="0.5"
 			shadowRgb="0,0,0"
 			showOnborda={shouldShow}
