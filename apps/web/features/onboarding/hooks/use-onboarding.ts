@@ -1,7 +1,7 @@
 "use client";
 
 import { useOnborda } from "onborda";
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { steps } from "../constants/steps";
 
 const STORAGE_KEY = "onboarding-completed";
@@ -47,7 +47,8 @@ function subscribe(callback: () => void): () => void {
 }
 
 export function useOnboarding() {
-	const { currentStep, startOnborda, closeOnborda } = useOnborda();
+	const { currentStep, startOnborda, closeOnborda, isOnbordaVisible } =
+		useOnborda();
 	const isCompleted = useSyncExternalStore(
 		subscribe,
 		getSnapshot,
@@ -68,6 +69,28 @@ export function useOnboarding() {
 			// localStorage が無効な場合は無視
 		}
 	}, []);
+
+	// ページ遷移が伴う場合、最初の要素の位置が関係ない位置でハイライトされてしまう問題がある
+	// おそらくキャッシュ or Activity 周りが関連していそうだが根本的な原因が不明
+	// 暫定対策としてページ遷移を伴う場合は遅延リフレッシュさせることで対処
+	useEffect(() => {
+		if (!isOnbordaVisible) {
+			return;
+		}
+
+		const previousStep = steps[currentStep - 1];
+		if (!previousStep || !previousStep.nextRoute) {
+			return;
+		}
+
+		const timeoutId = setTimeout(() => {
+			refreshHighlight();
+		}, 500);
+
+		return () => {
+			clearInterval(timeoutId);
+		};
+	}, [isOnbordaVisible, refreshHighlight, currentStep]);
 
 	const reset = useCallback(() => {
 		try {
