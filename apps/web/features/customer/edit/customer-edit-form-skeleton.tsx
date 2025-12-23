@@ -29,7 +29,7 @@ function FormItemSkeleton({
 
 export function CustomerEditFormSkeleton() {
 	return (
-		<div aria-hidden aria-live="polite">
+		<div aria-busy="true">
 			<div className="sr-only">読み込み中</div>
 			<div className="flex flex-col gap-6">
 				<FormItemSkeleton
