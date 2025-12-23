@@ -38,6 +38,9 @@ export default function Page() {
 					</p>
 				</CardContent>
 			</Card>
+
+			{/* オンボーディング用スペーサー */}
+			<div aria-hidden="true" className="h-[50dvh]" />
 		</div>
 	);
 }

@@ -11,8 +11,10 @@ import { X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import type { CardComponentProps } from "onborda";
+import { useEffect } from "react";
 import { useOnboarding } from "../hooks/use-onboarding";
 
+const CAUTION_STEP_INDEX = 1;
 const MENU_BUTTON_STEP_INDEX = 2;
 const CUSTOMER_SELECT_STEP_INDEX = 5;
 const BASIC_INFO_STEP_INDEX = 6;
@@ -28,6 +30,16 @@ export function OnboardingCard({
 	const router = useRouter();
 	const { complete } = useOnboarding();
 	const isLastStep = currentStep === totalSteps - 1;
+
+	// ステップ2（ご注意）でスクロール
+	useEffect(() => {
+		if (currentStep === CAUTION_STEP_INDEX) {
+			const cautionElement = document.getElementById("onboarding-caution");
+			if (cautionElement) {
+				cautionElement.scrollIntoView({ behavior: "smooth", block: "start" });
+			}
+		}
+	}, [currentStep]);
 
 	function handleSkip() {
 		complete();
