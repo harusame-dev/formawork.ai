@@ -47,14 +47,14 @@ export function OnboardingCard({
 						<X className="h-4 w-4" />
 					</Button>
 				</div>
-				<p className="text-sm text-muted-foreground">
-					ステップ {currentStep + 1} / {totalSteps}
-				</p>
 			</CardHeader>
-			<CardContent className="pb-4">
+			<CardContent className="pb-2">
 				<div className="text-sm">{step.content}</div>
 			</CardContent>
-			<CardFooter className="flex justify-end pt-0">
+			<CardFooter className="flex items-center justify-between pt-0">
+				<span className="text-xs text-muted-foreground">
+					{currentStep + 1} / {totalSteps}
+				</span>
 				<Button onClick={handleNext} size="sm">
 					{isLastStep ? "完了" : "次へ"}
 				</Button>
