@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { getUserRole, UserRole } from "@/features/auth/get-user-role";
 import { CustomerSearchFormContainer } from "@/features/customer/list/customer-search-form-container";
-import { CustomerSearchForm } from "@/features/customer/list/customer-search-form-presenter";
+import { CustomerSearchFormSkeleton } from "@/features/customer/list/customer-search-form-skeleton";
 import { CustomersContainer } from "@/features/customer/list/customers-container";
 import { CustomersSkeleton } from "@/features/customer/list/customers-skeleton";
 import { parseCustomersConditionSearchParams } from "@/features/customer/list/schema";
@@ -24,9 +24,7 @@ export default function Page({ searchParams }: PageProps<"/customers">) {
 				</Suspense>
 			</div>
 			<Card className="p-4 w-full">
-				<SuspenseOnSearch
-					fallback={<CustomerSearchForm condition={{ keyword: "" }} />}
-				>
+				<SuspenseOnSearch fallback={<CustomerSearchFormSkeleton />}>
 					<CustomerSearchFormContainer conditionPromise={validatedCondition} />
 				</SuspenseOnSearch>
 			</Card>

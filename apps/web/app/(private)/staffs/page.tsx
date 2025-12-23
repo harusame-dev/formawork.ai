@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { RegisterStaffLink } from "@/features/staff/list/register-staff-link";
 import { parseStaffsConditionSearchParams } from "@/features/staff/list/schema";
 import { StaffSearchFormContainer } from "@/features/staff/list/staff-search-form-container";
-import { StaffSearchForm } from "@/features/staff/list/staff-search-form-presenter";
+import { StaffSearchFormSkeleton } from "@/features/staff/list/staff-search-form-skeleton";
 import { StaffsContainer } from "@/features/staff/list/staffs-container";
 import { StaffsSkeleton } from "@/features/staff/list/staffs-skeleton";
 import { SuspenseOnSearch } from "@/libs/suspense-on-search";
@@ -23,9 +23,7 @@ export default async function Page({ searchParams }: PageProps<"/staffs">) {
 				</Suspense>
 			</div>
 			<Card className="p-4 w-full">
-				<SuspenseOnSearch
-					fallback={<StaffSearchForm condition={{ keyword: "" }} />}
-				>
+				<SuspenseOnSearch fallback={<StaffSearchFormSkeleton />}>
 					<StaffSearchFormContainer conditionPromise={validatedCondition} />
 				</SuspenseOnSearch>
 			</Card>

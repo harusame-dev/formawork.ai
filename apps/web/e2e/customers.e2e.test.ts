@@ -36,7 +36,7 @@ const test = testWithAuthenticated.extend<{
 		// 顧客一覧ページに遷移
 		await page.goto("/customers");
 		await page.waitForURL("/customers");
-		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+		await expect(page.getByRole("main").getByText(/読み込み中/)).toHaveCount(0);
 
 		await use(page);
 	},
@@ -115,8 +115,8 @@ test("名前で検索できる", async ({ customersPage }) => {
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("検索結果を確認", async () => {
@@ -143,8 +143,8 @@ test("姓で前方一致検索できる", async ({
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("検索結果を確認", async () => {
@@ -166,8 +166,8 @@ test("名で前方一致検索できる", async ({
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("検索結果を確認", async () => {
@@ -188,8 +188,8 @@ test("せいで前方一致検索できる", async ({
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("検索結果を確認", async () => {
@@ -211,8 +211,8 @@ test("めいで前方一致検索できる", async ({
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("検索結果を確認", async () => {
@@ -235,8 +235,8 @@ test("姓名（結合）で前方一致検索できる", async ({
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("検索結果を確認", async () => {
@@ -259,8 +259,8 @@ test("セイメイ（カナ結合）で前方一致検索できる", async ({
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("検索結果を確認", async () => {
@@ -282,8 +282,8 @@ test("電話番号で前方一致検索できる", async ({
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("検索結果を確認", async () => {
@@ -305,8 +305,8 @@ test("メールアドレスで前方一致検索できる", async ({
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("検索結果を確認", async () => {
@@ -324,8 +324,8 @@ test("該当する顧客がいない場合、メッセージが表示される",
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL("**/customers?keyword=*");
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 	});
 
 	await test.step("メッセージを確認", async () => {
@@ -338,8 +338,8 @@ test("該当する顧客がいない場合、メッセージが表示される",
 test("ページネーションが正しく動作する", async ({ customersPage }) => {
 	await test.step("1ページ目に20件表示されることを確認", async () => {
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 		// seedデータは20件以上あるため、他のテストで変更があったとしても 20 件はあることを前提とする
 		const rows = customersPage.locator("table tbody tr");
 		await expect(rows).toHaveCount(20);
@@ -374,8 +374,8 @@ test("検索とページネーションを組み合わせて使用できる", as
 		await customersPage.getByRole("button", { name: "検索" }).click();
 		await customersPage.waitForURL(`**/customers?keyword=${keyword}`);
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 
 		// 1ページ目に20件表示されることを確認
 		const rows = customersPage.locator("table tbody tr");
@@ -393,8 +393,8 @@ test("検索とページネーションを組み合わせて使用できる", as
 		await customersPage.getByRole("link", { name: /^2$/ }).click();
 		await customersPage.waitForURL(`**/customers?keyword=${keyword}&page=2`);
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 
 		// 2ページ目に残り20件が表示されることを確認
 		const rows = customersPage.locator("table tbody tr");
@@ -409,8 +409,8 @@ test("検索とページネーションを組み合わせて使用できる", as
 		await customersPage.getByRole("link", { name: "前へ" }).click();
 		await customersPage.waitForURL(`**/customers?keyword=${keyword}&page=1`);
 		await expect(
-			customersPage.getByRole("main").getByText("読み込み中"),
-		).toBeHidden();
+			customersPage.getByRole("main").getByText(/読み込み中/),
+		).toHaveCount(0);
 
 		const rows = customersPage.locator("table tbody tr");
 		await expect(rows).toHaveCount(20);
