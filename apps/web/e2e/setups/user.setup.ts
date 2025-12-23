@@ -8,6 +8,11 @@ setup("管理者アカウントでログイン", async ({ page }) => {
 	await page.getByRole("button", { name: "ログイン" }).click();
 	await expect(page).toHaveURL("/");
 
+	// オンボーディングをスキップ状態に設定
+	await page.evaluate(() => {
+		localStorage.setItem("onboarding-completed", "true");
+	});
+
 	await page.context().storageState({
 		path: adminUserAuthFile,
 	});
@@ -19,6 +24,11 @@ setup("一般アカウントでログイン", async ({ page }) => {
 	await page.getByRole("textbox", { name: "パスワード" }).fill("Secure@456");
 	await page.getByRole("button", { name: "ログイン" }).click();
 	await expect(page).toHaveURL("/");
+
+	// オンボーディングをスキップ状態に設定
+	await page.evaluate(() => {
+		localStorage.setItem("onboarding-completed", "true");
+	});
 
 	await page.context().storageState({
 		path: genericUserAuthFile,
