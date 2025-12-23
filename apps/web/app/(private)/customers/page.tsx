@@ -23,12 +23,12 @@ export default function Page({ searchParams }: PageProps<"/customers">) {
 					<RegisterLink />
 				</Suspense>
 			</div>
-			<Card className="p-4 w-full">
+			<Card className="p-4 w-full" id="onboarding-search-form">
 				<SuspenseOnSearch fallback={<CustomerSearchFormSkeleton />}>
 					<CustomerSearchFormContainer conditionPromise={validatedCondition} />
 				</SuspenseOnSearch>
 			</Card>
-			<Card className="py-2 w-full">
+			<Card className="py-2 w-full" id="onboarding-customer-table">
 				<SuspenseOnSearch fallback={<CustomersSkeleton />}>
 					<CustomersContainer condition={validatedCondition} />
 				</SuspenseOnSearch>

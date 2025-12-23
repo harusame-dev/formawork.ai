@@ -4,6 +4,7 @@
 @source "../../../apps/**/*.{ts,tsx}";
 @source "../../../components/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
+@source "../../../node_modules/onborda/dist/**/*.{js,ts,jsx,tsx}";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -124,4 +125,17 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+}
+
+/* Onborda z-index overrides to ensure cards appear above Sheet/Dialog */
+[data-name="onborda-overlay"] {
+	z-index: 9999 !important;
+}
+
+[data-name="onborda-pointer"] {
+	z-index: 9999 !important;
+}
+
+[data-name="onborda-card"] {
+	z-index: 10000 !important;
 }

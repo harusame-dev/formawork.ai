@@ -19,16 +19,19 @@ export function CustomerDetailTabs({
 	const tabs = [
 		{
 			href: `/customers/${customerId}`,
+			id: undefined,
 			label: "基本情報",
 			value: "basic",
 		},
 		{
 			href: `/customers/${customerId}/notes`,
+			id: "onboarding-notes-tab",
 			label: "ノート",
 			value: "notes",
 		},
 		{
 			href: `/customers/${customerId}/memories`,
+			id: undefined,
 			label: "メモリ",
 			value: "memories",
 		},
@@ -45,6 +48,7 @@ export function CustomerDetailTabs({
 						<Link
 							aria-current={activeTab === tab.value ? "page" : undefined}
 							href={tab.href as Route}
+							id={tab.id}
 						>
 							{tab.label}
 						</Link>

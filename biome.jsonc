@@ -34,6 +34,19 @@
 			}
 		}
 	},
+	"overrides": [
+		{
+			"includes": ["packages/ui/src/styles/globals.css"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						// onborda library requires z-index !important to display above Sheet/Dialog
+						"noImportantStyles": "off"
+					}
+				}
+			}
+		}
+	],
 	"vcs": {
 		"clientKind": "git",
 		"defaultBranch": "main",

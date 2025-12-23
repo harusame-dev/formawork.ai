@@ -10,15 +10,26 @@ import {
 } from "@workspace/ui/components/sheet";
 import { Menu } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function NavigationMenu() {
 	const [open, setOpen] = useState(false);
 
+	useEffect(() => {
+		function handleOpenMenu() {
+			setOpen(true);
+		}
+
+		window.addEventListener("onboarding-open-menu", handleOpenMenu);
+		return () => {
+			window.removeEventListener("onboarding-open-menu", handleOpenMenu);
+		};
+	}, []);
+
 	return (
 		<Sheet onOpenChange={setOpen} open={open}>
 			<SheetTrigger asChild>
-				<Button size="icon" variant="ghost">
+				<Button id="onboarding-menu-button" size="icon" variant="ghost">
 					<Menu className="size-6" />
 					<span className="sr-only">メニューを開く</span>
 				</Button>
@@ -33,6 +44,7 @@ export function NavigationMenu() {
 							<Link
 								className="block rounded-md px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
 								href="/customers"
+								id="onboarding-customer-menu"
 								onClick={() => setOpen(false)}
 							>
 								顧客一覧
