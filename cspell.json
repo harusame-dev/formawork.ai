@@ -8,7 +8,8 @@
 		"**/playwright-report/**",
 		"packages/db/drizzle/meta/_journal.json",
 		"**/test-results/**",
-		"packages/db/src/fixtures/production/**"
+		"packages/db/src/fixtures/production/**",
+		"tickets/**"
 	],
 	"language": "en",
 	"version": "0.2",
