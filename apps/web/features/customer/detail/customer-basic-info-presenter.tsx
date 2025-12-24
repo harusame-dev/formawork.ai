@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
 import { DateTime } from "@/components/date-time";
 import { GENDER_LABELS, type Gender } from "../schema";
@@ -68,12 +69,13 @@ export function CustomerBasicInfoPresenter({
 			label: "住所",
 			value: customer.address ? (
 				<a
-					className="text-primary underline"
+					className="inline-flex items-center gap-1 text-primary underline"
 					href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(customer.address)}`}
 					rel="noopener noreferrer"
 					target="_blank"
 				>
 					{customer.address}
+					<ExternalLink className="size-4" />
 				</a>
 			) : (
 				"未登録"
