@@ -66,7 +66,18 @@ export function CustomerBasicInfoPresenter({
 		},
 		{
 			label: "住所",
-			value: customer.address || "未登録",
+			value: customer.address ? (
+				<a
+					className="text-primary underline"
+					href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(customer.address)}`}
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					{customer.address}
+				</a>
+			) : (
+				"未登録"
+			),
 		},
 		{
 			label: "生年月日",
