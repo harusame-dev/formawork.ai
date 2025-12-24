@@ -83,7 +83,7 @@ export function useOnboarding() {
 			return;
 		}
 
-		const timeoutId = setTimeout(() => {
+		const timeoutId = setInterval(() => {
 			refreshHighlight();
 		}, 500);
 
