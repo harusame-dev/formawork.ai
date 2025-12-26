@@ -41,10 +41,7 @@
 			"Bash(git branch:*)",
 			"Bash(git remote:*)",
 			"Read(.env.sample)",
-			"Write(.env.sample)",
-			"Skill(validating-code)",
-			"Skill(creating-pr)",
-			"Skill(committing-changes)"
+			"Write(.env.sample)"
 		],
 		"ask": [],
 		"deny": ["Read(.env*)", "Write(.env*)", "Bash(rm -rf:*)"]
