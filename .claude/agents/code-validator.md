@@ -1,7 +1,7 @@
 ---
 name: code-validator
 description: ファイルの作成・編集・削除をした場合は、ユーザーからの指示を待たずに必ず自動でこのエージェントを呼び出してバリデーションチェックを行う。lint、format、デッドコード、スペル、型チェックを実行し、エラー検出・修正を行う。
-model: opus
+model: haiku
 color: cyan
 skills: validating-code
 ---

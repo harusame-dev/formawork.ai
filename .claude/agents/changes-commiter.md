@@ -1,7 +1,7 @@
 ---
 name: changes-committer
 description: ファイルの編集・作成・削除が完了したら、ユーザーからの指示を待たずに必ず自動でこのエージェントを呼び出してコミットを行う。変更差分からコミットメッセージを生成し、論理的な作業単位ごとに分離してコミットする。
-model: opus
+model: haiku
 color: cyan
 skills: committing-changes
 ---
