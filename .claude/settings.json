@@ -38,5 +38,10 @@
 		],
 		"ask": [],
 		"deny": ["Read(.env*)", "Write(.env*)", "Bash(rm -rf:*)"]
+	},
+	"sandbox": {
+		"enabled": true,
+		"autoAllowBashIfSandboxed": true,
+		"excludedCommands": ["git", "pnpm", "docker"]
 	}
 }
