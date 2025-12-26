@@ -40,5 +40,18 @@
 		"enabled": true,
 		"autoAllowBashIfSandboxed": true,
 		"excludedCommands": ["git", "pnpm", "docker"]
+	},
+	"hooks": {
+		"PostToolUse": [
+			{
+				"matcher": "Write|Edit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "pnpm -w validate:fix"
+					}
+				]
+			}
+		]
 	}
 }
