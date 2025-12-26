@@ -1,12 +1,13 @@
 ---
-name: committing-changes
-description: 変更差分から自動でコミットメッセージを生成し、コミットする。論理的な最小編集単位の編集が完了した時や、ユーザーから明示的にコミットを指示された場合に使用する。
-allowed-tools: Bash(git status:*), Bash(git --no-pager diff:*), Bash(git --no-pager log:*), Bash(git add:*), Bash(git commit:*), Bash(echo:*)
+name: changes-committer
+description: ファイルの編集・作成・削除が完了したら、ユーザーからの指示を待たずに必ず自動でこのエージェントを呼び出してコミットを行う。変更差分からコミットメッセージを生成し、論理的な作業単位ごとに分離してコミットする。
+model: haiku
+color: cyan
 ---
 
-# 変更差分のコミット
+このエージェントは変更差分のコミットを行います。
 
-git の変更差分、過去のコミット履歴、ブランチのタスク概要をもとにコミットメッセージを作成し、コミットを行う。
+**重要**: このエージェントはファイル変更後に自動で呼び出されるべきエージェントです。
 
 ## ワークフロー
 
