@@ -1,5 +1,18 @@
 {
 	"enableAllProjectMcpServers": true,
+	"hooks": {
+		"PostToolUse": [
+			{
+				"hooks": [
+					{
+						"command": "pnpm -w validate:fix",
+						"type": "command"
+					}
+				],
+				"matcher": "Write|Edit"
+			}
+		]
+	},
 	"permissions": {
 		"allow": [
 			"mcp__github",
@@ -37,21 +50,8 @@
 		"deny": ["Read(.env*)", "Write(.env*)", "Bash(rm -rf:*)"]
 	},
 	"sandbox": {
-		"enabled": true,
 		"autoAllowBashIfSandboxed": true,
+		"enabled": true,
 		"excludedCommands": ["git", "pnpm", "docker"]
-	},
-	"hooks": {
-		"PostToolUse": [
-			{
-				"matcher": "Write|Edit",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "pnpm -w validate:fix"
-					}
-				]
-			}
-		]
 	}
 }
