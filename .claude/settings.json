@@ -52,6 +52,6 @@
 	"sandbox": {
 		"autoAllowBashIfSandboxed": true,
 		"enabled": true,
-		"excludedCommands": ["git", "pnpm", "docker"]
+		"excludedCommands": ["git:*", "pnpm:*", "docker:*"]
 	}
 }
