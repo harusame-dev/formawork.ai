@@ -75,21 +75,9 @@ fi
 
 現在のブランチに対応する既存の PR が存在するか確認。
 
-**重要**: GitHub操作は必ず `mcp__github` ツールを使用すること（gh CLIは使用しない）
-
-```
-# リポジトリ情報の取得
-git remote get-url origin
-# → 出力例: git@github.com:owner/repo.git または https://github.com/owner/repo.git
-# → owner と repo を抽出
-
-# GitHub MCPで現在のブランチに対応するPRを検索
-mcp__github__list_pull_requests({
-  owner: "{取得したowner}",
-  repo: "{取得したrepo}",
-  head: "{owner}:{current_branch}",
-  state: "all"
-})
+```bash
+# 現在のブランチに対応するPRを検索
+gh pr list --head "$current_branch" --state all --json number,url
 ```
 
 **判定結果:**
@@ -159,22 +147,10 @@ git diff main...HEAD --stat
 
 ステップ4で判定した結果に基づいて、PR の作成または更新を実行。
 
-**重要**:
-- GitHub操作は必ず `mcp__github` ツールを使用すること（gh CLIは使用しない）
-- リポジトリ情報はステップ4で `git remote get-url origin` から取得した値を使用すること
-
 **パターンA: 新規PR作成（ステップ4で PRが見つからない場合）**
 
-```
-# GitHub MCPを使用してPRを作成
-mcp__github__create_pull_request({
-  owner: "{ステップ4で取得したowner}",
-  repo: "{ステップ4で取得したrepo}",
-  title: "{生成された日本語タイトル}",
-  head: "{current_branch}",
-  base: "main",
-  body: "{生成された説明文}"
-})
+```bash
+gh pr create --title "{生成された日本語タイトル}" --base main --body '{生成された説明文}'
 ```
 
 成功時の出力：
@@ -185,15 +161,8 @@ mcp__github__create_pull_request({
 
 **パターンB: 既存PR更新（ステップ4で PRが見つかった場合）**
 
-```
-# GitHub MCPを使用して既存PRを更新
-mcp__github__update_pull_request({
-  owner: "{ステップ4で取得したowner}",
-  repo: "{ステップ4で取得したrepo}",
-  pullNumber: {ステップ4で取得したPR番号},
-  title: "{生成された日本語タイトル}",
-  body: "{生成された説明文}"
-})
+```bash
+gh pr edit {PR番号} --title "{生成された日本語タイトル}" --body '{生成された説明文}'
 ```
 
 成功時の出力：
@@ -210,7 +179,7 @@ mcp__github__update_pull_request({
 | 未コミット変更あり | `git status --porcelain` | PR作成前にコミットしてください |
 | バリデーション失敗 | `pnpm -w validate:check` 出力 | code-validator エージェントでエラーを修正 |
 | リモートpush失敗 | git エラーメッセージ | git設定とパーミッションを確認 |
-| GitHub API失敗 | MCP エラーレスポンス | GitHub認証を確認 |
+| GitHub API失敗 | gh コマンドエラー | `gh auth status` で認証状態を確認 |
 
 ## 前提条件
 
