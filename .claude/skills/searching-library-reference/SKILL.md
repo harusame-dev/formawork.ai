@@ -44,7 +44,8 @@ eg: 16.1.0
 
 ### ステップ2: ドキュメントを利用可能なライブラリを検索する
 
-ライブラリの検索 API を使用しライブラリの ID 形式（`/owner/repo`）を取得します。
+ライブラリの検索 API を使用し、ライブラリを検索します。
+レスポンスからマッチするライブラリの id（/owner/repo）と versions を取得します。
 
 ```sh
 curl "https://context7.com/api/v2/search?query=ライブラリ名" -H "Authorization: Bearer ${CONTEXT7_API_KEY}" 
@@ -54,22 +55,26 @@ eg: curl "https://context7.com/api/v2/search?query=next.js" -H "Authorization: B
 ### ステップ3: 対象のライブラリのスニペットを取得する
 
 スニペットの取得 API （./api/get-code-snippets-with-version.md）を用いてスニペットを取得します。
+ステップ2で取得した id と versions をもとリクエストを行います。
+versions はステップ１で取得した version と一番近いバージョンを使用します。
+調べたいトピックの数だけリクエストを行います
 
 ```sh
-curl https://context7.com/api/v2/docs/code/owner/repo/version -H "Authorization: Bearer ${CONTEXT7_API_KEY}" 
+curl "https://context7.com/api/v2/docs/code/owner/repo/version?topic=keyword" -H "Authorization: Bearer ${CONTEXT7_API_KEY}" 
 ```
 
-eg: curl "https://context7.com/api/v2/docs/code/vercel/next.js/v16.1.0" -H "Authorization: Bearer ${CONTEXT7_API_KEY}" 
+eg: curl "https://context7.com/api/v2/docs/code/vercel/next.js/v16.1.0?topic=Link" -H "Authorization: Bearer ${CONTEXT7_API_KEY}" 
 
 
 ### ステップ4: 対象のライブラリのドキュメントを取得する
 
-
-
-ドキュメントの取得 API （./api/get-documentation-with-version.md）を用いてスニペットを取得します。
+ドキュメントの取得 API （./api/get-documentation-with-version.md）を用いて調べたいトピックのスニペットを取得します。
+ステップ2で取得した id と versions をもとリクエストを行います。
+versions はステップ１で取得した version と一番近いバージョンを使用します。
+調べたいトピックの数だけリクエストを行います
 
 ```sh
-curl https://context7.com/api/v2/docs/info/owner/repo/version -H "Authorization: Bearer ${CONTEXT7_API_KEY}" 
+curl "https://context7.com/api/v2/docs/info/owner/repo/version?topic=keyword" -H "Authorization: Bearer ${CONTEXT7_API_KEY}" 
 ```
 
-eg: curl "https://context7.com/api/v2/docs/info/vercel/next.js/v16.1.0" -H "Authorization: Bearer ${CONTEXT7_API_KEY}" 
+eg: curl "https://context7.com/api/v2/docs/info/vercel/next.js/v16.1.0?topic=Link" -H "Authorization: Bearer ${CONTEXT7_API_KEY}" 
