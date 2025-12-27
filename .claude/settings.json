@@ -38,6 +38,7 @@
 			"Bash(git --no-pager log:*)",
 			"Bash(git branch:*)",
 			"Bash(git remote:*)",
+			"Bash(git merge-base:*)",
 			"Bash(gh:*)",
 			"Bash(curl:*)",
 			"Read(.env.sample)",
