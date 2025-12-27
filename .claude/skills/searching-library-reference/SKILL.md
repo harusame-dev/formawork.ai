@@ -1,7 +1,6 @@
 ---
 name: searching-library-api
 description: 外部依存のライブラリの設定、コーディングを行う際は明示しなくても必ずこのスキルを使用し、使用するバージョンにマッチする最新の情報を使用します
-allowed-tools: Bash(git branch:*), Bash(git status:*), Bash(git --no-pager log:*), Bash(git --no-pager diff:*), Bash(git ls-remote:*), Bash(git push:*), Bash(git remote:*), Bash(pnpm -w validate:check:*), mcp__github
 ---
 
 # ライブラリ API 検索
