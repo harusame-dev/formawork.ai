@@ -15,8 +15,6 @@
 	},
 	"permissions": {
 		"allow": [
-			"mcp__github",
-			"mcp__context7",
 			"mcp__serena",
 			"Bash(pnpm -w dev:*)",
 			"Bash(pnpm -w build:*)",
@@ -40,6 +38,7 @@
 			"Bash(git --no-pager log:*)",
 			"Bash(git branch:*)",
 			"Bash(git remote:*)",
+			"Bash(gh:*)",
 			"Bash(curl:*)",
 			"Read(.env.sample)",
 			"Write(.env.sample)",
