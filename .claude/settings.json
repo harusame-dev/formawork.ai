@@ -15,8 +15,6 @@
 	},
 	"permissions": {
 		"allow": [
-			"mcp__github",
-			"mcp__context7",
 			"mcp__serena",
 			"Bash(pnpm -w dev:*)",
 			"Bash(pnpm -w build:*)",
@@ -40,10 +38,12 @@
 			"Bash(git --no-pager log:*)",
 			"Bash(git branch:*)",
 			"Bash(git remote:*)",
+			"Bash(gh:*)",
 			"Bash(curl:*)",
 			"Read(.env.sample)",
 			"Write(.env.sample)",
-			"WebFetch(domain:context7.com)"
+			"WebFetch(domain:context7.com)",
+			"WebFetch(domain:api.github.com)"
 		],
 		"ask": [],
 		"deny": ["Read(.env*)", "Write(.env*)"]
@@ -51,6 +51,6 @@
 	"sandbox": {
 		"autoAllowBashIfSandboxed": true,
 		"enabled": true,
-		"excludedCommands": ["git:*", "pnpm:*", "docker:*"]
+		"excludedCommands": ["git:*", "pnpm:*", "docker:*", "gh:*"]
 	}
 }

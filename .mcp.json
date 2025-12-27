@@ -1,12 +1,5 @@
 {
 	"mcpServers": {
-		"github": {
-			"headers": {
-				"Authorization": "Bearer ${GITHUB_PAT}"
-			},
-			"type": "http",
-			"url": "https://api.githubcopilot.com/mcp"
-		},
 		"next-devtools": {
 			"args": ["-y", "next-devtools-mcp@latest"],
 			"command": "npx"
