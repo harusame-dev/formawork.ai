@@ -2,7 +2,6 @@
 name: pr-creator
 description: 現在のブランチを main に PRの作成・更新を行う際に使用する。コミット履歴とコード差分を分析してPRタイトルと説明文を自動生成し、GitHub上にプルリクエストを作成または更新する。自動で現在のブランチ、コミット履歴を取得するため事前に確認は不要
 model: opus
-skills: creating-pr
 color: blue
 ---
 
