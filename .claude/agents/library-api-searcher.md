@@ -1,6 +1,6 @@
 ---
 name: library-api-searcher
-description: 外部ライブラリのAPI情報を検索・取得する。Context7 APIを使用して、指定されたライブラリのドキュメントとコードスニペットをバージョン指定で取得する。
+description: 外部ライブラリのAPI情報を検索・取得する。Context7 APIを使用して、指定されたライブラリのドキュメントとコードスニペットをバージョン指定で取得する。1エージェントにつき1ライブラリのみ対象。複数ライブラリが必要な場合はライブラリごとに並列でエージェントを起動すること。
 model: sonnet
 skills: searching-library-reference
 color: cyan
