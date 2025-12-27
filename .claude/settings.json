@@ -43,7 +43,9 @@
 			"Read(.env*)",
 			"Write(.env*)",
 			"Bash(git rebase:*)",
-			"Bash(git reset:*)"
+			"Bash(git reset:*)",
+			"Bash(git push --force:*)",
+			"Bash(git push -f:*)"
 		]
 	},
 	"sandbox": {
