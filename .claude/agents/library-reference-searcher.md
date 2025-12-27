@@ -1,5 +1,5 @@
 ---
-name: library-api-searcher
+name: library-reference-searcher
 description: 外部ライブラリのAPI情報を検索・取得する
 model: sonnet
 skills: searching-library-reference
