@@ -40,11 +40,13 @@
 			"Bash(git --no-pager log:*)",
 			"Bash(git branch:*)",
 			"Bash(git remote:*)",
+			"Bash(curl:*)",
 			"Read(.env.sample)",
-			"Write(.env.sample)"
+			"Write(.env.sample)",
+			"WebFetch(domain:context7.com)"
 		],
 		"ask": [],
-		"deny": ["Read(.env*)", "Write(.env*)", "Bash(rm -rf:*)"]
+		"deny": ["Read(.env*)", "Write(.env*)"]
 	},
 	"sandbox": {
 		"autoAllowBashIfSandboxed": true,
