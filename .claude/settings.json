@@ -46,7 +46,7 @@
 			"WebFetch(domain:context7.com)"
 		],
 		"ask": [],
-		"deny": ["Read(.env*)", "Write(.env*)", "Bash(rm -rf:*)"]
+		"deny": ["Read(.env*)", "Write(.env*)"]
 	},
 	"sandbox": {
 		"autoAllowBashIfSandboxed": true,
