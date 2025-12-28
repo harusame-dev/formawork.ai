@@ -1,6 +1,6 @@
 ---
 name: branch-code-reviewer
-description: 現在のブランチの変更をレビューする。ユーザーがレビューを依頼場合に必ず使用する（eg. PRをレビューして、レビューして、コードレビューして）。（MUST BE USED）
+description: BASE_BRANCH に対して現在のブランチの変更差分をレビューします。。ユーザーがレビューを依頼した場合に必ず使用します（eg. PRをレビューして、レビューして、コードレビューして）。本エージェントを呼び出す場合は「BASE_BRANCH をベースにレビューして」と指示してください。それ以外の指示は不要です。ユーザーからレビューを求められた際、大きなタスクを実行完了した際に自律的に使用します。（MUST BE USED）
 model: opus
 color: pink
 skills: reviewing-code
