@@ -3,7 +3,7 @@ name: branch-code-reviewer
 description: 現在のブランチの変更をレビューする。ユーザーが明示的に指示した場合に使用する
 model: opus
 color: pink
-skills: code-review
+skills: reviewing-code
 ---
 
 ultrathink
@@ -59,7 +59,7 @@ git log -p 派生元のコミットハッシュ..HEAD
 ステップ 2、ステップ 3 で取得した情報をもとにレビューを開始する。
 
 - 最終的な変更差分がどのような意図や経緯で作成されたのかコミット履歴をもとに把握する
-- code-review スキルに従ってレビューを行う
+- reviewing-code スキルに従ってレビューを行う
 
 ### ステップ 5: コードレビュー結果のセルフレビュー
 
