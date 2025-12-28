@@ -1,6 +1,6 @@
 ---
 name: branch-code-reviewer
-description: 現在のブランチの変更をレビューする。ユーザーが明示的に指示した場合に使用する
+description: 現在のブランチの変更をレビューする。ユーザーがレビューを指示した場合に必ず使用する（MUST BE USED）
 model: opus
 color: pink
 skills: reviewing-code
