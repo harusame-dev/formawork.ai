@@ -30,14 +30,7 @@
 			"Bash(pnpm -w validate:check)",
 			"Bash(pnpm -w validate:fix)",
 			"Bash(pnpm --filter:*)",
-			"Bash(git push:*)",
-			"Bash(git commit:*)",
-			"Bash(git add:*)",
-			"Bash(git --no-pager show:*)",
-			"Bash(git --no-pager diff:*)",
-			"Bash(git --no-pager log:*)",
-			"Bash(git branch:*)",
-			"Bash(git remote:*)",
+			"Bash(git:*)",
 			"Bash(gh:*)",
 			"Bash(curl:*)",
 			"Read(.env.sample)",
@@ -46,7 +39,14 @@
 			"WebFetch(domain:api.github.com)"
 		],
 		"ask": [],
-		"deny": ["Read(.env*)", "Write(.env*)"]
+		"deny": [
+			"Read(.env*)",
+			"Write(.env*)",
+			"Bash(git rebase:*)",
+			"Bash(git reset:*)",
+			"Bash(git push --force:*)",
+			"Bash(git push -f:*)"
+		]
 	},
 	"sandbox": {
 		"autoAllowBashIfSandboxed": true,
