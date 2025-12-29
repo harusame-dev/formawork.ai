@@ -60,7 +60,8 @@ const test = base.extend<{
 	) => {
 		await page.goto(`/staffs/${genericRoleStaff.staffId}/edit`);
 		await page.waitForURL(`/staffs/${genericRoleStaff.staffId}/edit`);
-		await expect(page.getByLabel("姓")).not.toBeDisabled();
+		const main = page.getByRole("main");
+		await expect(main.getByLabel("姓")).not.toBeDisabled();
 
 		await use(page);
 	},
@@ -118,18 +119,20 @@ test("自分自身の編集画面ではロール変更ができない", async ({
 	pageWithAdminStaff: page,
 	adminRoleStaff,
 }) => {
+	const main = page.getByRole("main");
+
 	await test.step("自分自身の編集ページに遷移", async () => {
 		await page.goto(`/staffs/${adminRoleStaff.staffId}/edit`);
 		await page.waitForURL(`/staffs/${adminRoleStaff.staffId}/edit`);
-		await expect(page.getByLabel("姓")).not.toBeDisabled();
+		await expect(main.getByLabel("姓")).not.toBeDisabled();
 	});
 
 	await test.step("ロール変更ができないことを確認", async () => {
 		await expect(
-			page.getByText("自分自身のロールは変更できません"),
+			main.getByText("自分自身のロールは変更できません"),
 		).toBeVisible();
-		await expect(page.getByRole("radio", { name: "一般" })).toBeDisabled();
-		await expect(page.getByRole("radio", { name: "管理者" })).toBeDisabled();
+		await expect(main.getByRole("radio", { name: "一般" })).toBeDisabled();
+		await expect(main.getByRole("radio", { name: "管理者" })).toBeDisabled();
 	});
 });
 
@@ -137,6 +140,7 @@ test("他のスタッフの全入力内容を変更して反映される", async
 	editStaffPage: page,
 	genericRoleStaff,
 }) => {
+	const main = page.getByRole("main");
 	const uniqueId = randomUUID().slice(0, 8);
 	const updatedData = {
 		email: `updated-${uniqueId}@example.com`,
@@ -146,23 +150,23 @@ test("他のスタッフの全入力内容を変更して反映される", async
 	};
 
 	await test.step("現在の値が表示されていることを確認", async () => {
-		await expect(page.getByLabel("姓")).toHaveValue(genericRoleStaff.lastName);
-		await expect(page.getByLabel("名")).toHaveValue(genericRoleStaff.firstName);
-		await expect(page.getByLabel("メールアドレス")).toHaveValue(
+		await expect(main.getByLabel("姓")).toHaveValue(genericRoleStaff.lastName);
+		await expect(main.getByLabel("名")).toHaveValue(genericRoleStaff.firstName);
+		await expect(main.getByLabel("メールアドレス")).toHaveValue(
 			genericRoleStaff.email,
 		);
-		await expect(page.getByRole("radio", { name: "一般" })).toBeChecked();
+		await expect(main.getByRole("radio", { name: "一般" })).toBeChecked();
 	});
 
 	await test.step("全フィールドを変更", async () => {
-		await page.getByLabel("姓").fill(updatedData.lastName);
-		await page.getByLabel("名").fill(updatedData.firstName);
-		await page.getByLabel("メールアドレス").fill(updatedData.email);
-		await page.getByRole("radio", { name: "管理者" }).click();
+		await main.getByLabel("姓").fill(updatedData.lastName);
+		await main.getByLabel("名").fill(updatedData.firstName);
+		await main.getByLabel("メールアドレス").fill(updatedData.email);
+		await main.getByRole("radio", { name: "管理者" }).click();
 	});
 
 	await test.step("編集ボタンをクリック", async () => {
-		await page.getByRole("button", { name: "編集する" }).click();
+		await main.getByRole("button", { name: "編集する" }).click();
 	});
 
 	await test.step("詳細ページに遷移することを確認", async () => {
@@ -171,11 +175,11 @@ test("他のスタッフの全入力内容を変更して反映される", async
 
 	await test.step("変更内容が反映されていることを確認", async () => {
 		await expect(
-			page.getByRole("heading", {
+			main.getByRole("heading", {
 				name: `${updatedData.lastName} ${updatedData.firstName}`,
 			}),
 		).toBeVisible();
-		await expect(page.getByText(updatedData.email)).toBeVisible();
-		await expect(page.getByText("管理者")).toBeVisible();
+		await expect(main.getByText(updatedData.email)).toBeVisible();
+		await expect(main.getByText("管理者")).toBeVisible();
 	});
 });
