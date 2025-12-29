@@ -1,8 +1,14 @@
+/**
+ * スタッフ編集E2Eテスト
+ *
+ * このテストではスタッフデータを変更するため、testWithAuthenticated は使用せず
+ * 独自のフィクスチャでテスト用スタッフを作成・削除しています。
+ */
 import { randomUUID } from "node:crypto";
-import { expect, type Page } from "@playwright/test";
+import { test as base, expect, type Page } from "@playwright/test";
 import { deleteStaff } from "@/features/staff/delete/delete-staff";
 import { registerStaff } from "@/features/staff/register/register-staff";
-import { testWithAuthenticated } from "./fixtures/authenticated-test";
+import { adminUserAuthFile, genericUserAuthFile } from "./setups/auth-file";
 
 const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
 
@@ -14,10 +20,13 @@ type StaffFixture = {
 	staffId: string;
 };
 
-const test = testWithAuthenticated.extend<{
+const test = base.extend<{
 	adminRoleStaff: StaffFixture;
+	adminStaffId: string;
 	editStaffPage: Page;
 	genericRoleStaff: StaffFixture;
+	pageWithAdminStaff: Page;
+	pageWithGenericStaff: Page;
 }>({
 	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
 	async adminRoleStaff({}, use) {
@@ -48,7 +57,15 @@ const test = testWithAuthenticated.extend<{
 			staffId: result.data.staffId,
 		});
 	},
-	editStaffPage: async ({ pageWithAdminUser: page, genericRoleStaff }, use) => {
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
+	async adminStaffId({}, use) {
+		// シードデータで定義されている管理者スタッフID（佐藤次郎）
+		await use(ADMIN_STAFF_ID);
+	},
+	editStaffPage: async (
+		{ pageWithAdminStaff: page, genericRoleStaff },
+		use,
+	) => {
 		await page.goto(`/staffs/${genericRoleStaff.staffId}/edit`);
 		await page.waitForURL(`/staffs/${genericRoleStaff.staffId}/edit`);
 		await expect(page.getByLabel("姓")).not.toBeDisabled();
@@ -84,10 +101,30 @@ const test = testWithAuthenticated.extend<{
 			staffId: result.data.staffId,
 		});
 	},
+	async pageWithAdminStaff({ browser }, use) {
+		const context = await browser.newContext({
+			storageState: adminUserAuthFile,
+		});
+		const page = await context.newPage();
+
+		await page.goto("/");
+		await expect(page).toHaveURL("/");
+		await use(page);
+	},
+	async pageWithGenericStaff({ browser }, use) {
+		const context = await browser.newContext({
+			storageState: genericUserAuthFile,
+		});
+		const page = await context.newPage();
+
+		await page.goto("/");
+		await expect(page).toHaveURL("/");
+		await use(page);
+	},
 });
 
 test("自分自身の編集画面ではロール変更ができない", async ({
-	pageWithAdminUser: page,
+	pageWithAdminStaff: page,
 	adminStaffId,
 }) => {
 	await test.step("自分自身の編集ページに遷移", async () => {
