@@ -44,10 +44,25 @@ export async function editStaff(
 		return fail(STAFF_NOT_FOUND_ERROR_MESSAGE);
 	}
 
-	const supabase = createAdminClient();
+	// DB更新をトランザクションで実行
+	await db.transaction(async (tx) => {
+		await tx
+			.update(staffsTable)
+			.set({
+				firstName,
+				lastName,
+			})
+			.where(eq(staffsTable.staffId, staffId));
 
-	// ロールが変更された場合のみ更新
+		await tx
+			.update(authUsers)
+			.set({ email })
+			.where(eq(authUsers.id, authUserId));
+	});
+
+	// ロールが変更された場合のみ app_metadata を更新
 	if (originalRole !== role) {
+		const supabase = createAdminClient();
 		const { error: updateError } = await supabase.auth.admin.updateUserById(
 			authUserId,
 			{
@@ -66,17 +81,6 @@ export async function editStaff(
 			return fail(UPDATE_AUTH_ERROR_MESSAGE);
 		}
 	}
-
-	await db
-		.update(staffsTable)
-		.set({
-			firstName,
-			lastName,
-		})
-		.where(eq(staffsTable.staffId, staffId));
-
-	// メールアドレスを Drizzle で更新
-	await db.update(authUsers).set({ email }).where(eq(authUsers.id, authUserId));
 
 	logger.info("スタッフ情報の更新に成功", {
 		action: "edit-staff",
