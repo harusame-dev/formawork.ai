@@ -4,6 +4,7 @@ import { createAdminClient } from "@repo/supabase/admin";
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
+import { authUsers } from "drizzle-orm/supabase";
 import type { EditStaffParams } from "./schema";
 
 const STAFF_NOT_FOUND_ERROR_MESSAGE =
@@ -74,23 +75,8 @@ export async function editStaff(
 		})
 		.where(eq(staffsTable.staffId, staffId));
 
-	// メールアドレスは Supabase Auth で更新
-	if (email !== staff.authUserId) {
-		const { error: emailError } = await supabase.auth.admin.updateUserById(
-			authUserId,
-			{
-				email,
-			},
-		);
-
-		if (emailError) {
-			logger.error("メールアドレスの更新に失敗", {
-				authUserId,
-				error: emailError.message,
-			});
-			return fail(UPDATE_AUTH_ERROR_MESSAGE);
-		}
-	}
+	// メールアドレスを Drizzle で更新
+	await db.update(authUsers).set({ email }).where(eq(authUsers.id, authUserId));
 
 	logger.info("スタッフ情報の更新に成功", {
 		action: "edit-staff",

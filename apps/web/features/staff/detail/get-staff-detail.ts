@@ -27,7 +27,6 @@ export const getStaffDetail = cache(async (staffId: string) => {
 		.leftJoin(authUsers, eq(authUsers.id, staffsTable.authUserId))
 		.where(eq(staffsTable.staffId, staffId))
 		.limit(1);
-	console.log(staffs);
 
 	return staffs[0] ?? null;
 });
