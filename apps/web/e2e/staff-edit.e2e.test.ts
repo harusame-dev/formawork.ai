@@ -7,7 +7,7 @@ import { testWithAuthenticated } from "./fixtures/authenticated-test";
 const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
 
 const test = testWithAuthenticated.extend<{
-	testStaff: {
+	genericRoleStaff: {
 		email: string;
 		firstName: string;
 		lastName: string;
@@ -16,15 +16,15 @@ const test = testWithAuthenticated.extend<{
 	};
 	editStaffPage: Page;
 }>({
-	editStaffPage: async ({ pageWithAdminUser: page, testStaff }, use) => {
-		await page.goto(`/staffs/${testStaff.staffId}/edit`);
-		await page.waitForURL(`/staffs/${testStaff.staffId}/edit`);
+	editStaffPage: async ({ pageWithAdminUser: page, genericRoleStaff }, use) => {
+		await page.goto(`/staffs/${genericRoleStaff.staffId}/edit`);
+		await page.waitForURL(`/staffs/${genericRoleStaff.staffId}/edit`);
 		await expect(page.getByLabel("姓")).not.toBeDisabled();
 
 		await use(page);
 	},
 	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
-	async testStaff({}, use) {
+	async genericRoleStaff({}, use) {
 		const uniqueId = randomUUID().slice(0, 8);
 		const staffData = {
 			email: `edit-test-${uniqueId}@example.com`,
@@ -75,7 +75,7 @@ test("自分自身の編集画面ではロール変更ができない", async ({
 
 test("他のスタッフの全入力内容を変更して反映される", async ({
 	editStaffPage: page,
-	testStaff,
+	genericRoleStaff,
 }) => {
 	const uniqueId = randomUUID().slice(0, 8);
 	const updatedData = {
@@ -86,10 +86,10 @@ test("他のスタッフの全入力内容を変更して反映される", async
 	};
 
 	await test.step("現在の値が表示されていることを確認", async () => {
-		await expect(page.getByLabel("姓")).toHaveValue(testStaff.lastName);
-		await expect(page.getByLabel("名")).toHaveValue(testStaff.firstName);
+		await expect(page.getByLabel("姓")).toHaveValue(genericRoleStaff.lastName);
+		await expect(page.getByLabel("名")).toHaveValue(genericRoleStaff.firstName);
 		await expect(page.getByLabel("メールアドレス")).toHaveValue(
-			testStaff.email,
+			genericRoleStaff.email,
 		);
 		await expect(page.getByRole("radio", { name: "一般" })).toBeChecked();
 	});
@@ -106,7 +106,7 @@ test("他のスタッフの全入力内容を変更して反映される", async
 	});
 
 	await test.step("詳細ページに遷移することを確認", async () => {
-		await page.waitForURL(`/staffs/${testStaff.staffId}`);
+		await page.waitForURL(`/staffs/${genericRoleStaff.staffId}`);
 	});
 
 	await test.step("変更内容が反映されていることを確認", async () => {
