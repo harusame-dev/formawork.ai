@@ -35,28 +35,6 @@ export async function editStaff(
 
 	try {
 		await db.transaction(async (tx) => {
-			// ロールが変更された場合、先に Supabase Auth を更新（失敗時はロールバック）
-			if (originalRole !== role) {
-				const supabase = createAdminClient();
-				const { error: updateError } = await supabase.auth.admin.updateUserById(
-					authUserId,
-					{
-						app_metadata: {
-							role,
-							staffId,
-						},
-					},
-				);
-
-				if (updateError) {
-					logger.error("認証ユーザーの更新に失敗", {
-						authUserId,
-						error: updateError.message,
-					});
-					throw new Error(UPDATE_AUTH_ERROR_MESSAGE);
-				}
-			}
-
 			// DB更新（returning で存在確認）
 			const [updatedStaff] = await tx
 				.update(staffsTable)
@@ -78,6 +56,28 @@ export async function editStaff(
 				.update(authUsers)
 				.set({ email })
 				.where(eq(authUsers.id, authUserId));
+
+			// ロールが変更された場合、最後に Supabase Auth を更新（失敗時はロールバック）
+			if (originalRole !== role) {
+				const supabase = createAdminClient();
+				const { error: updateError } = await supabase.auth.admin.updateUserById(
+					authUserId,
+					{
+						app_metadata: {
+							role,
+							staffId,
+						},
+					},
+				);
+
+				if (updateError) {
+					logger.error("認証ユーザーの更新に失敗", {
+						authUserId,
+						error: updateError.message,
+					});
+					throw new Error(UPDATE_AUTH_ERROR_MESSAGE);
+				}
+			}
 		});
 	} catch (error) {
 		if (error instanceof Error) {
