@@ -24,21 +24,21 @@ const usersFixture = [
 	},
 	{
 		email: "test1@formawork.example.com",
-		id: "a0000000-0000-0000-0000-000000000001",
+		id: "a0000000-0000-0000-0000-000000000004",
 		password: "Test@Pass123",
 		role: "user",
 		staffId: "00000000-0000-0000-0000-000000000001",
 	},
 	{
 		email: "test2@formawork.example.com",
-		id: "a0000000-0000-0000-0000-000000000002",
+		id: "a0000000-0000-0000-0000-000000000005",
 		password: "Secure@456",
 		role: "user",
 		staffId: "00000000-0000-0000-0000-000000000002",
 	},
 	{
 		email: "admin@formawork.example.com",
-		id: "a0000000-0000-0000-0000-000000000003",
+		id: "a0000000-0000-0000-0000-000000000006",
 		password: "Admin@789!",
 		role: "admin",
 		staffId: "00000000-0000-0000-0000-000000000003",
@@ -70,7 +70,7 @@ async function seedUsers() {
 				app_metadata: { role: user.role, staffId: user.staffId },
 				email: user.email,
 				email_confirm: true,
-				// id: user.id,
+				id: user.id,
 				password: user.password,
 			});
 
