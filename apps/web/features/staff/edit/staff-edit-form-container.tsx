@@ -1,6 +1,3 @@
-import { db } from "@workspace/db/client";
-import { staffsTable } from "@workspace/db/schema/staff";
-import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { getUserStaffId } from "@/features/auth/get-user-staff-id";
 import { getStaffDetail } from "@/features/staff/detail/get-staff-detail";
@@ -14,15 +11,12 @@ export async function StaffEditFormContainer({
 	staffIdPromise,
 }: StaffEditFormContainerProps) {
 	const staffId = await staffIdPromise;
-	const [staff, currentUserStaffId, staffRecord] = await Promise.all([
+	const [staff, currentUserStaffId] = await Promise.all([
 		getStaffDetail(staffId),
 		getUserStaffId(),
-		db.query.staffsTable.findFirst({
-			where: eq(staffsTable.staffId, staffId),
-		}),
 	]);
 
-	if (!staff || !staffRecord) {
+	if (!staff) {
 		notFound();
 	}
 
@@ -30,7 +24,7 @@ export async function StaffEditFormContainer({
 
 	return (
 		<EditStaffForm
-			authUserId={staffRecord.authUserId || ""}
+			authUserId={staff.authUserId || ""}
 			disabled={false}
 			initialValues={{
 				email: staff.email,
