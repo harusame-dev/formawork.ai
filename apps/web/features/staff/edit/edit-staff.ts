@@ -33,53 +33,62 @@ export async function editStaff(
 		staffId,
 	} = params;
 
-	const staff = await db.query.staffsTable.findFirst({
-		where: eq(staffsTable.staffId, staffId),
-	});
+	try {
+		await db.transaction(async (tx) => {
+			// ロールが変更された場合、先に Supabase Auth を更新（失敗時はロールバック）
+			if (originalRole !== role) {
+				const supabase = createAdminClient();
+				const { error: updateError } = await supabase.auth.admin.updateUserById(
+					authUserId,
+					{
+						app_metadata: {
+							role,
+							staffId,
+						},
+					},
+				);
 
-	if (!staff) {
-		logger.warn("スタッフが見つかりません", {
-			staffId,
-		});
-		return fail(STAFF_NOT_FOUND_ERROR_MESSAGE);
-	}
+				if (updateError) {
+					logger.error("認証ユーザーの更新に失敗", {
+						authUserId,
+						error: updateError.message,
+					});
+					throw new Error(UPDATE_AUTH_ERROR_MESSAGE);
+				}
+			}
 
-	// DB更新をトランザクションで実行
-	await db.transaction(async (tx) => {
-		await tx
-			.update(staffsTable)
-			.set({
-				firstName,
-				lastName,
-			})
-			.where(eq(staffsTable.staffId, staffId));
+			// DB更新（returning で存在確認）
+			const [updatedStaff] = await tx
+				.update(staffsTable)
+				.set({
+					firstName,
+					lastName,
+				})
+				.where(eq(staffsTable.staffId, staffId))
+				.returning({ staffId: staffsTable.staffId });
 
-		await tx
-			.update(authUsers)
-			.set({ email })
-			.where(eq(authUsers.id, authUserId));
-	});
-
-	// ロールが変更された場合のみ app_metadata を更新
-	if (originalRole !== role) {
-		const supabase = createAdminClient();
-		const { error: updateError } = await supabase.auth.admin.updateUserById(
-			authUserId,
-			{
-				app_metadata: {
-					role,
+			if (!updatedStaff) {
+				logger.warn("スタッフが見つかりません", {
 					staffId,
-				},
-			},
-		);
+				});
+				throw new Error(STAFF_NOT_FOUND_ERROR_MESSAGE);
+			}
 
-		if (updateError) {
-			logger.error("認証ユーザーの更新に失敗", {
-				authUserId,
-				error: updateError.message,
-			});
-			return fail(UPDATE_AUTH_ERROR_MESSAGE);
+			await tx
+				.update(authUsers)
+				.set({ email })
+				.where(eq(authUsers.id, authUserId));
+		});
+	} catch (error) {
+		if (error instanceof Error) {
+			if (error.message === STAFF_NOT_FOUND_ERROR_MESSAGE) {
+				return fail(STAFF_NOT_FOUND_ERROR_MESSAGE);
+			}
+			if (error.message === UPDATE_AUTH_ERROR_MESSAGE) {
+				return fail(UPDATE_AUTH_ERROR_MESSAGE);
+			}
 		}
+		throw error;
 	}
 
 	logger.info("スタッフ情報の更新に成功", {
