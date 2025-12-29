@@ -8,11 +8,11 @@ export function StaffEditFormSkeleton() {
 
 			{/* 姓 */}
 			<div className="space-y-2">
-				<div className="flex items-center gap-2 text-sm font-medium">
+				<div className="flex items-center gap-2 text-sm font-bold leading-none">
 					姓
 					<RequiredBadge />
 				</div>
-				<p className="text-[0.8rem] text-muted-foreground">
+				<p className="text-sm text-muted-foreground">
 					24文字以内で入力してください
 				</p>
 				<Skeleton aria-hidden className="h-9 w-full max-w-xs" />
@@ -20,11 +20,11 @@ export function StaffEditFormSkeleton() {
 
 			{/* 名 */}
 			<div className="space-y-2">
-				<div className="flex items-center gap-2 text-sm font-medium">
+				<div className="flex items-center gap-2 text-sm font-bold leading-none">
 					名
 					<RequiredBadge />
 				</div>
-				<p className="text-[0.8rem] text-muted-foreground">
+				<p className="text-sm text-muted-foreground">
 					24文字以内で入力してください
 				</p>
 				<Skeleton aria-hidden className="h-9 w-full max-w-xs" />
@@ -32,11 +32,11 @@ export function StaffEditFormSkeleton() {
 
 			{/* メールアドレス */}
 			<div className="space-y-2">
-				<div className="flex items-center gap-2 text-sm font-medium">
+				<div className="flex items-center gap-2 text-sm font-bold leading-none">
 					メールアドレス
 					<RequiredBadge />
 				</div>
-				<p className="text-[0.8rem] text-muted-foreground">
+				<p className="text-sm text-muted-foreground">
 					ログインに使用するメールアドレスを入力してください
 				</p>
 				<Skeleton aria-hidden className="h-9 w-full max-w-sm" />
@@ -44,21 +44,21 @@ export function StaffEditFormSkeleton() {
 
 			{/* ロール */}
 			<div className="space-y-2">
-				<div className="flex items-center gap-2 text-sm font-medium">
+				<div className="flex items-center gap-2 text-sm font-bold leading-none">
 					ロール
 					<RequiredBadge />
 				</div>
-				<p className="text-[0.8rem] text-muted-foreground">
+				<p className="text-sm text-muted-foreground">
 					一般は顧客一覧・詳細の表示とノートの一覧・編集・削除が可能。管理者は一般に加えて顧客の登録・編集・削除、スタッフの一覧・登録・編集・削除が可能
 				</p>
 				<div className="flex flex-col gap-2">
 					<div className="flex items-center gap-2">
 						<Skeleton aria-hidden className="size-4 rounded-full" />
-						<span className="text-sm">一般</span>
+						<span className="text-sm font-medium leading-none">一般</span>
 					</div>
 					<div className="flex items-center gap-2">
 						<Skeleton aria-hidden className="size-4 rounded-full" />
-						<span className="text-sm">管理者</span>
+						<span className="text-sm font-medium leading-none">管理者</span>
 					</div>
 				</div>
 			</div>
