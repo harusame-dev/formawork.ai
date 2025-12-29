@@ -1,4 +1,5 @@
 import { Button } from "@workspace/ui/components/button";
+import Link from "next/link";
 import { Suspense } from "react";
 import { getUserRole, UserRole } from "@/features/auth/get-user-role";
 import { getUserStaffId } from "@/features/auth/get-user-staff-id";
@@ -10,9 +11,14 @@ export default function Page({ params }: PageProps<"/staffs/[staffId]">) {
 	return (
 		<Suspense
 			fallback={
-				<Button disabled size="sm" variant="destructive">
-					削除
-				</Button>
+				<div className="flex gap-2">
+					<Button asChild disabled size="sm" variant="outline">
+						<span>編集</span>
+					</Button>
+					<Button disabled size="sm" variant="destructive">
+						削除
+					</Button>
+				</div>
 			}
 		>
 			<Action staffIdPromise={staffIdPromise} />
@@ -27,9 +33,18 @@ async function Action({ staffIdPromise }: { staffIdPromise: Promise<string> }) {
 		getUserStaffId(),
 	]);
 
-	if (userRole !== UserRole.Admin || staffId === currentUserStaffId) {
+	if (userRole !== UserRole.Admin) {
 		return null;
 	}
 
-	return <DeleteStaffDialog staffId={staffId} />;
+	const isSelf = staffId === currentUserStaffId;
+
+	return (
+		<div className="flex gap-2">
+			<Button asChild size="sm" variant="outline">
+				<Link href={`/staffs/${staffId}/edit`}>編集</Link>
+			</Button>
+			{!isSelf && <DeleteStaffDialog staffId={staffId} />}
+		</div>
+	);
 }
