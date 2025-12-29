@@ -6,16 +6,48 @@ import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
 const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
 
+type StaffFixture = {
+	email: string;
+	firstName: string;
+	lastName: string;
+	role: "admin" | "user";
+	staffId: string;
+};
+
 const test = testWithAuthenticated.extend<{
-	genericRoleStaff: {
-		email: string;
-		firstName: string;
-		lastName: string;
-		role: "admin" | "user";
-		staffId: string;
-	};
+	adminRoleStaff: StaffFixture;
 	editStaffPage: Page;
+	genericRoleStaff: StaffFixture;
 }>({
+	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
+	async adminRoleStaff({}, use) {
+		const uniqueId = randomUUID().slice(0, 8);
+		const staffData = {
+			email: `admin-edit-test-${uniqueId}@example.com`,
+			firstName: `管理者${uniqueId}`,
+			lastName: `テスト${uniqueId}`,
+			password: "AdminTest@123",
+			role: "admin" as const,
+		};
+
+		const result = await registerStaff(staffData);
+		if (!result.success) {
+			throw new Error(`管理者テストスタッフの登録に失敗: ${result.error}`);
+		}
+
+		await use({
+			email: staffData.email,
+			firstName: staffData.firstName,
+			lastName: staffData.lastName,
+			role: staffData.role,
+			staffId: result.data.staffId,
+		});
+
+		await deleteStaff({
+			currentUserStaffId: ADMIN_STAFF_ID,
+			staffId: result.data.staffId,
+		});
+	},
 	editStaffPage: async ({ pageWithAdminUser: page, genericRoleStaff }, use) => {
 		await page.goto(`/staffs/${genericRoleStaff.staffId}/edit`);
 		await page.waitForURL(`/staffs/${genericRoleStaff.staffId}/edit`);
