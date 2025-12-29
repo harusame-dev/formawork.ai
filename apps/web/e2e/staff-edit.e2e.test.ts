@@ -10,8 +10,6 @@ import { deleteStaff } from "@/features/staff/delete/delete-staff";
 import { registerStaff } from "@/features/staff/register/register-staff";
 import { adminUserAuthFile, genericUserAuthFile } from "./setups/auth-file";
 
-const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
-
 type StaffFixture = {
 	email: string;
 	firstName: string;
@@ -22,7 +20,6 @@ type StaffFixture = {
 
 const test = base.extend<{
 	adminRoleStaff: StaffFixture;
-	adminStaffId: string;
 	editStaffPage: Page;
 	genericRoleStaff: StaffFixture;
 	pageWithAdminStaff: Page;
@@ -53,14 +50,9 @@ const test = base.extend<{
 		});
 
 		await deleteStaff({
-			currentUserStaffId: ADMIN_STAFF_ID,
+			currentUserStaffId: result.data.staffId,
 			staffId: result.data.staffId,
 		});
-	},
-	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
-	async adminStaffId({}, use) {
-		// シードデータで定義されている管理者スタッフID（佐藤次郎）
-		await use(ADMIN_STAFF_ID);
 	},
 	editStaffPage: async (
 		{ pageWithAdminStaff: page, genericRoleStaff },
@@ -72,8 +64,7 @@ const test = base.extend<{
 
 		await use(page);
 	},
-	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
-	async genericRoleStaff({}, use) {
+	async genericRoleStaff({ adminRoleStaff }, use) {
 		const uniqueId = randomUUID().slice(0, 8);
 		const staffData = {
 			email: `edit-test-${uniqueId}@example.com`,
@@ -97,7 +88,7 @@ const test = base.extend<{
 		});
 
 		await deleteStaff({
-			currentUserStaffId: ADMIN_STAFF_ID,
+			currentUserStaffId: adminRoleStaff.staffId,
 			staffId: result.data.staffId,
 		});
 	},
@@ -125,11 +116,11 @@ const test = base.extend<{
 
 test("自分自身の編集画面ではロール変更ができない", async ({
 	pageWithAdminStaff: page,
-	adminStaffId,
+	adminRoleStaff,
 }) => {
 	await test.step("自分自身の編集ページに遷移", async () => {
-		await page.goto(`/staffs/${adminStaffId}/edit`);
-		await page.waitForURL(`/staffs/${adminStaffId}/edit`);
+		await page.goto(`/staffs/${adminRoleStaff.staffId}/edit`);
+		await page.waitForURL(`/staffs/${adminRoleStaff.staffId}/edit`);
 		await expect(page.getByLabel("姓")).not.toBeDisabled();
 	});
 
