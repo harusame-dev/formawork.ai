@@ -12,9 +12,10 @@ export default function Page({ params }: PageProps<"/staffs/[staffId]">) {
 	return (
 		<Suspense
 			fallback={
-				<div className="flex items-center gap-4">
-					<Skeleton className="h-5 w-8" />
-					<Button disabled size="sm" variant="destructive">
+				<div aria-busy className="flex items-center gap-4">
+					<span className="sr-only">操作読み込み中</span>
+					<Skeleton aria-hidden className="h-4 w-8 bg-black/10" />
+					<Button aria-hidden disabled size="sm">
 						削除
 					</Button>
 				</div>
@@ -40,10 +41,7 @@ async function Action({ staffIdPromise }: { staffIdPromise: Promise<string> }) {
 
 	return (
 		<div className="flex items-center gap-4">
-			<Link
-				className="text-sm text-primary underline-offset-4 hover:underline"
-				href={`/staffs/${staffId}/edit`}
-			>
+			<Link className="underline" href={`/staffs/${staffId}/edit`}>
 				編集
 			</Link>
 			{!isSelf && <DeleteStaffDialog staffId={staffId} />}
