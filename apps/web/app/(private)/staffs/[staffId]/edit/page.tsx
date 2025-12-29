@@ -7,13 +7,10 @@ export default function Page({ params }: PageProps<"/staffs/[staffId]/edit">) {
 	const staffIdPromise = params.then(({ staffId }) => staffId);
 
 	return (
-		<div className="container mx-auto space-y-4 p-2">
-			<h1 className="font-bold">スタッフ情報の編集</h1>
-			<Card className="w-full p-4">
-				<Suspense fallback={<StaffEditFormSkeleton />}>
-					<StaffEditFormContainer staffIdPromise={staffIdPromise} />
-				</Suspense>
-			</Card>
-		</div>
+		<Card className="w-full p-4">
+			<Suspense fallback={<StaffEditFormSkeleton />}>
+				<StaffEditFormContainer staffIdPromise={staffIdPromise} />
+			</Suspense>
+		</Card>
 	);
 }
