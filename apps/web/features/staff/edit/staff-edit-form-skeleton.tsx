@@ -51,7 +51,7 @@ export function StaffEditFormSkeleton() {
 				<p className="text-sm text-muted-foreground">
 					一般は顧客一覧・詳細の表示とノートの一覧・編集・削除が可能。管理者は一般に加えて顧客の登録・編集・削除、スタッフの一覧・登録・編集・削除が可能
 				</p>
-				<div className="flex flex-col gap-2">
+				<div className="grid gap-3">
 					<div className="flex items-center gap-2">
 						<Skeleton aria-hidden className="size-4 rounded-full" />
 						<span className="text-sm font-medium leading-none">一般</span>
