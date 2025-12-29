@@ -1,4 +1,5 @@
 import { Button } from "@workspace/ui/components/button";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getUserRole, UserRole } from "@/features/auth/get-user-role";
@@ -11,10 +12,8 @@ export default function Page({ params }: PageProps<"/staffs/[staffId]">) {
 	return (
 		<Suspense
 			fallback={
-				<div className="flex gap-2">
-					<Button asChild disabled size="sm" variant="outline">
-						<span>編集</span>
-					</Button>
+				<div className="flex items-center gap-4">
+					<Skeleton className="h-5 w-8" />
 					<Button disabled size="sm" variant="destructive">
 						削除
 					</Button>
@@ -40,10 +39,13 @@ async function Action({ staffIdPromise }: { staffIdPromise: Promise<string> }) {
 	const isSelf = staffId === currentUserStaffId;
 
 	return (
-		<div className="flex gap-2">
-			<Button asChild size="sm" variant="outline">
-				<Link href={`/staffs/${staffId}/edit`}>編集</Link>
-			</Button>
+		<div className="flex items-center gap-4">
+			<Link
+				className="text-sm text-primary underline-offset-4 hover:underline"
+				href={`/staffs/${staffId}/edit`}
+			>
+				編集
+			</Link>
 			{!isSelf && <DeleteStaffDialog staffId={staffId} />}
 		</div>
 	);
