@@ -53,13 +53,20 @@ export function StaffBasicInfoPresenter({
 	];
 
 	return (
-		<div className="space-y-4">
-			{fields.map((field) => (
-				<div key={field.label}>
-					<div className="text-sm text-muted-foreground">{field.label}</div>
-					<div className="font-bold">{field.value}</div>
-				</div>
-			))}
-		</div>
+		<table className="w-full">
+			<tbody>
+				{fields.map((field) => (
+					<tr key={field.label}>
+						<th
+							className="py-2 pr-4 text-left text-sm font-normal text-muted-foreground"
+							scope="row"
+						>
+							{field.label}
+						</th>
+						<td className="py-2 font-bold">{field.value}</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
 	);
 }
