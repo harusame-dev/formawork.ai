@@ -54,16 +54,16 @@ export function StaffBasicInfoPresenter({
 
 	return (
 		<table className="w-full">
-			<tbody>
+			<tbody className="space-y-4 [&>tr]:block">
 				{fields.map((field) => (
 					<tr key={field.label}>
 						<th
-							className="py-2 pr-4 text-left text-sm font-normal text-muted-foreground"
+							className="block text-left text-sm font-normal text-muted-foreground"
 							scope="row"
 						>
 							{field.label}
 						</th>
-						<td className="py-2 font-bold">{field.value}</td>
+						<td className="block font-bold">{field.value}</td>
 					</tr>
 				))}
 			</tbody>
