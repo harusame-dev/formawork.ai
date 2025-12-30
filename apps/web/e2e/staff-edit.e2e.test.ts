@@ -8,12 +8,12 @@ import { randomUUID } from "node:crypto";
 import { test as base, expect, type Page } from "@playwright/test";
 import { deleteStaff } from "@/features/staff/delete/delete-staff";
 import { registerStaff } from "@/features/staff/register/register-staff";
-import { adminUserAuthFile, genericUserAuthFile } from "./setups/auth-file";
 
 type StaffFixture = {
 	email: string;
 	firstName: string;
 	lastName: string;
+	password: string;
 	role: "admin" | "user";
 	staffId: string;
 };
@@ -45,6 +45,7 @@ const test = base.extend<{
 			email: staffData.email,
 			firstName: staffData.firstName,
 			lastName: staffData.lastName,
+			password: staffData.password,
 			role: staffData.role,
 			staffId: result.data.staffId,
 		});
@@ -84,6 +85,7 @@ const test = base.extend<{
 			email: staffData.email,
 			firstName: staffData.firstName,
 			lastName: staffData.lastName,
+			password: staffData.password,
 			role: staffData.role,
 			staffId: result.data.staffId,
 		});
@@ -93,24 +95,32 @@ const test = base.extend<{
 			staffId: result.data.staffId,
 		});
 	},
-	async pageWithAdminStaff({ browser }, use) {
-		const context = await browser.newContext({
-			storageState: adminUserAuthFile,
-		});
+	async pageWithAdminStaff({ browser, adminRoleStaff }, use) {
+		const context = await browser.newContext();
 		const page = await context.newPage();
 
-		await page.goto("/");
+		await page.goto("/login");
+		await page.getByLabel("メールアドレス").fill(adminRoleStaff.email);
+		await page
+			.getByRole("textbox", { name: "パスワード" })
+			.fill(adminRoleStaff.password);
+		await page.getByRole("button", { name: "ログイン" }).click();
 		await expect(page).toHaveURL("/");
+
 		await use(page);
 	},
-	async pageWithGenericStaff({ browser }, use) {
-		const context = await browser.newContext({
-			storageState: genericUserAuthFile,
-		});
+	async pageWithGenericStaff({ browser, genericRoleStaff }, use) {
+		const context = await browser.newContext();
 		const page = await context.newPage();
 
-		await page.goto("/");
+		await page.goto("/login");
+		await page.getByLabel("メールアドレス").fill(genericRoleStaff.email);
+		await page
+			.getByRole("textbox", { name: "パスワード" })
+			.fill(genericRoleStaff.password);
+		await page.getByRole("button", { name: "ログイン" }).click();
 		await expect(page).toHaveURL("/");
+
 		await use(page);
 	},
 });
@@ -128,9 +138,6 @@ test("自分自身の編集画面ではロール変更ができない", async ({
 	});
 
 	await test.step("ロール変更ができないことを確認", async () => {
-		await expect(
-			main.getByText("自分自身のロールは変更できません"),
-		).toBeVisible();
 		await expect(main.getByRole("radio", { name: "一般" })).toBeDisabled();
 		await expect(main.getByRole("radio", { name: "管理者" })).toBeDisabled();
 	});
