@@ -149,12 +149,9 @@ test("他のスタッフの全入力内容を変更して反映される", async
 }) => {
 	const main = page.getByRole("main");
 	const uniqueId = randomUUID().slice(0, 8);
-	const updatedData = {
-		email: `updated-${uniqueId}@example.com`,
-		firstName: `更新後名${uniqueId}`.slice(0, 24),
-		lastName: `更新後姓${uniqueId}`.slice(0, 24),
-		role: "admin" as const,
-	};
+	const updatedEmail = `updated-${uniqueId}@example.com`;
+	const updatedFirstName = `更新後名${uniqueId}`.slice(0, 24);
+	const updatedLastName = `更新後姓${uniqueId}`.slice(0, 24);
 
 	await test.step("現在の値が表示されていることを確認", async () => {
 		await expect(main.getByLabel("姓")).toHaveValue(genericRoleStaff.lastName);
@@ -166,9 +163,9 @@ test("他のスタッフの全入力内容を変更して反映される", async
 	});
 
 	await test.step("全フィールドを変更", async () => {
-		await main.getByLabel("姓").fill(updatedData.lastName);
-		await main.getByLabel("名").fill(updatedData.firstName);
-		await main.getByLabel("メールアドレス").fill(updatedData.email);
+		await main.getByLabel("姓").fill(updatedLastName);
+		await main.getByLabel("名").fill(updatedFirstName);
+		await main.getByLabel("メールアドレス").fill(updatedEmail);
 		await main.getByRole("radio", { name: "管理者" }).click();
 	});
 
@@ -183,13 +180,11 @@ test("他のスタッフの全入力内容を変更して反映される", async
 	await test.step("変更内容が反映されていることを確認", async () => {
 		await expect(
 			main.getByRole("heading", {
-				name: `${updatedData.lastName} ${updatedData.firstName}`,
+				name: `${updatedLastName} ${updatedFirstName}`,
 			}),
 		).toBeVisible();
 		await expect(
-			main
-				.getByRole("row", { name: "メールアドレス" })
-				.getByText(updatedData.email),
+			main.getByRole("row", { name: "メールアドレス" }).getByText(updatedEmail),
 		).toBeVisible();
 		await expect(
 			main.getByRole("row", { name: "ロール" }).getByText("管理者"),
