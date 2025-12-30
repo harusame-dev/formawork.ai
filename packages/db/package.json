@@ -15,6 +15,7 @@
 		"./client": "./src/client.ts",
 		"./pgschema": "./src/pgschema.ts",
 		"./queue-names": "./src/queue-names.ts",
+		"./schema": "./src/schema/index.ts",
 		"./schema/customer": "./src/schema/customer.ts",
 		"./schema/customer-memory": "./src/schema/customer-memory.ts",
 		"./schema/customer-note": "./src/schema/customer-note.ts",

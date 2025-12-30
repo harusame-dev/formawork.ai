@@ -2,23 +2,41 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 
 export function StaffBasicInfoSkeleton() {
 	return (
-		<div className="space-y-4">
-			<div>
-				<Skeleton className="text-sm text-muted-foreground h-4 mt-1 w-28" />
-				<Skeleton className="font-bold h-5 mt-1 w-48" />
-			</div>
-			<div>
-				<Skeleton className="text-sm text-muted-foreground h-4 mt-1 w-12" />
-				<Skeleton className="font-bold h-5 mt-1 w-40" />
-			</div>
-			<div>
-				<Skeleton className="text-sm text-muted-foreground h-4 mt-1 w-12" />
-				<Skeleton className="font-bold h-5 mt-1 w-40" />
-			</div>
-			<div>
-				<Skeleton className="text-sm text-muted-foreground h-4 mt-1 w-12" />
-				<Skeleton className="font-bold h-5 mt-1 w-40" />
-			</div>
-		</div>
+		<table className="w-full">
+			<tbody className="space-y-4 [&>tr]:block">
+				<tr>
+					<th className="h-lh flex items-end">
+						<Skeleton className="h-4 w-28" />
+					</th>
+					<td className="h-lh flex items-end">
+						<Skeleton className="h-4 w-48" />
+					</td>
+				</tr>
+				<tr>
+					<th className="h-lh flex items-end">
+						<Skeleton className="h-4 w-12" />
+					</th>
+					<td className="h-lh flex items-end">
+						<Skeleton className="h-4 w-40" />
+					</td>
+				</tr>
+				<tr>
+					<th className="h-lh flex items-end">
+						<Skeleton className="h-4 w-12" />
+					</th>
+					<td className="h-lh flex items-end">
+						<Skeleton className="h-4 w-40" />
+					</td>
+				</tr>
+				<tr>
+					<th className="h-lh flex items-end">
+						<Skeleton className="h-4 w-12" />
+					</th>
+					<td className="h-lh flex items-end">
+						<Skeleton className="h-4 w-40" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	);
 }

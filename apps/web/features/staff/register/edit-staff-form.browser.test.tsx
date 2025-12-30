@@ -8,6 +8,10 @@ vi.mock("./register-staff-action", () => ({
 	registerStaffAction: vi.fn(),
 }));
 
+vi.mock("@/features/staff/edit/edit-staff-action", () => ({
+	editStaffAction: vi.fn(),
+}));
+
 const test = base.extend<{
 	registerStaffActionMock: Mock;
 }>({

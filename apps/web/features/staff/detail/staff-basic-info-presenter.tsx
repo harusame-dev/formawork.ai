@@ -53,13 +53,20 @@ export function StaffBasicInfoPresenter({
 	];
 
 	return (
-		<div className="space-y-4">
-			{fields.map((field) => (
-				<div key={field.label}>
-					<div className="text-sm text-muted-foreground">{field.label}</div>
-					<div className="font-bold">{field.value}</div>
-				</div>
-			))}
-		</div>
+		<table className="w-full">
+			<tbody className="space-y-4 [&>tr]:block">
+				{fields.map((field) => (
+					<tr key={field.label}>
+						<th
+							className="block text-left text-sm font-normal text-muted-foreground"
+							scope="row"
+						>
+							{field.label}
+						</th>
+						<td className="block font-bold">{field.value}</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
 	);
 }
