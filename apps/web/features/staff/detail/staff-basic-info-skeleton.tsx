@@ -5,35 +5,35 @@ export function StaffBasicInfoSkeleton() {
 		<table className="w-full">
 			<tbody className="space-y-4 [&>tr]:block">
 				<tr>
-					<th className="block text-left text-sm font-normal text-muted-foreground">
-						<Skeleton className="h-[1lh] w-28" />
+					<th className="h-lh flex items-end">
+						<Skeleton className="h-4 w-28" />
 					</th>
-					<td className="block font-bold">
-						<Skeleton className="h-[1lh] w-48" />
+					<td className="h-lh flex items-end">
+						<Skeleton className="h-4 w-48" />
 					</td>
 				</tr>
 				<tr>
-					<th className="block text-left text-sm font-normal text-muted-foreground">
-						<Skeleton className="h-[1lh] w-12" />
+					<th className="h-lh flex items-end">
+						<Skeleton className="h-4 w-12" />
 					</th>
-					<td className="block font-bold">
-						<Skeleton className="h-[1lh] w-40" />
+					<td className="h-lh flex items-end">
+						<Skeleton className="h-4 w-40" />
 					</td>
 				</tr>
 				<tr>
-					<th className="block text-left text-sm font-normal text-muted-foreground">
-						<Skeleton className="h-[1lh] w-12" />
+					<th className="h-lh flex items-end">
+						<Skeleton className="h-4 w-12" />
 					</th>
-					<td className="block font-bold">
-						<Skeleton className="h-[1lh] w-40" />
+					<td className="h-lh flex items-end">
+						<Skeleton className="h-4 w-40" />
 					</td>
 				</tr>
 				<tr>
-					<th className="block text-left text-sm font-normal text-muted-foreground">
-						<Skeleton className="h-[1lh] w-12" />
+					<th className="h-lh flex items-end">
+						<Skeleton className="h-4 w-12" />
 					</th>
-					<td className="block font-bold">
-						<Skeleton className="h-[1lh] w-40" />
+					<td className="h-lh flex items-end">
+						<Skeleton className="h-4 w-40" />
 					</td>
 				</tr>
 			</tbody>
