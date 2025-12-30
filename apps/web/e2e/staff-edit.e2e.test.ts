@@ -186,7 +186,13 @@ test("他のスタッフの全入力内容を変更して反映される", async
 				name: `${updatedData.lastName} ${updatedData.firstName}`,
 			}),
 		).toBeVisible();
-		await expect(main.getByText(updatedData.email)).toBeVisible();
-		await expect(main.getByText("管理者")).toBeVisible();
+		await expect(
+			main
+				.getByRole("row", { name: "メールアドレス" })
+				.getByText(updatedData.email),
+		).toBeVisible();
+		await expect(
+			main.getByRole("row", { name: "ロール" }).getByText("管理者"),
+		).toBeVisible();
 	});
 });
