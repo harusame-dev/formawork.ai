@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AiAdviceSection } from "./_components/top/ai-advice-section";
 import { CustomerMemorySection } from "./_components/top/customer-memory-section";
+import { CustomerNoteSection } from "./_components/top/customer-note-section";
 import { EndDemoSection } from "./_components/top/end-demo-section";
 import { FeaturesSection } from "./_components/top/features-section";
 import { HeroSection } from "./_components/top/hero-section";
@@ -23,6 +24,7 @@ export default function Page() {
 	return (
 		<div className="overflow-auto h-dvh *:odd:bg-background">
 			<HeroSection />
+			<CustomerNoteSection />
 			<CustomerMemorySection />
 			<AiAdviceSection />
 			<PermissionSection />
