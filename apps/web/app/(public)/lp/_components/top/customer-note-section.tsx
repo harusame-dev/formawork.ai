@@ -5,71 +5,49 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@workspace/ui/components/card";
-import {
-	BarChart3,
-	Clock,
-	FileText,
-	Share2,
-	Smartphone,
-	Zap,
-} from "lucide-react";
+import { Brain, ImageIcon, NotebookPen } from "lucide-react";
 import Image from "next/image";
 import { LpSection } from "./lp-section";
 import screenshotImage from "./ss-customer-note.png";
 
 const features = [
 	{
-		description: "スマートフォンからいつでも手軽にノートを記入",
-		icon: Smartphone,
-		title: "モバイル対応",
+		description:
+			"施術内容や会話の詳細を記録。顧客ごとの接客履歴を蓄積できます。",
+		icon: NotebookPen,
+		title: "接客内容の記録",
 	},
 	{
-		description: "素早い入力で接客後の業務時間を短縮",
-		icon: Zap,
-		title: "高速入力",
+		description: "仕上がりや参考画像を添付可能。視覚的な情報も一緒に残せます。",
+		icon: ImageIcon,
+		title: "画像添付",
 	},
 	{
-		description: "接客内容をカテゴリごとに整理・検索可能",
-		icon: FileText,
-		title: "スマート整理",
-	},
-	{
-		description: "接客の時系列で顧客の成長を可視化",
-		icon: BarChart3,
-		title: "履歴管理",
-	},
-	{
-		description: "テンプレート機能で定型入力を効率化",
-		icon: Clock,
-		title: "テンプレート",
-	},
-	{
-		description: "スタッフ間で接客情報をシームレスに共有",
-		icon: Share2,
-		title: "チーム共有",
+		description:
+			"記録した内容を AI が自動で分析。メモリ抽出やアドバイス生成に活用されます。",
+		icon: Brain,
+		title: "AI 連携",
 	},
 ] as const;
 
 export function CustomerNoteSection() {
 	return (
 		<LpSection
-			description="顧客情報の一元管理を実現する接客ノート機能"
-			title="接客内容をサクッと記録"
+			description="接客の記録が、AI 活用の基盤になる"
+			title="顧客ノートで接客を記録"
 		>
 			<p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
-				お客様との会話や対応内容を素早く記録できる接客ノート機能。
-				<br />
-				モバイル対応で移動中でも入力でき、記録した情報は AI
-				が自動で分析・整理します。
+				接客内容を画像付きで記録できる顧客ノート機能。蓄積したノートは AI
+				が自動で分析し、重要情報の抽出や次回接客のアドバイス生成に活用されます。
 			</p>
-			<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			<div className="grid gap-6 md:grid-cols-3">
 				{features.map((feature) => (
 					<Card key={feature.title}>
-						<CardHeader className="flex flex-row gap-2 items-center pb-2">
-							<div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
-								<feature.icon className="size-5 text-primary" />
+						<CardHeader className="flex flex-row gap-2 items-center">
+							<div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center">
+								<feature.icon className="size-6 text-primary" />
 							</div>
-							<CardTitle className="text-base">{feature.title}</CardTitle>
+							<CardTitle className="text-lg">{feature.title}</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<CardDescription className="text-sm leading-relaxed">
@@ -81,23 +59,11 @@ export function CustomerNoteSection() {
 			</div>
 
 			<Image
-				alt="接客ノート入力画面。スマートフォンからの入力インターフェース"
-				className="rounded-2xl w-full aspect-auto shadow-lg/20 max-w-md mt-20 mx-auto"
+				alt="顧客ノートの画面。接客内容と画像が記録され、AIアドバイスが表示されている"
+				className="rounded-2xl w-full aspect-auto shadow-xl/20 max-w-md mt-20 mx-auto"
 				sizes="(max-width: 768px) 100vw, 448px"
 				src={screenshotImage}
 			/>
-
-			<div className="flex flex-wrap justify-center gap-3 mt-8">
-				<span className="px-3 py-1 text-sm rounded-full bg-muted text-muted-foreground">
-					無制限記録
-				</span>
-				<span className="px-3 py-1 text-sm rounded-full bg-muted text-muted-foreground">
-					リアルタイム同期
-				</span>
-				<span className="px-3 py-1 text-sm rounded-full bg-muted text-muted-foreground">
-					自動タグ付け
-				</span>
-			</div>
 		</LpSection>
 	);
 }
