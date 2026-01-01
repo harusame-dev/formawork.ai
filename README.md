@@ -163,8 +163,11 @@ cp packages/supabase/.env.sample packages/supabase/.env
 
 apps/web/.env の AI_GATEWAY_API_KEY を設定する必要があります。 Vercel もしくは Gemini の API KEY を発行して設定してください
 
-# Supabase の起動
+# Supabase の起動（初回のみ）
 pnpm -w supabase:start
+
+# Supabase の起動（初回のみ）
+pnpm -w supabase:seed
 
 # データベースのセットアップ
 pnpm -w db:reset
