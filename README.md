@@ -157,7 +157,11 @@ GitHub Actions で以下のパイプラインを自動実行しています。
 pnpm install
 
 # 環境変数の設定
-cp .env.sample .env
+cp apps/web/.env.sample apps/web/.env
+cp packages/db/.env.sample packages/db/.env
+cp packages/supabase/.env.sample packages/supabase/.env
+
+apps/web/.env の AI_GATEWAY_API_KEY を設定する必要があります。 Vercel もしくは Gemini の API KEY を発行して設定してください
 
 # Supabase の起動
 pnpm -w supabase:start
