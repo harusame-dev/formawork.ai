@@ -132,20 +132,6 @@ export const registerCustomerAction = createServerAction(registerCustomer, {
 // → 認証チェック、valibot バリデーション、構造化ロギング、Result 型でエラー返却
 ```
 
-#### Parallel Routes によるモーダル
-
-URL と連動したモーダル表示。ブラウザバックでモーダルが閉じる。
-
-```
-customers/[customerId]/
-├── layout.tsx          # @action スロットを受け取る
-├── page.tsx
-├── @action/
-│   ├── default.tsx     # null（モーダル非表示）
-│   └── edit/page.tsx   # モーダル表示
-└── edit/page.tsx       # 直接アクセス時はフルページ
-```
-
 #### DB スキーマ設計
 
 ```typescript
