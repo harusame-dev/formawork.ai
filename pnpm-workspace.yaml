@@ -26,7 +26,7 @@ catalog:
   supabase: 2.70.5
   knip: 5.71.0
   cspell: 9.4.0
-  drizzle-orm: 0.45.0
+  drizzle-orm: 0.45.1
   drizzle-kit: 0.31.8
   postgres: 3.4.7
   '@harusame0616/result': 0.1.3
