@@ -103,8 +103,8 @@ catalogs:
       specifier: 0.31.8
       version: 0.31.8
     drizzle-orm:
-      specifier: 0.45.0
-      version: 0.45.0
+      specifier: 0.45.1
+      version: 0.45.1
     embla-carousel-react:
       specifier: 8.6.0
       version: 8.6.0
@@ -284,7 +284,7 @@ importers:
         version: link:../../packages/tsconfig
       drizzle-orm:
         specifier: 'catalog:'
-        version: 0.45.0(@opentelemetry/api@1.9.0)(postgres@3.4.7)
+        version: 0.45.1(@opentelemetry/api@1.9.0)(postgres@3.4.7)
       msw:
         specifier: 'catalog:'
         version: 2.12.4(@types/node@24.10.1)(typescript@5.9.3)
@@ -308,7 +308,7 @@ importers:
     dependencies:
       drizzle-orm:
         specifier: 'catalog:'
-        version: 0.45.0(@opentelemetry/api@1.9.0)(postgres@3.4.7)
+        version: 0.45.1(@opentelemetry/api@1.9.0)(postgres@3.4.7)
       postgres:
         specifier: 'catalog:'
         version: 3.4.7
@@ -2940,8 +2940,8 @@ packages:
     resolution: {integrity: sha512-O9EC/miwdnRDY10qRxM8P3Pg8hXe3LyU4ZipReKOgTwn4OqANmftj8XJz1UPUAS6NMHf0E2htjsbQujUTkncCg==}
     hasBin: true
 
-  drizzle-orm@0.45.0:
-    resolution: {integrity: sha512-lyd9VRk3SXKRjV/gQckQzmJgkoYMvVG3A2JAV0vh3L+Lwk+v9+rK5Gj0H22y+ZBmxsrRBgJ5/RbQCN7DWd1dtQ==}
+  drizzle-orm@0.45.1:
+    resolution: {integrity: sha512-Te0FOdKIistGNPMq2jscdqngBRfBpC8uMFVwqjf6gtTVJHIQ/dosgV/CLBU2N4ZJBsXL5savCba9b0YJskKdcA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -6778,7 +6778,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.45.0(@opentelemetry/api@1.9.0)(postgres@3.4.7):
+  drizzle-orm@0.45.1(@opentelemetry/api@1.9.0)(postgres@3.4.7):
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
       postgres: 3.4.7
