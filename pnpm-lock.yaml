@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@ai-sdk/valibot':
-      specifier: 1.0.19
-      version: 1.0.19
+      specifier: 2.0.13
+      version: 2.0.13
     '@biomejs/biome':
       specifier: 2.3.13
       version: 2.3.13
@@ -199,7 +199,7 @@ importers:
     dependencies:
       '@ai-sdk/valibot':
         specifier: 'catalog:'
-        version: 1.0.19(@valibot/to-json-schema@1.4.0(valibot@1.2.0(typescript@5.9.3)))(valibot@1.2.0(typescript@5.9.3))(zod@4.1.12)
+        version: 2.0.13(@valibot/to-json-schema@1.4.0(valibot@1.2.0(typescript@5.9.3)))(valibot@1.2.0(typescript@5.9.3))(zod@4.1.12)
       '@harusame0616/result':
         specifier: 'catalog:'
         version: 0.1.3
@@ -495,12 +495,22 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
+  '@ai-sdk/provider-utils@4.0.12':
+    resolution: {integrity: sha512-sdC3eUTa5W4r/bISlF3nxmM6zc8mV7Nj3mWI9iUO0cib70h0Zr52Tz5gGzO6HcDirbKVTR2ywmZb61MHU68prA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
   '@ai-sdk/provider@2.0.0':
     resolution: {integrity: sha512-6o7Y2SeO9vFKB8lArHXehNuusnpddKPk7xqL7T2/b+OvXMRIXUO1rR4wcv1hAFUAT9avGZshty3Wlua/XA7TvA==}
     engines: {node: '>=18'}
 
-  '@ai-sdk/valibot@1.0.19':
-    resolution: {integrity: sha512-F781b475pvzkzx6DvAZtIjOZkUUj50An34Cuu/D0n6Ahqnyv3N1UsunIKPd6pbgwco2LD+mt7BS6c8BafSg3yQ==}
+  '@ai-sdk/provider@3.0.6':
+    resolution: {integrity: sha512-hSfoJtLtpMd7YxKM+iTqlJ0ZB+kJ83WESMiWuWrNVey3X8gg97x0OdAAaeAeclZByCX3UdPOTqhvJdK8qYA3ww==}
+    engines: {node: '>=18'}
+
+  '@ai-sdk/valibot@2.0.13':
+    resolution: {integrity: sha512-8l2at1S8649g2frkYfwDusu9PNi+O3vw0XNaivUn7/ddMV1dhgy1VfTAA1YQi0tEcVzHn09cwGXgyWS+X+zi0A==}
     engines: {node: '>=18'}
     peerDependencies:
       '@valibot/to-json-schema': ^1.3.0
@@ -4594,13 +4604,24 @@ snapshots:
       eventsource-parser: 3.0.6
       zod: 4.1.12
 
+  '@ai-sdk/provider-utils@4.0.12(zod@4.1.12)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.6
+      '@standard-schema/spec': 1.1.0
+      eventsource-parser: 3.0.6
+      zod: 4.1.12
+
   '@ai-sdk/provider@2.0.0':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/valibot@1.0.19(@valibot/to-json-schema@1.4.0(valibot@1.2.0(typescript@5.9.3)))(valibot@1.2.0(typescript@5.9.3))(zod@4.1.12)':
+  '@ai-sdk/provider@3.0.6':
     dependencies:
-      '@ai-sdk/provider-utils': 3.0.19(zod@4.1.12)
+      json-schema: 0.4.0
+
+  '@ai-sdk/valibot@2.0.13(@valibot/to-json-schema@1.4.0(valibot@1.2.0(typescript@5.9.3)))(valibot@1.2.0(typescript@5.9.3))(zod@4.1.12)':
+    dependencies:
+      '@ai-sdk/provider-utils': 4.0.12(zod@4.1.12)
       '@valibot/to-json-schema': 1.4.0(valibot@1.2.0(typescript@5.9.3))
       valibot: 1.2.0(typescript@5.9.3)
     transitivePeerDependencies:
