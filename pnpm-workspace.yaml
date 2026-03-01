@@ -58,7 +58,7 @@ catalog:
   '@tailwindcss/typography': 0.5.19
   '@ai-sdk/valibot': 1.0.19
   swr: 2.3.7
-  msw: 2.12.4
+  msw: 2.12.10
   onborda: 1.2.5
   framer-motion: 12.29.2
 
