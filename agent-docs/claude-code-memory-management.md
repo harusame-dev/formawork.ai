@@ -50,24 +50,6 @@ paths: ["**/*.ts", "**/*.tsx"]
 現在の rules ファイル:
 - `coding-conventions.md` — TypeScript/TSX のコーディングスタイル、命名規則、API 設計原則
 
-## agent-docs/ 参照ガイド
-
-| ファイル | 読み込むタイミング |
-|---------|----------------|
-| `agent-workflow.md` | タスク開始前・エージェント呼び出し順序とレビュープロセス |
-| `task-completion.md` | タスク完了前・バリデーションチェックリスト |
-| `nextjs-architecture.md` | Next.js コンポーネント・Server Action・Route Handler の実装時 |
-| `nextjs-page-layout.md` | page.tsx または layout.tsx の実装時 |
-| `nextjs-cache-strategy.md` | `use cache` ディレクティブによるキャッシュ実装時 |
-| `ux-guidelines.md` | UI コンポーネントやユーザー向け機能の実装時 |
-| `form-implementation.md` | フォーム実装時 |
-| `test-guidelines.md` | テスト作成時 |
-| `github-actions.md` | GitHub Actions ワークフローの作成・変更時 |
-| `database-migration.md` | データベーススキーマの変更・マイグレーション実行時 |
-| `logging-implementation.md` | ロギング実装時 |
-| `monorepo-guidelines.md` | パッケージ追加・モノレポ構成の変更時 |
-| `claude-code-memory-management.md` | このドキュメントシステムの管理・更新時 |
-
 ## 新規ドキュメント追加時のルール
 
 1. **既存ファイルの編集を優先**する（新規作成は最小限に）
