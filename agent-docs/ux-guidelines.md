@@ -15,21 +15,6 @@
 - ローディング状態を明示し、ユーザーにフィードバックを提供すること
 - Skeleton を使用する際はロード後のデザインと一致させ CLS を防ぐこと
 
-## フォームの説明
-
-`placeholder` の使用を避け、必要な情報は Label の下に説明テキストとして記載すること。
-
-- `placeholder` はフィールドが空でない場合に見えなくなるため、重要な情報の提供には不適切
-- 説明テキストは `<p className="text-sm text-muted-foreground">` を使用して Label の直下に配置する
-
-```tsx
-<Label htmlFor="keyword">キーワード検索</Label>
-<p className="text-sm text-muted-foreground">
-  本文または記入者の名前で検索できます
-</p>
-<Input id="keyword" type="text" value={keyword} />
-```
-
 ## 楽観的更新 (Optimistic Updates)
 
 可能な場合はユーザーアクションに対して即座にフィードバックを提供すること。
