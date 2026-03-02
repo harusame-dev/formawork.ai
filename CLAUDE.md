@@ -90,7 +90,7 @@ pnpm -w test:e2e       # Playwright E2E テスト
 | ブランチ種別 | 命名規則 | 例 |
 |------------|--------|---|
 | メイン | `main` | `main` |
-| 開発ブランチ | `<username>/issue<番号>` | `harusame0616/issue156` |
+| 開発ブランチ | `#<チケット番号>-<task-name>` | `#156-optimize-memory-management` |
 | フィーチャーブランチ | `feature/<feature-name>` | `feature/customer-memory` |
 
 ### ブランチ戦略
