@@ -74,17 +74,6 @@ pnpm -w test:server    # サーバーサイドテスト
 pnpm -w test:e2e       # Playwright E2E テスト
 ```
 
-## コーディング規約
-
-詳細: `.claude/rules/coding-conventions.md`（`**/*.ts`, `**/*.tsx` に自動適用）
-
-主要ルール:
-- `interface` より `type` を優先、アロー関数より `function` を優先
-- `enum` は使用しない（Object Literal を使用）
-- 環境変数は valibot でパースした設定モジュール経由でアクセス
-- 自明なコメントは書かない、単一使用の中間変数・型は最小化
-- ファイル名: kebab-case、コンポーネント: PascalCase、関数・変数: camelCase
-
 ## ワークフロールール
 
 - **タスク開始前**: `mcp__serena__list_memories` でメモリ一覧を確認する
