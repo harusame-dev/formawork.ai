@@ -85,6 +85,26 @@ pnpm -w test:e2e       # Playwright E2E テスト
 - **GitHub 操作**: `gh` コマンドを使用する
 - **エージェント呼び出し詳細**: `agent-docs/agent-workflow.md` を参照
 
+### ブランチ命名規則
+
+| ブランチ種別 | 命名規則 | 例 |
+|------------|--------|---|
+| メイン | `main` | `main` |
+| 開発ブランチ | `<username>/issue<番号>` | `harusame0616/issue156` |
+| フィーチャーブランチ | `feature/<feature-name>` | `feature/customer-memory` |
+
+### ブランチ戦略
+
+**通常時**（issue 単位の作業）:
+```
+main → 開発ブランチ → main
+```
+
+**フィーチャーブランチ利用時**（複数 issue にまたがる大きな機能):
+```
+main → feature ブランチ → 開発ブランチ → feature ブランチ → main
+```
+
 ### エージェント実行順序（必ず守ること）
 1. ファイル編集・作成・削除後 → まず `code-validator` を実行
 2. バリデーションが全パスしたことを確認
