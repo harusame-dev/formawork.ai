@@ -79,7 +79,6 @@ pnpm -w test:e2e       # Playwright E2E テスト
 
 ## ワークフロールール
 
-- **タスク開始前**: `mcp__serena__list_memories` でメモリ一覧を確認する
 - **実装時**: 下記の「追加ドキュメント」テーブルから関連する `agent-docs/` を読み込む
 - **ファイル読み込み・編集・検索**: 常に Serena MCP ツールを優先して使用する
 - **GitHub 操作**: `gh` コマンドを使用する
