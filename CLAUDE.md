@@ -1,41 +1,133 @@
-## 行動方針
-- タスクを開始する前に常にメモリー一覧を取得し、どのような情報が利用できるか把握してください。
-- 実際にタスクを実装する際に適時関連するメモリーの内容を必ず読み込んでください。
-  - 例：page.tsx 実装：Nextjs-Page-Layoutガイドライン.md、 Nextjs-アーキテクチャガイドライン、コーディングスタイル
-  - 例：GitHub Action 実装：GithubAction実装ガイドライン.md
-  - 例：コンポーネント実装： Nextjs-アーキテクチャガイドライン、Nextjsキャッシュ戦略ガイドライン.md、UXガイドライン.md
-  - 例：Form 実装：UXガイドライン.md、フォーム実装ガイドライン.md
+## プロジェクト概要
 
-## 全ての会話で読み込むコンテキスト
-@./.serena/memories/プロジェクト概要.md
-@./.serena/memories/利用可能コマンド.md
-@./.serena/memories/タスク完了チェックリスト.md
+FORMAWORK.ai は、美容室・クリニック・エステ等の対面接客業向け AI CRM。
+スタッフが記録した接客ノートを AI が自動分析し、顧客メモリの蓄積と次回接客へのアドバイスを提供する。
+「スタッフの記憶力・経験値に依存した接客品質のばらつき」を解消し、属人化しない高品質な顧客体験を実現する。
+対象ユーザー: 接客スタッフ（ノート記録・AI アドバイス活用）、店長/管理者（顧客・スタッフ管理）。
 
-## エージェント
+## 技術スタック
 
-**重要: 実行順序を必ず守ること**
-1. ファイルの編集・作成・削除後、まず `code-validator` を実行
-2. バリデーションがすべてパスしたことを確認
+| カテゴリ | 技術 |
+|----------|------|
+| フレームワーク | Next.js 16.0.1 (App Router) |
+| UI | React 19.2.0、shadcn/ui、Tailwind CSS 4.x |
+| 言語 | TypeScript 5.9.3 |
+| パッケージマネージャー | pnpm 10.12.4 (catalog mode) |
+| データベース | PostgreSQL (Supabase)、Drizzle ORM |
+| フォーム | react-hook-form + valibot |
+| ロギング | pino (`@repo/logger`) |
+| テスト | Vitest (Browser Mode) + Playwright (E2E) |
+| Lint/Format | Biome |
+
+## ディレクトリ構成
+
+```
+apps/web/
+  app/
+    (private)/              # 認証が必要なルート
+      customers/            # 顧客一覧・新規登録
+        [customerId]/       # 顧客詳細
+      staffs/               # スタッフ一覧・新規登録
+        [staffId]/          # スタッフ詳細
+      settings/             # 設定
+        password/           # パスワード変更
+    (public)/               # 公開ルート
+      login/                # ログイン
+      lp/                   # ランディングページ
+    api/
+      cron/                 # cron ジョブ用 API
+        generate-advice/
+        generate-memory/
+      customer-notes/       # 顧客ノート API
+        [noteId]/
+  features/                 # 機能別モジュール
+    auth/                   # 認証
+      change-password/ login/ logout/ user/
+    customer/               # 顧客管理
+      delete/ detail/ edit/ list/ register/
+    customer-note/          # 顧客ノート
+      advice/ delete/ edit/ list/ register/
+    customer-memory/        # 顧客メモリ
+      delete/ edit/ list/ register/ toggle-lock/
+    staff/                  # スタッフ管理
+      delete/ detail/ edit/ list/ register/
+    onboarding/             # オンボーディング
+  components/               # 共通コンポーネント
+  libs/                     # ユーティリティ
+packages/
+  db/             # Drizzle スキーマとクライアント
+  ui/             # shadcn/ui コンポーネント
+  logger/         # pino ベースのロガー
+  supabase/       # Supabase 設定
+  tsconfig/       # 共通 TypeScript 設定
+```
+
+## 主要コマンド
+
+```bash
+pnpm -w dev            # Supabase + Next.js 開発サーバー起動（UTC タイムゾーン）
+pnpm -w build          # 本番ビルド
+pnpm -w validate:check # lint・format・デッドコード・スペル・型チェック
+pnpm -w validate:fix   # lint・format の自動修正
+pnpm -w db:generate    # マイグレーションファイル生成（DB 適用なし）
+pnpm -w db:migrate     # マイグレーション実行
+pnpm -w db:reset       # DB リセット・再マイグレーション・シード
+pnpm -w test:browser   # Vitest Browser Mode テスト
+pnpm -w test:server    # サーバーサイドテスト
+pnpm -w test:e2e       # Playwright E2E テスト
+```
+
+## ワークフロールール
+
+- **実装時**: 下記の「追加ドキュメント」テーブルから関連する `agent-docs/` を読み込む
+- **ファイル読み込み・編集・検索**: 常に Serena MCP ツールを優先して使用する
+- **GitHub 操作**: `gh` コマンドを使用する
+- **エージェント呼び出し詳細**: `agent-docs/agent-workflow.md` を参照
+- **`agent-docs/` にファイルを追加した際**: 下記「追加ドキュメント」テーブルを必ず更新すること
+- **情報の重複禁止**: 各情報は必ず1箇所にのみ記載する
+
+### ブランチ命名規則
+
+| ブランチ種別 | 命名規則 | 例 |
+|------------|--------|---|
+| メイン | `main` | `main` |
+| 開発ブランチ | `#<チケット番号>-<task-name>` | `#156-optimize-memory-management` |
+| フィーチャーブランチ | `feature/<feature-name>` | `feature/customer-memory` |
+
+### ブランチ戦略
+
+**通常時**（issue 単位の作業）:
+```
+main → 開発ブランチ → main
+```
+
+**フィーチャーブランチ利用時**（複数 issue にまたがる大きな機能):
+```
+main → feature ブランチ → 開発ブランチ → feature ブランチ → main
+```
+
+### エージェント実行順序（必ず守ること）
+1. ファイル編集・作成・削除後 → まず `code-validator` を実行
+2. バリデーションが全パスしたことを確認
 3. その後 `changes-committer` を実行
 
-※ `code-validator` と `changes-committer` を並列実行してはならない
+**`code-validator` と `changes-committer` を並列実行してはならない。**
 
-- `code-validator`：**ファイルの作成、編集、削除をした場合は、ユーザーからの指示を待たずに必ず自動でこのエージェントを呼び出してバリデーションチェックを行うこと**。ユーザーによるコードチェックを依頼された場合も使用する。
-- `changes-committer`：**code-validator でエラーがないことを確認した後に実行すること**。論理的な作業単位ごとに分離してコミットする。ユーザーから明示的にコミットを依頼された場合も使用する。
-- `pr-creator`：PRの作成、編集を行う際に必ず使用する。
-- `library-reference-searcher`：外部ライブラリのAPI情報を検索・取得する。1エージェントにつき1ライブラリのみ対象。複数ライブラリが必要な場合はライブラリごとに並列でエージェントを起動すること。**ユーザーからの明示的な指示がなくても、以下の場合は必ず自律的にこのエージェントを呼び出すこと**：
-  - ファイルの作成・編集で外部ライブラリのAPIを使用するコードを生成する場合
-  - プランモードで外部ライブラリの使用がプランに含まれる場合
-  - **例外なし**：コードベースに既存の使用例があっても、使い方を知っていると思っていても、必ずこのエージェントで正しい使い方を調査すること。事前知識や既存コードに頼らないこと
+## 追加ドキュメント
 
-## レビュー
+タスク種別に応じて、実装前に該当する `agent-docs/` ファイルを読み込むこと：
 
-レビュー時には `reviewing-code` スキルより `branch-code-reviewer` エージェントを優先して利用すること。
-ユーザーがレビューを依頼した時、大幅なコード修正を行なった際に自律的に呼び出す。
-レビュー結果としてサマリーを先頭に表示し、その後エージェントのレポートをそのまま表示してください
-
-## MCP
-- ファイル読み込み、編集、検索などで常に Serena のツールを優先して使用し、コンテキス効率・編集効率が最大になるようにすること
-
-## GitHub
-- GitHub の操作は gh コマンドを使用する
+| タスク種別 | 参照するドキュメント |
+|-----------|-------------------|
+| タスク開始 / 完了前 | `agent-docs/agent-workflow.md`、`agent-docs/task-completion.md` |
+| Next.js コンポーネント・Server Action・Route Handler | `agent-docs/nextjs-architecture.md` |
+| `page.tsx` / `layout.tsx` の実装 | `agent-docs/nextjs-page-layout.md` |
+| `use cache` によるキャッシュ | `agent-docs/nextjs-cache-strategy.md` |
+| UI コンポーネント・ユーザー向け機能 | `agent-docs/ux-guidelines.md` |
+| フォーム実装 | `agent-docs/form-implementation.md` |
+| テスト作成 | `agent-docs/test-guidelines.md` |
+| GitHub Actions ワークフロー | `agent-docs/github-actions.md` |
+| データベーススキーマ・マイグレーション | `agent-docs/database-migration.md` |
+| ロギング実装 | `agent-docs/logging-implementation.md` |
+| モノレポパッケージ構成 | `agent-docs/monorepo-guidelines.md` |
+| メモリ管理システムの更新 | `agent-docs/claude-code-memory-management.md` |
