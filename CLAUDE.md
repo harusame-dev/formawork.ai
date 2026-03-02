@@ -1,95 +1,95 @@
-## Project Overview
+## プロジェクト概要
 
-AI Formawork is a B2B SaaS platform for managing customers, customer notes, and staff. It is built for internal operators who need a unified workspace for daily CRM tasks.
+AI Formawork は顧客・顧客ノート・スタッフを管理する B2B SaaS プラットフォーム。日常的な CRM 業務を一元管理する社内オペレーター向けワークスペース。
 
-## Tech Stack
+## 技術スタック
 
-| Category | Technology |
-|----------|-----------|
-| Framework | Next.js 16.0.1 (App Router) |
-| UI | React 19.2.0, shadcn/ui, Tailwind CSS 4.x |
-| Language | TypeScript 5.9.3 |
-| Package Manager | pnpm 10.12.4 (catalog mode) |
-| Database | PostgreSQL via Supabase, Drizzle ORM |
-| Forms | react-hook-form + valibot |
-| Logging | pino (`@repo/logger`) |
-| Testing | Vitest (Browser Mode) + Playwright (E2E) |
+| カテゴリ | 技術 |
+|----------|------|
+| フレームワーク | Next.js 16.0.1 (App Router) |
+| UI | React 19.2.0、shadcn/ui、Tailwind CSS 4.x |
+| 言語 | TypeScript 5.9.3 |
+| パッケージマネージャー | pnpm 10.12.4 (catalog mode) |
+| データベース | PostgreSQL (Supabase)、Drizzle ORM |
+| フォーム | react-hook-form + valibot |
+| ロギング | pino (`@repo/logger`) |
+| テスト | Vitest (Browser Mode) + Playwright (E2E) |
 | Lint/Format | Biome |
 
-## Project Structure
+## ディレクトリ構成
 
 ```
 apps/web/
   app/
-    (private)/    # authenticated routes
-    (public)/     # public routes
-  features/       # feature modules (auth, customer, customer-note, staff)
-  components/     # shared components
-  libs/           # utilities
+    (private)/    # 認証が必要なルート
+    (public)/     # 公開ルート
+  features/       # 機能別モジュール (auth, customer, customer-note, staff)
+  components/     # 共通コンポーネント
+  libs/           # ユーティリティ
 packages/
-  db/             # Drizzle schema and client
-  ui/             # shadcn/ui components
-  logger/         # pino-based logger
-  supabase/       # Supabase config
-  tsconfig/       # shared TypeScript config
+  db/             # Drizzle スキーマとクライアント
+  ui/             # shadcn/ui コンポーネント
+  logger/         # pino ベースのロガー
+  supabase/       # Supabase 設定
+  tsconfig/       # 共通 TypeScript 設定
 ```
 
-## Development Commands
+## 主要コマンド
 
 ```bash
-pnpm -w dev            # Start Supabase + Next.js dev server (UTC timezone)
-pnpm -w build          # Production build
-pnpm -w validate:check # Lint, format, dead code, spell, type checks
-pnpm -w validate:fix   # Auto-fix lint and format issues
-pnpm -w db:generate    # Generate migration files (no DB apply)
-pnpm -w db:migrate     # Apply migrations
-pnpm -w db:reset       # Reset DB and re-apply migrations + seed
-pnpm -w test:browser   # Vitest Browser Mode tests
-pnpm -w test:server    # Server-side tests
-pnpm -w test:e2e       # Playwright E2E tests
+pnpm -w dev            # Supabase + Next.js 開発サーバー起動（UTC タイムゾーン）
+pnpm -w build          # 本番ビルド
+pnpm -w validate:check # lint・format・デッドコード・スペル・型チェック
+pnpm -w validate:fix   # lint・format の自動修正
+pnpm -w db:generate    # マイグレーションファイル生成（DB 適用なし）
+pnpm -w db:migrate     # マイグレーション実行
+pnpm -w db:reset       # DB リセット・再マイグレーション・シード
+pnpm -w test:browser   # Vitest Browser Mode テスト
+pnpm -w test:server    # サーバーサイドテスト
+pnpm -w test:e2e       # Playwright E2E テスト
 ```
 
-## Coding Conventions
+## コーディング規約
 
-Details: `.claude/rules/coding-conventions.md` (auto-loaded for `**/*.ts`, `**/*.tsx`)
+詳細: `.claude/rules/coding-conventions.md`（`**/*.ts`, `**/*.tsx` に自動適用）
 
-Key rules:
-- Prefer `type` over `interface`; prefer `function` over arrow functions
-- No `enum`; use Object Literals instead
-- Access env vars only via valibot-parsed config modules
-- Minimize comments; minimize single-use intermediate variables/types
-- File names: kebab-case; components: PascalCase; functions/vars: camelCase
+主要ルール:
+- `interface` より `type` を優先、アロー関数より `function` を優先
+- `enum` は使用しない（Object Literal を使用）
+- 環境変数は valibot でパースした設定モジュール経由でアクセス
+- 自明なコメントは書かない、単一使用の中間変数・型は最小化
+- ファイル名: kebab-case、コンポーネント: PascalCase、関数・変数: camelCase
 
-## Workflow Rules
+## ワークフロールール
 
-- **Before starting any task**: call `mcp__serena__list_memories` to check available memory files
-- **When implementing**: read relevant `agent-docs/` files (see Additional Docs table below)
-- **File read/edit/search**: always prefer Serena MCP tools for context efficiency
-- **GitHub operations**: use `gh` CLI commands
-- **Agent invocation details**: see `agent-docs/agent-workflow.md`
+- **タスク開始前**: `mcp__serena__list_memories` でメモリ一覧を確認する
+- **実装時**: 下記の「追加ドキュメント」テーブルから関連する `agent-docs/` を読み込む
+- **ファイル読み込み・編集・検索**: 常に Serena MCP ツールを優先して使用する
+- **GitHub 操作**: `gh` コマンドを使用する
+- **エージェント呼び出し詳細**: `agent-docs/agent-workflow.md` を参照
 
-### Agent Execution Order (MUST follow)
-1. Edit/create/delete files → run `code-validator` first
-2. Confirm all validations pass
-3. Then run `changes-committer`
+### エージェント実行順序（必ず守ること）
+1. ファイル編集・作成・削除後 → まず `code-validator` を実行
+2. バリデーションが全パスしたことを確認
+3. その後 `changes-committer` を実行
 
-**Never run `code-validator` and `changes-committer` in parallel.**
+**`code-validator` と `changes-committer` を並列実行してはならない。**
 
-## Additional Docs
+## 追加ドキュメント
 
-Read the relevant `agent-docs/` file before implementing each task type:
+タスク種別に応じて、実装前に該当する `agent-docs/` ファイルを読み込むこと：
 
-| Task Type | Read This |
-|-----------|-----------|
-| Any task start / completion | `agent-docs/agent-workflow.md`, `agent-docs/task-completion.md` |
-| Next.js components, Server Actions, Route Handlers | `agent-docs/nextjs-architecture.md` |
-| `page.tsx` or `layout.tsx` | `agent-docs/nextjs-page-layout.md` |
-| Caching with `use cache` | `agent-docs/nextjs-cache-strategy.md` |
-| Any UI component or user-facing feature | `agent-docs/ux-guidelines.md` |
-| Forms | `agent-docs/form-implementation.md` |
-| Tests | `agent-docs/test-guidelines.md` |
-| GitHub Actions workflows | `agent-docs/github-actions.md` |
-| Database schema / migrations | `agent-docs/database-migration.md` |
-| Logging | `agent-docs/logging-implementation.md` |
-| Monorepo package structure | `agent-docs/monorepo-guidelines.md` |
-| Memory system management | `agent-docs/claude-code-memory-management.md` |
+| タスク種別 | 参照するドキュメント |
+|-----------|-------------------|
+| タスク開始 / 完了前 | `agent-docs/agent-workflow.md`、`agent-docs/task-completion.md` |
+| Next.js コンポーネント・Server Action・Route Handler | `agent-docs/nextjs-architecture.md` |
+| `page.tsx` / `layout.tsx` の実装 | `agent-docs/nextjs-page-layout.md` |
+| `use cache` によるキャッシュ | `agent-docs/nextjs-cache-strategy.md` |
+| UI コンポーネント・ユーザー向け機能 | `agent-docs/ux-guidelines.md` |
+| フォーム実装 | `agent-docs/form-implementation.md` |
+| テスト作成 | `agent-docs/test-guidelines.md` |
+| GitHub Actions ワークフロー | `agent-docs/github-actions.md` |
+| データベーススキーマ・マイグレーション | `agent-docs/database-migration.md` |
+| ロギング実装 | `agent-docs/logging-implementation.md` |
+| モノレポパッケージ構成 | `agent-docs/monorepo-guidelines.md` |
+| メモリ管理システムの更新 | `agent-docs/claude-code-memory-management.md` |
