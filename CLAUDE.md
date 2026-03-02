@@ -1,41 +1,95 @@
-## 行動方針
-- タスクを開始する前に常にメモリー一覧を取得し、どのような情報が利用できるか把握してください。
-- 実際にタスクを実装する際に適時関連するメモリーの内容を必ず読み込んでください。
-  - 例：page.tsx 実装：Nextjs-Page-Layoutガイドライン.md、 Nextjs-アーキテクチャガイドライン、コーディングスタイル
-  - 例：GitHub Action 実装：GithubAction実装ガイドライン.md
-  - 例：コンポーネント実装： Nextjs-アーキテクチャガイドライン、Nextjsキャッシュ戦略ガイドライン.md、UXガイドライン.md
-  - 例：Form 実装：UXガイドライン.md、フォーム実装ガイドライン.md
+## Project Overview
 
-## 全ての会話で読み込むコンテキスト
-@./.serena/memories/プロジェクト概要.md
-@./.serena/memories/利用可能コマンド.md
-@./.serena/memories/タスク完了チェックリスト.md
+AI Formawork is a B2B SaaS platform for managing customers, customer notes, and staff. It is built for internal operators who need a unified workspace for daily CRM tasks.
 
-## エージェント
+## Tech Stack
 
-**重要: 実行順序を必ず守ること**
-1. ファイルの編集・作成・削除後、まず `code-validator` を実行
-2. バリデーションがすべてパスしたことを確認
-3. その後 `changes-committer` を実行
+| Category | Technology |
+|----------|-----------|
+| Framework | Next.js 16.0.1 (App Router) |
+| UI | React 19.2.0, shadcn/ui, Tailwind CSS 4.x |
+| Language | TypeScript 5.9.3 |
+| Package Manager | pnpm 10.12.4 (catalog mode) |
+| Database | PostgreSQL via Supabase, Drizzle ORM |
+| Forms | react-hook-form + valibot |
+| Logging | pino (`@repo/logger`) |
+| Testing | Vitest (Browser Mode) + Playwright (E2E) |
+| Lint/Format | Biome |
 
-※ `code-validator` と `changes-committer` を並列実行してはならない
+## Project Structure
 
-- `code-validator`：**ファイルの作成、編集、削除をした場合は、ユーザーからの指示を待たずに必ず自動でこのエージェントを呼び出してバリデーションチェックを行うこと**。ユーザーによるコードチェックを依頼された場合も使用する。
-- `changes-committer`：**code-validator でエラーがないことを確認した後に実行すること**。論理的な作業単位ごとに分離してコミットする。ユーザーから明示的にコミットを依頼された場合も使用する。
-- `pr-creator`：PRの作成、編集を行う際に必ず使用する。
-- `library-reference-searcher`：外部ライブラリのAPI情報を検索・取得する。1エージェントにつき1ライブラリのみ対象。複数ライブラリが必要な場合はライブラリごとに並列でエージェントを起動すること。**ユーザーからの明示的な指示がなくても、以下の場合は必ず自律的にこのエージェントを呼び出すこと**：
-  - ファイルの作成・編集で外部ライブラリのAPIを使用するコードを生成する場合
-  - プランモードで外部ライブラリの使用がプランに含まれる場合
-  - **例外なし**：コードベースに既存の使用例があっても、使い方を知っていると思っていても、必ずこのエージェントで正しい使い方を調査すること。事前知識や既存コードに頼らないこと
+```
+apps/web/
+  app/
+    (private)/    # authenticated routes
+    (public)/     # public routes
+  features/       # feature modules (auth, customer, customer-note, staff)
+  components/     # shared components
+  libs/           # utilities
+packages/
+  db/             # Drizzle schema and client
+  ui/             # shadcn/ui components
+  logger/         # pino-based logger
+  supabase/       # Supabase config
+  tsconfig/       # shared TypeScript config
+```
 
-## レビュー
+## Development Commands
 
-レビュー時には `reviewing-code` スキルより `branch-code-reviewer` エージェントを優先して利用すること。
-ユーザーがレビューを依頼した時、大幅なコード修正を行なった際に自律的に呼び出す。
-レビュー結果としてサマリーを先頭に表示し、その後エージェントのレポートをそのまま表示してください
+```bash
+pnpm -w dev            # Start Supabase + Next.js dev server (UTC timezone)
+pnpm -w build          # Production build
+pnpm -w validate:check # Lint, format, dead code, spell, type checks
+pnpm -w validate:fix   # Auto-fix lint and format issues
+pnpm -w db:generate    # Generate migration files (no DB apply)
+pnpm -w db:migrate     # Apply migrations
+pnpm -w db:reset       # Reset DB and re-apply migrations + seed
+pnpm -w test:browser   # Vitest Browser Mode tests
+pnpm -w test:server    # Server-side tests
+pnpm -w test:e2e       # Playwright E2E tests
+```
 
-## MCP
-- ファイル読み込み、編集、検索などで常に Serena のツールを優先して使用し、コンテキス効率・編集効率が最大になるようにすること
+## Coding Conventions
 
-## GitHub
-- GitHub の操作は gh コマンドを使用する
+Details: `.claude/rules/coding-conventions.md` (auto-loaded for `**/*.ts`, `**/*.tsx`)
+
+Key rules:
+- Prefer `type` over `interface`; prefer `function` over arrow functions
+- No `enum`; use Object Literals instead
+- Access env vars only via valibot-parsed config modules
+- Minimize comments; minimize single-use intermediate variables/types
+- File names: kebab-case; components: PascalCase; functions/vars: camelCase
+
+## Workflow Rules
+
+- **Before starting any task**: call `mcp__serena__list_memories` to check available memory files
+- **When implementing**: read relevant `agent-docs/` files (see Additional Docs table below)
+- **File read/edit/search**: always prefer Serena MCP tools for context efficiency
+- **GitHub operations**: use `gh` CLI commands
+- **Agent invocation details**: see `agent-docs/agent-workflow.md`
+
+### Agent Execution Order (MUST follow)
+1. Edit/create/delete files → run `code-validator` first
+2. Confirm all validations pass
+3. Then run `changes-committer`
+
+**Never run `code-validator` and `changes-committer` in parallel.**
+
+## Additional Docs
+
+Read the relevant `agent-docs/` file before implementing each task type:
+
+| Task Type | Read This |
+|-----------|-----------|
+| Any task start / completion | `agent-docs/agent-workflow.md`, `agent-docs/task-completion.md` |
+| Next.js components, Server Actions, Route Handlers | `agent-docs/nextjs-architecture.md` |
+| `page.tsx` or `layout.tsx` | `agent-docs/nextjs-page-layout.md` |
+| Caching with `use cache` | `agent-docs/nextjs-cache-strategy.md` |
+| Any UI component or user-facing feature | `agent-docs/ux-guidelines.md` |
+| Forms | `agent-docs/form-implementation.md` |
+| Tests | `agent-docs/test-guidelines.md` |
+| GitHub Actions workflows | `agent-docs/github-actions.md` |
+| Database schema / migrations | `agent-docs/database-migration.md` |
+| Logging | `agent-docs/logging-implementation.md` |
+| Monorepo package structure | `agent-docs/monorepo-guidelines.md` |
+| Memory system management | `agent-docs/claude-code-memory-management.md` |
