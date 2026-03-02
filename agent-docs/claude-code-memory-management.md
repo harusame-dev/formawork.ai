@@ -1,78 +1,78 @@
-# Claude Code Memory Management
+# Claude Code メモリ管理
 
-This document describes the three-layer memory architecture used to provide the AI with the right information at the right time.
+このドキュメントは、AI に適切なタイミングで適切な情報を提供するための3層メモリアーキテクチャを説明する。
 
-## Three-Layer Architecture
-
-```
-Layer 1: CLAUDE.md (always loaded)
-  - Universal project context: tech stack, structure, commands, workflow rules
-  - Loaded into every conversation automatically
-  - Keep this concise (under 200 lines)
-
-Layer 2: .claude/rules/ (conditionally loaded)
-  - Applied automatically when file globs match
-  - Use for coding conventions tied to specific file types
-  - Defined via YAML front matter: globs: ["**/*.ts", "**/*.tsx"]
-
-Layer 3: agent-docs/ (on-demand, referenced by LLM)
-  - Task-specific documentation loaded only when relevant
-  - Referenced from CLAUDE.md's Additional Docs table
-  - LLM reads these when the task type matches
-```
-
-## Decision Guide: Where to Put New Information
+## 3層アーキテクチャ
 
 ```
-Is it needed in every conversation, regardless of task?
-  YES → CLAUDE.md (keep it short; if > 5 lines, summarize and link to agent-docs/)
+Layer 1: CLAUDE.md（常時読み込み）
+  - 普遍的なプロジェクトコンテキスト: 技術スタック、構成、コマンド、ワークフロールール
+  - 全会話に自動で読み込まれる
+  - 200行以内に収めること
+
+Layer 2: .claude/rules/（条件付き読み込み）
+  - ファイルのグロブにマッチした時に自動適用される
+  - 特定のファイル種別に紐づくコーディング規約に使用する
+  - YAML フロントマターで定義: paths: ["**/*.ts", "**/*.tsx"]
+
+Layer 3: agent-docs/（オンデマンド参照）
+  - 関連するタスク時のみ読み込むタスク固有ドキュメント
+  - CLAUDE.md の「追加ドキュメント」テーブルから参照する
+  - タスク種別が該当する場合に LLM が読み込む
+```
+
+## 判断ガイド: 新しい情報をどこに置くか
+
+```
+タスクに関わらず全会話で必要な情報か？
+  YES → CLAUDE.md（5行超の場合は要約して agent-docs/ にリンク）
   NO  ↓
 
-Is it a coding convention for specific file types (.ts, .tsx)?
-  YES → .claude/rules/ with appropriate globs
+特定のファイル種別（.ts, .tsx）向けのコーディング規約か？
+  YES → .claude/rules/ に適切な paths を設定
   NO  ↓
 
-Is it task-specific guidance (architecture, testing, deployment, etc.)?
+タスク固有のガイダンス（アーキテクチャ、テスト、デプロイ等）か？
   YES → agent-docs/<topic>.md
-  NO  → Consider if documentation is needed at all
+  NO  → そもそもドキュメントが必要か再検討
 ```
 
-## .claude/rules/ Reference
+## .claude/rules/ の使い方
 
-Files in `.claude/rules/` are automatically injected when the user's current file matches the glob pattern defined in the YAML front matter.
+`.claude/rules/` 内のファイルは、YAML フロントマターの paths に定義したパターンに現在のファイルがマッチした時に自動注入される。
 
 ```yaml
 ---
-globs: ["**/*.ts", "**/*.tsx"]
+paths: ["**/*.ts", "**/*.tsx"]
 ---
 ```
 
-Current rules files:
-- `coding-conventions.md` — TypeScript/TSX coding style, naming conventions, API design principles
+現在の rules ファイル:
+- `coding-conventions.md` — TypeScript/TSX のコーディングスタイル、命名規則、API 設計原則
 
-## agent-docs/ Reference Guide
+## agent-docs/ 参照ガイド
 
-| File | When to Read |
-|------|-------------|
-| `agent-workflow.md` | Before starting any task; agent invocation order and review process |
-| `task-completion.md` | Before marking a task complete; validation checklist |
-| `nextjs-architecture.md` | When implementing Next.js components, Server Actions, Route Handlers |
-| `nextjs-page-layout.md` | When implementing page.tsx or layout.tsx files |
-| `nextjs-cache-strategy.md` | When implementing caching with `use cache` directives |
-| `ux-guidelines.md` | When implementing any UI component or user-facing feature |
-| `form-implementation.md` | When implementing forms |
-| `test-guidelines.md` | When writing tests |
-| `github-actions.md` | When creating or modifying GitHub Actions workflows |
-| `database-migration.md` | When modifying database schema or running migrations |
-| `logging-implementation.md` | When implementing logging |
-| `monorepo-guidelines.md` | When adding packages or modifying monorepo structure |
-| `claude-code-memory-management.md` | When managing or updating this documentation system |
+| ファイル | 読み込むタイミング |
+|---------|----------------|
+| `agent-workflow.md` | タスク開始前・エージェント呼び出し順序とレビュープロセス |
+| `task-completion.md` | タスク完了前・バリデーションチェックリスト |
+| `nextjs-architecture.md` | Next.js コンポーネント・Server Action・Route Handler の実装時 |
+| `nextjs-page-layout.md` | page.tsx または layout.tsx の実装時 |
+| `nextjs-cache-strategy.md` | `use cache` ディレクティブによるキャッシュ実装時 |
+| `ux-guidelines.md` | UI コンポーネントやユーザー向け機能の実装時 |
+| `form-implementation.md` | フォーム実装時 |
+| `test-guidelines.md` | テスト作成時 |
+| `github-actions.md` | GitHub Actions ワークフローの作成・変更時 |
+| `database-migration.md` | データベーススキーマの変更・マイグレーション実行時 |
+| `logging-implementation.md` | ロギング実装時 |
+| `monorepo-guidelines.md` | パッケージ追加・モノレポ構成の変更時 |
+| `claude-code-memory-management.md` | このドキュメントシステムの管理・更新時 |
 
-## Rules for Adding New Documentation
+## 新規ドキュメント追加時のルール
 
-1. **Prefer editing existing files** over creating new ones
-2. **CLAUDE.md** should only contain pointers and summaries; detailed rules belong in `agent-docs/`
-3. **File names** in `agent-docs/` must use English kebab-case (e.g., `form-implementation.md`)
-4. **Update the table** in `CLAUDE.md`'s Additional Docs section and this file's reference guide when adding new `agent-docs/` files
-5. **Do not duplicate** content between layers; each piece of information should live in exactly one place
-6. **`.serena/memories/`** files are maintained separately for Serena MCP tool compatibility; do not delete them without a separate task
+1. **既存ファイルの編集を優先**する（新規作成は最小限に）
+2. **CLAUDE.md** にはポインタとサマリーのみ記載する（詳細ルールは `agent-docs/` へ）
+3. **`agent-docs/` のファイル名**は英語の kebab-case で統一する（例: `form-implementation.md`）
+4. **テーブルを更新**する：`agent-docs/` ファイルを追加した際は CLAUDE.md の「追加ドキュメント」テーブルとこのファイルの参照ガイドも更新すること
+5. **情報を重複させない**：各情報は必ず1箇所にのみ記載する
+6. **`.serena/memories/`** のファイルは Serena MCP ツールとの互換性のため別途管理する（別チケットで削除）

@@ -1,35 +1,35 @@
-# Agent Workflow
+# エージェントワークフロー
 
-## Agent Invocation Order (MUST follow this order)
+## エージェント実行順序（必ず守ること）
 
-1. After editing/creating/deleting files → run `code-validator` first
-2. Confirm all validations pass
-3. Then run `changes-committer`
+1. ファイルの編集・作成・削除後 → まず `code-validator` を実行
+2. バリデーションが全パスしたことを確認
+3. その後 `changes-committer` を実行
 
-**IMPORTANT: Never run `code-validator` and `changes-committer` in parallel.**
+**重要: `code-validator` と `changes-committer` を並列実行してはならない。**
 
-## Available Agents
+## 利用可能なエージェント
 
-| Agent | When to Use |
-|-------|-------------|
-| `code-validator` | **Automatically after any file create/edit/delete** (no need to wait for user instruction). Also use when user requests a code check. |
-| `changes-committer` | After `code-validator` passes with no errors. Commits in logical work units. Also use when user explicitly requests a commit. |
-| `pr-creator` | When creating or updating a PR. Always use this agent, never create PRs manually. |
-| `library-reference-searcher` | When generating code that uses external library APIs. **No exceptions**: even if you know the API or see existing usage, always verify with this agent. One agent per library; launch in parallel for multiple libraries. |
-| `branch-code-reviewer` | When user requests a review, or after significant code changes. Takes priority over the `reviewing-code` skill. |
+| エージェント | 使用タイミング |
+|-------------|-------------|
+| `code-validator` | **ファイルの作成・編集・削除後に自動で実行**（ユーザーの指示を待たない）。ユーザーからコードチェックを依頼された場合も使用する。 |
+| `changes-committer` | `code-validator` でエラーがないことを確認した後に実行。論理的な作業単位ごとにコミットを分離する。ユーザーから明示的にコミットを依頼された場合も使用する。 |
+| `pr-creator` | PR の作成・更新時に必ず使用する。手動での PR 作成は禁止。 |
+| `library-reference-searcher` | 外部ライブラリの API を使用するコードを生成する場合に使用。**例外なし**：既存の使用例があっても、知っていると思っていても、必ずこのエージェントで正しい使い方を調査すること。1エージェントにつき1ライブラリ。複数ライブラリは並列で起動する。 |
+| `branch-code-reviewer` | ユーザーからレビューを依頼された時、または大幅なコード変更を行った後。`reviewing-code` スキルより優先して使用する。 |
 
-## library-reference-searcher Trigger Conditions
+## library-reference-searcher の自律起動条件
 
-Autonomously invoke this agent (without explicit user instruction) when:
-- Creating or editing files that use external library APIs
-- An implementation plan includes external library usage
+以下の場合はユーザーの指示を待たず自律的に起動すること：
+- 外部ライブラリの API を使用するコードを作成・編集する場合
+- 実装プランに外部ライブラリの使用が含まれる場合
 
-**No exceptions**: Do not rely on prior knowledge or existing code examples in the codebase.
+**例外なし**：コードベース内に既存の使用例があっても、使い方を知っていると思っていても、必ずこのエージェントで正しい使い方を調査すること。事前知識や既存コードに頼らないこと。
 
-## Review Workflow
+## レビューワークフロー
 
-- Prefer `branch-code-reviewer` agent over the `reviewing-code` skill
-- Invoke autonomously when:
-  - User explicitly requests a review
-  - Significant code changes have been made
-- Output format: summary first, then the full agent report as-is
+- `reviewing-code` スキルより `branch-code-reviewer` エージェントを優先する
+- 以下の場合に自律的に起動する：
+  - ユーザーが明示的にレビューを依頼した時
+  - 大幅なコード変更を行った後
+- 出力形式: 先頭にサマリーを表示し、その後エージェントのレポートをそのまま表示する
