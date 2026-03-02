@@ -21,11 +21,36 @@ AI Formawork は顧客・顧客ノート・スタッフを管理する B2B SaaS 
 ```
 apps/web/
   app/
-    (private)/    # 認証が必要なルート
-    (public)/     # 公開ルート
-  features/       # 機能別モジュール (auth, customer, customer-note, staff)
-  components/     # 共通コンポーネント
-  libs/           # ユーティリティ
+    (private)/              # 認証が必要なルート
+      customers/            # 顧客一覧・新規登録
+        [customerId]/       # 顧客詳細
+      staffs/               # スタッフ一覧・新規登録
+        [staffId]/          # スタッフ詳細
+      settings/             # 設定
+        password/           # パスワード変更
+    (public)/               # 公開ルート
+      login/                # ログイン
+      lp/                   # ランディングページ
+    api/
+      cron/                 # cron ジョブ用 API
+        generate-advice/
+        generate-memory/
+      customer-notes/       # 顧客ノート API
+        [noteId]/
+  features/                 # 機能別モジュール
+    auth/                   # 認証
+      change-password/ login/ logout/ user/
+    customer/               # 顧客管理
+      delete/ detail/ edit/ list/ register/
+    customer-note/          # 顧客ノート
+      advice/ delete/ edit/ list/ register/
+    customer-memory/        # 顧客メモリ
+      delete/ edit/ list/ register/ toggle-lock/
+    staff/                  # スタッフ管理
+      delete/ detail/ edit/ list/ register/
+    onboarding/             # オンボーディング
+  components/               # 共通コンポーネント
+  libs/                     # ユーティリティ
 packages/
   db/             # Drizzle スキーマとクライアント
   ui/             # shadcn/ui コンポーネント
