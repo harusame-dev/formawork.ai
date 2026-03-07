@@ -12,7 +12,7 @@ GitHub Actions ワークフローは以下のルールに従うこと。
 - `name: 依存関係のインストール`
 
 ### pnpm バージョン
-`pnpm/action-setup@v4` でバージョンを省略し、`package.json` の `packageManager` フィールドのバージョンを自動使用させること。
+`pnpm/action-setup` でバージョンを省略し、`package.json` の `packageManager` フィールドのバージョンを自動使用させること。
 
 - ❌ 悪い例: `version: 10.12.4`
 - ✅ 良い例: バージョン指定なし（省略）
