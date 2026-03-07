@@ -1,56 +1,67 @@
 {
-	"enableAllProjectMcpServers": true,
-	"hooks": {
-		"PostToolUse": [
-			{
-				"hooks": [
-					{
-						"command": "pnpm -w validate:fix",
-						"type": "command"
-					}
-				],
-				"matcher": "Write|Edit"
-			}
-		]
-	},
-	"permissions": {
-		"allow": [
-			"mcp__serena",
-			"Bash(pnpm -w dev:*)",
-			"Bash(pnpm -w build:*)",
-			"Bash(pnpm -w start:*)",
-			"Bash(pnpm -w db:generate:*)",
-			"Bash(pnpm -w db:migrate:*)",
-			"Bash(pnpm -w db:push:*)",
-			"Bash(pnpm -w db:reset:*)",
-			"Bash(pnpm -w db:seed:*)",
-			"Bash(pnpm -w test:browser:*)",
-			"Bash(pnpm -w test:server:*)",
-			"Bash(pnpm -w test:e2e:*)",
-			"Bash(pnpm -w validate:check)",
-			"Bash(pnpm -w validate:fix)",
-			"Bash(pnpm --filter:*)",
-			"Bash(git:*)",
-			"Bash(gh:*)",
-			"Bash(curl:*)",
-			"Read(.env.sample)",
-			"Write(.env.sample)",
-			"WebFetch(domain:context7.com)",
-			"WebFetch(domain:api.github.com)"
-		],
-		"ask": [],
-		"deny": [
-			"Read(.env*)",
-			"Write(.env*)",
-			"Bash(git rebase:*)",
-			"Bash(git reset:*)",
-			"Bash(git push --force:*)",
-			"Bash(git push -f:*)"
-		]
-	},
-	"sandbox": {
-		"autoAllowBashIfSandboxed": true,
-		"enabled": true,
-		"excludedCommands": ["git:*", "pnpm:*", "docker:*", "gh:*"]
-	}
+  "language": "japanese",
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "echo '## 参照可能な agent-docs ドキュメント一覧' && ls agent-docs/ | sed 's/^/- /'",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Skill(*)",
+      "Bash(gh *)",
+      "Bash(pnpm -w test:browser*)",
+      "Bash(pnpm -w test:e2e*)",
+      "Bash(playwright-cli *)"
+    ],
+    "ask": [],
+    "deny": [
+      "Bash(gh issue delete *)",
+      "Bash(gh issue lock *)",
+      "Bash(gh issue unlock *)",
+      "Bash(gh pr close *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh pr lock *)",
+      "Bash(gh pr unlock *)",
+      "Bash(gh release *)",
+      "Bash(gh repo *)",
+      "Bash(gh secret *)",
+      "Bash(gh variable *)",
+      "Bash(gh workflow *)",
+      "Bash(gh auth *)",
+      "Bash(gh ssh-key *)",
+      "Bash(gh gpg-key *)",
+      "Bash(gh label delete *)",
+      "Bash(gh milestone delete *)",
+      "Bash(gh api *)",
+      "Bash(gh gist *)",
+      "Bash(gh codespace *)",
+      "Bash(gh extension *)"
+    ]
+  },
+  "sandbox": {
+    "autoAllowBashIfSandboxed": true,
+    "enabled": true,
+    "excludedCommands": [
+      "gh:*",
+      "pnpm -w test:browser:*",
+      "pnpm -w test:e2e:*",
+      "playwright-cli:*"
+    ],
+    "network": {
+      "allowedDomains": ["api.github.com", "registry.npmjs.org"],
+      "allowLocalBinding": true
+    },
+    "filesystem": {
+      "allowWrite": ["//tmp/pnpm/store"]
+    }
+  }
 }

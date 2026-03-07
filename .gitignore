@@ -38,3 +38,5 @@ next-env.d.ts
 *.local.*
 
 __screenshots__
+
+.claude/work

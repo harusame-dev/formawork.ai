@@ -1,0 +1,22 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - paragraph [ref=e4]: FORMAWORK.ai
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: ログイン
+        - generic [ref=e8]: デモ環境
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - text: メールアドレス
+          - textbox "メールアドレス" [ref=e12]: admin@example.com
+        - generic [ref=e13]:
+          - text: パスワード
+          - generic [ref=e14]:
+            - textbox "パスワード" [ref=e15]: Admin@789!
+            - button "パスワードを表示" [ref=e16]:
+              - img [ref=e17]
+        - button "ログイン" [ref=e20]
+        - generic [ref=e21]: アカウントがない場合、パスワードを忘れた場合は管理者にお問い合わせください。
+  - button "Open Next.js Dev Tools" [ref=e27] [cursor=pointer]:
+    - img [ref=e28]
+  - alert [ref=e31]
