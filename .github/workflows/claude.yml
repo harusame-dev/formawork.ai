@@ -46,3 +46,6 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           additional_permissions: |
             actions: read
+          claude_args: >-
+            --allowed-tools
+            "Bash(git add:*),Bash(git status),Bash(git diff:*),Bash(git log:*),Bash(git commit:*),Bash(git push:*),Bash(git checkout:*),Bash(git branch:*),Bash(git fetch:*),Bash(git stash:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr create:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh search:*),Bash(gh api:*),Bash(pnpm -w validate:check),Bash(pnpm -w validate:fix),Bash(pnpm -w build),Bash(pnpm -w test:browser),Bash(pnpm -w test:server),Bash(pnpm -w db:generate),Bash(ls:*),Read(*),Write(*),Edit(*),Glob(*),Grep(*),Agent(*),TodoWrite,Skill(*),mcp__github_comment__update_claude_comment"
