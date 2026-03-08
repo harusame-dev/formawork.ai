@@ -2,10 +2,7 @@ import { fail, type Result, succeed } from "@harusame0616/result";
 import { getLogger } from "@repo/logger/nextjs/server";
 import { db } from "@workspace/db/client";
 import { customersTable } from "@workspace/db/schema/customer";
-import {
-	customerMemoriesTable,
-	type MemoryCategory,
-} from "@workspace/db/schema/customer-memory";
+import { customerMemoriesTable } from "@workspace/db/schema/customer-memory";
 import { customerNotesTable } from "@workspace/db/schema/customer-note";
 import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 import * as v from "valibot";
@@ -15,6 +12,7 @@ import {
 	generateMemoryOperations,
 	type MemoryOperation,
 } from "./generate-memory";
+import { memoryCategorySchema } from "./schema";
 
 const MAX_MEMORIES_PER_CUSTOMER = 100;
 
@@ -70,7 +68,7 @@ async function fetchExistingMemories(customerId: string) {
 
 	return results.map((r) => ({
 		...r,
-		category: r.category as MemoryCategory,
+		category: v.parse(memoryCategorySchema, r.category),
 	}));
 }
 
@@ -82,9 +80,20 @@ async function executeOperation(
 	const logger = await getLogger("executeMemoryOperation");
 
 	switch (operation.operation) {
-		case "create":
+		case "create": {
+			const categoryResult = v.safeParse(
+				memoryCategorySchema,
+				operation.category,
+			);
+			if (!categoryResult.success) {
+				logger.warn("不正なカテゴリ値のため create 操作をスキップ", {
+					category: operation.category,
+					customerId,
+				});
+				break;
+			}
 			await db.insert(customerMemoriesTable).values({
-				category: operation.category as MemoryCategory,
+				category: categoryResult.output,
 				content: operation.content,
 				customerId,
 				importance: operation.importance,
@@ -97,6 +106,7 @@ async function executeOperation(
 				reason: operation.reason,
 			});
 			break;
+		}
 
 		case "update": {
 			const updateData: Record<string, unknown> = {};
