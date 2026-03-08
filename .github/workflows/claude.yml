@@ -10,9 +10,12 @@ on:
   pull_request_review:
     types: [submitted]
 
-concurrency:
-  group: claude-${{ github.ref }}
-  cancel-in-progress: true
+# concurrency を設定しない理由:
+# issue_comment イベントでは github.ref がデフォルトブランチ（refs/heads/main）になるため、
+# すべての issue/PR への @claude コメントが同一グループに属してしまう。
+# cancel-in-progress: true にすると、Claude Code アクションが投稿する初期ステータスコメントが
+# 新たなワークフロー実行をトリガーし、実行中の正規 run をキャンセルしてしまう。
+# アクション自体が bot コメントの重複実行を検出・スキップする仕組みを持つため、concurrency 不要。
 
 jobs:
   claude:
