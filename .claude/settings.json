@@ -60,7 +60,12 @@
 			"allowWrite": ["//tmp/pnpm/store"]
 		},
 		"network": {
-			"allowedDomains": ["api.github.com", "registry.npmjs.org", "github.com"],
+			"allowedDomains": [
+				"api.github.com",
+				"registry.npmjs.org",
+				"github.com",
+				"docs.anthropic.com"
+			],
 			"allowLocalBinding": true
 		}
 	}
