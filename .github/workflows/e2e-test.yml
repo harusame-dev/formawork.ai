@@ -69,7 +69,7 @@ jobs:
 
       - name: テストレポートのアップロード
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report-${{ matrix.browser }}
           path: apps/web/playwright-report/
@@ -77,7 +77,7 @@ jobs:
 
       - name: テスト結果アップロード
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-screenshots-${{ matrix.browser }}
           path: apps/web/test-results/

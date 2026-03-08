@@ -56,7 +56,7 @@ jobs:
 
       - name: テスト結果のアップロード
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: vitest-results
           path: "**/__screenshots__/**"
