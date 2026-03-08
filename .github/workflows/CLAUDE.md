@@ -27,7 +27,7 @@ GitHub Actions ワークフローは以下のルールに従うこと。
 ```
 
 ### concurrency 設定
-PR ごとに重複実行を防ぐため、必ず concurrency を設定すること。
+重複実行を防ぐため、原則的に concurrency を設定すること。設定しない場合はワークフローファイルにその理由をコメントで残すこと。
 
 ```yaml
 concurrency:
