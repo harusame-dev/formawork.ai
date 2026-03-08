@@ -22,8 +22,8 @@ import {
 } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { CustomerTag } from "@/features/customer/tag";
-import { getLatestAdvice } from "../advice/get-latest-advice";
-import { getCustomerNoteImageUrl } from "./get-customer-note-image-url";
+import { getLatestAdvices } from "../advice/get-latest-advice";
+import { getCustomerNoteImageUrls } from "./get-customer-note-image-url";
 
 export type CustomerNoteSearchCondition = {
 	customerId: string;
@@ -135,27 +135,28 @@ export async function getCustomerNotes(
 		.limit(NOTES_PER_PAGE)
 		.offset(offset);
 
-	// 画像に signed URL を付与し、アドバイスを取得
-	const notesWithSignedUrls: CustomerNoteWithImages[] = await Promise.all(
-		notesWithImages.map(async (note) => {
-			const [imagesWithUrls, advice] = await Promise.all([
-				Promise.all(
-					note.images.map(async (image) => ({
-						createdAt: new Date(image.createdAt),
-						customerNoteId: image.customerNoteId,
-						displayOrder: image.displayOrder,
-						path: image.path,
-						url: await getCustomerNoteImageUrl(image.path),
-					})),
-				),
-				getLatestAdvice(note.customerNoteId),
-			]);
+	// 画像 URL・アドバイスを一括取得して N+1 を解消
+	const allImagePaths = notesWithImages.flatMap((note) =>
+		note.images.map((img) => img.path),
+	);
+	const noteIds = notesWithImages.map((note) => note.customerNoteId);
 
-			return {
-				...note,
-				advice,
-				images: imagesWithUrls,
-			};
+	const [imageUrlMap, adviceMap] = await Promise.all([
+		getCustomerNoteImageUrls(allImagePaths),
+		getLatestAdvices(noteIds),
+	]);
+
+	const notesWithSignedUrls: CustomerNoteWithImages[] = notesWithImages.map(
+		(note) => ({
+			...note,
+			advice: adviceMap.get(note.customerNoteId) ?? null,
+			images: note.images.map((image) => ({
+				createdAt: new Date(image.createdAt),
+				customerNoteId: image.customerNoteId,
+				displayOrder: image.displayOrder,
+				path: image.path,
+				url: imageUrlMap.get(image.path) ?? null,
+			})),
 		}),
 	);
 
