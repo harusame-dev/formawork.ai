@@ -11,6 +11,14 @@ import { LoginForm } from "@/features/auth/login/login-form";
 import Logo from "../../../public/icon-512x512.png";
 
 export const metadata: Metadata = {
+	description: "AI とともに仕事を形作る社内システムプラットフォーム",
+	openGraph: {
+		description: "AI とともに仕事を形作る社内システムプラットフォーム",
+		images: [{ height: 512, url: "/icon-512x512.png", width: 512 }],
+		siteName: "FORMAWORK.ai",
+		title: "ログイン - FORMAWORK.ai",
+		type: "website",
+	},
 	title: "ログイン",
 };
 
