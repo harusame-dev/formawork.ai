@@ -10,7 +10,6 @@ import type { SelectCustomerNoteAdvice } from "@workspace/db/schema/customer-not
 import { staffsTable } from "@workspace/db/schema/staff";
 import {
 	and,
-	count,
 	desc,
 	eq,
 	gte,
@@ -108,6 +107,7 @@ export async function getCustomerNotes(
 			serviceDate: customerNotesTable.serviceDate,
 			staffId: customerNotesTable.staffId,
 			staffName: sql<string>`CONCAT(${staffsTable.lastName}, ' ', ${staffsTable.firstName})`,
+			totalCount: sql<number>`COUNT(*) OVER()`,
 			updatedAt: customerNotesTable.updatedAt,
 		})
 		.from(customerNotesTable)
@@ -159,15 +159,7 @@ export async function getCustomerNotes(
 		}),
 	);
 
-	const totalCountResult = await db
-		.select({
-			count: count(),
-		})
-		.from(customerNotesTable)
-		.leftJoin(staffsTable, eq(customerNotesTable.staffId, staffsTable.staffId))
-		.where(and(...filters));
-
-	const totalCount = totalCountResult[0]?.count ?? 0;
+	const totalCount = notesWithImages[0]?.totalCount ?? 0;
 	const totalPages = Math.ceil(totalCount / NOTES_PER_PAGE);
 
 	return {
