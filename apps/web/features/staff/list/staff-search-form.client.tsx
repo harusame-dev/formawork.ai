@@ -16,7 +16,7 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as v from "valibot";
-import { useIsHydrated } from "@/libs/is-hydrated.hook";
+import { useIsHydrated } from "@/libs/use-is-hydrated.hook";
 import {
 	STAFF_SEARCH_KEYWORD_MAX_LENGTH,
 	staffsConditionSchema,

@@ -13,7 +13,7 @@ import {
 import { Input } from "@workspace/ui/components/input";
 import { useForm } from "react-hook-form";
 import { type LoginParams, loginSchema } from "@/features/auth/login/schema";
-import { useIsHydrated } from "@/libs/is-hydrated.hook";
+import { useIsHydrated } from "@/libs/use-is-hydrated.hook";
 import { defaultPassword, defaultUserName } from "./default-user";
 import { loginAction } from "./login.action";
 

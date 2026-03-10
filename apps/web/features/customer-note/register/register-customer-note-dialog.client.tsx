@@ -29,8 +29,8 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as v from "valibot";
 import { CustomerNoteImageInput } from "../list/customer-note-image-input.client";
-import { useImageUpload } from "./image-upload.hook";
 import { registerCustomerNoteAction } from "./register-customer-note.action";
+import { useImageUpload } from "./use-image-upload.hook";
 
 function getTodayString(): string {
 	return new Date()

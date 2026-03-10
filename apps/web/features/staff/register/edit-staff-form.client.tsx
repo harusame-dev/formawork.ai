@@ -23,7 +23,7 @@ import { useForm } from "react-hook-form";
 import * as v from "valibot";
 import { UserRole } from "@/features/auth/user/role";
 import { editStaffAction } from "@/features/staff/edit/edit-staff.action";
-import { useIsHydrated } from "@/libs/is-hydrated.hook";
+import { useIsHydrated } from "@/libs/use-is-hydrated.hook";
 import {
 	staffEmailSchema,
 	staffFirstNameSchema,

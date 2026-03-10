@@ -15,7 +15,7 @@ import { Input } from "@workspace/ui/components/input";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { useIsHydrated } from "@/libs/is-hydrated.hook";
+import { useIsHydrated } from "@/libs/use-is-hydrated.hook";
 import { changePasswordAction } from "./change-password.action";
 import { type ChangePasswordParams, changePasswordSchema } from "./schema";
 

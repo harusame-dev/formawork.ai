@@ -4,7 +4,7 @@ import { Onborda, OnbordaProvider } from "onborda";
 import { type ReactNode, useCallback, useEffect, useRef } from "react";
 import { OnboardingCard } from "../components/onboarding-card.client";
 import { steps } from "../constants/steps.universal";
-import { TOUR_NAME, useOnboarding } from "../hooks/onboarding.hook";
+import { TOUR_NAME, useOnboarding } from "../hooks/use-onboarding.hook";
 
 type OnboardingWrapperProps = {
 	children: ReactNode;

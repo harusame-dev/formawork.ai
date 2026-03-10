@@ -15,7 +15,7 @@ import { OnboardingId } from "@/features/onboarding/constants/steps.universal";
 import {
 	CUSTOMER_MENU_STEP_INDEX,
 	useOnboarding,
-} from "@/features/onboarding/hooks/onboarding.hook";
+} from "@/features/onboarding/hooks/use-onboarding.hook";
 
 export function NavigationMenu() {
 	const { currentStep, refreshHighlight } = useOnboarding();

@@ -2,7 +2,7 @@
 
 import { Button } from "@workspace/ui/components/button";
 import { HelpCircle } from "lucide-react";
-import { useOnboarding } from "../hooks/onboarding.hook";
+import { useOnboarding } from "../hooks/use-onboarding.hook";
 
 export function StartTourButton() {
 	const { reset } = useOnboarding();

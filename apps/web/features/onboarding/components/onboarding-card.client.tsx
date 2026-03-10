@@ -9,7 +9,7 @@ import {
 } from "@workspace/ui/components/card";
 import { X } from "lucide-react";
 import type { CardComponentProps } from "onborda";
-import { useOnboarding } from "../hooks/onboarding.hook";
+import { useOnboarding } from "../hooks/use-onboarding.hook";
 
 export function OnboardingCard({
 	step,

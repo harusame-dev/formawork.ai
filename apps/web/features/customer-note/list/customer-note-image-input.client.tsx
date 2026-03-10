@@ -5,7 +5,7 @@ import { LoadingIcon } from "@workspace/ui/components/loading-icon";
 import { ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useRef } from "react";
-import type { UploadingImage } from "../register/image-upload.hook";
+import type { UploadingImage } from "../register/use-image-upload.hook";
 
 type CustomerNoteImageInputProps = {
 	images: UploadingImage[];

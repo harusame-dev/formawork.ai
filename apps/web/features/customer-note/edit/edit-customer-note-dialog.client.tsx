@@ -31,7 +31,7 @@ import { useForm } from "react-hook-form";
 import * as v from "valibot";
 import { CustomerNoteImageInput } from "@/features/customer-note/list/customer-note-image-input.client";
 import type { CustomerNoteImageWithUrl } from "@/features/customer-note/list/get-customer-notes";
-import { useImageUpload } from "@/features/customer-note/register/image-upload.hook";
+import { useImageUpload } from "@/features/customer-note/register/use-image-upload.hook";
 import { editCustomerNoteAction } from "./edit-customer-note.action";
 
 const formSchema = v.object({

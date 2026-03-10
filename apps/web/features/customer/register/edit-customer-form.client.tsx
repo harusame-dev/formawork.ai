@@ -22,7 +22,7 @@ import { Textarea } from "@workspace/ui/components/textarea";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { editCustomerAction } from "@/features/customer/edit/edit-customer.action";
-import { useIsHydrated } from "@/libs/is-hydrated.hook";
+import { useIsHydrated } from "@/libs/use-is-hydrated.hook";
 import type { EditCustomerParams } from "../edit/schema";
 import { GENDER_LABELS, Gender } from "../schema";
 import { registerCustomerAction } from "./register-customer.action";
