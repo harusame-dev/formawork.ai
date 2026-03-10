@@ -2,13 +2,13 @@ import type { Mock } from "vitest";
 import { test as base, expect, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { EditCustomerForm } from "./edit-customer-form";
+import { EditCustomerForm } from "./edit-customer-form.client";
 
-vi.mock("./register-customer-action", () => ({
+vi.mock("./register-customer.action", () => ({
 	registerCustomerAction: vi.fn(),
 }));
 
-vi.mock("../edit/edit-customer-action", () => ({
+vi.mock("../edit/edit-customer.action", () => ({
 	editCustomerAction: vi.fn(),
 }));
 
@@ -22,7 +22,7 @@ const test = base.extend<{
 		use: any,
 	) => {
 		const registerCustomerActionModule = await import(
-			"./register-customer-action"
+			"./register-customer.action"
 		);
 		await use(registerCustomerActionModule.registerCustomerAction);
 		vi.clearAllMocks();

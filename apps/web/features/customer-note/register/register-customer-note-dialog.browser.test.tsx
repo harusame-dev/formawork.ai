@@ -2,10 +2,10 @@ import type { Mock } from "vitest";
 import { test as base, expect, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { RegisterCustomerNoteDialog } from "./register-customer-note-dialog";
+import { RegisterCustomerNoteDialog } from "./register-customer-note-dialog.client";
 
 // Server Actionをモック
-vi.mock("./register-customer-note-action", () => ({
+vi.mock("./register-customer-note.action", () => ({
 	registerCustomerNoteAction: vi.fn(),
 }));
 
@@ -19,7 +19,7 @@ const test = base.extend<{
 		use: any,
 	) => {
 		const registerCustomerNoteActionModule = await import(
-			"./register-customer-note-action"
+			"./register-customer-note.action"
 		);
 		const mock = vi.mocked(
 			registerCustomerNoteActionModule.registerCustomerNoteAction,

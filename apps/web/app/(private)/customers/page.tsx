@@ -3,13 +3,13 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getUserRole, UserRole } from "@/features/auth/get-user-role";
-import { CustomerSearchFormContainer } from "@/features/customer/list/customer-search-form-container";
-import { CustomerSearchFormSkeleton } from "@/features/customer/list/customer-search-form-skeleton";
-import { CustomersContainer } from "@/features/customer/list/customers-container";
-import { CustomersSkeleton } from "@/features/customer/list/customers-skeleton";
+import { CustomerSearchFormContainer } from "@/features/customer/list/customer-search-form.server";
+import { CustomerSearchFormSkeleton } from "@/features/customer/list/customer-search-form-skeleton.universal";
+import { CustomersContainer } from "@/features/customer/list/customers.server";
+import { CustomersSkeleton } from "@/features/customer/list/customers-skeleton.universal";
 import { parseCustomersConditionSearchParams } from "@/features/customer/list/schema";
-import { OnboardingId } from "@/features/onboarding/constants/steps";
-import { SuspenseOnSearch } from "@/libs/suspense-on-search";
+import { OnboardingId } from "@/features/onboarding/constants/steps.universal";
+import { SuspenseOnSearch } from "@/libs/suspense-on-search.client";
 
 export default function Page({ searchParams }: PageProps<"/customers">) {
 	const validatedCondition = searchParams.then(

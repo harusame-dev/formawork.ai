@@ -2,10 +2,10 @@ import type { Mock } from "vitest";
 import { test as base, expect, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { LoginForm } from "./login-form";
+import { LoginForm } from "./login-form.client";
 
 // loginAction をモック
-vi.mock("./login-action", () => ({
+vi.mock("./login.action", () => ({
 	loginAction: vi.fn(),
 }));
 
@@ -18,7 +18,7 @@ const test = base.extend<{
 		// biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
 		use: any,
 	) => {
-		const loginActionModule = await import("./login-action");
+		const loginActionModule = await import("./login.action");
 		await use(loginActionModule.loginAction);
 		vi.clearAllMocks();
 	},

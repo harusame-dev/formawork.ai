@@ -1,13 +1,13 @@
 import { Card } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
-import { RegisterStaffLink } from "@/features/staff/list/register-staff-link";
+import { RegisterStaffLink } from "@/features/staff/list/register-staff-link.server";
 import { parseStaffsConditionSearchParams } from "@/features/staff/list/schema";
-import { StaffSearchFormContainer } from "@/features/staff/list/staff-search-form-container";
-import { StaffSearchFormSkeleton } from "@/features/staff/list/staff-search-form-skeleton";
-import { StaffsContainer } from "@/features/staff/list/staffs-container";
-import { StaffsSkeleton } from "@/features/staff/list/staffs-skeleton";
-import { SuspenseOnSearch } from "@/libs/suspense-on-search";
+import { StaffSearchFormContainer } from "@/features/staff/list/staff-search-form.server";
+import { StaffSearchFormSkeleton } from "@/features/staff/list/staff-search-form-skeleton.universal";
+import { StaffsContainer } from "@/features/staff/list/staffs.server";
+import { StaffsSkeleton } from "@/features/staff/list/staffs-skeleton.universal";
+import { SuspenseOnSearch } from "@/libs/suspense-on-search.client";
 
 export default async function Page({ searchParams }: PageProps<"/staffs">) {
 	const validatedCondition = searchParams.then(

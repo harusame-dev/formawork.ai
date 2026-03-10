@@ -1,7 +1,7 @@
 import { expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { CustomersPresenter } from "./customers-presenter";
+import { CustomersPresenter } from "./customers.universal";
 import type { CustomersListItem } from "./schema";
 
 vi.mock("next/navigation", () => ({

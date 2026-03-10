@@ -1,9 +1,9 @@
 import { expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { DeleteStaffDialog } from "./delete-staff-dialog";
+import { DeleteStaffDialog } from "./delete-staff-dialog.client";
 
-vi.mock("./delete-staff-action", () => ({
+vi.mock("./delete-staff.action", () => ({
 	deleteStaffAction: vi.fn(),
 }));
 

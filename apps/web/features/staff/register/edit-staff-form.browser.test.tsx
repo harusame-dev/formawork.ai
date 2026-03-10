@@ -2,13 +2,13 @@ import type { Mock } from "vitest";
 import { test as base, expect, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { EditStaffForm } from "./edit-staff-form";
+import { EditStaffForm } from "./edit-staff-form.client";
 
-vi.mock("./register-staff-action", () => ({
+vi.mock("./register-staff.action", () => ({
 	registerStaffAction: vi.fn(),
 }));
 
-vi.mock("@/features/staff/edit/edit-staff-action", () => ({
+vi.mock("@/features/staff/edit/edit-staff.action", () => ({
 	editStaffAction: vi.fn(),
 }));
 
@@ -21,7 +21,7 @@ const test = base.extend<{
 		// biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
 		use: any,
 	) => {
-		const registerStaffActionModule = await import("./register-staff-action");
+		const registerStaffActionModule = await import("./register-staff.action");
 		await use(registerStaffActionModule.registerStaffAction);
 		vi.clearAllMocks();
 	},

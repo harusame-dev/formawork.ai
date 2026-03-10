@@ -7,7 +7,7 @@ import { test as base, expect } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { worker } from "@/mocks/browser";
-import { CustomerNoteAdviceLoading } from "./customer-note-advice-loading";
+import { CustomerNoteAdviceLoading } from "./customer-note-advice-loading.client";
 
 function TestWrapper({ children }: { children: ReactNode }) {
 	return (

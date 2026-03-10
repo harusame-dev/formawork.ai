@@ -7,7 +7,7 @@ import {
 } from "@workspace/ui/components/card";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { LoginForm } from "@/features/auth/login/login-form";
+import { LoginForm } from "@/features/auth/login/login-form.client";
 import Logo from "../../../public/icon-512x512.png";
 
 export const metadata: Metadata = {

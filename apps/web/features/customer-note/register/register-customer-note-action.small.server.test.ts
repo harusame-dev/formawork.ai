@@ -1,5 +1,5 @@
 import { expect, test, vi } from "vitest";
-import { registerCustomerNoteAction } from "./register-customer-note-action";
+import { registerCustomerNoteAction } from "./register-customer-note.action";
 
 vi.mock("@repo/logger/nextjs/server", () => ({
 	getLogger: vi.fn().mockResolvedValue({

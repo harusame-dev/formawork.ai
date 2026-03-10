@@ -1,5 +1,5 @@
 import { Card } from "@workspace/ui/components/card";
-import { EditStaffForm } from "@/features/staff/register/edit-staff-form";
+import { EditStaffForm } from "@/features/staff/register/edit-staff-form.client";
 
 export default function NewStaffPage() {
 	return (

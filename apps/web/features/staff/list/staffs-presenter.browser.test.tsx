@@ -2,7 +2,7 @@ import { expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import type { StaffsListItem } from "./schema";
-import { StaffsPresenter } from "./staffs-presenter";
+import { StaffsPresenter } from "./staffs.universal";
 
 vi.mock("next/navigation", () => ({
 	usePathname: vi.fn().mockReturnValue("path"),

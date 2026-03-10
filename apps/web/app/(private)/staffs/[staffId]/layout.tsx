@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Suspense } from "react";
-import { StaffInfoContainer } from "@/features/staff/detail/staff-info-container";
-import { StaffInfoSkeleton } from "@/features/staff/detail/staff-info-skeleton";
+import { StaffInfoContainer } from "@/features/staff/detail/staff-info.server";
+import { StaffInfoSkeleton } from "@/features/staff/detail/staff-info-skeleton.universal";
 
 type StaffDetailLayoutProps = LayoutProps<"/staffs/[staffId]"> & {
 	action: ReactNode;

@@ -1,6 +1,6 @@
 import { Button } from "@workspace/ui/components/button";
 import { Suspense } from "react";
-import { RegisterCustomerNoteDialogContainer } from "@/features/customer-note/register/register-customer-note-dialog-container";
+import { RegisterCustomerNoteDialogContainer } from "@/features/customer-note/register/register-customer-note-dialog.server";
 
 export default async function CustomerNoteActionPage({
 	params,

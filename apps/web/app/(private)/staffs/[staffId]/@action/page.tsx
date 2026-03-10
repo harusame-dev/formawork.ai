@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { getUserRole, UserRole } from "@/features/auth/get-user-role";
 import { getUserStaffId } from "@/features/auth/get-user-staff-id";
-import { DeleteStaffDialog } from "@/features/staff/delete/delete-staff-dialog";
+import { DeleteStaffDialog } from "@/features/staff/delete/delete-staff-dialog.client";
 
 export default function Page({ params }: PageProps<"/staffs/[staffId]">) {
 	const staffIdPromise = params.then(({ staffId }) => staffId);

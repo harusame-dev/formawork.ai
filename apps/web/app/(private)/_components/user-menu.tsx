@@ -10,7 +10,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 import { User } from "lucide-react";
 import Link from "next/link";
-import { LogoutButton } from "@/features/auth/logout/logout-button";
+import { LogoutButton } from "@/features/auth/logout/logout-button.client";
 
 export function UserMenu() {
 	return (

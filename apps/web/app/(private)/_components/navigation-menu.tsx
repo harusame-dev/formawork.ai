@@ -11,11 +11,11 @@ import {
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { OnboardingId } from "@/features/onboarding/constants/steps";
+import { OnboardingId } from "@/features/onboarding/constants/steps.universal";
 import {
 	CUSTOMER_MENU_STEP_INDEX,
 	useOnboarding,
-} from "@/features/onboarding/hooks/use-onboarding";
+} from "@/features/onboarding/hooks/onboarding.hook";
 
 export function NavigationMenu() {
 	const { currentStep, refreshHighlight } = useOnboarding();

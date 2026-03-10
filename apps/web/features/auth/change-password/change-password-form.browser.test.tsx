@@ -2,9 +2,9 @@ import type { Mock } from "vitest";
 import { test as base, expect, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { ChangePasswordForm } from "./change-password-form";
+import { ChangePasswordForm } from "./change-password-form.client";
 
-vi.mock("./change-password-action", () => ({
+vi.mock("./change-password.action", () => ({
 	changePasswordAction: vi.fn(),
 }));
 
@@ -23,7 +23,7 @@ const test = base.extend<{
 		// biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
 		use: any,
 	) => {
-		const changePasswordActionModule = await import("./change-password-action");
+		const changePasswordActionModule = await import("./change-password.action");
 		await use(changePasswordActionModule.changePasswordAction);
 		vi.clearAllMocks();
 	},

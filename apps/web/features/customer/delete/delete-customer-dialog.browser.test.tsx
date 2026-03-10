@@ -1,10 +1,10 @@
 import { expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { DeleteCustomerDialog } from "./delete-customer-dialog";
+import { DeleteCustomerDialog } from "./delete-customer-dialog.client";
 
 // Server Actionをモック
-vi.mock("./delete-customer-action", () => ({
+vi.mock("./delete-customer.action", () => ({
 	deleteCustomerAction: vi.fn(),
 }));
 

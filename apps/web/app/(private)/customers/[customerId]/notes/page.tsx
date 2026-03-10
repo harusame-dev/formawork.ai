@@ -1,9 +1,9 @@
 import * as v from "valibot";
-import { CustomerNotesContainer } from "@/features/customer-note/list/customer-notes-container";
-import { CustomerNotesSearchForm } from "@/features/customer-note/list/customer-notes-search-form";
-import { CustomerNotesSearchFormSkeleton } from "@/features/customer-note/list/customer-notes-search-form-skeleton";
-import { CustomerNotesSkeleton } from "@/features/customer-note/list/customer-notes-skeleton";
-import { SuspenseOnSearch } from "@/libs/suspense-on-search";
+import { CustomerNotesContainer } from "@/features/customer-note/list/customer-notes.server";
+import { CustomerNotesSearchForm } from "@/features/customer-note/list/customer-notes-search-form.client";
+import { CustomerNotesSearchFormSkeleton } from "@/features/customer-note/list/customer-notes-search-form-skeleton.universal";
+import { CustomerNotesSkeleton } from "@/features/customer-note/list/customer-notes-skeleton.universal";
+import { SuspenseOnSearch } from "@/libs/suspense-on-search.client";
 
 const searchParamsSchema = v.object({
 	dateFrom: v.optional(v.string()),

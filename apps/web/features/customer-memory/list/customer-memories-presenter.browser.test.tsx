@@ -2,9 +2,9 @@ import { MemoryCategory } from "@workspace/db/schema/customer-memory";
 import { expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { CustomerMemoriesPresenter } from "./customer-memories-presenter";
+import { CustomerMemoriesPresenter } from "./customer-memories.universal";
 
-vi.mock("./customer-memory-action-buttons", () => ({
+vi.mock("./customer-memory-action-buttons.client", () => ({
 	CustomerMemoryActionButtons: () => <div data-testid="action-buttons" />,
 }));
 

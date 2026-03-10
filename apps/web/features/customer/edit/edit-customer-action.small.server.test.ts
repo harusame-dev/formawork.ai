@@ -1,5 +1,5 @@
 import { test as base, expect, type Mock, vi } from "vitest";
-import { editCustomerAction } from "./edit-customer-action";
+import { editCustomerAction } from "./edit-customer.action";
 
 vi.mock("next/cache", async () => ({
 	updateTag: vi.fn(),

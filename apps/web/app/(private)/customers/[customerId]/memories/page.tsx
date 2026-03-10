@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { CustomerMemoriesContainer } from "@/features/customer-memory/list/customer-memories-container";
+import { CustomerMemoriesContainer } from "@/features/customer-memory/list/customer-memories.server";
 import { CustomerMemoriesSkeleton } from "@/features/customer-memory/list/customer-memories-skeleton";
 
 export default async function CustomerMemoriesPage({

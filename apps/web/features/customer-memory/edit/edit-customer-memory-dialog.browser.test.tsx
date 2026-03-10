@@ -3,13 +3,13 @@ import type { Mock } from "vitest";
 import { test as base, expect, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { EditCustomerMemoryDialog } from "./edit-customer-memory-dialog";
+import { EditCustomerMemoryDialog } from "./edit-customer-memory-dialog.client";
 
-vi.mock("./edit-customer-memory-action", () => ({
+vi.mock("./edit-customer-memory.action", () => ({
 	editCustomerMemoryAction: vi.fn(),
 }));
 
-vi.mock("../register/register-customer-memory-action", () => ({
+vi.mock("../register/register-customer-memory.action", () => ({
 	registerCustomerMemoryAction: vi.fn(),
 }));
 
@@ -22,7 +22,7 @@ const test = base.extend<{
 		// biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
 		use: any,
 	) => {
-		const module = await import("./edit-customer-memory-action");
+		const module = await import("./edit-customer-memory.action");
 		const mock = vi.mocked(module.editCustomerMemoryAction);
 		await use(mock);
 		vi.clearAllMocks();

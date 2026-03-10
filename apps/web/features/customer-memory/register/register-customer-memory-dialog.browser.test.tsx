@@ -2,13 +2,13 @@ import type { Mock } from "vitest";
 import { test as base, expect, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { RegisterCustomerMemoryDialog } from "./register-customer-memory-dialog";
+import { RegisterCustomerMemoryDialog } from "./register-customer-memory-dialog.client";
 
-vi.mock("./register-customer-memory-action", () => ({
+vi.mock("./register-customer-memory.action", () => ({
 	registerCustomerMemoryAction: vi.fn(),
 }));
 
-vi.mock("../edit/edit-customer-memory-action", () => ({
+vi.mock("../edit/edit-customer-memory.action", () => ({
 	editCustomerMemoryAction: vi.fn(),
 }));
 
@@ -21,7 +21,7 @@ const test = base.extend<{
 		// biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
 		use: any,
 	) => {
-		const module = await import("./register-customer-memory-action");
+		const module = await import("./register-customer-memory.action");
 		const mock = vi.mocked(module.registerCustomerMemoryAction);
 		await use(mock);
 		vi.clearAllMocks();
