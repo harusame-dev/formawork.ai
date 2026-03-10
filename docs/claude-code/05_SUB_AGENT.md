@@ -9,5 +9,8 @@ https://code.claude.com/docs/ja/sub-agents
 
 ## 基本方針
 
-- skills の context: fork を優先とし、実現できない場合は sub agent を使用する
-  - 基本的に同じようなことが実現可能だが isolation や background などより細かい制御が必要な場合に作成を検討する
+### skill の context: fork を優先する
+
+Sub Agent と skill のどちらでも実現できる場合、
+どちらで作るか判断コストを避けるため、基本的には skill を優先する。
+skill で実現できない・問題がある場合に subagent を使用する。
