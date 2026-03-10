@@ -5,8 +5,8 @@ import {
 	CardTitle,
 } from "@workspace/ui/components/card";
 import { AlertTriangle, Sparkles } from "lucide-react";
-import { StartTourButton } from "@/features/onboarding/components/start-tour-button";
-import { OnboardingId } from "@/features/onboarding/constants/steps";
+import { StartTourButton } from "@/features/onboarding/components/start-tour-button.client";
+import { OnboardingId } from "@/features/onboarding/constants/steps.universal";
 
 export default function Page() {
 	return (

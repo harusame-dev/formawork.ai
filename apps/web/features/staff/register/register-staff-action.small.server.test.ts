@@ -1,5 +1,5 @@
 import { expect, test, vi } from "vitest";
-import { registerStaffAction } from "./register-staff-action";
+import { registerStaffAction } from "./register-staff.action";
 
 vi.mock("next/cache", async () => ({
 	updateTag: vi.fn(),

@@ -1,5 +1,5 @@
 import { Card } from "@workspace/ui/components/card";
-import { ChangePasswordForm } from "@/features/auth/change-password/change-password-form";
+import { ChangePasswordForm } from "@/features/auth/change-password/change-password-form.client";
 
 export default function PasswordChangePage() {
 	return (

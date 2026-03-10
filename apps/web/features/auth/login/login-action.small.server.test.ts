@@ -1,5 +1,5 @@
 import { expect, test, vi } from "vitest";
-import { loginAction } from "./login-action";
+import { loginAction } from "./login.action";
 
 vi.mock("@repo/logger/nextjs/server", () => ({
 	getLogger: vi.fn().mockResolvedValue({

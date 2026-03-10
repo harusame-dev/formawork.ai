@@ -1,5 +1,5 @@
 import { test as base, expect, type Mock, vi } from "vitest";
-import { deleteCustomerAction } from "./delete-customer-action";
+import { deleteCustomerAction } from "./delete-customer.action";
 
 // 依存関係をモック
 vi.mock("@repo/logger/nextjs/server", () => ({

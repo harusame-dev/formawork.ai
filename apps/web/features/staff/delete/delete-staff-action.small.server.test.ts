@@ -1,5 +1,5 @@
 import { test as base, expect, type Mock, vi } from "vitest";
-import { deleteStaffAction } from "./delete-staff-action";
+import { deleteStaffAction } from "./delete-staff.action";
 
 vi.mock("@repo/logger/nextjs/server", () => ({
 	getLogger: vi.fn().mockResolvedValue({

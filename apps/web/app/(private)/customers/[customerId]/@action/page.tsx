@@ -3,7 +3,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getUserRole, UserRole } from "@/features/auth/get-user-role";
-import { DeleteCustomerDialog } from "@/features/customer/delete/delete-customer-dialog";
+import { DeleteCustomerDialog } from "@/features/customer/delete/delete-customer-dialog.client";
 
 export default function Page({ params }: PageProps<"/customers/[customerId]">) {
 	const customerIdPromise = params.then(({ customerId }) => customerId);

@@ -1,6 +1,6 @@
 import { RedirectType } from "next/navigation";
 import { test as base, expect, type Mock, vi } from "vitest";
-import { changePasswordAction } from "./change-password-action";
+import { changePasswordAction } from "./change-password.action";
 
 vi.mock("@repo/logger/nextjs/server", () => ({
 	getLogger: vi.fn().mockResolvedValue({

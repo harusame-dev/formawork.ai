@@ -1,6 +1,6 @@
 import { Button } from "@workspace/ui/components/button";
 import { Suspense } from "react";
-import { RegisterCustomerMemoryDialogContainer } from "@/features/customer-memory/register/register-customer-memory-dialog-container";
+import { RegisterCustomerMemoryDialogContainer } from "@/features/customer-memory/register/register-customer-memory-dialog.server";
 
 export default async function CustomerMemoriesActionPage({
 	params,
