@@ -31,6 +31,20 @@
   - 設計方針が守られている
   - 不具合のないコードが生成される
 
+## 各種設定方針
+
+上記の基本方針を実現するために各種設定の方針策定します
+
+[01_メモリ管理.md](https://github.com/harusame0616/formawork.ai/tree/main/docs/claude-code/01_メモリ管理.md)
+[02_設定.md](https://github.com/harusame0616/formawork.ai/tree/main/docs/claude-code/02_設定.md)
+[03_AGENT_SKILL.md](https://github.com/harusame0616/formawork.ai/tree/main/docs/claude-code/03_AGENT_SKILL.md)
+[04_MCP.md](https://github.com/harusame0616/formawork.ai/tree/main/docs/claude-code/04_MCP.md)
+[05_SUB_AGENT.md](https://github.com/harusame0616/formawork.ai/tree/main/docs/claude-code/05_SUB_AGENT.md)
+[06_シークレット管理.md](https://github.com/harusame0616/formawork.ai/tree/main/docs/claude-code/06_シークレット管理.md)
+[07_外部サービス.md](https://github.com/harusame0616/formawork.ai/tree/main/docs/claude-code/07_外部サービス.md)
+
+
+
 ## 開発フロー
 
 ### 通常開発フロー
