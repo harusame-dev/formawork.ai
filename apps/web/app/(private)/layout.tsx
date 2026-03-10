@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Onboarding } from "@/features/onboarding/providers/onboarding-provider.client";
-import { NavigationMenu } from "./_components/navigation-menu";
-import { UserMenu } from "./_components/user-menu";
+import { NavigationMenu } from "./_components/navigation-menu.client";
+import { UserMenu } from "./_components/user-menu.client";
 
 export default function PrivateLayout({
 	children,
