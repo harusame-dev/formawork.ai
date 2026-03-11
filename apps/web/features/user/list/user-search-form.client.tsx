@@ -1,0 +1,80 @@
+"use client";
+
+import { valibotResolver } from "@hookform/resolvers/valibot";
+import { Button } from "@workspace/ui/components/button";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@workspace/ui/components/form";
+import { Input } from "@workspace/ui/components/input";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import * as v from "valibot";
+import { useIsHydrated } from "@/libs/use-is-hydrated.hook";
+import { USER_SEARCH_KEYWORD_MAX_LENGTH, usersConditionSchema } from "./schema";
+
+export const formSchema = v.omit(usersConditionSchema, ["page"]);
+
+export function UserSearchForm({
+	condition,
+}: {
+	condition: v.InferInput<typeof formSchema>;
+}) {
+	const router = useRouter();
+	const { isHydrated } = useIsHydrated();
+
+	const form = useForm<v.InferInput<typeof formSchema>>({
+		defaultValues: { keyword: condition.keyword },
+		resolver: valibotResolver(formSchema),
+	});
+
+	function onSubmit({ keyword }: v.InferOutput<typeof formSchema>) {
+		const params = new URLSearchParams();
+		if (keyword) {
+			params.set("keyword", keyword);
+		}
+
+		router.push(`/users?${params}`);
+	}
+
+	return (
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)}>
+				<FormField
+					control={form.control}
+					name="keyword"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>キーワード</FormLabel>
+							<FormDescription>
+								姓または名で完全一致検索（最大
+								{USER_SEARCH_KEYWORD_MAX_LENGTH}文字）
+							</FormDescription>
+							<div className="flex gap-4 items-center">
+								<FormControl>
+									<Input
+										{...field}
+										disabled={!isHydrated}
+										maxLength={USER_SEARCH_KEYWORD_MAX_LENGTH}
+										type="text"
+									/>
+								</FormControl>
+								<Button disabled={!isHydrated} type="submit">
+									<Search className="mr-2 h-4 w-4" />
+									検索
+								</Button>
+							</div>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+			</form>
+		</Form>
+	);
+}

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { test as base, expect, type Page } from "@playwright/test";
-import { deleteStaff } from "@/features/staff/delete/delete-staff";
-import { registerStaff } from "@/features/staff/register/register-staff";
+import { deleteUser } from "@/features/user/delete/delete-user";
+import { registerUser } from "@/features/user/register/register-user";
 
 type TestUser = {
 	email: string;
@@ -11,13 +11,13 @@ type TestUser = {
 async function createTestUser(params: {
 	email: string;
 	password: string;
-}): Promise<{ staffId: string; testUser: TestUser }> {
+}): Promise<{ userId: string; testUser: TestUser }> {
 	const testUser: TestUser = {
 		email: params.email,
 		password: params.password,
 	};
 
-	const result = await registerStaff({
+	const result = await registerUser({
 		email: testUser.email,
 		firstName: "テスト",
 		lastName: "ユーザー",
@@ -29,13 +29,13 @@ async function createTestUser(params: {
 		throw new Error(`テストユーザーの作成に失敗: ${result.error}`);
 	}
 
-	return { staffId: result.data.staffId, testUser };
+	return { testUser, userId: result.data.userId };
 }
 
-async function cleanupTestUser(staffId: string): Promise<void> {
-	await deleteStaff({
-		currentUserStaffId: "cleanup-user",
-		staffId,
+async function cleanupTestUser(userId: string): Promise<void> {
+	await deleteUser({
+		currentUserId: "cleanup-user",
+		userId,
 	});
 }
 
@@ -60,13 +60,13 @@ const test = base.extend<{
 		// 254文字のメールアドレス (242 + 1(@) + 11(example.com) = 254文字)
 		const randomString = randomUUID().slice(0, 8);
 		const padding = "a".repeat(242 - randomString.length);
-		const { staffId, testUser } = await createTestUser({
+		const { userId, testUser } = await createTestUser({
 			email: `${randomString}${padding}@example.com`,
 			password: "Test@Pass123",
 		});
 
 		await use(testUser);
-		await cleanupTestUser(staffId);
+		await cleanupTestUser(userId);
 	},
 
 	maxPasswordUser: async (
@@ -76,13 +76,13 @@ const test = base.extend<{
 	) => {
 		// 64文字のパスワードでユーザーを作成
 		const randomString = randomUUID().slice(0, 8);
-		const { staffId, testUser } = await createTestUser({
+		const { userId, testUser } = await createTestUser({
 			email: `max-password-${randomString}@example.com`,
 			password: "a".repeat(64),
 		});
 
 		await use(testUser);
-		await cleanupTestUser(staffId);
+		await cleanupTestUser(userId);
 	},
 
 	minEmailUser: async (
@@ -92,13 +92,13 @@ const test = base.extend<{
 	) => {
 		// 最小文字数のメールアドレス（email形式として有効な最短形式）
 		const randomString = randomUUID().slice(0, 4);
-		const { staffId, testUser } = await createTestUser({
+		const { userId, testUser } = await createTestUser({
 			email: `${randomString}@a.co`,
 			password: "Test@Pass123",
 		});
 
 		await use(testUser);
-		await cleanupTestUser(staffId);
+		await cleanupTestUser(userId);
 	},
 
 	minPasswordUser: async (
@@ -108,13 +108,13 @@ const test = base.extend<{
 	) => {
 		// 最小文字数のパスワード（8文字）でユーザーを作成
 		const randomString = randomUUID().slice(0, 8);
-		const { staffId, testUser } = await createTestUser({
+		const { userId, testUser } = await createTestUser({
 			email: `min-password-${randomString}@example.com`,
 			password: "Ab1@1234",
 		});
 
 		await use(testUser);
-		await cleanupTestUser(staffId);
+		await cleanupTestUser(userId);
 	},
 });
 

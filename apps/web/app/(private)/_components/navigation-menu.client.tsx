@@ -41,10 +41,10 @@ export function NavigationMenu() {
 						<li>
 							<Link
 								className="block rounded-md px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
-								href="/staffs"
+								href="/users"
 								onClick={() => setOpen(false)}
 							>
-								スタッフ一覧
+								ユーザー一覧
 							</Link>
 						</li>
 					</ul>

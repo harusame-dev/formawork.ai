@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
-import { deleteStaff } from "@/features/staff/delete/delete-staff";
-import { registerStaff } from "@/features/staff/register/register-staff";
+import { deleteUser } from "@/features/user/delete/delete-user";
+import { registerUser } from "@/features/user/register/register-user";
 import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-// シードデータで定義されている管理者スタッフID（佐藤次郎）
-const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
+// シードデータで定義されている管理者ユーザーID（佐藤次郎）
+const ADMIN_USER_ID = "00000000-0000-0000-0000-000000000003";
 
 // パスワード変更テストは動的にユーザーを作成する必要があるため、専用のfixtureを使用
 const test = testWithAuthenticated.extend<{
@@ -13,7 +13,7 @@ const test = testWithAuthenticated.extend<{
 	testUser: {
 		email: string;
 		password: string;
-		staffId: string;
+		userId: string;
 	};
 }>({
 	async passwordChangePage({ browser, testUser }, use) {
@@ -55,7 +55,7 @@ const test = testWithAuthenticated.extend<{
 			role: "user" as const,
 		};
 
-		const result = await registerStaff(userData);
+		const result = await registerUser(userData);
 		if (!result.success) {
 			throw new Error(`テストユーザーの登録に失敗: ${result.error}`);
 		}
@@ -63,12 +63,12 @@ const test = testWithAuthenticated.extend<{
 		await use({
 			email: userData.email,
 			password: userData.password,
-			staffId: result.data.staffId,
+			userId: result.data.userId,
 		});
 
-		await deleteStaff({
-			currentUserStaffId: ADMIN_STAFF_ID,
-			staffId: result.data.staffId,
+		await deleteUser({
+			currentUserId: ADMIN_USER_ID,
+			userId: result.data.userId,
 		});
 	},
 });
