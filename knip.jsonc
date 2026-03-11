@@ -1,32 +1,18 @@
 {
 	"$schema": "https://unpkg.com/knip@5/schema.json",
 
-	"ignoreBinaries": ["type:check"],
 	"ignoreDependencies": [],
 	"workspaces": {
 		"apps/web": {
-			// MSW テスト用ファイルはブラウザテストから動的にインポートされるため除外
-			// mockServiceWorker.js は MSW が生成する Service Worker スクリプト
-			"ignore": [
-				"mocks/**",
-				"testing/msw-test.ts",
-				"public/mockServiceWorker.js",
-				// playwright.config.ts で project として testMatch で参照される
-				"e2e/setups/user.setup.ts"
-			],
+			// playwright.config.ts で project として testMatch で参照される
+			"ignore": ["e2e/setups/user.setup.ts"],
 			"ignoreDependencies": [
 				"tailwindcss",
 				// Next で builtin されているため不要
 				"postcss"
 			]
 		},
-		"packages/db": {
-			// 本番環境用のフィクスチャデータは将来的な利用のため除外
-			"ignore": ["src/fixtures/production/**"]
-		},
 		"packages/logger": {
-			// テンプレートファイルのため除外
-			"ignore": ["src/nextjs/middleware.example.ts"],
 			// Next.js 専用機能のため optional peerDependency として定義
 			"ignoreDependencies": ["next"]
 		},
@@ -36,8 +22,6 @@
 			"ignoreDependencies": ["next"]
 		},
 		"packages/ui": {
-			// @source ディレクティブが Unresolved Imports 違反として検出されるため無視
-			"ignore": ["src/styles/globals.css"],
 			"ignoreDependencies": [
 				// turbo/gen 必要か調査
 				"@turbo/gen",

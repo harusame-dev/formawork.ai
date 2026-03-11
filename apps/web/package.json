@@ -1,22 +1,17 @@
 {
 	"dependencies": {
-		"@ai-sdk/valibot": "catalog:",
 		"@harusame0616/result": "catalog:",
 		"@hookform/resolvers": "catalog:",
 		"@repo/logger": "workspace:",
 		"@repo/supabase": "workspace:",
 		"@workspace/db": "workspace:",
 		"@workspace/ui": "workspace:",
-		"ai": "catalog:",
-		"framer-motion": "catalog:",
 		"lucide-react": "catalog:",
 		"next": "catalog:",
-		"onborda": "catalog:",
 		"pino": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",
 		"react-hook-form": "catalog:",
-		"swr": "catalog:",
 		"uuid": "catalog:",
 		"valibot": "catalog:"
 	},
@@ -31,17 +26,11 @@
 		"@vitest/ui": "catalog:",
 		"@workspace/tsconfig": "workspace:",
 		"drizzle-orm": "catalog:",
-		"msw": "catalog:",
 		"pino-pretty": "catalog:",
 		"tailwindcss": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vitest-browser-react": "catalog:"
-	},
-	"msw": {
-		"workerDirectory": [
-			"public"
-		]
 	},
 	"name": "web",
 	"private": true,

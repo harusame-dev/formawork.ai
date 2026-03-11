@@ -42,13 +42,6 @@ const test = base.extend<{
 		// ホームにリダイレクトされるまで待機
 		await page.waitForURL("/");
 
-		// オンボーディングをスキップ状態に設定
-		await page.evaluate(() => {
-			localStorage.setItem("onboarding-completed", "true");
-		});
-		await page.reload();
-		await page.waitForURL("/");
-
 		await use(page);
 	},
 	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
