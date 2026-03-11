@@ -31,14 +31,12 @@ projectId     UUID          PK, default: gen_random_uuid()
 name          text          NOT NULL  案件名
 description   text                    詳細説明（任意）
 assigneeId    UUID          FK → staffs(staffId)  担当者
-status        text          NOT NULL  'todo' | 'in_progress' | 'done'
 dueDate       date                    期限
 createdAt     timestamp     NOT NULL, default: now()
 updatedAt     timestamp     NOT NULL, default: now()
 
 インデックス:
   - assigneeId（担当者絞り込み）
-  - status（ステータス絞り込み）
   - dueDate（期限ソート）
   - name（キーワード検索用）
 
@@ -118,7 +116,7 @@ deletion_logs  ← DBトリガーが自動INSERT
 ## 補足
 
 - `staffs` テーブルのカラム構成（staffId、authUserId、firstName、lastName 等）は変更しない
-- ステータス値は DB レベルでは text 型とし、アプリ側で型安全に扱う
+- tasks のステータス値は DB レベルでは text 型とし、アプリ側で型安全に扱う
 - `deletedBy` の記録は、アプリ側で削除直前に `deletion_logs` に INSERT し、その直後に物理削除する方式を採用する（PostgreSQL セッション変数方式は使用しない）
 
 ## 完了条件
