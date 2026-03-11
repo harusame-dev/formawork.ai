@@ -1,0 +1,6 @@
+---
+paths:
+  - "**/*.tsx"
+---
+
+# Component

@@ -1,10 +1,9 @@
 ---
 paths: 
-  - **/layout.tsx
+  - "**/layout.tsx"
 ---
 
 # Next.js layout
 
-## Layout の型定義
-
 - コンポーネントに引数には `LayoutProps<ルートリテラル>` を使用すること
+- LayoutProps はグローバルに定義されているためインポート不要
