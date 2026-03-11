@@ -1,4 +1,4 @@
-# Next.js 実装ルール
+# Next.js アーキテクチャガイドライン
 
 ## Server Component First
 
@@ -16,25 +16,3 @@
 
 - データフェッチなどのミューテーションを伴わないサーバー操作に使用すること
 - cron 用の API など外部から利用されることを想定した API に使用すること
-
-## Container / Presenter / Custom Hook
-
-### Server Component
-データ取得やロジックは Container / Presenter パターンとして分離すること。
-
-```tsx
-async function FooContainer({ id }: { id: string }) {
-  const foo = await getFoo(id);
-  return <FooPresenter foo={foo} />;
-}
-```
-
-### Client Component
-データ取得やロジックを分離する場合は Custom Hook として分離すること。
-
-```tsx
-function Foo({ id }: { id: string }) {
-  const { foo } = useFoo(id);
-  return <div>{foo.bar}</div>;
-}
-```
