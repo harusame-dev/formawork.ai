@@ -72,6 +72,13 @@ pnpm -w test:e2e       # Playwright E2E テスト
   - ログチェック（ブラウザ・開発サーバーにエラーメッセージが出ていないこと）
 - e2eテスト（DBリセット後実施）
 
+## チケット
+
+実装チケットは `docs/task-management/` 配下に配置されている。
+
+- `docs/task-management/open/` : 未実装チケット
+- `docs/task-management/done/` : 完了済みチケット
+
 ## 参考ドキュメント
 
 重要：タスクに関連ある agent-docs 配下のドキュメントを必ず参照すること
