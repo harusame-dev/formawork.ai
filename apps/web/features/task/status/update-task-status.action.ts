@@ -30,6 +30,7 @@ async function updateTaskStatus(
 export const updateTaskStatusAction = createServerAction(updateTaskStatus, {
 	name: "updateTaskStatusAction",
 	onSuccess: ({ input }) => {
+		updateTag(TaskTag.All);
 		updateTag(TaskTag.List(input.projectId));
 		updateTag(TaskTag.Detail(input.taskId));
 	},

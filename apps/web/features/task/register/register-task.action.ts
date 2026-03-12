@@ -10,6 +10,7 @@ import { registerTaskSchema } from "./schema";
 export const registerTaskAction = createServerAction(registerTask, {
 	name: "registerTaskAction",
 	onSuccess: ({ input }) => {
+		updateTag(TaskTag.All);
 		updateTag(TaskTag.List(input.projectId));
 	},
 	role: [UserRole.Admin, UserRole.User],

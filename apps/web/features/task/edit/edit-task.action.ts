@@ -10,6 +10,7 @@ import { editTaskSchema } from "./schema";
 export const editTaskAction = createServerAction(editTask, {
 	name: "editTaskAction",
 	onSuccess: ({ input }) => {
+		updateTag(TaskTag.All);
 		updateTag(TaskTag.List(input.projectId));
 		updateTag(TaskTag.Detail(input.taskId));
 	},
