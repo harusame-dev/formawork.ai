@@ -31,6 +31,7 @@ export const updateTaskStatusAction = createServerAction(updateTaskStatus, {
 	name: "updateTaskStatusAction",
 	onSuccess: ({ input }) => {
 		updateTag(TaskTag.List(input.projectId));
+		updateTag(TaskTag.Detail(input.taskId));
 	},
 	role: [UserRole.Admin, UserRole.User],
 	schema: updateTaskStatusSchema,

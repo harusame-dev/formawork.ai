@@ -11,6 +11,7 @@ export const editTaskAction = createServerAction(editTask, {
 	name: "editTaskAction",
 	onSuccess: ({ input }) => {
 		updateTag(TaskTag.List(input.projectId));
+		updateTag(TaskTag.Detail(input.taskId));
 	},
 	role: [UserRole.Admin, UserRole.User],
 	schema: editTaskSchema,

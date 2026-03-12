@@ -26,6 +26,7 @@ export const deleteTaskAction = createServerAction(
 		name: "deleteTaskAction",
 		onSuccess: ({ input }) => {
 			updateTag(TaskTag.List(input.projectId));
+			updateTag(TaskTag.Detail(input.taskId));
 		},
 		role: [UserRole.Admin, UserRole.User],
 		schema: deleteTaskSchema,

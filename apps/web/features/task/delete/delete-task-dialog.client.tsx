@@ -15,11 +15,16 @@ import { useState, useTransition } from "react";
 import { deleteTaskAction } from "./delete-task.action";
 
 type DeleteTaskDialogProps = {
+	onSuccess?: () => void;
 	projectId: string;
 	taskId: string;
 };
 
-export function DeleteTaskDialog({ projectId, taskId }: DeleteTaskDialogProps) {
+export function DeleteTaskDialog({
+	onSuccess,
+	projectId,
+	taskId,
+}: DeleteTaskDialogProps) {
 	const [open, setOpen] = useState(false);
 	const [isPending, startTransition] = useTransition();
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -37,6 +42,7 @@ export function DeleteTaskDialog({ projectId, taskId }: DeleteTaskDialogProps) {
 
 			setErrorMessage(null);
 			setOpen(false);
+			onSuccess?.();
 		});
 	}
 

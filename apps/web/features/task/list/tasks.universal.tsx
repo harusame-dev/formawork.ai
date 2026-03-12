@@ -6,6 +6,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@workspace/ui/components/table";
+import Link from "next/link";
 import { Suspense } from "react";
 import { DeleteTaskDialog } from "@/features/task/delete/delete-task-dialog.client";
 import { EditTaskFormContainer } from "@/features/task/edit/edit-task-form.server";
@@ -39,7 +40,14 @@ export function TasksPresenter({ tasks }: TasksPresenterProps) {
 			<TableBody>
 				{tasks.map((task) => (
 					<TableRow key={task.taskId}>
-						<TableCell>{task.name}</TableCell>
+						<TableCell>
+							<Link
+								className="underline"
+								href={`/projects/${task.projectId}/tasks/${task.taskId}`}
+							>
+								{task.name}
+							</Link>
+						</TableCell>
 						<TableCell>
 							<TaskStatusSelect
 								currentStatus={task.status}
