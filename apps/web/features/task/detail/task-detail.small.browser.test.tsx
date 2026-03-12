@@ -33,11 +33,3 @@ test("description が null の場合「説明なし」と表示される", async
 
 	await expect.element(page.getByText("説明なし")).toBeInTheDocument();
 });
-
-test("コメントプレースホルダーが表示される", async () => {
-	render(<TaskDetailPresenter task={baseTask} />);
-
-	await expect
-		.element(page.getByText("コメント機能は準備中です"))
-		.toBeInTheDocument();
-});

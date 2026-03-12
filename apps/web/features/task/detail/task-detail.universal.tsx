@@ -52,13 +52,6 @@ export function TaskDetailPresenter({ task }: TaskDetailPresenterProps) {
 				</p>
 				<p className="whitespace-pre-wrap">{task.description ?? "説明なし"}</p>
 			</div>
-
-			<div>
-				<p className="text-sm font-normal text-muted-foreground mb-1">
-					コメント
-				</p>
-				<p className="text-muted-foreground">コメント機能は準備中です</p>
-			</div>
 		</div>
 	);
 }

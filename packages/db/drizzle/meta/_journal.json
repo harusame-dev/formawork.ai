@@ -71,6 +71,13 @@
       "when": 1773238176560,
       "tag": "0009_graceful_wonder_man",
       "breakpoints": false
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1773292050596,
+      "tag": "0010_adorable_captain_cross",
+      "breakpoints": false
     }
   ]
 }

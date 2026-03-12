@@ -18,6 +18,7 @@
 		"./schema/deletion-logs": "./src/schema/deletion-logs.ts",
 		"./schema/projects": "./src/schema/projects.ts",
 		"./schema/staff": "./src/schema/staff.ts",
+		"./schema/task-comments": "./src/schema/task-comments.ts",
 		"./schema/tasks": "./src/schema/tasks.ts"
 	},
 	"name": "@workspace/db",
