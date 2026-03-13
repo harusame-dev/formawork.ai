@@ -1,7 +1,7 @@
 import { fail, type Result, succeed } from "@harusame0616/result";
 import { db } from "@workspace/db/client";
-import { taskCommentsTable } from "@workspace/db/schema/task-comments";
-import { eq } from "drizzle-orm";
+import { taskActivitiesTable } from "@workspace/db/schema/task-activities";
+import { and, eq } from "drizzle-orm";
 import type { EditTaskCommentInput } from "./schema";
 
 type EditTaskCommentContext = {
@@ -13,25 +13,35 @@ export async function editTaskComment(
 	input: EditTaskCommentInput,
 	context: EditTaskCommentContext,
 ): Promise<Result<undefined, string>> {
-	const [comment] = await db
-		.select({ authorId: taskCommentsTable.authorId })
-		.from(taskCommentsTable)
-		.where(eq(taskCommentsTable.commentId, input.commentId))
+	const [activity] = await db
+		.select({ authorId: taskActivitiesTable.authorId })
+		.from(taskActivitiesTable)
+		.where(
+			and(
+				eq(taskActivitiesTable.activityId, input.activityId),
+				eq(taskActivitiesTable.type, "comment"),
+			),
+		)
 		.limit(1);
 
-	if (!comment) {
+	if (!activity) {
 		return fail("指定されたコメントが見つかりません");
 	}
 
-	if (comment.authorId !== context.userId && context.role !== "admin") {
+	if (activity.authorId !== context.userId && context.role !== "admin") {
 		return fail("この操作を実行する権限がありません");
 	}
 
 	const result = await db
-		.update(taskCommentsTable)
+		.update(taskActivitiesTable)
 		.set({ content: input.content })
-		.where(eq(taskCommentsTable.commentId, input.commentId))
-		.returning({ commentId: taskCommentsTable.commentId });
+		.where(
+			and(
+				eq(taskActivitiesTable.activityId, input.activityId),
+				eq(taskActivitiesTable.type, "comment"),
+			),
+		)
+		.returning({ activityId: taskActivitiesTable.activityId });
 
 	if (!result.length) {
 		return fail("指定されたコメントが見つかりません");

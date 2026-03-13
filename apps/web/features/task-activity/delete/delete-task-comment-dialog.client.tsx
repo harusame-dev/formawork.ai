@@ -15,12 +15,12 @@ import { useState, useTransition } from "react";
 import { deleteTaskCommentAction } from "./delete-task-comment.action";
 
 type DeleteTaskCommentDialogProps = {
-	commentId: string;
+	activityId: string;
 	taskId: string;
 };
 
 export function DeleteTaskCommentDialog({
-	commentId,
+	activityId,
 	taskId,
 }: DeleteTaskCommentDialogProps) {
 	const [open, setOpen] = useState(false);
@@ -31,7 +31,7 @@ export function DeleteTaskCommentDialog({
 		setErrorMessage(null);
 
 		startTransition(async () => {
-			const result = await deleteTaskCommentAction({ commentId, taskId });
+			const result = await deleteTaskCommentAction({ activityId, taskId });
 
 			if (!result.success) {
 				setErrorMessage(result.error);

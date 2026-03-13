@@ -1,6 +1,6 @@
 import { type Result, succeed } from "@harusame0616/result";
 import { db } from "@workspace/db/client";
-import { taskCommentsTable } from "@workspace/db/schema/task-comments";
+import { taskActivitiesTable } from "@workspace/db/schema/task-activities";
 import type { PostTaskCommentInput } from "./schema";
 
 type PostTaskCommentContext = {
@@ -12,10 +12,11 @@ export async function postTaskComment(
 	input: PostTaskCommentInput,
 	context: PostTaskCommentContext,
 ): Promise<Result<undefined, never>> {
-	await db.insert(taskCommentsTable).values({
+	await db.insert(taskActivitiesTable).values({
 		authorId: context.userId,
 		content: input.content,
 		taskId: input.taskId,
+		type: "comment",
 	});
 
 	return succeed();

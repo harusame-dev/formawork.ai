@@ -20,13 +20,13 @@ import { editTaskCommentSchema } from "./schema";
 type FormValues = v.InferOutput<typeof editTaskCommentSchema>;
 
 type EditTaskCommentDialogProps = {
-	commentId: string;
+	activityId: string;
 	content: string;
 	taskId: string;
 };
 
 export function EditTaskCommentDialog({
-	commentId,
+	activityId,
 	content,
 	taskId,
 }: EditTaskCommentDialogProps) {
@@ -34,7 +34,7 @@ export function EditTaskCommentDialog({
 
 	const form = useForm<FormValues>({
 		defaultValues: {
-			commentId,
+			activityId,
 			content,
 			taskId,
 		},
@@ -43,7 +43,7 @@ export function EditTaskCommentDialog({
 
 	function handleOpenChange(nextOpen: boolean) {
 		if (!nextOpen) {
-			form.reset({ commentId, content, taskId });
+			form.reset({ activityId, content, taskId });
 		}
 		setOpen(nextOpen);
 	}

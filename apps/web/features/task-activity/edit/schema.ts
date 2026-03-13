@@ -1,7 +1,7 @@
 import * as v from "valibot";
 
 export const editTaskCommentSchema = v.object({
-	commentId: v.pipe(v.string(), v.uuid()),
+	activityId: v.pipe(v.string(), v.uuid()),
 	content: v.pipe(
 		v.string(),
 		v.minLength(1, "コメントを入力してください"),
