@@ -1,3 +1,4 @@
+import { DateTime } from "@/components/date-time.client";
 import type { UserRole } from "@/features/auth/get-user-role";
 import { DeleteTaskCommentDialog } from "../delete/delete-task-comment-dialog.client";
 import { EditTaskCommentDialog } from "../edit/edit-task-comment-dialog.client";
@@ -47,6 +48,16 @@ export function TaskCommentsPresenter({
 									</>
 								)}
 							</div>
+						</div>
+						<div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+							<DateTime date={comment.createdAt} />
+							{comment.createdAt.getTime() !== comment.updatedAt.getTime() && (
+								<>
+									<span>・</span>
+									<span>編集済み</span>
+									<DateTime date={comment.updatedAt} />
+								</>
+							)}
 						</div>
 						<p className="whitespace-pre-wrap">{comment.content}</p>
 					</li>
