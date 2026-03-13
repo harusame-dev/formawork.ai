@@ -8,8 +8,10 @@ type ProjectBasicInfoPresenterProps = {
 		assigneeName: string | null;
 		createdAt: Date;
 		description: string | null;
+		doneTasks: number;
 		dueDate: string | null;
 		projectId: string;
+		totalTasks: number;
 		updatedAt: Date;
 	};
 };
@@ -30,6 +32,22 @@ export function ProjectBasicInfoPresenter({
 		{
 			label: "期限",
 			value: project.dueDate ?? "-",
+		},
+		{
+			label: "進捗",
+			value: (
+				<>
+					<span className="text-base font-semibold">
+						{project.totalTasks === 0
+							? 0
+							: Math.round((project.doneTasks / project.totalTasks) * 100)}
+						%
+					</span>
+					<span className="text-sm text-muted-foreground ml-1">
+						({project.doneTasks} / {project.totalTasks})
+					</span>
+				</>
+			),
 		},
 		{
 			label: "詳細説明",

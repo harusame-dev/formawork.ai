@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import * as v from "valibot";
 import { UserRole } from "@/features/auth/get-user-role";
+import { ProjectTag } from "@/features/project/tag";
 import { createServerAction } from "@/libs/create-server-action";
 import { TaskTag } from "../tag";
 
@@ -33,6 +34,8 @@ export const updateTaskStatusAction = createServerAction(updateTaskStatus, {
 		updateTag(TaskTag.All);
 		updateTag(TaskTag.List(input.projectId));
 		updateTag(TaskTag.Detail(input.taskId));
+		updateTag(ProjectTag.List);
+		updateTag(ProjectTag.Detail(input.projectId));
 	},
 	role: [UserRole.Admin, UserRole.User],
 	schema: updateTaskStatusSchema,

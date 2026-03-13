@@ -40,6 +40,7 @@ export function ProjectsPresenter({
 						<TableHead>担当者</TableHead>
 						<TableHead>期限</TableHead>
 						<TableHead>登録日</TableHead>
+						<TableHead>進捗</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -60,6 +61,19 @@ export function ProjectsPresenter({
 							<TableCell>{project.dueDate ?? "-"}</TableCell>
 							<TableCell>
 								{project.createdAt.toLocaleDateString("ja-JP")}
+							</TableCell>
+							<TableCell>
+								<span className="text-base font-semibold">
+									{project.totalTasks === 0
+										? 0
+										: Math.round(
+												(project.doneTasks / project.totalTasks) * 100,
+											)}
+									%
+								</span>
+								<span className="text-sm text-muted-foreground ml-1">
+									({project.doneTasks} / {project.totalTasks})
+								</span>
 							</TableCell>
 						</TableRow>
 					))}

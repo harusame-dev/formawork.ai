@@ -29,9 +29,11 @@ export type ProjectsListItem = {
 	archivedAt: Date | null;
 	assigneeName: string | null;
 	createdAt: Date;
+	doneTasks: number;
 	dueDate: string | null;
 	name: string;
 	projectId: string;
+	totalTasks: number;
 };
 
 export function parseProjectsConditionSearchParams(value: unknown) {
