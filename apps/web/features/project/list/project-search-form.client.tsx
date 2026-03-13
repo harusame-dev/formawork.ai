@@ -2,6 +2,7 @@
 
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { Button } from "@workspace/ui/components/button";
+import { Checkbox } from "@workspace/ui/components/checkbox";
 import {
 	Form,
 	FormControl,
@@ -30,6 +31,7 @@ const ALL_ASSIGNEE_VALUE = "__all__";
 
 const formSchema = v.object({
 	assigneeId: v.optional(v.string()),
+	includeArchived: v.optional(v.boolean()),
 	keyword: v.optional(v.pipe(v.string(), v.maxLength(300))),
 });
 
@@ -39,6 +41,7 @@ type ProjectSearchFormProps = {
 	assigneeOptions: UserOption[];
 	condition: {
 		assigneeId?: string;
+		includeArchived?: boolean;
 		keyword?: string;
 	};
 };
@@ -53,12 +56,13 @@ export function ProjectSearchForm({
 	const form = useForm<FormValues>({
 		defaultValues: {
 			assigneeId: condition.assigneeId ?? "",
+			includeArchived: condition.includeArchived ?? false,
 			keyword: condition.keyword ?? "",
 		},
 		resolver: valibotResolver(formSchema),
 	});
 
-	function onSubmit({ assigneeId, keyword }: FormValues) {
+	function onSubmit({ assigneeId, includeArchived, keyword }: FormValues) {
 		const params = new URLSearchParams();
 		if (keyword) {
 			params.set("keyword", keyword);
@@ -66,12 +70,15 @@ export function ProjectSearchForm({
 		if (assigneeId) {
 			params.set("assigneeId", assigneeId);
 		}
+		if (includeArchived) {
+			params.set("includeArchived", "true");
+		}
 
 		router.push(`/projects?${params}`);
 	}
 
 	function handleReset() {
-		form.reset({ assigneeId: "", keyword: "" });
+		form.reset({ assigneeId: "", includeArchived: false, keyword: "" });
 		router.push("/projects");
 	}
 
@@ -131,6 +138,29 @@ export function ProjectSearchForm({
 								</SelectContent>
 							</Select>
 							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				<FormField
+					control={form.control}
+					name="includeArchived"
+					render={({ field }) => (
+						<FormItem className="flex items-center gap-2 space-y-0">
+							<FormControl>
+								<Checkbox
+									checked={field.value ?? false}
+									disabled={disabled}
+									id="includeArchived"
+									onCheckedChange={field.onChange}
+								/>
+							</FormControl>
+							<FormLabel
+								className="cursor-pointer font-normal"
+								htmlFor="includeArchived"
+							>
+								アーカイブも表示
+							</FormLabel>
 						</FormItem>
 					)}
 				/>

@@ -6,12 +6,19 @@ const keywordSchema = v.pipe(v.string(), v.maxLength(300));
 
 export const projectsConditionSchema = v.object({
 	assigneeId: v.optional(v.string()),
+	includeArchived: v.optional(v.boolean()),
 	keyword: v.optional(keywordSchema),
 	page: pageSchema,
 });
 
 const projectsConditionSearchParamsSchema = v.object({
 	assigneeId: v.optional(v.string()),
+	includeArchived: v.optional(
+		v.pipe(
+			v.string(),
+			v.transform((v) => v === "true"),
+		),
+	),
 	keyword: v.optional(keywordSchema),
 	page: v.optional(v.pipe(v.string(), v.transform(Number), pageSchema), "1"),
 });
@@ -19,6 +26,7 @@ const projectsConditionSearchParamsSchema = v.object({
 export type ProjectsCondition = v.InferOutput<typeof projectsConditionSchema>;
 
 export type ProjectsListItem = {
+	archivedAt: Date | null;
 	assigneeName: string | null;
 	createdAt: Date;
 	dueDate: string | null;

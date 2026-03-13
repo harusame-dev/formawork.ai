@@ -13,6 +13,7 @@ export const projectsTable = pgSchema(schemaName)
 	.table(
 		"projects",
 		{
+			archivedAt: timestamp("archived_at"),
 			assigneeId: uuid("assignee_id").references(() => staffsTable.staffId),
 			createdAt: timestamp("created_at").defaultNow().notNull(),
 			description: text("description"),

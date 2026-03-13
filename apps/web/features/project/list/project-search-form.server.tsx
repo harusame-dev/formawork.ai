@@ -17,7 +17,11 @@ export async function ProjectSearchFormContainer({
 	return (
 		<ProjectSearchForm
 			assigneeOptions={assigneeOptions}
-			condition={condition}
+			condition={{
+				assigneeId: condition.assigneeId,
+				includeArchived: condition.includeArchived,
+				keyword: condition.keyword,
+			}}
 		/>
 	);
 }

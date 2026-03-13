@@ -12,7 +12,7 @@ export async function TaskSearchFormContainer({
 }: TaskSearchFormContainerProps) {
 	const [condition, projectOptions, assigneeOptions] = await Promise.all([
 		conditionPromise,
-		getProjectOptions(),
+		getProjectOptions({ includeArchived: false }),
 		getUserOptions(),
 	]);
 

@@ -6,6 +6,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { ProjectTag } from "../tag";
 
 type ProjectDetail = {
+	archivedAt: Date | null;
 	assigneeId: string | null;
 	assigneeName: string | null;
 	createdAt: Date;
@@ -25,6 +26,7 @@ export async function getProjectDetail(
 
 	const [project] = await db
 		.select({
+			archivedAt: projectsTable.archivedAt,
 			assigneeId: projectsTable.assigneeId,
 			assigneeName: sql<
 				string | null

@@ -132,6 +132,7 @@ export function TaskSearchForm({
 			assigneeIds: condition.assigneeIds ?? [],
 			dueDateFrom: condition.dueDateFrom ?? "",
 			dueDateTo: condition.dueDateTo ?? "",
+			includeArchived: condition.includeArchived ?? false,
 			keyword: condition.keyword ?? "",
 			projectIds: condition.projectIds ?? [],
 			statuses: condition.statuses ?? [],
@@ -159,6 +160,9 @@ export function TaskSearchForm({
 		for (const id of data.assigneeIds ?? []) {
 			params.append("assigneeIds", id);
 		}
+		if (data.includeArchived) {
+			params.set("includeArchived", "true");
+		}
 		router.push(`/tasks?${params}`);
 	}
 
@@ -167,6 +171,7 @@ export function TaskSearchForm({
 			assigneeIds: [],
 			dueDateFrom: "",
 			dueDateTo: "",
+			includeArchived: false,
 			keyword: "",
 			projectIds: [],
 			statuses: [],
@@ -317,6 +322,29 @@ export function TaskSearchForm({
 						)}
 					/>
 				</div>
+
+				<FormField
+					control={form.control}
+					name="includeArchived"
+					render={({ field }) => (
+						<FormItem className="flex items-center gap-2 space-y-0">
+							<FormControl>
+								<Checkbox
+									checked={field.value ?? false}
+									disabled={disabled}
+									id="taskIncludeArchived"
+									onCheckedChange={field.onChange}
+								/>
+							</FormControl>
+							<FormLabel
+								className="cursor-pointer font-normal"
+								htmlFor="taskIncludeArchived"
+							>
+								アーカイブも表示
+							</FormLabel>
+						</FormItem>
+					)}
+				/>
 
 				<div className="flex gap-2">
 					<Button disabled={disabled} type="submit">

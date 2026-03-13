@@ -2,7 +2,17 @@ import { db } from "@workspace/db/client";
 import { projectsTable } from "@workspace/db/schema/projects";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { tasksTable } from "@workspace/db/schema/tasks";
-import { and, desc, eq, gte, ilike, inArray, lte, sql } from "drizzle-orm";
+import {
+	and,
+	desc,
+	eq,
+	gte,
+	ilike,
+	inArray,
+	isNull,
+	lte,
+	sql,
+} from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { TaskTag } from "../tag";
 import type { TasksCondition } from "./schema";
@@ -26,8 +36,15 @@ export async function getAllTasks(
 	cacheLife("permanent");
 	cacheTag(TaskTag.All);
 
-	const { assigneeIds, dueDateFrom, dueDateTo, keyword, projectIds, statuses } =
-		condition;
+	const {
+		assigneeIds,
+		dueDateFrom,
+		dueDateTo,
+		includeArchived,
+		keyword,
+		projectIds,
+		statuses,
+	} = condition;
 
 	const where = and(
 		keyword ? ilike(tasksTable.name, `%${keyword}%`) : undefined,
@@ -38,6 +55,7 @@ export async function getAllTasks(
 			: undefined,
 		dueDateFrom ? gte(tasksTable.dueDate, dueDateFrom) : undefined,
 		dueDateTo ? lte(tasksTable.dueDate, dueDateTo) : undefined,
+		includeArchived ? undefined : isNull(projectsTable.archivedAt),
 	);
 
 	const tasks = await db

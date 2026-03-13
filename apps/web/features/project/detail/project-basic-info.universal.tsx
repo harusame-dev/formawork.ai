@@ -1,8 +1,10 @@
+import { Badge } from "@workspace/ui/components/badge";
 import type { ReactNode } from "react";
 import { DateTime } from "@/components/date-time.client";
 
 type ProjectBasicInfoPresenterProps = {
 	project: {
+		archivedAt: Date | null;
 		assigneeName: string | null;
 		createdAt: Date;
 		description: string | null;
@@ -45,6 +47,11 @@ export function ProjectBasicInfoPresenter({
 
 	return (
 		<table className="w-full">
+			{project.archivedAt && (
+				<caption className="text-left pb-2">
+					<Badge variant="secondary">アーカイブ済み</Badge>
+				</caption>
+			)}
 			<tbody className="space-y-4 [&>tr]:block">
 				{fields.map((field) => (
 					<tr key={field.label}>

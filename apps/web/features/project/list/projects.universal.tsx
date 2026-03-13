@@ -44,7 +44,10 @@ export function ProjectsPresenter({
 				</TableHeader>
 				<TableBody>
 					{projects.map((project) => (
-						<TableRow key={project.projectId}>
+						<TableRow
+							className={project.archivedAt ? "opacity-60" : undefined}
+							key={project.projectId}
+						>
 							<TableCell>
 								<Link
 									className="text-primary underline"

@@ -1,7 +1,7 @@
 import { db } from "@workspace/db/client";
 import { projectsTable } from "@workspace/db/schema/projects";
 import { staffsTable } from "@workspace/db/schema/staff";
-import { and, desc, eq, ilike, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, isNull, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { ProjectTag } from "../tag";
 import type { ProjectsCondition, ProjectsListItem } from "./schema";
@@ -14,6 +14,7 @@ type GetProjectsResult = {
 
 export async function getProjects({
 	assigneeId,
+	includeArchived,
 	keyword,
 	page,
 }: ProjectsCondition): Promise<GetProjectsResult> {
@@ -26,10 +27,12 @@ export async function getProjects({
 	const whereConditions = and(
 		keyword ? ilike(projectsTable.name, `%${keyword}%`) : undefined,
 		assigneeId ? eq(projectsTable.assigneeId, assigneeId) : undefined,
+		includeArchived ? undefined : isNull(projectsTable.archivedAt),
 	);
 
 	const projects = await db
 		.select({
+			archivedAt: projectsTable.archivedAt,
 			assigneeName: sql<
 				string | null
 			>`CASE WHEN ${staffsTable.staffId} IS NULL THEN NULL ELSE ${staffsTable.lastName} || ${staffsTable.firstName} END`,

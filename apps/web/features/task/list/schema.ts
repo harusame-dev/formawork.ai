@@ -15,6 +15,7 @@ export const tasksConditionSchema = v.object({
 	assigneeIds: v.optional(v.array(v.string())),
 	dueDateFrom: v.optional(v.string()),
 	dueDateTo: v.optional(v.string()),
+	includeArchived: v.optional(v.boolean()),
 	keyword: v.optional(v.pipe(v.string(), v.maxLength(300))),
 	projectIds: v.optional(v.array(v.string())),
 	statuses: v.optional(v.array(statusPicklist)),
@@ -24,6 +25,12 @@ const tasksConditionSearchParamsSchema = v.object({
 	assigneeIds: optionalStringArray,
 	dueDateFrom: v.optional(v.string()),
 	dueDateTo: v.optional(v.string()),
+	includeArchived: v.optional(
+		v.pipe(
+			v.string(),
+			v.transform((v) => v === "true"),
+		),
+	),
 	keyword: v.optional(v.pipe(v.string(), v.maxLength(300))),
 	projectIds: optionalStringArray,
 	statuses: v.optional(
