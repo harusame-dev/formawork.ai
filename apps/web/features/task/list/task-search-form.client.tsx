@@ -346,7 +346,7 @@ export function TaskSearchForm({
 					)}
 				/>
 
-				<div className="flex gap-2">
+				<div className="flex gap-2 w-full">
 					<Button disabled={disabled} type="submit">
 						<Search className="h-4 w-4 mr-2" />
 						検索
