@@ -116,27 +116,29 @@ export function ProjectSearchForm({
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>担当者</FormLabel>
-							<Select
-								disabled={disabled}
-								onValueChange={(value) =>
-									field.onChange(value === ALL_ASSIGNEE_VALUE ? "" : value)
-								}
-								value={field.value || ALL_ASSIGNEE_VALUE}
-							>
-								<FormControl>
-									<SelectTrigger className="w-40">
-										<SelectValue placeholder="すべて" />
-									</SelectTrigger>
-								</FormControl>
-								<SelectContent>
-									<SelectItem value={ALL_ASSIGNEE_VALUE}>すべて</SelectItem>
-									{assigneeOptions.map((option) => (
-										<SelectItem key={option.userId} value={option.userId}>
-											{option.fullName}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+							<div className="overflow-hidden">
+								<Select
+									disabled={disabled}
+									onValueChange={(value) =>
+										field.onChange(value === ALL_ASSIGNEE_VALUE ? "" : value)
+									}
+									value={field.value || ALL_ASSIGNEE_VALUE}
+								>
+									<FormControl>
+										<SelectTrigger className="w-40">
+											<SelectValue placeholder="すべて" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										<SelectItem value={ALL_ASSIGNEE_VALUE}>すべて</SelectItem>
+										{assigneeOptions.map((option) => (
+											<SelectItem key={option.userId} value={option.userId}>
+												{option.fullName}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
 							<FormMessage />
 						</FormItem>
 					)}
