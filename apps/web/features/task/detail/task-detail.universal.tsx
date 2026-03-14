@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { TaskStatusSelect } from "@/features/task/status/task-status-select.client";
 import { AssigneesDisplay } from "@/features/user/assignees-display.universal";
 import type { TaskDetail } from "./get-task-detail";
@@ -13,7 +14,20 @@ export function TaskDetailPresenter({ task }: TaskDetailPresenterProps) {
 				<tbody>
 					<tr>
 						<th
-							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24"
+							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24 whitespace-nowrap"
+							scope="row"
+						>
+							プロジェクト
+						</th>
+						<td className="font-bold py-1">
+							<Link className="underline" href={`/projects/${task.projectId}`}>
+								{task.projectName}
+							</Link>
+						</td>
+					</tr>
+					<tr>
+						<th
+							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24 whitespace-nowrap"
 							scope="row"
 						>
 							ステータス
@@ -28,7 +42,7 @@ export function TaskDetailPresenter({ task }: TaskDetailPresenterProps) {
 					</tr>
 					<tr>
 						<th
-							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24"
+							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24 whitespace-nowrap"
 							scope="row"
 						>
 							担当者
@@ -39,7 +53,7 @@ export function TaskDetailPresenter({ task }: TaskDetailPresenterProps) {
 					</tr>
 					<tr>
 						<th
-							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24"
+							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24 whitespace-nowrap"
 							scope="row"
 						>
 							期限

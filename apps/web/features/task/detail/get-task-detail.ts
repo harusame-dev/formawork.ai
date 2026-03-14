@@ -1,4 +1,5 @@
 import { db } from "@workspace/db/client";
+import { projectsTable } from "@workspace/db/schema/projects";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { taskAssigneesTable } from "@workspace/db/schema/task-assignees";
 import { tasksTable } from "@workspace/db/schema/tasks";
@@ -12,6 +13,7 @@ export type TaskDetail = {
 	dueDate: string | null;
 	name: string;
 	projectId: string;
+	projectName: string;
 	status: string;
 	taskId: string;
 };
@@ -32,17 +34,19 @@ export async function getTaskDetail(
 			dueDate: tasksTable.dueDate,
 			name: tasksTable.name,
 			projectId: tasksTable.projectId,
+			projectName: projectsTable.name,
 			status: tasksTable.status,
 			taskId: tasksTable.taskId,
 		})
 		.from(tasksTable)
+		.innerJoin(projectsTable, eq(tasksTable.projectId, projectsTable.projectId))
 		.leftJoin(
 			taskAssigneesTable,
 			eq(tasksTable.taskId, taskAssigneesTable.taskId),
 		)
 		.leftJoin(staffsTable, eq(taskAssigneesTable.staffId, staffsTable.staffId))
 		.where(eq(tasksTable.taskId, taskId))
-		.groupBy(tasksTable.taskId)
+		.groupBy(tasksTable.taskId, projectsTable.name)
 		.limit(1);
 
 	return task;

@@ -12,13 +12,16 @@ export default function Page({ params }: PageProps<"/projects/[projectId]">) {
 	return (
 		<Suspense
 			fallback={
-				<div aria-busy className="flex items-center gap-4">
+				<div aria-busy className="flex items-center justify-between">
 					<span className="sr-only">操作読み込み中</span>
-					<Skeleton aria-hidden className="h-4 w-8 bg-black/10" />
-					<Skeleton aria-hidden className="h-8 w-24" />
-					<Button aria-hidden disabled size="sm">
-						削除
-					</Button>
+					<Skeleton aria-hidden className="h-8 w-48" />
+					<div className="flex items-center gap-4">
+						<Skeleton aria-hidden className="h-4 w-8 bg-black/10" />
+						<Skeleton aria-hidden className="h-8 w-24" />
+						<Button aria-hidden disabled size="sm">
+							削除
+						</Button>
+					</div>
 				</div>
 			}
 		>
@@ -36,15 +39,18 @@ async function Action({
 	const project = await getProjectDetail(projectId);
 
 	return (
-		<div className="flex items-center gap-4">
-			<Link className="underline" href={`/projects/${projectId}/edit`}>
-				編集
-			</Link>
-			<ArchiveProjectButton
-				isArchived={!!project?.archivedAt}
-				projectId={projectId}
-			/>
-			<DeleteProjectDialog projectId={projectId} />
+		<div className="flex items-center justify-between">
+			<h1 className="text-2xl font-bold">{project?.name}</h1>
+			<div className="flex items-center gap-4">
+				<Link className="underline" href={`/projects/${projectId}/edit`}>
+					編集
+				</Link>
+				<ArchiveProjectButton
+					isArchived={!!project?.archivedAt}
+					projectId={projectId}
+				/>
+				<DeleteProjectDialog projectId={projectId} />
+			</div>
 		</div>
 	);
 }
