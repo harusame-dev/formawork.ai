@@ -9,15 +9,15 @@ export function TaskDetailPresenter({ task }: TaskDetailPresenterProps) {
 	return (
 		<div className="space-y-6">
 			<table className="w-full">
-				<tbody className="space-y-4 [&>tr]:block">
+				<tbody>
 					<tr>
 						<th
-							className="block text-left text-sm font-normal text-muted-foreground"
+							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24"
 							scope="row"
 						>
 							ステータス
 						</th>
-						<td className="block font-bold">
+						<td className="py-1">
 							<TaskStatusSelect
 								currentStatus={task.status}
 								projectId={task.projectId}
@@ -27,21 +27,21 @@ export function TaskDetailPresenter({ task }: TaskDetailPresenterProps) {
 					</tr>
 					<tr>
 						<th
-							className="block text-left text-sm font-normal text-muted-foreground"
+							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24"
 							scope="row"
 						>
 							担当者
 						</th>
-						<td className="block font-bold">{task.assigneeName ?? "-"}</td>
+						<td className="font-bold py-1">{task.assigneeName ?? "-"}</td>
 					</tr>
 					<tr>
 						<th
-							className="block text-left text-sm font-normal text-muted-foreground"
+							className="text-left text-sm font-normal text-muted-foreground py-1 pr-4 w-24"
 							scope="row"
 						>
 							期限
 						</th>
-						<td className="block font-bold">{task.dueDate ?? "-"}</td>
+						<td className="font-bold py-1">{task.dueDate ?? "-"}</td>
 					</tr>
 				</tbody>
 			</table>

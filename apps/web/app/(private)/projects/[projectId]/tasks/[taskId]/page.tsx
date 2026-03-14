@@ -11,12 +11,14 @@ export default function Page({
 	const taskIdPromise = params.then(({ taskId }) => taskId);
 
 	return (
-		<Card className="p-4 space-y-6">
-			<Suspense fallback={<TaskDetailSkeleton />}>
-				<TaskDetailContainer taskIdPromise={taskIdPromise} />
-			</Suspense>
-			<div>
-				<p className="text-sm font-normal text-muted-foreground mb-2">
+		<div className="space-y-4">
+			<Card className="p-4">
+				<Suspense fallback={<TaskDetailSkeleton />}>
+					<TaskDetailContainer taskIdPromise={taskIdPromise} />
+				</Suspense>
+			</Card>
+			<Card className="p-4 space-y-2">
+				<p className="text-sm font-normal text-muted-foreground">
 					アクティビティ
 				</p>
 				<Suspense fallback={<div className="sr-only">読み込み中</div>}>
@@ -25,7 +27,7 @@ export default function Page({
 				<Suspense fallback={null}>
 					<PostTaskCommentFormContainer taskIdPromise={taskIdPromise} />
 				</Suspense>
-			</div>
-		</Card>
+			</Card>
+		</div>
 	);
 }

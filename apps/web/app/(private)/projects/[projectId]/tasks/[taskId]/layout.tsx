@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Suspense } from "react";
+import { getProjectDetail } from "@/features/project/detail/get-project-detail";
 import { TaskInfoContainer } from "@/features/task/detail/task-info.server";
 import { TaskInfoSkeleton } from "@/features/task/detail/task-info-skeleton.universal";
 
@@ -21,7 +22,7 @@ export default function TaskDetailLayout({
 		<div className="container mx-auto p-2 space-y-4">
 			<div>
 				<Suspense>
-					<BackLink projectIdPromise={projectIdPromise} />
+					<ProjectTitleLink projectIdPromise={projectIdPromise} />
 				</Suspense>
 			</div>
 			<div className="flex items-center justify-between">
@@ -36,18 +37,20 @@ export default function TaskDetailLayout({
 	);
 }
 
-async function BackLink({
+async function ProjectTitleLink({
 	projectIdPromise,
 }: {
 	projectIdPromise: Promise<string>;
 }) {
 	const projectId = await projectIdPromise;
+	const project = await getProjectDetail(projectId);
+	if (!project) return null;
 	return (
 		<Link
-			className="text-sm text-muted-foreground underline"
+			className="text-sm text-muted-foreground hover:underline"
 			href={`/projects/${projectId}`}
 		>
-			← 案件詳細に戻る
+			{project.name}
 		</Link>
 	);
 }
