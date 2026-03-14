@@ -1,9 +1,11 @@
+import { Button } from "@workspace/ui/components/button";
 import { Card } from "@workspace/ui/components/card";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { Suspense } from "react";
 import { ProjectBasicInfoContainer } from "@/features/project/detail/project-basic-info.server";
 import { ProjectBasicInfoSkeleton } from "@/features/project/detail/project-basic-info-skeleton.universal";
 import { TasksContainer } from "@/features/task/list/tasks.server";
-import { RegisterTaskFormContainer } from "@/features/task/register/register-task-form.server";
 
 export default function Page({ params }: PageProps<"/projects/[projectId]">) {
 	const projectIdPromise = params.then(({ projectId }) => projectId);
@@ -37,7 +39,14 @@ async function TasksHeader({
 	projectIdPromise: Promise<string>;
 }) {
 	const projectId = await projectIdPromise;
-	return <RegisterTaskFormContainer projectId={projectId} />;
+	return (
+		<Button asChild size="sm">
+			<Link href={`/tasks/new?projectId=${projectId}`}>
+				<Plus className="h-4 w-4 mr-1" />
+				タスクを追加
+			</Link>
+		</Button>
+	);
 }
 
 async function TasksSection({

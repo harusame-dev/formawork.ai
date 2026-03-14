@@ -49,10 +49,12 @@ type FormValues = v.InferOutput<typeof formSchema>;
 type Props = {
 	assigneeOptions: UserOption[];
 	projectOptions: ProjectOption[];
+	projectId?: string;
 };
 
 export function RegisterTaskPageForm({
 	assigneeOptions,
+	projectId,
 	projectOptions,
 }: Props) {
 	const router = useRouter();
@@ -64,7 +66,7 @@ export function RegisterTaskPageForm({
 			description: "",
 			dueDate: undefined,
 			name: "",
-			projectId: "",
+			projectId: projectId ?? "",
 			status: "todo" as const,
 		},
 		resolver: valibotResolver(formSchema),
@@ -89,7 +91,7 @@ export function RegisterTaskPageForm({
 			return;
 		}
 
-		router.push("/tasks");
+		router.push(projectId ? `/projects/${projectId}` : "/tasks");
 	}
 
 	const disabled = !!(form.formState.isSubmitting || !isHydrated);
@@ -134,7 +136,7 @@ export function RegisterTaskPageForm({
 							</FormLabel>
 							<Select
 								defaultValue={field.value}
-								disabled={disabled}
+								disabled={disabled || !!projectId}
 								onValueChange={field.onChange}
 							>
 								<FormControl>

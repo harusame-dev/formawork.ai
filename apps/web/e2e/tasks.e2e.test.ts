@@ -41,10 +41,11 @@ const test = testWithAuthenticated.extend<{
 test("タスクを追加できる", async ({ projectDetailPage, testProject }) => {
 	const taskName = `テストタスク${randomUUID().slice(0, 8)}`;
 
-	await test.step("タスクを追加ボタンをクリック", async () => {
-		await projectDetailPage
-			.getByRole("button", { name: "タスクを追加" })
-			.click();
+	await test.step("タスクを追加リンクをクリック", async () => {
+		await projectDetailPage.getByRole("link", { name: "タスクを追加" }).click();
+		await projectDetailPage.waitForURL(
+			`/tasks/new?projectId=${testProject.projectId}`,
+		);
 	});
 
 	await test.step("タスク名を入力", async () => {
@@ -52,10 +53,8 @@ test("タスクを追加できる", async ({ projectDetailPage, testProject }) =
 	});
 
 	await test.step("登録ボタンをクリック", async () => {
-		await projectDetailPage
-			.getByRole("dialog")
-			.getByRole("button", { name: "登録する" })
-			.click();
+		await projectDetailPage.getByRole("button", { name: "登録する" }).click();
+		await projectDetailPage.waitForURL(`/projects/${testProject.projectId}`);
 	});
 
 	await test.step("タスクが表示されることを確認", async () => {
