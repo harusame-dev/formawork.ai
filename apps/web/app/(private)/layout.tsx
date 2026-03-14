@@ -12,7 +12,7 @@ export default function PrivateLayout({
 			<header className="border-b grid grid-cols-[auto_1fr_auto] h-16 items-center gap-4 px-4">
 				<NavigationMenu />
 				<Link className="text-lg font-semibold hover:opacity-80" href="/">
-					FORMAWORK.AI
+					PROJECTIST
 				</Link>
 				<UserMenu />
 			</header>

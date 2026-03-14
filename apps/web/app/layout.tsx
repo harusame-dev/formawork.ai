@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import "@workspace/ui/globals.css";
 
 export const metadata: Metadata = {
-	description: "AI とともに仕事を形作る社内システムプラットフォーム",
+	description: "プロジェクト管理",
 	title: {
-		default: "FORMAWORK.ai",
-		template: "%s - FORMAWORK.ai",
+		default: "PROJECTIST",
+		template: "%s - PROJECTIST",
 	},
 };
 
