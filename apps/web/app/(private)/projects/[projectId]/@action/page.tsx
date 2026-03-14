@@ -3,6 +3,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ArchiveProjectButton } from "@/features/project/archive/archive-project-button.client";
+import { ProjectArchiveBadge } from "@/features/project/archive/project-archive-badge.universal";
 import { DeleteProjectDialog } from "@/features/project/delete/delete-project-dialog.client";
 import { getProjectDetail } from "@/features/project/detail/get-project-detail";
 
@@ -40,7 +41,10 @@ async function Action({
 
 	return (
 		<div className="flex items-center justify-between">
-			<h1 className="text-2xl font-bold">{project?.name}</h1>
+			<h1 className="text-2xl font-bold flex items-center gap-2">
+				{project?.name}
+				{project?.archivedAt && <ProjectArchiveBadge />}
+			</h1>
 			<div className="flex items-center gap-4">
 				<Link className="underline" href={`/projects/${projectId}/edit`}>
 					編集

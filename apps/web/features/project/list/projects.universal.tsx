@@ -8,6 +8,7 @@ import {
 	TableRow,
 } from "@workspace/ui/components/table";
 import Link from "next/link";
+import { ProjectArchiveBadge } from "@/features/project/archive/project-archive-badge.universal";
 import { AssigneesDisplay } from "@/features/user/assignees-display.universal";
 import type { ProjectsListItem } from "./schema";
 
@@ -51,12 +52,15 @@ export function ProjectsPresenter({
 							key={project.projectId}
 						>
 							<TableCell>
-								<Link
-									className="text-primary underline"
-									href={`/projects/${project.projectId}`}
-								>
-									{project.name}
-								</Link>
+								<div className="flex items-center gap-1">
+									<Link
+										className="text-primary underline"
+										href={`/projects/${project.projectId}`}
+									>
+										{project.name}
+									</Link>
+									{project.archivedAt && <ProjectArchiveBadge />}
+								</div>
 							</TableCell>
 							<TableCell>
 								<AssigneesDisplay assignees={project.assignees} />
