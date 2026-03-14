@@ -24,6 +24,7 @@ export type AllTaskListItem = {
 	description: string | null;
 	dueDate: string | null;
 	name: string;
+	projectArchivedAt: Date | null;
 	projectId: string;
 	projectName: string;
 	status: string;
@@ -79,6 +80,7 @@ export async function getAllTasks(
 			description: tasksTable.description,
 			dueDate: tasksTable.dueDate,
 			name: tasksTable.name,
+			projectArchivedAt: projectsTable.archivedAt,
 			projectId: tasksTable.projectId,
 			projectName: projectsTable.name,
 			status: tasksTable.status,
@@ -92,7 +94,7 @@ export async function getAllTasks(
 		)
 		.leftJoin(staffsTable, eq(taskAssigneesTable.staffId, staffsTable.staffId))
 		.where(where)
-		.groupBy(tasksTable.taskId, projectsTable.name)
+		.groupBy(tasksTable.taskId, projectsTable.name, projectsTable.archivedAt)
 		.orderBy(desc(tasksTable.createdAt));
 
 	return tasks;

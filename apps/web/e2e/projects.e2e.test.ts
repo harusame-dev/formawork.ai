@@ -51,7 +51,9 @@ test("メニューからプロジェクト一覧ページに遷移できる", as
 
 	await test.step("プロジェクト一覧ページに遷移することを確認", async () => {
 		await expect(page).toHaveURL("/projects");
-		await expect(page.getByRole("heading", { name: "プロジェクト一覧" })).toBeVisible();
+		await expect(
+			page.getByRole("heading", { name: "プロジェクト一覧" }),
+		).toBeVisible();
 	});
 });
 

@@ -6,6 +6,12 @@ import {
 	TableHeader,
 	TableRow,
 } from "@workspace/ui/components/table";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@workspace/ui/components/tooltip";
+import { ArchiveIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DeleteTaskDialog } from "@/features/task/delete/delete-task-dialog.client";
@@ -43,9 +49,22 @@ export function AllTasksPresenter({ tasks }: AllTasksPresenterProps) {
 				{tasks.map((task) => (
 					<TableRow key={task.taskId}>
 						<TableCell>
-							<Link className="underline" href={`/projects/${task.projectId}`}>
-								{task.projectName}
-							</Link>
+							<div className="flex items-center gap-1">
+								<Link
+									className="underline"
+									href={`/projects/${task.projectId}`}
+								>
+									{task.projectName}
+								</Link>
+								{task.projectArchivedAt && (
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<ArchiveIcon className="size-4 text-muted-foreground shrink-0" />
+										</TooltipTrigger>
+										<TooltipContent>アーカイブ済み</TooltipContent>
+									</Tooltip>
+								)}
+							</div>
 						</TableCell>
 						<TableCell>
 							<Link

@@ -1,4 +1,3 @@
-import { Badge } from "@workspace/ui/components/badge";
 import { AssigneesDisplay } from "@/features/user/assignees-display.universal";
 
 type ProjectBasicInfoPresenterProps = {
@@ -18,11 +17,6 @@ export function ProjectBasicInfoPresenter({
 }: ProjectBasicInfoPresenterProps) {
 	return (
 		<div className="space-y-6">
-			{project.archivedAt && (
-				<div>
-					<Badge variant="secondary">アーカイブ済み</Badge>
-				</div>
-			)}
 			<table className="w-full">
 				<tbody>
 					<tr>

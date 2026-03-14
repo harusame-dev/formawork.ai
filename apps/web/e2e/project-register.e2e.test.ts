@@ -18,7 +18,9 @@ const test = testWithAuthenticated.extend<{
 	},
 });
 
-test("プロジェクトを登録して一覧に表示される", async ({ registerProjectPage }) => {
+test("プロジェクトを登録して一覧に表示される", async ({
+	registerProjectPage,
+}) => {
 	const uniqueId = randomUUID().slice(0, 8);
 	const name = `登録テストプロジェクト${uniqueId}`;
 

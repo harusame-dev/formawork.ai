@@ -34,7 +34,9 @@ const assigneeOptions = [
 test("プロジェクト名が空の場合、エラーが表示される", async () => {
 	render(<ProjectForm assigneeOptions={assigneeOptions} mode="register" />);
 
-	await expect.element(page.getByLabelText("プロジェクト名")).not.toBeDisabled();
+	await expect
+		.element(page.getByLabelText("プロジェクト名"))
+		.not.toBeDisabled();
 
 	await page.getByRole("button", { name: "登録する" }).click();
 

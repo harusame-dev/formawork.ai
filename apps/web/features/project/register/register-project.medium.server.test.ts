@@ -68,7 +68,10 @@ test("プロジェクトを担当者なしで正常に登録できる", async ({
 	}
 });
 
-test("プロジェクトを複数担当者で正常に登録できる", async ({ cleanup, staff }) => {
+test("プロジェクトを複数担当者で正常に登録できる", async ({
+	cleanup,
+	staff,
+}) => {
 	const input = {
 		assigneeIds: [staff.staffId],
 		description: "テスト詳細",

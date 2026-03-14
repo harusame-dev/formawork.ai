@@ -57,7 +57,9 @@ export function DeleteProjectDialog({ projectId }: DeleteProjectDialogProps) {
 					<DialogTitle>プロジェクトを削除</DialogTitle>
 					<DialogDescription asChild>
 						<div className="space-y-2">
-							<p>プロジェクトを削除してもよろしいですか？この操作は取り消せません。</p>
+							<p>
+								プロジェクトを削除してもよろしいですか？この操作は取り消せません。
+							</p>
 							<p>プロジェクトに紐づくタスクも削除されます。</p>
 						</div>
 					</DialogDescription>
