@@ -1,7 +1,8 @@
 import { db } from "@workspace/db/client";
 import { projectAssigneesTable } from "@workspace/db/schema/project-assignees";
 import { projectsTable } from "@workspace/db/schema/projects";
-import { asc, eq, isNull } from "drizzle-orm";
+import { tasksTable } from "@workspace/db/schema/tasks";
+import { and, asc, eq, exists, inArray, isNull, not, or, sql } from "drizzle-orm";
 import { getUserStaffId } from "@/features/auth/get-user-staff-id";
 
 type MyProject = {
@@ -27,7 +28,33 @@ export async function getMyProjects(): Promise<MyProject[]> {
 			projectAssigneesTable,
 			eq(projectsTable.projectId, projectAssigneesTable.projectId),
 		)
-		.where(eq(projectAssigneesTable.staffId, staffId))
+		.where(
+			and(
+				eq(projectAssigneesTable.staffId, staffId),
+				isNull(projectsTable.archivedAt),
+				or(
+					not(
+						exists(
+							db
+								.select({ value: sql`1` })
+								.from(tasksTable)
+								.where(eq(tasksTable.projectId, projectsTable.projectId)),
+						),
+					),
+					exists(
+						db
+							.select({ value: sql`1` })
+							.from(tasksTable)
+							.where(
+								and(
+									eq(tasksTable.projectId, projectsTable.projectId),
+									inArray(tasksTable.status, ["todo", "in_progress"]),
+								),
+							),
+					),
+				),
+			),
+		)
 		.orderBy(asc(isNull(projectsTable.dueDate)), asc(projectsTable.dueDate))
 		.limit(5);
 

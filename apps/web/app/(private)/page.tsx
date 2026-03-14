@@ -5,7 +5,9 @@ import {
 	CardTitle,
 } from "@workspace/ui/components/card";
 import { Suspense } from "react";
+import { MyProjectsCardTitle } from "@/features/dashboard/my-projects-card-title.server";
 import { MyProjects } from "@/features/dashboard/my-projects.server";
+import { MyTasksCardTitle } from "@/features/dashboard/my-tasks-card-title.server";
 import { MyTasks } from "@/features/dashboard/my-tasks.server";
 import { ProjectSummaryCards } from "@/features/dashboard/project-summary-cards.server";
 
@@ -16,10 +18,14 @@ export default function Page() {
 				<ProjectSummaryCards />
 			</Suspense>
 
-			<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+			<div className="space-y-4">
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-base">担当プロジェクト</CardTitle>
+						<CardTitle className="text-base">
+							<Suspense fallback="担当プロジェクト">
+								<MyProjectsCardTitle />
+							</Suspense>
+						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<Suspense
@@ -34,7 +40,11 @@ export default function Page() {
 
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-base">担当タスク</CardTitle>
+						<CardTitle className="text-base">
+							<Suspense fallback="担当タスク">
+								<MyTasksCardTitle />
+							</Suspense>
+						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<Suspense
