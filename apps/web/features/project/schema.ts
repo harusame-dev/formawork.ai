@@ -2,8 +2,8 @@ import * as v from "valibot";
 
 export const projectNameSchema = v.pipe(
 	v.string(),
-	v.minLength(1, "案件名を入力してください"),
-	v.maxLength(100, "案件名は100文字以内で入力してください"),
+	v.minLength(1, "プロジェクト名を入力してください"),
+	v.maxLength(100, "プロジェクト名は100文字以内で入力してください"),
 );
 
 export const projectDescriptionSchema = v.pipe(

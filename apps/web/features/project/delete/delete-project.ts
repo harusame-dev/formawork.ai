@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { recordDeletion } from "@/features/deletion-log/record-deletion";
 
 const PROJECT_NOT_FOUND_ERROR_MESSAGE =
-	"指定された案件が見つかりません" as const;
+	"指定されたプロジェクトが見つかりません" as const;
 
 type DeleteProjectErrorMessage = typeof PROJECT_NOT_FOUND_ERROR_MESSAGE;
 

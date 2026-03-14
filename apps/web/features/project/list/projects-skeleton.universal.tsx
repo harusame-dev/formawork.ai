@@ -20,7 +20,7 @@ export function ProjectsSkeleton() {
 			<Table aria-hidden>
 				<TableHeader>
 					<TableRow>
-						<TableHead>案件名</TableHead>
+						<TableHead>プロジェクト名</TableHead>
 						<TableHead>担当者</TableHead>
 						<TableHead>期限</TableHead>
 						<TableHead>登録日</TableHead>

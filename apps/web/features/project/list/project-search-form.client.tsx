@@ -95,7 +95,7 @@ export function ProjectSearchForm({
 					name="keyword"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>案件名</FormLabel>
+							<FormLabel>プロジェクト名</FormLabel>
 							<FormControl>
 								<Input
 									{...field}

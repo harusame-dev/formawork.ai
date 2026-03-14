@@ -22,7 +22,7 @@ const test = testWithAuthenticated.extend<{
 	async testProject({}, use) {
 		const uniqueId = randomUUID().slice(0, 8);
 		const projectId = randomUUID();
-		const name = `削除テスト案件${uniqueId}`;
+		const name = `削除テストプロジェクト${uniqueId}`;
 
 		await db.insert(projectsTable).values({
 			name,
@@ -46,7 +46,7 @@ const test = testWithAuthenticated.extend<{
 	},
 });
 
-test("案件を削除できる", async ({ projectDetailPage }) => {
+test("プロジェクトを削除できる", async ({ projectDetailPage }) => {
 	await test.step("削除ボタンをクリック", async () => {
 		await projectDetailPage.getByRole("button", { name: "削除" }).click();
 	});
@@ -62,7 +62,7 @@ test("案件を削除できる", async ({ projectDetailPage }) => {
 			.click();
 	});
 
-	await test.step("案件一覧ページに遷移することを確認", async () => {
+	await test.step("プロジェクト一覧ページに遷移することを確認", async () => {
 		await projectDetailPage.waitForURL("/projects");
 	});
 });

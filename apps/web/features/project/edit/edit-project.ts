@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import type { EditProjectInput } from "./schema";
 
 const PROJECT_NOT_FOUND_ERROR_MESSAGE =
-	"指定された案件が見つかりません" as const;
+	"指定されたプロジェクトが見つかりません" as const;
 
 type EditProjectErrorMessage = typeof PROJECT_NOT_FOUND_ERROR_MESSAGE;
 

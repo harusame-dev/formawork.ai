@@ -24,7 +24,7 @@ const test = base.extend<{
 	async project({}, use) {
 		const projectId = v4();
 		await db.insert(projectsTable).values({
-			name: `タスク削除テスト案件${v4()}`,
+			name: `タスク削除テストプロジェクト${v4()}`,
 			projectId,
 		});
 		await use({ projectId });

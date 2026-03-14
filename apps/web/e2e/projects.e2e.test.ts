@@ -23,7 +23,7 @@ const test = testWithAuthenticated.extend<{
 	async testProject({}, use) {
 		const uniqueId = randomUUID().slice(0, 8);
 		const projectId = randomUUID();
-		const name = `一覧テスト案件${uniqueId}`;
+		const name = `一覧テストプロジェクト${uniqueId}`;
 
 		await db.insert(projectsTable).values({
 			name,
@@ -38,36 +38,36 @@ const test = testWithAuthenticated.extend<{
 	},
 });
 
-test("メニューから案件一覧ページに遷移できる", async ({
+test("メニューからプロジェクト一覧ページに遷移できる", async ({
 	pageWithAdminUser: page,
 }) => {
 	await test.step("メニューボタンをクリックしてメニューを開く", async () => {
 		await page.getByRole("button", { name: /^メニューを開く$/ }).click();
 	});
 
-	await test.step("案件一覧リンクをクリック", async () => {
-		await page.getByRole("link", { name: "案件一覧" }).click();
+	await test.step("プロジェクト一覧リンクをクリック", async () => {
+		await page.getByRole("link", { name: "プロジェクト一覧" }).click();
 	});
 
-	await test.step("案件一覧ページに遷移することを確認", async () => {
+	await test.step("プロジェクト一覧ページに遷移することを確認", async () => {
 		await expect(page).toHaveURL("/projects");
-		await expect(page.getByRole("heading", { name: "案件一覧" })).toBeVisible();
+		await expect(page.getByRole("heading", { name: "プロジェクト一覧" })).toBeVisible();
 	});
 });
 
-test("案件一覧が表示される", async ({ projectsPage, testProject }) => {
-	await test.step("案件が表示されていることを確認", async () => {
+test("プロジェクト一覧が表示される", async ({ projectsPage, testProject }) => {
+	await test.step("プロジェクトが表示されていることを確認", async () => {
 		await projectsPage.locator("table tbody tr").first().waitFor();
 		const rows = projectsPage.locator("table tbody tr");
 		const count = await rows.count();
 		expect(count).toBeGreaterThan(0);
 	});
 
-	await test.step("テスト案件が表示されていることを確認", async () => {
-		// 検索でキャッシュをバイパスしてテスト案件を探す（ユーザーテストと同パターン）
+	await test.step("テストプロジェクトが表示されていることを確認", async () => {
+		// 検索でキャッシュをバイパスしてテストプロジェクトを探す（ユーザーテストと同パターン）
 		await projectsPage
 			.getByRole("main")
-			.getByLabel("案件名")
+			.getByLabel("プロジェクト名")
 			.fill(testProject.name);
 		await projectsPage.getByRole("button", { name: "検索" }).click();
 		await projectsPage.waitForURL(`**/projects?keyword=*`);

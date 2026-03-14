@@ -17,12 +17,12 @@ test("削除ボタンをクリックするとダイアログが表示される",
 	const dialog = page.getByRole("dialog");
 	await expect.element(dialog).toBeInTheDocument();
 	await expect
-		.element(dialog.getByRole("heading", { name: "案件を削除" }))
+		.element(dialog.getByRole("heading", { name: "プロジェクトを削除" }))
 		.toBeInTheDocument();
 	await expect
 		.element(
 			dialog.getByText(
-				"案件を削除してもよろしいですか？この操作は取り消せません。",
+				"プロジェクトを削除してもよろしいですか？この操作は取り消せません。",
 			),
 		)
 		.toBeInTheDocument();

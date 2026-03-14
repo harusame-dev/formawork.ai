@@ -21,7 +21,7 @@ export async function registerProject(
 		.returning({ projectId: projectsTable.projectId });
 
 	if (!project) {
-		throw new Error("案件の登録に失敗しました");
+		throw new Error("プロジェクトの登録に失敗しました");
 	}
 
 	if (input.assigneeIds.length > 0) {

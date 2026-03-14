@@ -6,7 +6,7 @@ import { RegisterProjectFormContainer } from "@/features/project/register/projec
 export default function Page() {
 	return (
 		<div className="container mx-auto p-2 space-y-4">
-			<h1 className="font-bold">新規案件登録</h1>
+			<h1 className="font-bold">新規プロジェクト登録</h1>
 			<Card className="p-4">
 				<Suspense fallback={<ProjectEditFormSkeleton />}>
 					<RegisterProjectFormContainer />

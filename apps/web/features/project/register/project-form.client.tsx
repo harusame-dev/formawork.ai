@@ -136,7 +136,7 @@ export function ProjectForm({
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel className="flex items-center gap-2">
-								案件名
+								プロジェクト名
 								<RequiredBadge />
 							</FormLabel>
 							<FormControl>

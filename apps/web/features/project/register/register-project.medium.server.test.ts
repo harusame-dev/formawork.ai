@@ -42,12 +42,12 @@ const test = base.extend<{
 	},
 });
 
-test("案件を担当者なしで正常に登録できる", async ({ cleanup }) => {
+test("プロジェクトを担当者なしで正常に登録できる", async ({ cleanup }) => {
 	const input = {
 		assigneeIds: [],
 		description: "テスト詳細",
 		dueDate: "2026-12-31",
-		name: `テスト案件${v4()}`,
+		name: `テストプロジェクト${v4()}`,
 	};
 
 	const result = await registerProject(input);
@@ -68,12 +68,12 @@ test("案件を担当者なしで正常に登録できる", async ({ cleanup }) 
 	}
 });
 
-test("案件を複数担当者で正常に登録できる", async ({ cleanup, staff }) => {
+test("プロジェクトを複数担当者で正常に登録できる", async ({ cleanup, staff }) => {
 	const input = {
 		assigneeIds: [staff.staffId],
 		description: "テスト詳細",
 		dueDate: "2026-12-31",
-		name: `テスト案件${v4()}`,
+		name: `テストプロジェクト${v4()}`,
 	};
 
 	const result = await registerProject(input);

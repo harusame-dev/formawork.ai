@@ -44,7 +44,7 @@ export function NavigationMenu() {
 								href="/projects"
 								onClick={() => setOpen(false)}
 							>
-								案件一覧
+								プロジェクト一覧
 							</Link>
 						</li>
 						<li>

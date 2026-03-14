@@ -27,7 +27,7 @@ const test = base.extend<{
 	// biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
 	async project({}, use) {
 		const projectId = v4();
-		const name = `テスト案件${v4()}`;
+		const name = `テストプロジェクト${v4()}`;
 		await db.insert(projectsTable).values({
 			name,
 			projectId,
@@ -39,7 +39,7 @@ const test = base.extend<{
 	},
 });
 
-test("案件一覧を取得できる", async ({ project }) => {
+test("プロジェクト一覧を取得できる", async ({ project }) => {
 	const result = await getProjects({ page: 1 });
 
 	expect(result.projects.length).toBeGreaterThan(0);

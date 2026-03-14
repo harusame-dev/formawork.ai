@@ -27,7 +27,7 @@ const test = testWithAuthenticated.extend<{
 	async testProject({}, use) {
 		const projectId = randomUUID();
 		await db.insert(projectsTable).values({
-			name: `コメントE2Eテスト案件${randomUUID().slice(0, 8)}`,
+			name: `コメントE2Eテストプロジェクト${randomUUID().slice(0, 8)}`,
 			projectId,
 		});
 		await use({ projectId });

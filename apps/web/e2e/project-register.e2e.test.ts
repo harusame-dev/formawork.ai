@@ -12,18 +12,18 @@ const test = testWithAuthenticated.extend<{
 		await page.goto("/projects/new");
 		await page.waitForURL("/projects/new");
 
-		await expect(page.getByLabel("案件名")).not.toBeDisabled();
+		await expect(page.getByLabel("プロジェクト名")).not.toBeDisabled();
 
 		await use(page);
 	},
 });
 
-test("案件を登録して一覧に表示される", async ({ registerProjectPage }) => {
+test("プロジェクトを登録して一覧に表示される", async ({ registerProjectPage }) => {
 	const uniqueId = randomUUID().slice(0, 8);
-	const name = `登録テスト案件${uniqueId}`;
+	const name = `登録テストプロジェクト${uniqueId}`;
 
 	await test.step("フォームに入力", async () => {
-		await registerProjectPage.getByLabel("案件名").fill(name);
+		await registerProjectPage.getByLabel("プロジェクト名").fill(name);
 
 		// 担当者選択
 		await registerProjectPage.getByRole("combobox").click();
@@ -35,14 +35,14 @@ test("案件を登録して一覧に表示される", async ({ registerProjectPa
 		await registerProjectPage.getByRole("button", { name: "登録する" }).click();
 	});
 
-	await test.step("案件一覧ページに遷移することを確認", async () => {
+	await test.step("プロジェクト一覧ページに遷移することを確認", async () => {
 		await registerProjectPage.waitForURL("/projects");
 		await expect(
-			registerProjectPage.getByRole("heading", { name: "案件一覧" }),
+			registerProjectPage.getByRole("heading", { name: "プロジェクト一覧" }),
 		).toBeVisible();
 	});
 
-	await test.step("登録した案件が表示されることを確認", async () => {
+	await test.step("登録したプロジェクトが表示されることを確認", async () => {
 		await expect(registerProjectPage.getByRole("cell", { name })).toBeVisible();
 	});
 

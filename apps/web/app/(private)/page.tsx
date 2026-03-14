@@ -19,7 +19,7 @@ export default function Page() {
 			<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-base">担当案件</CardTitle>
+						<CardTitle className="text-base">担当プロジェクト</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<Suspense

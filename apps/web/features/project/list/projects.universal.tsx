@@ -26,7 +26,7 @@ export function ProjectsPresenter({
 		return (
 			<div className="space-y-4">
 				<div className="text-center py-8 text-muted-foreground">
-					案件が見つかりませんでした
+					プロジェクトが見つかりませんでした
 				</div>
 			</div>
 		);
@@ -37,7 +37,7 @@ export function ProjectsPresenter({
 			<Table>
 				<TableHeader>
 					<TableRow>
-						<TableHead>案件名</TableHead>
+						<TableHead>プロジェクト名</TableHead>
 						<TableHead>担当者</TableHead>
 						<TableHead>期限</TableHead>
 						<TableHead>登録日</TableHead>

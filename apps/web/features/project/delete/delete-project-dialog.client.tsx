@@ -54,11 +54,11 @@ export function DeleteProjectDialog({ projectId }: DeleteProjectDialogProps) {
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>案件を削除</DialogTitle>
+					<DialogTitle>プロジェクトを削除</DialogTitle>
 					<DialogDescription asChild>
 						<div className="space-y-2">
-							<p>案件を削除してもよろしいですか？この操作は取り消せません。</p>
-							<p>案件に紐づくタスクも削除されます。</p>
+							<p>プロジェクトを削除してもよろしいですか？この操作は取り消せません。</p>
+							<p>プロジェクトに紐づくタスクも削除されます。</p>
 						</div>
 					</DialogDescription>
 				</DialogHeader>

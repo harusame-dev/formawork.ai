@@ -40,7 +40,7 @@ const formSchema = v.object({
 	description: v.optional(taskDescriptionSchema),
 	dueDate: taskDueDateSchema,
 	name: taskNameSchema,
-	projectId: v.pipe(v.string(), v.uuid("案件を選択してください")),
+	projectId: v.pipe(v.string(), v.uuid("プロジェクトを選択してください")),
 	status: v.picklist(["todo", "in_progress", "done"]),
 });
 
@@ -131,7 +131,7 @@ export function RegisterTaskPageForm({
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel className="flex items-center gap-2">
-								案件
+								プロジェクト
 								<RequiredBadge />
 							</FormLabel>
 							<Select
@@ -141,7 +141,7 @@ export function RegisterTaskPageForm({
 							>
 								<FormControl>
 									<SelectTrigger className="max-w-xs">
-										<SelectValue placeholder="案件を選択" />
+										<SelectValue placeholder="プロジェクトを選択" />
 									</SelectTrigger>
 								</FormControl>
 								<SelectContent>

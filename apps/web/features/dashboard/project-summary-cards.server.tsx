@@ -19,7 +19,7 @@ export async function ProjectSummaryCards() {
 				<Card>
 					<CardHeader className="pb-2">
 						<CardTitle className="text-sm font-medium text-muted-foreground">
-							総案件数
+							総プロジェクト数
 						</CardTitle>
 					</CardHeader>
 					<CardContent>

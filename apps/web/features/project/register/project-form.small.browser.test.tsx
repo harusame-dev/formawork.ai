@@ -31,15 +31,15 @@ const assigneeOptions = [
 	{ fullName: "鈴木花子", userId: "00000000-0000-0000-0000-000000000002" },
 ];
 
-test("案件名が空の場合、エラーが表示される", async () => {
+test("プロジェクト名が空の場合、エラーが表示される", async () => {
 	render(<ProjectForm assigneeOptions={assigneeOptions} mode="register" />);
 
-	await expect.element(page.getByLabelText("案件名")).not.toBeDisabled();
+	await expect.element(page.getByLabelText("プロジェクト名")).not.toBeDisabled();
 
 	await page.getByRole("button", { name: "登録する" }).click();
 
 	await expect
-		.element(page.getByText("案件名を入力してください"))
+		.element(page.getByText("プロジェクト名を入力してください"))
 		.toBeInTheDocument();
 });
 
@@ -59,7 +59,7 @@ test("編集モードでは編集するボタンが表示される", async () =>
 				assigneeIds: ["00000000-0000-0000-0000-000000000001"],
 				description: null,
 				dueDate: null,
-				name: "既存案件",
+				name: "既存プロジェクト",
 			}}
 			mode="edit"
 			projectId="00000000-0000-0000-0000-000000000001"

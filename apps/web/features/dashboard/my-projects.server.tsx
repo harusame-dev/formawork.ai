@@ -10,7 +10,7 @@ export async function MyProjects() {
 
 	if (!projects.length) {
 		return (
-			<p className="text-sm text-muted-foreground">担当案件はありません</p>
+			<p className="text-sm text-muted-foreground">担当プロジェクトはありません</p>
 		);
 	}
 

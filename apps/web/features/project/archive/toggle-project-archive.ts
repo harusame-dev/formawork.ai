@@ -13,7 +13,7 @@ export async function toggleProjectArchive(
 		.limit(1);
 
 	if (!project) {
-		return fail("指定された案件が見つかりません");
+		return fail("指定されたプロジェクトが見つかりません");
 	}
 
 	const wasArchived = project.archivedAt === null;

@@ -17,7 +17,7 @@ export default async function Page({ searchParams }: PageProps<"/projects">) {
 	return (
 		<div className="container mx-auto p-2 space-y-4">
 			<div className="flex items-center justify-between">
-				<h1 className="font-bold">案件一覧</h1>
+				<h1 className="font-bold">プロジェクト一覧</h1>
 				<Suspense fallback={<Skeleton className="h-5 w-16" />}>
 					<RegisterProjectLink />
 				</Suspense>
