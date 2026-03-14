@@ -51,7 +51,7 @@ export async function getProjects({
 			archivedAt: projectsTable.archivedAt,
 			assignees: sql<
 				{ id: string; name: string }[]
-			>`COALESCE(json_agg(json_build_object('id', ${staffsTable.staffId}, 'name', ${staffsTable.lastName} || ${staffsTable.firstName})) FILTER (WHERE ${staffsTable.staffId} IS NOT NULL), '[]')`,
+			>`(SELECT COALESCE(json_agg(json_build_object('id', s.staff_id, 'name', s.last_name || s.first_name)), '[]') FROM ${projectAssigneesTable} pa JOIN ${staffsTable} s ON pa.staff_id = s.staff_id WHERE pa.project_id = ${projectsTable.projectId})`,
 			createdAt: projectsTable.createdAt,
 			doneTasks: sql<number>`count(CASE WHEN ${tasksTable.status} = 'done' THEN 1 END)::int`,
 			dueDate: projectsTable.dueDate,
@@ -60,14 +60,6 @@ export async function getProjects({
 			totalTasks: sql<number>`count(${tasksTable.taskId})::int`,
 		})
 		.from(projectsTable)
-		.leftJoin(
-			projectAssigneesTable,
-			eq(projectsTable.projectId, projectAssigneesTable.projectId),
-		)
-		.leftJoin(
-			staffsTable,
-			eq(projectAssigneesTable.staffId, staffsTable.staffId),
-		)
 		.leftJoin(tasksTable, eq(projectsTable.projectId, tasksTable.projectId))
 		.where(whereConditions)
 		.groupBy(projectsTable.projectId)

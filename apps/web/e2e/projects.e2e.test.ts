@@ -15,9 +15,7 @@ const test = testWithAuthenticated.extend<{
 	projectsPage: async ({ pageWithAdminUser: page }, use) => {
 		await page.goto("/projects");
 		await page.waitForURL("/projects");
-		await expect(
-			page.getByRole("main").getByText("読み込み中"),
-		).toHaveCount(0);
+		await expect(page.getByRole("main").getByText("読み込み中")).toHaveCount(0);
 
 		await use(page);
 	},
