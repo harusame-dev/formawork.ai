@@ -1,4 +1,5 @@
 import { db } from "@workspace/db/client";
+import { projectAssigneesTable } from "@workspace/db/schema/project-assignees";
 import { projectsTable } from "@workspace/db/schema/projects";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
@@ -37,15 +38,13 @@ const test = base.extend<{
 			staffId,
 		});
 		await use({ staffId });
-		// スタッフ削除前に参照している案件を削除（FK制約違反を防ぐ）
-		await db.delete(projectsTable).where(eq(projectsTable.assigneeId, staffId));
 		await db.delete(staffsTable).where(eq(staffsTable.staffId, staffId));
 	},
 });
 
-test("案件を正常に登録できる", async ({ cleanup, staff }) => {
+test("案件を担当者なしで正常に登録できる", async ({ cleanup }) => {
 	const input = {
-		assigneeId: staff.staffId,
+		assigneeIds: [],
 		description: "テスト詳細",
 		dueDate: "2026-12-31",
 		name: `テスト案件${v4()}`,
@@ -66,5 +65,29 @@ test("案件を正常に登録できる", async ({ cleanup, staff }) => {
 
 		expect(project?.name).toBe(input.name);
 		expect(project?.description).toBe(input.description);
+	}
+});
+
+test("案件を複数担当者で正常に登録できる", async ({ cleanup, staff }) => {
+	const input = {
+		assigneeIds: [staff.staffId],
+		description: "テスト詳細",
+		dueDate: "2026-12-31",
+		name: `テスト案件${v4()}`,
+	};
+
+	const result = await registerProject(input);
+
+	expect(result.success).toBe(true);
+	if (result.success) {
+		cleanup.projectIds.push(result.data.projectId);
+
+		const assignees = await db
+			.select()
+			.from(projectAssigneesTable)
+			.where(eq(projectAssigneesTable.projectId, result.data.projectId));
+
+		expect(assignees).toHaveLength(1);
+		expect(assignees[0]?.staffId).toBe(staff.staffId);
 	}
 });

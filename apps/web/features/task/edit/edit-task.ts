@@ -1,5 +1,6 @@
 import { fail, type Result, succeed } from "@harusame0616/result";
 import { db } from "@workspace/db/client";
+import { taskAssigneesTable } from "@workspace/db/schema/task-assignees";
 import { tasksTable } from "@workspace/db/schema/tasks";
 import { eq } from "drizzle-orm";
 import type { EditTaskInput } from "./schema";
@@ -15,7 +16,6 @@ export async function editTask(
 	const result = await db
 		.update(tasksTable)
 		.set({
-			assigneeId: input.assigneeId,
 			description: input.description,
 			dueDate: input.dueDate,
 			name: input.name,
@@ -26,6 +26,20 @@ export async function editTask(
 
 	if (!result.length) {
 		return fail(TASK_NOT_FOUND_ERROR_MESSAGE);
+	}
+
+	// 担当者を洗い替え
+	await db
+		.delete(taskAssigneesTable)
+		.where(eq(taskAssigneesTable.taskId, input.taskId));
+
+	if (input.assigneeIds.length > 0) {
+		await db.insert(taskAssigneesTable).values(
+			input.assigneeIds.map((staffId) => ({
+				staffId,
+				taskId: input.taskId,
+			})),
+		);
 	}
 
 	return succeed();

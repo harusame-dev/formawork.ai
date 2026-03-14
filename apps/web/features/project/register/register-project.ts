@@ -1,5 +1,6 @@
 import { type Result, succeed } from "@harusame0616/result";
 import { db } from "@workspace/db/client";
+import { projectAssigneesTable } from "@workspace/db/schema/project-assignees";
 import { projectsTable } from "@workspace/db/schema/projects";
 import type { RegisterProjectInput } from "./schema";
 
@@ -13,7 +14,6 @@ export async function registerProject(
 	const [project] = await db
 		.insert(projectsTable)
 		.values({
-			assigneeId: input.assigneeId,
 			description: input.description,
 			dueDate: input.dueDate,
 			name: input.name,
@@ -23,5 +23,15 @@ export async function registerProject(
 	if (!project) {
 		throw new Error("案件の登録に失敗しました");
 	}
+
+	if (input.assigneeIds.length > 0) {
+		await db.insert(projectAssigneesTable).values(
+			input.assigneeIds.map((staffId) => ({
+				projectId: project.projectId,
+				staffId,
+			})),
+		);
+	}
+
 	return succeed({ projectId: project.projectId });
 }

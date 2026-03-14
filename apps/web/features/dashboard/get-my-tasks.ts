@@ -1,5 +1,6 @@
 import { db } from "@workspace/db/client";
 import { projectsTable } from "@workspace/db/schema/projects";
+import { taskAssigneesTable } from "@workspace/db/schema/task-assignees";
 import { tasksTable } from "@workspace/db/schema/tasks";
 import { asc, eq, isNull } from "drizzle-orm";
 import { getUserStaffId } from "@/features/auth/get-user-staff-id";
@@ -30,7 +31,11 @@ export async function getMyTasks(): Promise<MyTask[]> {
 		})
 		.from(tasksTable)
 		.innerJoin(projectsTable, eq(tasksTable.projectId, projectsTable.projectId))
-		.where(eq(tasksTable.assigneeId, staffId))
+		.innerJoin(
+			taskAssigneesTable,
+			eq(tasksTable.taskId, taskAssigneesTable.taskId),
+		)
+		.where(eq(taskAssigneesTable.staffId, staffId))
 		.orderBy(asc(isNull(tasksTable.dueDate)), asc(tasksTable.dueDate))
 		.limit(5);
 

@@ -1,11 +1,12 @@
 import { Badge } from "@workspace/ui/components/badge";
 import type { ReactNode } from "react";
 import { DateTime } from "@/components/date-time.client";
+import { AssigneesDisplay } from "@/features/user/assignees-display.universal";
 
 type ProjectBasicInfoPresenterProps = {
 	project: {
 		archivedAt: Date | null;
-		assigneeName: string | null;
+		assignees: { id: string; name: string }[];
 		createdAt: Date;
 		description: string | null;
 		doneTasks: number;
@@ -27,7 +28,7 @@ export function ProjectBasicInfoPresenter({
 	const fields: ProjectField[] = [
 		{
 			label: "担当者",
-			value: project.assigneeName ?? "-",
+			value: <AssigneesDisplay assignees={project.assignees} showAll />,
 		},
 		{
 			label: "期限",

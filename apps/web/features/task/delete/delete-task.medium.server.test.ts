@@ -43,10 +43,9 @@ const test = base.extend<{
 		await use({ staffId });
 		await db.delete(staffsTable).where(eq(staffsTable.staffId, staffId));
 	},
-	async task({ project, staff }, use) {
+	async task({ project, staff: _staff }, use) {
 		const taskId = v4();
 		await db.insert(tasksTable).values({
-			assigneeId: staff.staffId,
 			name: `削除テストタスク${v4()}`,
 			projectId: project.projectId,
 			status: "todo",

@@ -5,9 +5,6 @@ import { projectsTable } from "@workspace/db/schema/projects";
 import { eq } from "drizzle-orm";
 import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-// シードデータで定義されている管理者スタッフID（佐藤次郎）
-const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
-
 const test = testWithAuthenticated.extend<{
 	projectsPage: Page;
 	testProject: {
@@ -18,7 +15,9 @@ const test = testWithAuthenticated.extend<{
 	projectsPage: async ({ pageWithAdminUser: page }, use) => {
 		await page.goto("/projects");
 		await page.waitForURL("/projects");
-		await expect(page.getByRole("main").getByText("読み込み中")).toBeHidden();
+		await expect(
+			page.getByRole("main").getByText("読み込み中"),
+		).toHaveCount(0);
 
 		await use(page);
 	},
@@ -29,7 +28,6 @@ const test = testWithAuthenticated.extend<{
 		const name = `一覧テスト案件${uniqueId}`;
 
 		await db.insert(projectsTable).values({
-			assigneeId: ADMIN_STAFF_ID,
 			name,
 			projectId,
 		});

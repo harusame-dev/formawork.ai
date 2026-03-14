@@ -1,6 +1,7 @@
 import { db } from "@workspace/db/client";
 import { projectsTable } from "@workspace/db/schema/projects";
 import { staffsTable } from "@workspace/db/schema/staff";
+import { taskAssigneesTable } from "@workspace/db/schema/task-assignees";
 import { tasksTable } from "@workspace/db/schema/tasks";
 import { eq } from "drizzle-orm";
 import { v4 } from "uuid";
@@ -25,11 +26,11 @@ const test = base.extend<{
 	staff: { staffId: string };
 	task: { taskId: string; name: string };
 }>({
-	async project({ staff }, use) {
+	// biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
+	async project({}, use) {
 		const projectId = v4();
 		const name = `テスト案件${v4()}`;
 		await db.insert(projectsTable).values({
-			assigneeId: staff.staffId,
 			name,
 			projectId,
 		});
@@ -53,10 +54,13 @@ const test = base.extend<{
 		const taskId = v4();
 		const name = `テストタスク${v4()}`;
 		await db.insert(tasksTable).values({
-			assigneeId: staff.staffId,
 			name,
 			projectId: project.projectId,
 			status: "todo",
+			taskId,
+		});
+		await db.insert(taskAssigneesTable).values({
+			staffId: staff.staffId,
 			taskId,
 		});
 		await use({ name, taskId });
@@ -124,10 +128,9 @@ test("プロジェクトで絞り込みができる", async ({ task, project }) 
 	expect(found).toBeDefined();
 });
 
-test("期限の開始日フィルタが動作する", async ({ project, staff }) => {
+test("期限の開始日フィルタが動作する", async ({ project }) => {
 	const taskId = v4();
 	await db.insert(tasksTable).values({
-		assigneeId: staff.staffId,
 		dueDate: "2025-01-15",
 		name: `期限テスト${v4()}`,
 		projectId: project.projectId,
@@ -148,10 +151,9 @@ test("期限の開始日フィルタが動作する", async ({ project, staff })
 	}
 });
 
-test("期限の終了日フィルタが動作する", async ({ project, staff }) => {
+test("期限の終了日フィルタが動作する", async ({ project }) => {
 	const taskId = v4();
 	await db.insert(tasksTable).values({
-		assigneeId: staff.staffId,
 		dueDate: "2025-06-15",
 		name: `期限テスト${v4()}`,
 		projectId: project.projectId,

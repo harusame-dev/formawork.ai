@@ -10,8 +10,7 @@ vi.mock("@/features/task/status/task-status-select.client", () => ({
 }));
 
 const baseTask = {
-	assigneeId: "00000000-0000-0000-0000-000000000001",
-	assigneeName: "田中太郎",
+	assignees: [{ id: "00000000-0000-0000-0000-000000000001", name: "田中太郎" }],
 	description: "テスト説明文",
 	dueDate: "2026-12-31",
 	name: "テストタスク",

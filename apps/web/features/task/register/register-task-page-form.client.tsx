@@ -30,12 +30,13 @@ import {
 	taskNameSchema,
 } from "@/features/task/schema";
 import { TaskStatus, TaskStatusLabel } from "@/features/task/status";
+import { AssigneeMultiSelect } from "@/features/user/assignee-multi-select.client";
 import type { UserOption } from "@/features/user/list/get-user-options";
 import { useIsHydrated } from "@/libs/use-is-hydrated.hook";
 import { registerTaskAction } from "./register-task.action";
 
 const formSchema = v.object({
-	assigneeId: v.pipe(v.string(), v.uuid("担当者を選択してください")),
+	assigneeIds: v.array(v.pipe(v.string(), v.uuid())),
 	description: v.optional(taskDescriptionSchema),
 	dueDate: taskDueDateSchema,
 	name: taskNameSchema,
@@ -59,7 +60,7 @@ export function RegisterTaskPageForm({
 
 	const form = useForm<FormValues>({
 		defaultValues: {
-			assigneeId: "",
+			assigneeIds: [],
 			description: "",
 			dueDate: undefined,
 			name: "",
@@ -73,7 +74,7 @@ export function RegisterTaskPageForm({
 		form.clearErrors("root");
 
 		const result = await registerTaskAction({
-			assigneeId: values.assigneeId,
+			assigneeIds: values.assigneeIds,
 			description: values.description,
 			dueDate: values.dueDate,
 			name: values.name,
@@ -188,31 +189,18 @@ export function RegisterTaskPageForm({
 
 				<FormField
 					control={form.control}
-					name="assigneeId"
+					name="assigneeIds"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel className="flex items-center gap-2">
-								担当者
-								<RequiredBadge />
-							</FormLabel>
-							<Select
-								defaultValue={field.value}
-								disabled={disabled}
-								onValueChange={field.onChange}
-							>
-								<FormControl>
-									<SelectTrigger className="max-w-xs">
-										<SelectValue placeholder="担当者を選択" />
-									</SelectTrigger>
-								</FormControl>
-								<SelectContent>
-									{assigneeOptions.map((option) => (
-										<SelectItem key={option.userId} value={option.userId}>
-											{option.fullName}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+							<FormLabel>担当者</FormLabel>
+							<FormControl>
+								<AssigneeMultiSelect
+									disabled={disabled}
+									onChange={field.onChange}
+									options={assigneeOptions}
+									value={field.value}
+								/>
+							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}

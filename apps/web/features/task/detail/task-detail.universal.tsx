@@ -1,4 +1,5 @@
 import { TaskStatusSelect } from "@/features/task/status/task-status-select.client";
+import { AssigneesDisplay } from "@/features/user/assignees-display.universal";
 import type { TaskDetail } from "./get-task-detail";
 
 type TaskDetailPresenterProps = {
@@ -32,7 +33,9 @@ export function TaskDetailPresenter({ task }: TaskDetailPresenterProps) {
 						>
 							担当者
 						</th>
-						<td className="font-bold py-1">{task.assigneeName ?? "-"}</td>
+						<td className="font-bold py-1">
+							<AssigneesDisplay assignees={task.assignees} showAll />
+						</td>
 					</tr>
 					<tr>
 						<th

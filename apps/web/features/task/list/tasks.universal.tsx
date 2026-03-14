@@ -11,6 +11,7 @@ import { Suspense } from "react";
 import { DeleteTaskDialog } from "@/features/task/delete/delete-task-dialog.client";
 import { EditTaskFormContainer } from "@/features/task/edit/edit-task-form.server";
 import { TaskStatusSelect } from "@/features/task/status/task-status-select.client";
+import { AssigneesDisplay } from "@/features/user/assignees-display.universal";
 import type { TaskListItem } from "./get-tasks";
 
 type TasksPresenterProps = {
@@ -55,7 +56,9 @@ export function TasksPresenter({ tasks }: TasksPresenterProps) {
 								taskId={task.taskId}
 							/>
 						</TableCell>
-						<TableCell>{task.assigneeName ?? "-"}</TableCell>
+						<TableCell>
+							<AssigneesDisplay assignees={task.assignees} />
+						</TableCell>
 						<TableCell>{task.dueDate ?? "-"}</TableCell>
 						<TableCell>
 							<div className="flex items-center gap-2">

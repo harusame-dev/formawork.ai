@@ -27,7 +27,7 @@ export type ProjectsCondition = v.InferOutput<typeof projectsConditionSchema>;
 
 export type ProjectsListItem = {
 	archivedAt: Date | null;
-	assigneeName: string | null;
+	assignees: { id: string; name: string }[];
 	createdAt: Date;
 	doneTasks: number;
 	dueDate: string | null;

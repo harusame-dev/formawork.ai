@@ -35,7 +35,7 @@ export function EditTaskDialog({ assigneeOptions, task }: EditTaskDialogProps) {
 				<TaskForm
 					assigneeOptions={assigneeOptions}
 					initialValues={{
-						assigneeId: task.assigneeId ?? "",
+						assigneeIds: task.assignees.map((a) => a.id),
 						description: task.description,
 						dueDate: task.dueDate,
 						name: task.name,

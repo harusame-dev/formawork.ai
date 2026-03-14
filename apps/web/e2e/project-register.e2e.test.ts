@@ -28,6 +28,7 @@ test("案件を登録して一覧に表示される", async ({ registerProjectPa
 		// 担当者選択
 		await registerProjectPage.getByRole("combobox").click();
 		await registerProjectPage.getByRole("option").first().click();
+		await registerProjectPage.keyboard.press("Escape");
 	});
 
 	await test.step("登録ボタンをクリック", async () => {

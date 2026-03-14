@@ -8,13 +8,11 @@ import {
 } from "drizzle-orm/pg-core";
 import { schemaName } from "../pgschema";
 import { projectsTable } from "./projects";
-import { staffsTable } from "./staff";
 
 export const tasksTable = pgSchema(schemaName)
 	.table(
 		"tasks",
 		{
-			assigneeId: uuid("assignee_id").references(() => staffsTable.staffId),
 			createdAt: timestamp("created_at").defaultNow().notNull(),
 			description: text("description"),
 			dueDate: date("due_date"),
@@ -31,7 +29,6 @@ export const tasksTable = pgSchema(schemaName)
 		},
 		(t) => [
 			index("idx_tasks_project_created").on(t.projectId, t.createdAt.desc()),
-			index("idx_tasks_assignee_id").on(t.assigneeId),
 			index("idx_tasks_status").on(t.status),
 		],
 	)

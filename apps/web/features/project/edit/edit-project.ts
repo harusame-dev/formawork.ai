@@ -1,5 +1,6 @@
 import { fail, type Result, succeed } from "@harusame0616/result";
 import { db } from "@workspace/db/client";
+import { projectAssigneesTable } from "@workspace/db/schema/project-assignees";
 import { projectsTable } from "@workspace/db/schema/projects";
 import { eq } from "drizzle-orm";
 import type { EditProjectInput } from "./schema";
@@ -15,7 +16,6 @@ export async function editProject(
 	const result = await db
 		.update(projectsTable)
 		.set({
-			assigneeId: input.assigneeId,
 			description: input.description,
 			dueDate: input.dueDate,
 			name: input.name,
@@ -25,6 +25,20 @@ export async function editProject(
 
 	if (!result.length) {
 		return fail(PROJECT_NOT_FOUND_ERROR_MESSAGE);
+	}
+
+	// 担当者を洗い替え
+	await db
+		.delete(projectAssigneesTable)
+		.where(eq(projectAssigneesTable.projectId, input.projectId));
+
+	if (input.assigneeIds.length > 0) {
+		await db.insert(projectAssigneesTable).values(
+			input.assigneeIds.map((staffId) => ({
+				projectId: input.projectId,
+				staffId,
+			})),
+		);
 	}
 
 	return succeed();

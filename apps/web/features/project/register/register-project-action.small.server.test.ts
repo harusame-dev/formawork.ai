@@ -42,7 +42,7 @@ test("案件名が空の場合にバリデーションエラーを返す", async
 	const { registerProject } = await import("./register-project");
 
 	const result = await registerProjectAction({
-		assigneeId: "00000000-0000-0000-0000-000000000001",
+		assigneeIds: [],
 		name: "",
 	});
 
@@ -53,11 +53,11 @@ test("案件名が空の場合にバリデーションエラーを返す", async
 	expect(registerProject).not.toHaveBeenCalled();
 });
 
-test("不正なassigneeIdの場合にバリデーションエラーを返す", async () => {
+test("不正なassigneeIdが含まれる場合にバリデーションエラーを返す", async () => {
 	const { registerProject } = await import("./register-project");
 
 	const result = await registerProjectAction({
-		assigneeId: "invalid-uuid",
+		assigneeIds: ["invalid-uuid"],
 		name: "テスト案件",
 	});
 

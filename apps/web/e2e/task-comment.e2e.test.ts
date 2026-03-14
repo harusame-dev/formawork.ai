@@ -6,9 +6,6 @@ import { tasksTable } from "@workspace/db/schema/tasks";
 import { eq } from "drizzle-orm";
 import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-// シードデータで定義されている管理者スタッフID（佐藤次郎）
-const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
-
 const test = testWithAuthenticated.extend<{
 	taskDetailPage: Page;
 	testProject: { projectId: string };
@@ -30,7 +27,6 @@ const test = testWithAuthenticated.extend<{
 	async testProject({}, use) {
 		const projectId = randomUUID();
 		await db.insert(projectsTable).values({
-			assigneeId: ADMIN_STAFF_ID,
 			name: `コメントE2Eテスト案件${randomUUID().slice(0, 8)}`,
 			projectId,
 		});
@@ -42,7 +38,6 @@ const test = testWithAuthenticated.extend<{
 	async testTask({ testProject }, use) {
 		const taskId = randomUUID();
 		await db.insert(tasksTable).values({
-			assigneeId: ADMIN_STAFF_ID,
 			name: `コメントE2Eテストタスク${randomUUID().slice(0, 8)}`,
 			projectId: testProject.projectId,
 			status: "todo",

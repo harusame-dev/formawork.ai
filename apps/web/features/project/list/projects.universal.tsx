@@ -8,6 +8,7 @@ import {
 	TableRow,
 } from "@workspace/ui/components/table";
 import Link from "next/link";
+import { AssigneesDisplay } from "@/features/user/assignees-display.universal";
 import type { ProjectsListItem } from "./schema";
 
 type ProjectsPresenterProps = {
@@ -57,7 +58,9 @@ export function ProjectsPresenter({
 									{project.name}
 								</Link>
 							</TableCell>
-							<TableCell>{project.assigneeName ?? "-"}</TableCell>
+							<TableCell>
+								<AssigneesDisplay assignees={project.assignees} />
+							</TableCell>
 							<TableCell>{project.dueDate ?? "-"}</TableCell>
 							<TableCell>
 								{project.createdAt.toLocaleDateString("ja-JP")}

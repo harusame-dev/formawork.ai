@@ -1,13 +1,13 @@
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
+import { taskAssigneesTable } from "@workspace/db/schema/task-assignees";
 import { tasksTable } from "@workspace/db/schema/tasks";
 import { eq, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { TaskTag } from "../tag";
 
 export type TaskDetail = {
-	assigneeId: string | null;
-	assigneeName: string | null;
+	assignees: { id: string; name: string }[];
 	description: string | null;
 	dueDate: string | null;
 	name: string;
@@ -25,10 +25,9 @@ export async function getTaskDetail(
 
 	const [task] = await db
 		.select({
-			assigneeId: tasksTable.assigneeId,
-			assigneeName: sql<
-				string | null
-			>`CASE WHEN ${staffsTable.staffId} IS NULL THEN NULL ELSE ${staffsTable.lastName} || ${staffsTable.firstName} END`,
+			assignees: sql<
+				{ id: string; name: string }[]
+			>`COALESCE(json_agg(json_build_object('id', ${staffsTable.staffId}, 'name', ${staffsTable.lastName} || ${staffsTable.firstName})) FILTER (WHERE ${staffsTable.staffId} IS NOT NULL), '[]')`,
 			description: tasksTable.description,
 			dueDate: tasksTable.dueDate,
 			name: tasksTable.name,
@@ -37,8 +36,13 @@ export async function getTaskDetail(
 			taskId: tasksTable.taskId,
 		})
 		.from(tasksTable)
-		.leftJoin(staffsTable, eq(tasksTable.assigneeId, staffsTable.staffId))
+		.leftJoin(
+			taskAssigneesTable,
+			eq(tasksTable.taskId, taskAssigneesTable.taskId),
+		)
+		.leftJoin(staffsTable, eq(taskAssigneesTable.staffId, staffsTable.staffId))
 		.where(eq(tasksTable.taskId, taskId))
+		.groupBy(tasksTable.taskId)
 		.limit(1);
 
 	return task;

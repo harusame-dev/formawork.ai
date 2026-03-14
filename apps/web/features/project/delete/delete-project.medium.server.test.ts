@@ -1,6 +1,5 @@
 import { db } from "@workspace/db/client";
 import { projectsTable } from "@workspace/db/schema/projects";
-import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
 import { v4 } from "uuid";
 import { test as base, expect, vi } from "vitest";
@@ -16,12 +15,11 @@ vi.mock("@repo/logger/nextjs/server", () => ({
 
 const test = base.extend<{
 	project: { projectId: string };
-	staff: { staffId: string };
 }>({
-	async project({ staff }, use) {
+	// biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
+	async project({}, use) {
 		const projectId = v4();
 		await db.insert(projectsTable).values({
-			assigneeId: staff.staffId,
 			name: `削除テスト案件${v4()}`,
 			projectId,
 		});
@@ -29,17 +27,6 @@ const test = base.extend<{
 		await db
 			.delete(projectsTable)
 			.where(eq(projectsTable.projectId, projectId));
-	},
-	// biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
-	async staff({}, use) {
-		const staffId = v4();
-		await db.insert(staffsTable).values({
-			firstName: "テスト",
-			lastName: "スタッフ",
-			staffId,
-		});
-		await use({ staffId });
-		await db.delete(staffsTable).where(eq(staffsTable.staffId, staffId));
 	},
 });
 

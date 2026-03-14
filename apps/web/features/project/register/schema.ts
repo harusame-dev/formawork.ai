@@ -6,7 +6,7 @@ import {
 } from "../schema";
 
 export const registerProjectSchema = v.object({
-	assigneeId: v.pipe(v.string(), v.uuid()),
+	assigneeIds: v.array(v.pipe(v.string(), v.uuid())),
 	description: v.optional(projectDescriptionSchema),
 	dueDate: projectDueDateSchema,
 	name: projectNameSchema,

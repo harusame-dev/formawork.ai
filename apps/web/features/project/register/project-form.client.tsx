@@ -12,13 +12,6 @@ import {
 } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { RequiredBadge } from "@workspace/ui/components/required-badge";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@workspace/ui/components/select";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -29,12 +22,13 @@ import {
 	projectDueDateSchema,
 	projectNameSchema,
 } from "@/features/project/schema";
+import { AssigneeMultiSelect } from "@/features/user/assignee-multi-select.client";
 import type { UserOption } from "@/features/user/list/get-user-options";
 import { useIsHydrated } from "@/libs/use-is-hydrated.hook";
 import { registerProjectAction } from "./register-project.action";
 
 const formSchema = v.object({
-	assigneeId: v.pipe(v.string(), v.uuid("担当者を選択してください")),
+	assigneeIds: v.array(v.pipe(v.string(), v.uuid())),
 	description: v.optional(projectDescriptionSchema),
 	dueDate: projectDueDateSchema,
 	name: projectNameSchema,
@@ -52,7 +46,7 @@ type ProjectFormProps =
 	| {
 			assigneeOptions: UserOption[];
 			initialValues: {
-				assigneeId: string;
+				assigneeIds: string[];
 				description: string | null;
 				dueDate: string | null;
 				name: string;
@@ -74,13 +68,13 @@ export function ProjectForm({
 		defaultValues:
 			mode === "edit" && initialValues
 				? {
-						assigneeId: initialValues.assigneeId,
+						assigneeIds: initialValues.assigneeIds,
 						description: initialValues.description ?? "",
 						dueDate: initialValues.dueDate ?? undefined,
 						name: initialValues.name,
 					}
 				: {
-						assigneeId: "",
+						assigneeIds: [],
 						description: "",
 						dueDate: undefined,
 						name: "",
@@ -93,7 +87,7 @@ export function ProjectForm({
 
 		if (mode === "edit" && projectId) {
 			const result = await editProjectAction({
-				assigneeId: values.assigneeId,
+				assigneeIds: values.assigneeIds,
 				description: values.description,
 				dueDate: values.dueDate,
 				name: values.name,
@@ -104,10 +98,13 @@ export function ProjectForm({
 				form.setError("root", {
 					message: result.error || "エラーが発生しました",
 				});
+				return;
 			}
+
+			router.push(`/projects/${projectId}`);
 		} else {
 			const result = await registerProjectAction({
-				assigneeId: values.assigneeId,
+				assigneeIds: values.assigneeIds,
 				description: values.description,
 				dueDate: values.dueDate,
 				name: values.name,
@@ -117,7 +114,10 @@ export function ProjectForm({
 				form.setError("root", {
 					message: result.error || "エラーが発生しました",
 				});
+				return;
 			}
+
+			router.push("/projects");
 		}
 	}
 
@@ -154,31 +154,18 @@ export function ProjectForm({
 
 				<FormField
 					control={form.control}
-					name="assigneeId"
+					name="assigneeIds"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel className="flex items-center gap-2">
-								担当者
-								<RequiredBadge />
-							</FormLabel>
-							<Select
-								defaultValue={field.value}
-								disabled={disabled}
-								onValueChange={field.onChange}
-							>
-								<FormControl>
-									<SelectTrigger className="max-w-xs">
-										<SelectValue placeholder="担当者を選択" />
-									</SelectTrigger>
-								</FormControl>
-								<SelectContent>
-									{assigneeOptions.map((option) => (
-										<SelectItem key={option.userId} value={option.userId}>
-											{option.fullName}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+							<FormLabel>担当者</FormLabel>
+							<FormControl>
+								<AssigneeMultiSelect
+									disabled={disabled}
+									onChange={field.onChange}
+									options={assigneeOptions}
+									value={field.value}
+								/>
+							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}

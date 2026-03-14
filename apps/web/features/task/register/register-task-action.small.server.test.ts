@@ -34,7 +34,7 @@ test("タスク名が空の場合にバリデーションエラーを返す", as
 	const { registerTask } = await import("./register-task");
 
 	const result = await registerTaskAction({
-		assigneeId: "00000000-0000-0000-0000-000000000001",
+		assigneeIds: [],
 		name: "",
 		projectId: "00000000-0000-0000-0000-000000000001",
 		status: "todo",

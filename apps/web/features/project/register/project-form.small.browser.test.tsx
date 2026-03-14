@@ -1,4 +1,3 @@
-import type React from "react";
 import { expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
@@ -12,17 +11,19 @@ vi.mock("@/features/project/edit/edit-project.action", () => ({
 	editProjectAction: vi.fn(),
 }));
 
-// Radix UI Select はブラウザテスト環境でクラッシュするためモック
-vi.mock("@workspace/ui/components/select", () => ({
-	Select: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-	SelectContent: ({ children }: { children: React.ReactNode }) => (
-		<>{children}</>
+// AssigneeMultiSelect はブラウザテスト環境でのPopoverをモック
+vi.mock("@/features/user/assignee-multi-select.client", () => ({
+	AssigneeMultiSelect: ({
+		onChange,
+		value,
+	}: {
+		onChange: (v: string[]) => void;
+		value: string[];
+	}) => (
+		<button onClick={() => onChange(value)} type="button">
+			担当者選択
+		</button>
 	),
-	SelectItem: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-	SelectTrigger: ({ children }: { children: React.ReactNode }) => (
-		<div>{children}</div>
-	),
-	SelectValue: () => null,
 }));
 
 const assigneeOptions = [
@@ -55,7 +56,7 @@ test("編集モードでは編集するボタンが表示される", async () =>
 		<ProjectForm
 			assigneeOptions={assigneeOptions}
 			initialValues={{
-				assigneeId: "00000000-0000-0000-0000-000000000001",
+				assigneeIds: ["00000000-0000-0000-0000-000000000001"],
 				description: null,
 				dueDate: null,
 				name: "既存案件",

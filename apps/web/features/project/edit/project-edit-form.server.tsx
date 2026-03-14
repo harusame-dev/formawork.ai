@@ -24,7 +24,7 @@ export async function ProjectEditFormContainer({
 		<ProjectForm
 			assigneeOptions={assigneeOptions}
 			initialValues={{
-				assigneeId: project.assigneeId ?? "",
+				assigneeIds: project.assignees.map((a) => a.id),
 				description: project.description,
 				dueDate: project.dueDate,
 				name: project.name,

@@ -6,9 +6,6 @@ import { tasksTable } from "@workspace/db/schema/tasks";
 import { eq } from "drizzle-orm";
 import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
-// シードデータで定義されている管理者スタッフID（佐藤次郎）
-const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
-
 const test = testWithAuthenticated.extend<{
 	projectDetailPage: Page;
 	testProject: {
@@ -29,7 +26,6 @@ const test = testWithAuthenticated.extend<{
 		const name = `タスクE2Eテスト案件${uniqueId}`;
 
 		await db.insert(projectsTable).values({
-			assigneeId: ADMIN_STAFF_ID,
 			name,
 			projectId,
 		});
@@ -53,14 +49,6 @@ test("タスクを追加できる", async ({ projectDetailPage, testProject }) =
 
 	await test.step("タスク名を入力", async () => {
 		await projectDetailPage.getByLabel("タスク名").fill(taskName);
-
-		// 担当者を選択
-		const comboboxes = await projectDetailPage.getByRole("combobox").all();
-		// ステータス、担当者の順でcomboboxが並ぶ
-		if (comboboxes.length >= 2) {
-			await comboboxes[1]?.click();
-			await projectDetailPage.getByRole("option").first().click();
-		}
 	});
 
 	await test.step("登録ボタンをクリック", async () => {

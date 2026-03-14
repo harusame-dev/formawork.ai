@@ -1,4 +1,5 @@
 import { db } from "@workspace/db/client";
+import { projectAssigneesTable } from "@workspace/db/schema/project-assignees";
 import { projectsTable } from "@workspace/db/schema/projects";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { tasksTable } from "@workspace/db/schema/tasks";
@@ -8,8 +9,7 @@ import { ProjectTag } from "../tag";
 
 type ProjectDetail = {
 	archivedAt: Date | null;
-	assigneeId: string | null;
-	assigneeName: string | null;
+	assignees: { id: string; name: string }[];
 	createdAt: Date;
 	description: string | null;
 	doneTasks: number;
@@ -30,10 +30,9 @@ export async function getProjectDetail(
 	const [project] = await db
 		.select({
 			archivedAt: projectsTable.archivedAt,
-			assigneeId: projectsTable.assigneeId,
-			assigneeName: sql<
-				string | null
-			>`CASE WHEN ${staffsTable.staffId} IS NULL THEN NULL ELSE ${staffsTable.lastName} || ${staffsTable.firstName} END`,
+			assignees: sql<
+				{ id: string; name: string }[]
+			>`COALESCE(json_agg(json_build_object('id', ${staffsTable.staffId}, 'name', ${staffsTable.lastName} || ${staffsTable.firstName})) FILTER (WHERE ${staffsTable.staffId} IS NOT NULL), '[]')`,
 			createdAt: projectsTable.createdAt,
 			description: projectsTable.description,
 			doneTasks: sql<number>`count(CASE WHEN ${tasksTable.status} = 'done' THEN 1 END)::int`,
@@ -44,10 +43,17 @@ export async function getProjectDetail(
 			updatedAt: projectsTable.updatedAt,
 		})
 		.from(projectsTable)
-		.leftJoin(staffsTable, eq(projectsTable.assigneeId, staffsTable.staffId))
+		.leftJoin(
+			projectAssigneesTable,
+			eq(projectsTable.projectId, projectAssigneesTable.projectId),
+		)
+		.leftJoin(
+			staffsTable,
+			eq(projectAssigneesTable.staffId, staffsTable.staffId),
+		)
 		.leftJoin(tasksTable, eq(projectsTable.projectId, tasksTable.projectId))
 		.where(eq(projectsTable.projectId, projectId))
-		.groupBy(projectsTable.projectId, staffsTable.staffId)
+		.groupBy(projectsTable.projectId)
 		.limit(1);
 
 	return project;
