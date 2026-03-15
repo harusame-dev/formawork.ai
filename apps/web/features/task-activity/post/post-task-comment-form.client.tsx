@@ -41,7 +41,7 @@ export function PostTaskCommentForm({ taskId }: PostTaskCommentFormProps) {
 
 	return (
 		<form
-			className="flex flex-col gap-2 mt-2"
+			className="flex flex-col gap-2 mt-4"
 			noValidate
 			onSubmit={form.handleSubmit(onSubmit)}
 		>

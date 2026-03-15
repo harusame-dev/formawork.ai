@@ -46,7 +46,12 @@ export async function MyTasks() {
 								key={task.taskId}
 							>
 								<TaskStatusBadge status={task.status} />
-								<span className="truncate">{task.name}</span>
+								<Link
+									className="truncate underline"
+									href={`/projects/${task.projectId}/tasks/${task.taskId}`}
+								>
+									{task.name}
+								</Link>
 							</li>
 						))}
 					</ul>
