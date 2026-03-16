@@ -1,0 +1,1 @@
+export const ATTENDANCE_URL_TAG = "ATTENDANCE_URL_TAG";
