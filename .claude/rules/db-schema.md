@@ -5,6 +5,23 @@ paths:
 
 # DB スキーマ定義ルール
 
+## テーブル定義
+
+### pgSchema の使用
+
+デプロイ環境ごとにスキーマを分離するため、テーブル定義には必ず `packages/db/src/pgschema.ts` が提供する `schemaName` を使用して `pgSchema(schemaName).table(...)` でテーブルを定義すること。
+
+```typescript
+import { pgSchema } from "drizzle-orm/pg-core";
+import { schemaName } from "../pgschema";
+
+export const exampleTable = pgSchema(schemaName).table("example", {
+  // ...
+});
+```
+
+`schemaName` はローカル環境では `"local"`、リモート環境では `"${appName}_${serviceName}_${branchName}"` に解決される。
+
 ## RLS（Row Level Security）
 
 ### 方針
