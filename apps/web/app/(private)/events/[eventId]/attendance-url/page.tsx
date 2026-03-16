@@ -1,9 +1,3 @@
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@workspace/ui/components/card";
 import { Suspense } from "react";
 import { AttendanceUrlManager } from "@/features/attendance-url/components/attendance-url-manager";
 
@@ -13,17 +7,15 @@ export default function Page({
 	const eventIdPromise = params.then(({ eventId }) => eventId);
 
 	return (
-		<div className="p-4">
-			<Card>
-				<CardHeader>
-					<CardTitle>来場ページURL管理</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<Suspense>
-						<AttendanceUrlManagerContainer eventIdPromise={eventIdPromise} />
-					</Suspense>
-				</CardContent>
-			</Card>
+		<div className="flex flex-col">
+			<div className="px-6 py-4">
+				<h2 className="text-xl font-bold">来場ページURL管理</h2>
+			</div>
+			<div className="px-6 pb-6">
+				<Suspense>
+					<AttendanceUrlManagerContainer eventIdPromise={eventIdPromise} />
+				</Suspense>
+			</div>
 		</div>
 	);
 }

@@ -58,6 +58,10 @@
 		"smallint",
 		"KTVK",
 		"Uodkm",
-		"unsandboxed"
+		"unsandboxed",
+		"timestamptz",
+		"qrcode",
+		"worktree",
+		"worktrees"
 	]
 }

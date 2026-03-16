@@ -6,7 +6,7 @@ export async function RegisterUserLink() {
 
 	if (role === UserRole.Admin) {
 		return (
-			<Link className="text-primary underline" href="/users/new">
+			<Link className="text-sm underline" href="/users/new">
 				新規登録
 			</Link>
 		);

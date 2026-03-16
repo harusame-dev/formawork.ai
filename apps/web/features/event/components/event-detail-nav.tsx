@@ -10,9 +10,6 @@ type EventDetailNavProps = {
 export function EventDetailNav({ eventId, eventName }: EventDetailNavProps) {
 	return (
 		<nav className="flex flex-col gap-2 border-r p-4 min-w-48">
-			<div className="mb-2 text-sm font-semibold text-muted-foreground">
-				メニュー
-			</div>
 			<Button asChild className="justify-start" size="sm" variant="ghost">
 				<Link href={`/events/${eventId}`}>来場状況一覧</Link>
 			</Button>

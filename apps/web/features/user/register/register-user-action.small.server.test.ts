@@ -2,7 +2,7 @@ import { expect, test, vi } from "vitest";
 import { registerUserAction } from "./register-user.action";
 
 vi.mock("next/cache", async () => ({
-	updateTag: vi.fn(),
+	revalidateTag: vi.fn(),
 }));
 
 vi.mock("next/navigation", async (importOriginal) => {

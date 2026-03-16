@@ -10,11 +10,15 @@ export default function EditEventPage({
 	const eventPromise = params.then(({ eventId }) => getEvent(eventId));
 
 	return (
-		<div className="p-6">
-			<h1 className="mb-6 text-2xl font-bold">イベント編集</h1>
-			<Suspense fallback={<EditEventFormSkeleton />}>
-				<EditEventFormContainer eventPromise={eventPromise} />
-			</Suspense>
+		<div className="flex flex-col">
+			<div className="px-6 py-4">
+				<h2 className="text-xl font-bold">イベント編集</h2>
+			</div>
+			<div className="px-6 pb-6">
+				<Suspense fallback={<EditEventFormSkeleton />}>
+					<EditEventFormContainer eventPromise={eventPromise} />
+				</Suspense>
+			</div>
 		</div>
 	);
 }

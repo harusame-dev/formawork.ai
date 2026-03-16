@@ -1,7 +1,7 @@
 "use server";
 
 import { fail } from "@harusame0616/result";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { RedirectType, redirect } from "next/navigation";
 import * as v from "valibot";
 import { UserRole } from "@/features/auth/get-user-role";
@@ -27,8 +27,8 @@ export const deleteUserAction = createServerAction(
 	{
 		name: "deleteUserAction",
 		onSuccess: ({ input: { userId } }) => {
-			updateTag(UserTag.Detail(userId));
-			updateTag(UserTag.List);
+			revalidateTag(UserTag.Detail(userId), "max");
+			revalidateTag(UserTag.List, "max");
 
 			redirect("/users", RedirectType.replace);
 		},

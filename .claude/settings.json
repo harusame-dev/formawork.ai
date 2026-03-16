@@ -31,7 +31,8 @@
 			"Bash(gh *)",
 			"Bash(pnpm -w test:browser*)",
 			"Bash(pnpm -w test:e2e*)",
-			"Bash(playwright-cli *)"
+			"Bash(playwright-cli *)",
+			"Bash(pnpm -w db:reset *)"
 		],
 		"ask": [],
 		"deny": [

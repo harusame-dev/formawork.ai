@@ -8,9 +8,16 @@ export default function Page({
 }: PageProps<"/events/[eventId]/volunteers/[volunteerId]">) {
 	const paramsPromise = params;
 	return (
-		<Suspense>
-			<VolunteerDetailContainer paramsPromise={paramsPromise} />
-		</Suspense>
+		<div className="flex flex-col">
+			<div className="px-6 py-4">
+				<h2 className="text-xl font-bold">ボランティア詳細</h2>
+			</div>
+			<div className="px-6 pb-6">
+				<Suspense>
+					<VolunteerDetailContainer paramsPromise={paramsPromise} />
+				</Suspense>
+			</div>
+		</div>
 	);
 }
 

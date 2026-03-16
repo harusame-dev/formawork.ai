@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import * as v from "valibot";
 import { UserRole } from "@/features/auth/get-user-role";
@@ -17,8 +17,8 @@ import { editUser } from "./edit-user";
 export const editUserAction = createServerAction((params) => editUser(params), {
 	name: "editUserAction",
 	onSuccess: ({ input: { userId } }) => {
-		updateTag(UserTag.List);
-		updateTag(UserTag.Detail(userId));
+		revalidateTag(UserTag.List, "max");
+		revalidateTag(UserTag.Detail(userId), "max");
 
 		redirect(`/users/${userId}`);
 	},

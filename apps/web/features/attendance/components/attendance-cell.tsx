@@ -1,3 +1,5 @@
+import { Check, Minus, X } from "lucide-react";
+
 type AttendanceCellProps = {
 	/** 参加予定かどうか */
 	isParticipationDate: boolean;
@@ -10,12 +12,12 @@ export function AttendanceCell({
 	hasAttendance,
 }: AttendanceCellProps) {
 	if (!isParticipationDate) {
-		return <span className="text-muted-foreground">ー</span>;
+		return <Minus className="size-4 text-muted-foreground mx-auto" />;
 	}
 
 	if (hasAttendance) {
-		return <span className="text-green-600">◯</span>;
+		return <Check className="size-4 text-green-600 mx-auto" />;
 	}
 
-	return <span className="text-red-500">✖️</span>;
+	return <X className="size-4 text-red-500 mx-auto" />;
 }

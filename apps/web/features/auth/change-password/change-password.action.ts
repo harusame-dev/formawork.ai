@@ -8,7 +8,7 @@ import { changePasswordSchema } from "./schema";
 export const changePasswordAction = createServerAction(changePassword, {
 	name: "changePasswordAction",
 	onSuccess: () => {
-		redirect("/", RedirectType.replace);
+		redirect("/events", RedirectType.replace);
 	},
 	schema: changePasswordSchema,
 });

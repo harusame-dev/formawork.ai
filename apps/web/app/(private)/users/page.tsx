@@ -1,4 +1,3 @@
-import { Card } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
 import { RegisterUserLink } from "@/features/user/list/register-user-link.server";
@@ -15,23 +14,25 @@ export default async function Page({ searchParams }: PageProps<"/users">) {
 	);
 
 	return (
-		<div className="container mx-auto p-2 space-y-4">
-			<div className="flex items-center justify-between">
-				<h1 className="font-bold">ユーザー一覧</h1>
-				<Suspense fallback={<Skeleton className="h-5 w-16" />}>
+		<div className="flex flex-col">
+			<div className="flex items-center justify-between px-6 py-4">
+				<h1 className="text-xl font-bold">ユーザー一覧</h1>
+				<Suspense fallback={<Skeleton className="h-4 w-14" />}>
 					<RegisterUserLink />
 				</Suspense>
 			</div>
-			<Card className="p-4 w-full">
-				<SuspenseOnSearch fallback={<UserSearchFormSkeleton />}>
-					<UserSearchFormContainer conditionPromise={validatedCondition} />
-				</SuspenseOnSearch>
-			</Card>
-			<Card className="py-2 w-full">
-				<SuspenseOnSearch fallback={<UsersSkeleton />}>
-					<UsersContainer condition={validatedCondition} />
-				</SuspenseOnSearch>
-			</Card>
+			<div className="px-6 pb-6 space-y-4">
+				<div className="rounded-lg border bg-card p-4">
+					<SuspenseOnSearch fallback={<UserSearchFormSkeleton />}>
+						<UserSearchFormContainer conditionPromise={validatedCondition} />
+					</SuspenseOnSearch>
+				</div>
+				<div className="rounded-lg border bg-card">
+					<SuspenseOnSearch fallback={<UsersSkeleton />}>
+						<UsersContainer condition={validatedCondition} />
+					</SuspenseOnSearch>
+				</div>
+			</div>
 		</div>
 	);
 }

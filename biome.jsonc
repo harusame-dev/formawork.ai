@@ -19,7 +19,9 @@
 			"**",
 			// 自動生成なので除外
 			"!packages/db/drizzle",
-			"!**/mockServiceWorker.js"
+			"!**/mockServiceWorker.js",
+			// worktree除外
+			"!.claude/worktrees"
 		]
 	},
 	"linter": {

@@ -2,14 +2,13 @@ import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq, sql } from "drizzle-orm";
 import { authUsers } from "drizzle-orm/supabase";
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { cache } from "react";
 import { UserRole } from "../../auth/user/role";
 import { UserTag } from "../tag";
 
 export const getUserDetail = cache(async (userId: string) => {
-	"use cache";
-	cacheLife("permanent");
+	"use cache: private";
 	cacheTag(UserTag.Detail(userId));
 
 	const users = await db

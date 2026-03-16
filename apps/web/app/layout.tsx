@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import "@workspace/ui/globals.css";
 
 export const metadata: Metadata = {
-	description: "プロジェクト管理",
+	description: "ボランティア来場管理",
 	title: {
-		default: "PROJECTIST",
-		template: "%s - PROJECTIST",
+		default: "ボランティア管理",
+		template: "%s - ボランティア管理",
 	},
 };
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { UserRole } from "@/features/auth/get-user-role";
 import { createServerAction } from "@/libs/create-server-action";
@@ -11,7 +11,7 @@ import { registerUserSchema } from "./schema";
 export const registerUserAction = createServerAction(registerUser, {
 	name: "registerUserAction",
 	onSuccess: () => {
-		updateTag(UserTag.List);
+		revalidateTag(UserTag.List, "max");
 
 		redirect("/users");
 	},

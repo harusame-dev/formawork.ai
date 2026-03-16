@@ -40,7 +40,7 @@ export function AttendanceMatrix({
 				<TableRow>
 					<TableHead>氏名</TableHead>
 					{eventDates.map((date) => (
-						<TableHead className="text-center" key={date}>
+						<TableHead className="w-px whitespace-nowrap text-center" key={date}>
 							{formatDateHeader(date)}
 						</TableHead>
 					))}
@@ -65,7 +65,7 @@ export function AttendanceMatrix({
 								: undefined;
 
 							return (
-								<TableCell className="text-center" key={date}>
+								<TableCell className="w-px whitespace-nowrap text-center" key={date}>
 									<AttendanceCell
 										hasAttendance={hasAttendance}
 										isParticipationDate={isParticipationDate}

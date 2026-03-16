@@ -66,7 +66,8 @@ export async function proxy(request: NextRequest) {
 	const path = request.nextUrl.pathname;
 	const isLoggedIn = userId !== null;
 	const isLoginPage = path === "/login";
-	const isPublicPage = isLoginPage;
+	const isAttendancePage = path.startsWith("/attendance/");
+	const isPublicPage = isLoginPage || isAttendancePage;
 
 	if (!isLoggedIn && !isPublicPage) {
 		const redirectResponse = NextResponse.redirect(
@@ -77,7 +78,9 @@ export async function proxy(request: NextRequest) {
 	}
 
 	if (isLoggedIn && isLoginPage) {
-		const redirectResponse = NextResponse.redirect(new URL("/", request.url));
+		const redirectResponse = NextResponse.redirect(
+			new URL("/events", request.url),
+		);
 		setLoggerHeaders(redirectResponse, request, userId);
 		return redirectResponse;
 	}

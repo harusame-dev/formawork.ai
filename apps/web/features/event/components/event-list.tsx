@@ -1,4 +1,12 @@
-import { Button } from "@workspace/ui/components/button";
+import { SearchPagination } from "@workspace/ui/components/search-pagination";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@workspace/ui/components/table";
 import Link from "next/link";
 import { getEvents } from "../queries/get-events";
 
@@ -23,8 +31,8 @@ function formatDate(date: Date): string {
 		.replace(/\//g, "/");
 }
 
-export async function EventList() {
-	const events = await getEvents();
+export async function EventList({ page }: { page: number }) {
+	const { events, totalPages } = await getEvents(page);
 
 	if (events.length === 0) {
 		return (
@@ -35,39 +43,38 @@ export async function EventList() {
 	}
 
 	return (
-		<div className="overflow-x-auto">
-			<table className="w-full text-sm">
-				<thead>
-					<tr className="border-b text-left">
-						<th className="px-4 py-3 font-medium">イベント名</th>
-						<th className="px-4 py-3 font-medium">開催日</th>
-						<th className="px-4 py-3 font-medium text-right">
-							ボランティア登録数
-						</th>
-						<th className="px-4 py-3 font-medium">作成日時</th>
-						<th className="px-4 py-3 font-medium" />
-					</tr>
-				</thead>
-				<tbody>
+		<div className="space-y-4">
+			<Table>
+				<TableHeader>
+					<TableRow>
+						<TableHead>イベント名</TableHead>
+						<TableHead>開催日</TableHead>
+						<TableHead className="text-right">ボランティア登録数</TableHead>
+						<TableHead>作成日時</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
 					{events.map((event) => (
-						<tr className="border-b hover:bg-muted/50" key={event.eventId}>
-							<td className="px-4 py-3 font-medium">{event.name}</td>
-							<td className="px-4 py-3">
-								{formatEventDates(event.eventDates)}
-							</td>
-							<td className="px-4 py-3 text-right">{event.volunteerCount}人</td>
-							<td className="px-4 py-3 text-muted-foreground">
+						<TableRow key={event.eventId}>
+							<TableCell className="font-medium">
+								<Link className="underline" href={`/events/${event.eventId}`}>
+									{event.name}
+								</Link>
+							</TableCell>
+							<TableCell>{formatEventDates(event.eventDates)}</TableCell>
+							<TableCell className="text-right">
+								{event.volunteerCount}人
+							</TableCell>
+							<TableCell className="text-muted-foreground">
 								{formatDate(event.createdAt)}
-							</td>
-							<td className="px-4 py-3">
-								<Button asChild size="sm" variant="outline">
-									<Link href={`/events/${event.eventId}`}>詳細</Link>
-								</Button>
-							</td>
-						</tr>
+							</TableCell>
+						</TableRow>
 					))}
-				</tbody>
-			</table>
+				</TableBody>
+			</Table>
+			<div className="px-4 pb-4">
+				<SearchPagination currentPage={page} totalPages={totalPages} />
+			</div>
 		</div>
 	);
 }

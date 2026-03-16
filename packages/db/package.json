@@ -15,13 +15,11 @@
 		"./client": "./src/client.ts",
 		"./pgschema": "./src/pgschema.ts",
 		"./schema": "./src/schema/index.ts",
-		"./schema/deletion-logs": "./src/schema/deletion-logs.ts",
-		"./schema/project-assignees": "./src/schema/project-assignees.ts",
-		"./schema/projects": "./src/schema/projects.ts",
+		"./schema/attendance-records": "./src/schema/attendance-records.ts",
+		"./schema/event-attendance-urls": "./src/schema/event-attendance-urls.ts",
+		"./schema/events": "./src/schema/events.ts",
 		"./schema/staff": "./src/schema/staff.ts",
-		"./schema/task-activities": "./src/schema/task-activities.ts",
-		"./schema/task-assignees": "./src/schema/task-assignees.ts",
-		"./schema/tasks": "./src/schema/tasks.ts"
+		"./schema/volunteers": "./src/schema/volunteers.ts"
 	},
 	"name": "@workspace/db",
 	"private": true,

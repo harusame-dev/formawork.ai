@@ -9,13 +9,17 @@ export default function Page({
 	const eventIdPromise = params.then(({ eventId }) => eventId);
 
 	return (
-		<div className="container mx-auto p-2 space-y-4">
-			<h1 className="font-bold">ボランティア登録</h1>
-			<Card className="p-4 w-full">
-				<Suspense fallback={<Skeleton className="h-40 w-full" />}>
-					<NewVolunteerFormContainer eventIdPromise={eventIdPromise} />
-				</Suspense>
-			</Card>
+		<div className="flex flex-col">
+			<div className="px-6 py-4">
+				<h2 className="text-xl font-bold">ボランティア登録</h2>
+			</div>
+			<div className="px-6 pb-6">
+				<Card className="p-4 w-full max-w-xl">
+					<Suspense fallback={<Skeleton className="h-40 w-full" />}>
+						<NewVolunteerFormContainer eventIdPromise={eventIdPromise} />
+					</Suspense>
+				</Card>
+			</div>
 		</div>
 	);
 }

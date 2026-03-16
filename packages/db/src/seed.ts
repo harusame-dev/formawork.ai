@@ -1,16 +1,14 @@
 import { db } from "./client.js";
-import { projectAssigneesFixture } from "./fixtures/project-assignees.js";
-import { projectsFixture } from "./fixtures/projects.js";
+import { attendanceRecordsFixture } from "./fixtures/attendance-records.js";
+import { eventAttendanceUrlsFixture } from "./fixtures/event-attendance-urls.js";
+import { eventsFixture } from "./fixtures/events.js";
 import { staffsFixture } from "./fixtures/staffs.js";
-import { taskActivitiesFixture } from "./fixtures/task-activities.js";
-import { taskAssigneesFixture } from "./fixtures/task-assignees.js";
-import { tasksFixture } from "./fixtures/tasks.js";
-import { projectAssigneesTable } from "./schema/project-assignees";
-import { projectsTable } from "./schema/projects";
+import { volunteersFixture } from "./fixtures/volunteers.js";
+import { attendanceRecordsTable } from "./schema/attendance-records";
+import { eventAttendanceUrlsTable } from "./schema/event-attendance-urls";
+import { eventsTable } from "./schema/events";
 import { staffsTable } from "./schema/staff";
-import { taskActivitiesTable } from "./schema/task-activities";
-import { taskAssigneesTable } from "./schema/task-assignees";
-import { tasksTable } from "./schema/tasks";
+import { volunteersTable } from "./schema/volunteers";
 
 async function seed() {
 	console.log("⭐️ シーディング");
@@ -19,31 +17,21 @@ async function seed() {
 	await db.insert(staffsTable).values(staffsFixture);
 	console.log(`💾 スタッフ追加： ${staffsFixture.length} 件`);
 
-	// 案件データを投入
-	await db.insert(projectsTable).values(projectsFixture);
-	console.log(`💾 案件追加： ${projectsFixture.length} 件`);
+	// イベントデータを投入
+	await db.insert(eventsTable).values(eventsFixture);
+	console.log(`💾 イベント追加： ${eventsFixture.length} 件`);
 
-	// 案件担当者データを投入
-	if (projectAssigneesFixture.length > 0) {
-		await db.insert(projectAssigneesTable).values(projectAssigneesFixture);
-	}
-	console.log(`💾 案件担当者追加： ${projectAssigneesFixture.length} 件`);
+	// ボランティアデータを投入
+	await db.insert(volunteersTable).values(volunteersFixture);
+	console.log(`💾 ボランティア追加： ${volunteersFixture.length} 件`);
 
-	// タスクデータを投入
-	await db.insert(tasksTable).values(tasksFixture);
-	console.log(`💾 タスク追加： ${tasksFixture.length} 件`);
+	// 来場記録データを投入
+	await db.insert(attendanceRecordsTable).values(attendanceRecordsFixture);
+	console.log(`💾 来場記録追加： ${attendanceRecordsFixture.length} 件`);
 
-	// タスク担当者データを投入
-	if (taskAssigneesFixture.length > 0) {
-		await db.insert(taskAssigneesTable).values(taskAssigneesFixture);
-	}
-	console.log(`💾 タスク担当者追加： ${taskAssigneesFixture.length} 件`);
-
-	// タスクアクティビティデータを投入
-	await db.insert(taskActivitiesTable).values(taskActivitiesFixture);
-	console.log(
-		`💾 タスクアクティビティ追加： ${taskActivitiesFixture.length} 件`,
-	);
+	// 来場ページURLデータを投入
+	await db.insert(eventAttendanceUrlsTable).values(eventAttendanceUrlsFixture);
+	console.log(`💾 来場ページURL追加： ${eventAttendanceUrlsFixture.length} 件`);
 }
 
 seed()

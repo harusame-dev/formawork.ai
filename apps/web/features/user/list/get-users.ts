@@ -2,7 +2,7 @@ import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { asc, eq, or, sql } from "drizzle-orm";
 import { authUsers } from "drizzle-orm/supabase";
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { UserTag } from "../tag";
 import type { UsersCondition } from "./schema";
 
@@ -23,8 +23,7 @@ export async function getUsers({
 	keyword,
 	page,
 }: UsersCondition): Promise<GetUsersResult> {
-	"use cache";
-	cacheLife("permanent");
+	"use cache: private";
 	cacheTag(UserTag.List);
 
 	const pageSize = 20;

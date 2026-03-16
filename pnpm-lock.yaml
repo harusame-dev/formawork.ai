@@ -120,6 +120,9 @@ catalogs:
     postgres:
       specifier: 3.4.8
       version: 3.4.8
+    qrcode.react:
+      specifier: 4.2.0
+      version: 4.2.0
     radix-ui:
       specifier: 1.4.3
       version: 1.4.3
@@ -209,6 +212,9 @@ importers:
       pino:
         specifier: 'catalog:'
         version: 10.3.1
+      qrcode.react:
+        specifier: 'catalog:'
+        version: 4.2.0(react@19.2.4)
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -3973,6 +3979,11 @@ packages:
 
   pump@3.0.3:
     resolution: {integrity: sha512-todwxLMY7/heScKmntwQG8CXVkWUOdYxIvY2s0VWAAMh/nd8SoYiRaKjlr7+iCs984f2P8zvrfWcDDYVb73NfA==}
+
+  qrcode.react@4.2.0:
+    resolution: {integrity: sha512-QpgqWi8rD9DsS9EP3z7BT+5lY5SFhsqGjpgW5DY/i3mK4M9DTBNz3ErMi8BWYEfI3L0d8GIbGmcdFAS1uIRGjA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -7853,6 +7864,10 @@ snapshots:
     dependencies:
       end-of-stream: 1.4.5
       once: 1.4.0
+
+  qrcode.react@4.2.0(react@19.2.4):
+    dependencies:
+      react: 19.2.4
 
   queue-microtask@1.2.3: {}
 

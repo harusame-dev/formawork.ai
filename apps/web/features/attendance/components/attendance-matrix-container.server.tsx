@@ -16,6 +16,8 @@ export async function AttendanceMatrixContainer({
 	}
 
 	return (
-		<AttendanceMatrix attendanceStatus={attendanceStatus} eventId={eventId} />
+		<div className="rounded-lg border bg-card">
+			<AttendanceMatrix attendanceStatus={attendanceStatus} eventId={eventId} />
+		</div>
 	);
 }

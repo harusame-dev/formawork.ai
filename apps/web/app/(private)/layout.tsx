@@ -9,10 +9,10 @@ export default function PrivateLayout({
 }) {
 	return (
 		<div className="grid grid-rows-[auto_1fr] h-dvh">
-			<header className="border-b grid grid-cols-[auto_1fr_auto] h-16 items-center gap-4 px-4">
+			<header className="grid grid-cols-[auto_1fr_auto] h-16 items-center gap-4 px-4">
 				<NavigationMenu />
-				<Link className="text-lg font-semibold hover:opacity-80" href="/">
-					PROJECTIST
+				<Link className="text-lg font-semibold hover:opacity-80" href="/events">
+					ボランティア管理
 				</Link>
 				<UserMenu />
 			</header>

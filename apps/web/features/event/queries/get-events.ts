@@ -1,7 +1,7 @@
 import { db } from "@workspace/db/client";
 import { eventsTable } from "@workspace/db/schema/events";
 import { volunteersTable } from "@workspace/db/schema/volunteers";
-import { count, eq } from "drizzle-orm";
+import { count, eq, sql } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { EVENT_TAG } from "../tag";
 
@@ -13,11 +13,19 @@ type EventListItem = {
 	createdAt: Date;
 };
 
-export async function getEvents(): Promise<EventListItem[]> {
+type GetEventsResult = {
+	events: EventListItem[];
+	page: number;
+	totalPages: number;
+};
+
+const PAGE_SIZE = 20;
+
+export async function getEvents(page = 1): Promise<GetEventsResult> {
 	"use cache: private";
 	cacheTag(EVENT_TAG);
 
-	const rows = await db
+	const events = await db
 		.select({
 			createdAt: eventsTable.createdAt,
 			eventDates: eventsTable.eventDates,
@@ -33,7 +41,18 @@ export async function getEvents(): Promise<EventListItem[]> {
 			eventsTable.eventDates,
 			eventsTable.createdAt,
 		)
-		.orderBy(eventsTable.createdAt);
+		.orderBy(eventsTable.createdAt)
+		.limit(PAGE_SIZE)
+		.offset((page - 1) * PAGE_SIZE);
 
-	return rows;
+	const total = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(eventsTable)
+		.then((result) => Number(result[0]?.count ?? 0));
+
+	return {
+		events,
+		page,
+		totalPages: Math.ceil(total / PAGE_SIZE),
+	};
 }

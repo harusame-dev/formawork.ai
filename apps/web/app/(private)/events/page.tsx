@@ -1,4 +1,3 @@
-import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -14,20 +13,35 @@ function EventListSkeleton() {
 	);
 }
 
-export default function EventsPage() {
+export default function EventsPage({ searchParams }: PageProps<"/events">) {
+	const pagePromise = searchParams.then((params) =>
+		Math.max(1, Number(params["page"]) || 1),
+	);
+
 	return (
-		<div className="p-6">
-			<div className="mb-6 flex items-center justify-between">
-				<h1 className="text-2xl font-bold">イベント一覧</h1>
-				<Button asChild>
-					<Link href="/events/new">新規作成</Link>
-				</Button>
+		<div className="flex flex-col">
+			<div className="flex items-center justify-between px-6 py-4">
+				<h1 className="text-xl font-bold">イベント一覧</h1>
+				<Link className="text-sm underline" href="/events/new">
+					新規登録
+				</Link>
 			</div>
-			<div className="rounded-lg border bg-card">
-				<Suspense fallback={<EventListSkeleton />}>
-					<EventList />
-				</Suspense>
+			<div className="px-6 pb-6">
+				<div className="rounded-lg border bg-card">
+					<Suspense fallback={<EventListSkeleton />}>
+						<EventListContainer pagePromise={pagePromise} />
+					</Suspense>
+				</div>
 			</div>
 		</div>
 	);
+}
+
+async function EventListContainer({
+	pagePromise,
+}: {
+	pagePromise: Promise<number>;
+}) {
+	const page = await pagePromise;
+	return <EventList page={page} />;
 }

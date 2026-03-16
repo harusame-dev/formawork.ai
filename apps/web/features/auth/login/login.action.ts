@@ -9,7 +9,7 @@ export const loginAction = createServerAction(login, {
 	isPublic: true,
 	name: "loginAction",
 	onSuccess: () => {
-		redirect("/", RedirectType.replace);
+		redirect("/events", RedirectType.replace);
 	},
 	schema: loginSchema,
 });

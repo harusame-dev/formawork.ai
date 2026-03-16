@@ -8,11 +8,15 @@ export default function CsvImportPage({
 	const eventIdPromise = params.then(({ eventId }) => eventId);
 
 	return (
-		<div className="container mx-auto space-y-4 p-4">
-			<h1 className="font-bold">ボランティア CSV 取り込み</h1>
-			<Suspense>
-				<CsvImportPageContent eventIdPromise={eventIdPromise} />
-			</Suspense>
+		<div className="flex flex-col">
+			<div className="px-6 py-4">
+				<h2 className="text-xl font-bold">CSV取り込み</h2>
+			</div>
+			<div className="px-6 pb-6">
+				<Suspense>
+					<CsvImportPageContent eventIdPromise={eventIdPromise} />
+				</Suspense>
+			</div>
 		</div>
 	);
 }
