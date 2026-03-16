@@ -20,7 +20,7 @@ export default function LoginPage() {
 			<div className="w-16 mx-auto mt-16">
 				<Image alt="" sizes="64px" src={Logo} />
 			</div>
-			<p className="font-mono text-sm">FORMAWORK.ai</p>
+			<p className="font-mono text-sm">ボランティア管理</p>
 			<Card className="w-full max-w-sm mt-8">
 				<CardHeader>
 					<CardTitle className="text-2xl mx-auto">ログイン</CardTitle>
