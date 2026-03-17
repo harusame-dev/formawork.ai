@@ -19,7 +19,8 @@
 			"**",
 			// 自動生成なので除外
 			"!packages/db/drizzle",
-			"!**/mockServiceWorker.js"
+			"!**/mockServiceWorker.js",
+			"!.entire"
 		]
 	},
 	"linter": {
