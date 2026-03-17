@@ -2,25 +2,92 @@
 	"$schema": "https://json.schemastore.org/claude-code-settings.json",
 	"enableAllProjectMcpServers": true,
 	"hooks": {
+		"PostToolUse": [
+			{
+				"hooks": [
+					{
+						"command": "entire hooks claude-code post-task",
+						"type": "command"
+					}
+				],
+				"matcher": "Task"
+			},
+			{
+				"hooks": [
+					{
+						"command": "entire hooks claude-code post-todo",
+						"type": "command"
+					}
+				],
+				"matcher": "TodoWrite"
+			}
+		],
 		"PreToolUse": [
 			{
 				"hooks": [
 					{
-						"command": "echo 'mcp__next-devtools__browser_eval は使用禁止です。playwright-cli を使用してください。' >&2 && exit 2",
+						"command": "echo 'mcp__next-devtools__browser_eval は使用禁止です。playwright-cli を使用してください。' \u003e\u00262 \u0026\u0026 exit 2",
 						"type": "command"
 					}
 				],
 				"matcher": "mcp__next-devtools__browser_eval"
+			},
+			{
+				"hooks": [
+					{
+						"command": "entire hooks claude-code pre-task",
+						"type": "command"
+					}
+				],
+				"matcher": "Task"
+			}
+		],
+		"SessionEnd": [
+			{
+				"hooks": [
+					{
+						"command": "entire hooks claude-code session-end",
+						"type": "command"
+					}
+				],
+				"matcher": ""
 			}
 		],
 		"SessionStart": [
 			{
 				"hooks": [
 					{
-						"command": "echo '## 参照可能な agent-docs ドキュメント一覧' && ls agent-docs/ | sed 's/^/- /'",
+						"command": "echo '## 参照可能な agent-docs ドキュメント一覧' \u0026\u0026 ls agent-docs/ | sed 's/^/- /'",
+						"type": "command"
+					},
+					{
+						"command": "entire hooks claude-code session-start",
 						"type": "command"
 					}
-				]
+				],
+				"matcher": ""
+			}
+		],
+		"Stop": [
+			{
+				"hooks": [
+					{
+						"command": "entire hooks claude-code stop",
+						"type": "command"
+					}
+				],
+				"matcher": ""
+			}
+		],
+		"UserPromptSubmit": [
+			{
+				"hooks": [
+					{
+						"command": "entire hooks claude-code user-prompt-submit",
+						"type": "command"
+					}
+				],
+				"matcher": ""
 			}
 		]
 	},
@@ -55,7 +122,8 @@
 			"Bash(gh api *)",
 			"Bash(gh gist *)",
 			"Bash(gh codespace *)",
-			"Bash(gh extension *)"
+			"Bash(gh extension *)",
+			"Read(./.entire/metadata/**)"
 		]
 	},
 	"sandbox": {
