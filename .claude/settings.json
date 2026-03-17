@@ -26,6 +26,15 @@
 			{
 				"hooks": [
 					{
+						"command": ".claude/hooks/db-generate-context-injection.sh",
+						"type": "command"
+					}
+				],
+				"matcher": "Bash"
+			},
+			{
+				"hooks": [
+					{
 						"command": "echo 'mcp__next-devtools__browser_eval は使用禁止です。playwright-cli を使用してください。' \u003e\u00262 \u0026\u0026 exit 2",
 						"type": "command"
 					}
