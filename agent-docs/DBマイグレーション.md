@@ -4,7 +4,7 @@
 
 | 環境     | スキーマ                                       | Supabase Auth                 |
 | -------- | ---------------------------------------------- | ----------------------------- |
-| ローカル | `local`                                       | 独立（ローカル Supabase CLI） |
+| ローカル | `local`                                        | 独立（ローカル Supabase CLI） |
 | リモート | `${APP_NAME}__${SERVICE_NAME}__${BRANCH_NAME}` | 共用（1プロジェクト）         |
 
 ### ローカル環境
@@ -28,6 +28,7 @@
 **スキーマ名の例**: `formawork_ai__web__feature_create_user`
 
 **命名規則**: `\W`（英数字・アンダースコア以外）は `_` に置換
+
 - 例: `feature/create_user` → `feature_create_user`
 
 ## マイグレーション手順
@@ -44,14 +45,6 @@ pnpm -w db:generate
 
 生成された SQL から `"local".` を削除する。
 
-```sql
--- 修正前
-REFERENCES "public"."staffs"("staff_id")
-
--- 修正後
-REFERENCES "staffs"("staff_id")
-```
-
 > **なぜ必要か**: スキーマ定義で `pgSchema` を使って local を指定しているため、生成される SQL は `local` スキーマを参照する。リモート環境では環境別スキーマを使用するため、この参照を削除する必要がある。
 
 ### 3. マイグレーション実行
@@ -59,10 +52,3 @@ REFERENCES "staffs"("staff_id")
 ```bash
 pnpm -w db:migrate
 ```
-
-## チェックリスト
-
-- [ ] Drizzle スキーマ定義（`packages/db/src/schema/`）を更新
-- [ ] `pnpm -w db:generate` を実行
-- [ ] 生成 SQL から `"public".` を削除
-- [ ] `pnpm -w db:migrate` を実行

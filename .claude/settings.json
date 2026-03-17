@@ -24,13 +24,13 @@
 		],
 		"PreToolUse": [
 			{
-				"matcher": "Bash",
 				"hooks": [
 					{
-						"type": "command",
-						"command": "input=$(cat); echo \"$input\" | grep -q 'db:generate' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"agent-docs/DB\\u30de\\u30a4\\u30b0\\u30ec\\u30fc\\u30b7\\u30e7\\u30f3.md \\u3092\\u8aad\\u307f\\u8fbc\\u3093\\u3067\\u3044\\u306a\\u3051\\u308c\\u3070\\u8aad\\u307f\\u8fbc\\u3093\\u3067\\u304f\\u3060\\u3055\\u3044\"}}' || true"
+						"command": ".claude/hooks/db-generate-context-injection.sh",
+						"type": "command"
 					}
-				]
+				],
+				"matcher": "Bash"
 			},
 			{
 				"hooks": [
