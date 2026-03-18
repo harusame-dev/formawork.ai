@@ -104,7 +104,7 @@
 	"permissions": {
 		"allow": [
 			"Skill(*)",
-			"Bash(gh *)",
+			"Bash(git commit *)",
 			"Bash(pnpm -w test:browser*)",
 			"Bash(pnpm -w test:e2e*)",
 			"Bash(playwright-cli *)"
@@ -140,6 +140,7 @@
 		"enabled": true,
 		"excludedCommands": [
 			"gh:*",
+			"git commit:*",
 			"pnpm -w test:browser:*",
 			"pnpm -w test:e2e:*",
 			"playwright-cli:*"
