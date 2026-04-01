@@ -60,7 +60,7 @@ catalog:
   swr: 2.4.1
   msw: 2.12.10
   onborda: 1.2.5
-  framer-motion: 12.34.3
+  framer-motion: 12.38.0
 
 catalogMode: strict
 
