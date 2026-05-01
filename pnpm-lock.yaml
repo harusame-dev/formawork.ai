@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@ai-sdk/valibot':
-      specifier: 2.0.22
-      version: 2.0.22
+      specifier: 2.0.26
+      version: 2.0.26
     '@biomejs/biome':
       specifier: 2.4.10
       version: 2.4.10
@@ -199,7 +199,7 @@ importers:
     dependencies:
       '@ai-sdk/valibot':
         specifier: 'catalog:'
-        version: 2.0.22(@valibot/to-json-schema@1.4.0(valibot@1.3.1(typescript@6.0.2)))(valibot@1.3.1(typescript@6.0.2))(zod@4.1.12)
+        version: 2.0.26(@valibot/to-json-schema@1.4.0(valibot@1.3.1(typescript@6.0.2)))(valibot@1.3.1(typescript@6.0.2))(zod@4.1.12)
       '@harusame0616/result':
         specifier: 'catalog:'
         version: 0.1.3
@@ -495,12 +495,22 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
+  '@ai-sdk/provider-utils@4.0.25':
+    resolution: {integrity: sha512-yjGPZPiJm79ZOYk0anXn2LkVqUFgStZqEOdyoynhkaAg+yOCuv6PJwf+1gUW0eSIUnYEboT2TPbPX/bxZpx4gw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/provider@3.0.10':
+    resolution: {integrity: sha512-Q3BZ27qfpYqnCYGvE3vt+Qi6LGOF9R5Nmzn+9JoM1lCRsD9mYaIhfJLkSunN48nfGXJ6n+XNV0J/XVpqGQl7Dw==}
+    engines: {node: '>=18'}
+
   '@ai-sdk/provider@3.0.8':
     resolution: {integrity: sha512-oGMAgGoQdBXbZqNG0Ze56CHjDZ1IDYOwGYxYjO5KLSlz5HiNQ9udIXsPZ61VWaHGZ5XW/jyjmr6t2xz2jGVwbQ==}
     engines: {node: '>=18'}
 
-  '@ai-sdk/valibot@2.0.22':
-    resolution: {integrity: sha512-rWDA19dn2aUoMo/H7J0gFaHmCLAZHGLjuYDhYUaQLw42S1t2CPfzQ/a29/kX3W/xxT8d4yptVaZ+e3cRZYcgtA==}
+  '@ai-sdk/valibot@2.0.26':
+    resolution: {integrity: sha512-8e7jtsn10ZoBOO+x6UnoyqreGj1UX9Ok3orHH9xhg0ocEndvfAce1EVRSAHmHiWjzA+rdL21ELzK44/Dd1cxvw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@valibot/to-json-schema': ^1.3.0
@@ -3051,6 +3061,10 @@ packages:
     resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
     engines: {node: '>=18.0.0'}
 
+  eventsource-parser@3.0.8:
+    resolution: {integrity: sha512-70QWGkr4snxr0OXLRWsFLeRBIRPuQOvt4s8QYjmUlmlkyTZkRqS7EDVRZtzU3TiyDbXSzaOeF0XUKy8PchzukQ==}
+    engines: {node: '>=18.0.0'}
+
   expect-type@1.3.0:
     resolution: {integrity: sha512-knvyeauYhqjOYvQ66MznSMs83wmHrCycNEN6Ao+2AeYEfxUIkuiVxdEa1qlGEPK+We3n0THiDciYSsCcgW/DoA==}
     engines: {node: '>=12.0.0'}
@@ -4040,13 +4054,24 @@ snapshots:
       eventsource-parser: 3.0.6
       zod: 4.1.12
 
+  '@ai-sdk/provider-utils@4.0.25(zod@4.1.12)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.10
+      '@standard-schema/spec': 1.1.0
+      eventsource-parser: 3.0.8
+      zod: 4.1.12
+
+  '@ai-sdk/provider@3.0.10':
+    dependencies:
+      json-schema: 0.4.0
+
   '@ai-sdk/provider@3.0.8':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/valibot@2.0.22(@valibot/to-json-schema@1.4.0(valibot@1.3.1(typescript@6.0.2)))(valibot@1.3.1(typescript@6.0.2))(zod@4.1.12)':
+  '@ai-sdk/valibot@2.0.26(@valibot/to-json-schema@1.4.0(valibot@1.3.1(typescript@6.0.2)))(valibot@1.3.1(typescript@6.0.2))(zod@4.1.12)':
     dependencies:
-      '@ai-sdk/provider-utils': 4.0.21(zod@4.1.12)
+      '@ai-sdk/provider-utils': 4.0.25(zod@4.1.12)
       '@valibot/to-json-schema': 1.4.0(valibot@1.3.1(typescript@6.0.2))
       valibot: 1.3.1(typescript@6.0.2)
     transitivePeerDependencies:
@@ -6158,6 +6183,8 @@ snapshots:
       '@types/estree': 1.0.8
 
   eventsource-parser@3.0.6: {}
+
+  eventsource-parser@3.0.8: {}
 
   expect-type@1.3.0: {}
 
