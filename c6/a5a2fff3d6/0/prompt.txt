@@ -1,0 +1,90 @@
+Checked 361 files in 111ms. No fixes applied.
+Analyzing workspace (apps/web)…
+ERROR: Error loading apps/web/vitest.config.ts (Package subpath './internal' is not defined by "exports" in node_modules/.pnpm/@vitejs+plugin-react@6.0.1_vite@7.2.6_@types+node@25.6.0_jiti@2.6.1_lightningcss@1.32.0_tsx@4.21.0_yaml@2.8.3_/node_modules/vite/package.json)
+ERROR: Please fix or visit https://knip.dev/reference/known-issues
+Unused files (37)
+apps/web/features/auth/change-password/change-password-action.small.server.test.ts
+apps/web/features/auth/change-password/change-password-form.small.browser.test.tsx
+apps/web/features/auth/change-password/change-password.medium.server.test.ts
+apps/web/features/auth/login/login-action.small.server.test.ts
+apps/web/features/auth/login/login-form.small.browser.test.tsx
+apps/web/features/customer-memory/delete/delete-customer-memory-dialog.small.browser.test.tsx
+apps/web/features/customer-memory/edit/edit-customer-memory-dialog.small.browser.test.tsx
+apps/web/features/customer-memory/list/customer-memories-presenter.small.browser.test.tsx
+apps/web/features/customer-memory/register/register-customer-memory-dialog.small.browser.test.tsx
+apps/web/features/customer-note/advice/customer-note-advice-loading.small.browser.test.tsx
+apps/web/features/customer-note/advice/fetch-service-note-data.medium.server.test.ts
+apps/web/features/customer-note/delete/delete-customer-note.medium.server.test.ts
+apps/web/features/customer-note/edit/edit-customer-note.medium.server.test.ts
+apps/web/features/customer-note/register/register-customer-note-action.small.server.test.ts
+apps/web/features/customer-note/register/register-customer-note-dialog.small.browser.test.tsx
+apps/web/features/customer/delete/delete-customer-action.small.server.test.ts
+apps/web/features/customer/delete/delete-customer-dialog.small.browser.test.tsx
+apps/web/features/customer/delete/delete-customer.medium.server.test.ts
+apps/web/features/customer/edit/edit-customer-action.small.server.test.ts
+apps/web/features/customer/edit/edit-customer.medium.server.test.ts
+apps/web/features/customer/list/customer-search-form.small.browser.test.tsx
+apps/web/features/customer/list/customers-presenter.small.browser.test.tsx
+apps/web/features/customer/list/get-customers.medium.server.test.ts
+apps/web/features/customer/register/edit-customer-form.small.browser.test.tsx
+apps/web/features/customer/register/register-customer-action.small.server.test.ts
+apps/web/features/customer/register/register-customer.medium.server.test.ts
+apps/web/features/staff/delete/delete-staff-action.small.server.test.ts
+apps/web/features/staff/delete/delete-staff-dialog.small.browser.test.tsx
+apps/web/features/staff/delete/delete-staff.medium.server.test.ts
+apps/web/features/staff/list/get-staffs.medium.server.test.ts
+apps/web/features/staff/list/staff-search-form.small.browser.test.tsx
+apps/web/features/staff/list/staffs-presenter.small.browser.test.tsx
+apps/web/features/staff/register/edit-staff-form.small.browser.test.tsx
+apps/web/features/staff/register/register-staff-action.small.server.test.ts
+apps/web/features/staff/register/register-staff.medium.server.test.ts
+apps/web/libs/queue.medium.server.test.ts
+apps/web/vitest-browser-setup.ts
+Unused devDependencies (2)
+msw                   apps/web/package.json:34:4
+vitest-browser-react  apps/web/package.json:39:4
+Configuration hints (7)
+apps/web                                           knip.jsonc  Add entry and/or refine project files in workspaces["apps/web"] (37 unused…
+testing/msw-test.ts               apps/web         knip.jsonc  Remove from ignore
+public/mockServiceWorker.js       apps/web         knip.jsonc  Remove from ignore
+src/nextjs/middleware.example.ts  packages/logger  knip.jsonc  Remove from ignore
+src/fixtures/production/**        packages/db      knip.jsonc  Remove from ignore
+src/styles/globals.css            packages/ui      knip.jsonc  Remove from ignore
+type:check                                         knip.jsonc  Remove from ignoreBinaries
+ ELIFECYCLE  Command failed with exit code 1.
+
+~/ghq/github.com/harusame0616/ai-formawork format-fix
+❯
+
+---
+
+エラー修正して
+
+---
+
+vite のバージョンアップで対応できる？
+
+---
+
+カタログに追加して
+
+---
+
+/ghq/github.com/harusame0616/ai-formawork format-fix
+❯ pnpm -w validate:check
+
+> @ validate:check /Users/haru/ghq/github.com/harusame0616/ai-formawork
+> biome check . && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy knip && cspell . && pnpm -r type:check
+
+Checked 361 files in 193ms. No fixes applied.
+Configuration hints (7)
+mocks/**                          apps/web         knip.jsonc  Remove from ignore
+testing/msw-test.ts               apps/web         knip.jsonc  Remove from ignore
+public/mockServiceWorker.js       apps/web         knip.jsonc  Remove from ignore
+src/nextjs/middleware.example.ts  packages/logger  knip.jsonc  Remove from ignore
+src/fixtures/production/**        packages/db      knip.jsonc  Remove from ignore
+src/styles/globals.css            packages/ui      knip.jsonc  Remove from ignore
+type:check                                         knip.jsonc  Remove from ignoreBinaries
+✂️  Excellent, Knip found no issues.
+Unsupported NodeJS version (22.14.0); >=22.18.0 is required
+ ELIFECYCLE  Command failed with exit code 1.

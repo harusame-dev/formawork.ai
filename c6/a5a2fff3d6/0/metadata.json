@@ -1,0 +1,36 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "c6a5a2fff3d6",
+  "session_id": "40381982-d798-493a-b606-dcfceff119cb",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-17T22:00:11.614622Z",
+  "branch": "format-fix",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".node-version",
+    "apps/web/package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "98675a215fc7",
+  "token_usage": {
+    "input_tokens": 66,
+    "cache_creation_tokens": 39327,
+    "cache_read_tokens": 1663902,
+    "output_tokens": 12934,
+    "api_call_count": 36
+  },
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-17T22:00:11.530234Z",
+    "agent_lines": 149,
+    "human_added": 2,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 152,
+    "agent_percentage": 98.02631578947368
+  }
+}
