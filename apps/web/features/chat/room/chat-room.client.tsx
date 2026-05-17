@@ -56,7 +56,6 @@ export function ChatRoom({
 		initialConsultedOrgIds,
 	);
 	const messagesEndRef = useRef<HTMLDivElement | null>(null);
-	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 	const [isTodoSheetOpen, setIsTodoSheetOpen] = useState(false);
 
 	const todosFingerprint = useMemo(
@@ -82,14 +81,6 @@ export function ChatRoom({
 	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, []);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: input 変更後の DOM サイズを反映する
-	useEffect(() => {
-		const el = textareaRef.current;
-		if (!el) return;
-		el.style.height = "auto";
-		el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
-	}, [input]);
 
 	const refreshTodos = useCallback(async () => {
 		try {
@@ -330,7 +321,7 @@ export function ChatRoom({
 							onSubmit={handleSubmit}
 						>
 							<textarea
-								className="max-h-[200px] flex-1 resize-none overflow-y-auto border border-[#D7C49E]/50 bg-[#FFFDF8] px-4 py-2.5 font-[family-name:var(--font-sans-jp)] text-[0.92rem] leading-[1.9] text-[#2A2622] placeholder:text-[#A8A39A] focus:border-[#B89968] focus:outline-none focus:ring-1 focus:ring-[#B89968]/30 disabled:cursor-not-allowed disabled:opacity-60"
+								className="field-sizing-content max-h-[200px] flex-1 resize-none overflow-y-auto border border-[#D7C49E]/50 bg-[#FFFDF8] px-4 py-2.5 font-[family-name:var(--font-sans-jp)] text-[0.92rem] leading-[1.9] text-[#2A2622] placeholder:text-[#A8A39A] focus:border-[#B89968] focus:outline-none focus:ring-1 focus:ring-[#B89968]/30 disabled:cursor-not-allowed disabled:opacity-60"
 								disabled={isStreaming}
 								onChange={(e) => setInput(e.target.value)}
 								onKeyDown={(e) => {
@@ -342,7 +333,6 @@ export function ChatRoom({
 									}
 								}}
 								placeholder="（Cmd / Ctrl + Enter で送信）"
-								ref={textareaRef}
 								rows={1}
 								value={input}
 							/>
