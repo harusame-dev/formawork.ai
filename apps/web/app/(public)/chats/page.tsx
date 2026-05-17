@@ -1,8 +1,12 @@
-import { Skeleton } from "@workspace/ui/components/skeleton";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import * as v from "valibot";
-import { ChatLandingContainer } from "@/features/chat/landing/landing.server";
+import { ChatLanding } from "@/features/chat/landing/landing.universal";
+import { ReferralContainer } from "@/features/chat/landing/referral.server";
+import { ReferralSkeleton } from "@/features/chat/landing/referral.universal";
+import { StartChatButtonContainer } from "@/features/chat/landing/start-chat-button.server";
+import { StartChatButtonSkeleton } from "@/features/chat/landing/start-chat-button.universal";
+import { getOrganizationDetail } from "@/features/organization/detail/get-organization-detail";
 
 export const metadata: Metadata = {
 	title: "お見送りサポートチャットを開始する",
@@ -18,11 +22,12 @@ const SANS_JP_FAMILY =
 	'"Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif';
 
 export default function Page({ searchParams }: PageProps<"/chats">) {
-	const parsedPromise = searchParams.then((sp) =>
-		v.parse(searchSchema, {
+	const organizationPromise = searchParams.then((sp) => {
+		const { org } = v.parse(searchSchema, {
 			org: typeof sp["org"] === "string" ? sp["org"] : undefined,
-		}),
-	);
+		});
+		return org ? getOrganizationDetail(org) : null;
+	});
 
 	return (
 		<div
@@ -56,26 +61,21 @@ export default function Page({ searchParams }: PageProps<"/chats">) {
 			/>
 
 			<main className="relative mx-auto flex w-full max-w-2xl flex-col px-5 py-6 sm:px-8 sm:py-12 md:py-16">
-				<Suspense
-					fallback={
-						<div className="flex flex-col gap-4">
-							<Skeleton className="h-6 w-40 bg-[#EDE6D9]" />
-							<Skeleton className="h-[420px] w-full bg-[#EDE6D9]" />
-						</div>
+				<ChatLanding
+					chatButtonSlot={
+						<Suspense fallback={<StartChatButtonSkeleton />}>
+							<StartChatButtonContainer
+								organizationPromise={organizationPromise}
+							/>
+						</Suspense>
 					}
-				>
-					<LandingWrapper parsedPromise={parsedPromise} />
-				</Suspense>
+					referralSlot={
+						<Suspense fallback={<ReferralSkeleton />}>
+							<ReferralContainer organizationPromise={organizationPromise} />
+						</Suspense>
+					}
+				/>
 			</main>
 		</div>
 	);
-}
-
-async function LandingWrapper({
-	parsedPromise,
-}: {
-	parsedPromise: Promise<{ org?: string }>;
-}) {
-	const parsed = await parsedPromise;
-	return <ChatLandingContainer org={parsed.org} />;
 }

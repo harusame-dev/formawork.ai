@@ -1,14 +1,13 @@
 import { Sparkle } from "lucide-react";
-import { StartChatButton } from "@/app/(public)/chats/_components/start-chat-button.client";
-import { getOrganizationDetail } from "@/features/organization/detail/get-organization-detail";
+import type { ReactNode } from "react";
 
-export async function ChatLandingContainer({
-	org,
+export function ChatLanding({
+	referralSlot,
+	chatButtonSlot,
 }: {
-	org: string | undefined;
+	referralSlot: ReactNode;
+	chatButtonSlot: ReactNode;
 }) {
-	const organization = org ? await getOrganizationDetail(org) : null;
-
 	return (
 		<div className="flex flex-col gap-6 sm:gap-10 [animation:fade-up_0.9s_ease-out_both]">
 			<style>{`
@@ -73,31 +72,7 @@ export async function ChatLandingContainer({
 						placement="br"
 					/>
 
-					{organization ? (
-						<div className="flex flex-col gap-2">
-							<span className="font-[family-name:var(--font-mincho)] text-[0.7rem] tracking-[0.3em] text-[#A07F40]">
-								ご紹介元
-							</span>
-							<p className="font-[family-name:var(--font-mincho)] text-lg text-[#1F1B17]">
-								{organization.name}{" "}
-								<span className="text-sm text-[#4A4640]">様</span>
-							</p>
-							<p className="text-xs leading-relaxed text-[#4A4640]">
-								上記の組織よりご案内を受けてお越しいただきました。
-							</p>
-						</div>
-					) : (
-						<div className="flex flex-col gap-2 border-l-2 border-[#C97E70] pl-4">
-							<span className="font-[family-name:var(--font-mincho)] text-[0.7rem] tracking-[0.3em] text-[#8C4A40]">
-								お知らせ
-							</span>
-							<p className="text-sm leading-relaxed text-[#3A3530]">
-								ご紹介元の指定がございません。このままご相談を始めることもできますが、
-								<wbr />
-								ご紹介情報は記録されません。
-							</p>
-						</div>
-					)}
+					{referralSlot}
 
 					<div className="flex flex-col gap-3">
 						<h2 className="font-[family-name:var(--font-mincho)] text-base text-[#1F1B17]">
@@ -137,9 +112,7 @@ export async function ChatLandingContainer({
 					</div>
 
 					<div className="flex flex-col items-center gap-4 pt-2">
-						<StartChatButton
-							organizationId={organization?.organizationId ?? null}
-						/>
+						{chatButtonSlot}
 						<p className="text-center text-[0.72rem] leading-relaxed text-[#5C5852]">
 							お渡しするチャット URL より、いつでも続きから
 							<br className="sm:hidden" />
