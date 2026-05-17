@@ -1,0 +1,25 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "a76a1ff77d87",
+  "strategy": "manual-commit",
+  "branch": "CU-86exmgr3d",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/web/features/chat/room/chat-room.client.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a7/6a1ff77d87/0/metadata.json",
+      "transcript": "/a7/6a1ff77d87/0/full.jsonl",
+      "content_hash": "/a7/6a1ff77d87/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  }
+}
