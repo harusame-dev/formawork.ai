@@ -1,0 +1,14 @@
+あなたプロジェクト外でアクセスできるパスは？
+
+---
+
+pnpm install site
+
+---
+
+なんで .pnpm-store に書き込もうとしている？ 本来は ~/Library/pnpm/store を確認してなければ書き込みもそちらだよね？ .pnpm-store はコマンド実行タイミングではないことを確認しているよ
+
+---
+
+claude code 外で pnpm install をした場合プロジェクト配下に pnpm-store 作られていないよ
+現時点ではってあなたが pnpm install を実行した時に作られたからでしょ
