@@ -1,0 +1,37 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "a2dc6c480fe5",
+  "session_id": "11b946dd-304a-4d49-9ad6-28c831e93216",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-17T10:18:48.312878Z",
+  "branch": "CU-86exmgr3d",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/app/(public)/chats/[chatId]/page.tsx",
+    "apps/web/features/chat/room/chat-room.client.tsx",
+    "apps/web/features/chat/todos/todo-list.client.tsx"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "ac02830e0bb2",
+  "checkpoint_transcript_start": 605,
+  "transcript_lines_at_start": 605,
+  "token_usage": {
+    "input_tokens": 2,
+    "cache_creation_tokens": 2450,
+    "cache_read_tokens": 429552,
+    "output_tokens": 269,
+    "api_call_count": 2
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-17T10:18:48.014762Z",
+    "agent_lines": 45,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 45,
+    "agent_percentage": 100
+  }
+}
