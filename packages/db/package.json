@@ -14,13 +14,14 @@
 	"exports": {
 		"./client": "./src/client.ts",
 		"./pgschema": "./src/pgschema.ts",
-		"./queue-names": "./src/queue-names.ts",
 		"./schema": "./src/schema/index.ts",
-		"./schema/customer": "./src/schema/customer.ts",
-		"./schema/customer-memory": "./src/schema/customer-memory.ts",
-		"./schema/customer-note": "./src/schema/customer-note.ts",
-		"./schema/customer-note-advice": "./src/schema/customer-note-advice.ts",
-		"./schema/staff": "./src/schema/staff.ts"
+		"./schema/chat": "./src/schema/chat.ts",
+		"./schema/chat-message": "./src/schema/chat-message.ts",
+		"./schema/chat-todo": "./src/schema/chat-todo.ts",
+		"./schema/consultation": "./src/schema/consultation.ts",
+		"./schema/organization": "./src/schema/organization.ts",
+		"./schema/organization-category": "./src/schema/organization-category.ts",
+		"./schema/user": "./src/schema/user.ts"
 	},
 	"name": "@workspace/db",
 	"private": true,

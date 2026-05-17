@@ -9,7 +9,7 @@
 		"build": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web build",
 		"db:generate": "pnpm --filter @workspace/db db:generate",
 		"db:migrate": "pnpm --filter @workspace/db db:migrate",
-		"db:reset": "pnpm --filter @workspace/db db:reset",
+		"db:reset": "pnpm --filter @workspace/db db:reset && pnpm --filter @repo/supabase supabase:seed",
 		"db:seed": "pnpm --filter @workspace/db db:seed",
 		"dev": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web dev",
 		"start": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web start",

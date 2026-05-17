@@ -1,47 +1,12 @@
-export const adminUser = {
+// admin auth user fixture
+// app_metadata.role で admin / org_user を判定する
+// userId は @workspace/db の users テーブルへの紐付け（app_metadata.userId に格納）
+export const adminAuthUser = {
 	email: "admin@example.com",
-	id: "a0000000-0000-0000-0000-000000000003",
+	id: "30000000-0000-4000-8000-000000000001",
 	password: "Admin@789!",
 	role: "admin",
-	staffId: "00000000-0000-0000-0000-000000000003",
-};
-export const genericUser = {
-	email: "generic@example.com",
-	id: "a0000000-0000-0000-0000-000000000002",
-	password: "Secure@456",
-	role: "user",
-	staffId: "00000000-0000-0000-0000-000000000002",
+	userId: "20000000-0000-4000-8000-000000000001",
 };
 
-export const usersFixture = [
-	{
-		email: "test1@example.com",
-		id: "a0000000-0000-0000-0000-000000000001",
-		password: "Test@Pass123",
-		role: "user",
-		staffId: "00000000-0000-0000-0000-000000000001",
-	},
-	genericUser,
-	adminUser,
-	{
-		email: "test1@formawork.example.com",
-		id: "a0000000-0000-0000-0000-000000000004",
-		password: "Test@Pass123",
-		role: "user",
-		staffId: "00000000-0000-0000-0000-000000000001",
-	},
-	{
-		email: "test2@formawork.example.com",
-		id: "a0000000-0000-0000-0000-000000000005",
-		password: "Secure@456",
-		role: "user",
-		staffId: "00000000-0000-0000-0000-000000000002",
-	},
-	{
-		email: "admin@formawork.example.com",
-		id: "a0000000-0000-0000-0000-000000000006",
-		password: "Admin@789!",
-		role: "admin",
-		staffId: "00000000-0000-0000-0000-000000000003",
-	},
-];
+export const usersFixture = [adminAuthUser];

@@ -5,8 +5,8 @@ import { getLogger } from "@repo/logger/nextjs/server";
 import { unstable_rethrow } from "next/navigation";
 import type * as v from "valibot";
 import * as valibot from "valibot";
+import { getUserId } from "@/features/auth/get-user-id";
 import { getUserRole, type UserRole } from "@/features/auth/get-user-role";
-import { getUserStaffId } from "@/features/auth/get-user-staff-id";
 
 const VALIDATION_ERROR_MESSAGE = "入力内容に誤りがあります" as const;
 const UNAUTHORIZED_ERROR_MESSAGE = "認証に失敗しました" as const;
@@ -201,15 +201,15 @@ export function createServerAction<
 		if (options.isPublic) {
 			context = { logger, role: null, userId: null };
 		} else {
-			const userId = await getUserStaffId();
-			if (!userId) {
+			const userId = await getUserId();
+			const role = await getUserRole();
+			if (!userId || !role) {
 				logger.warn("認証されていないアクセス", {
 					event: EventType.AuthenticationFailure,
 				});
 				return fail(UNAUTHORIZED_ERROR_MESSAGE);
 			}
 
-			const role = await getUserRole();
 			if ("role" in options && options.role && options.role.length > 0) {
 				if (!options.role.includes(role)) {
 					logger.warn("権限がないアクセス", {

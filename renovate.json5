@@ -1,0 +1,40 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:recommended",
+    // bare preset (`:` 始まり) を使用すること。 `config:pinAllExceptPeerDependencies`
+    // という preset は存在しないため、 必ず `:pinAllExceptPeerDependencies` と書く。
+    ":pinAllExceptPeerDependencies",
+  ],
+  // パッケージ公開から 14 日以上経過したバージョンのみを更新対象にする。
+  // ガイドラインに合わせて pnpm 側の minimumReleaseAge: 20160 (分) と揃える。
+  minimumReleaseAge: "14 days",
+  // lockfile の不要な差分を解消するメンテナンス PR を週次で作成する。
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ["before 6am on monday"],
+  },
+  packageRules: [
+    // devDependencies はリスクが小さいため一律 automerge。
+    {
+      matchDepTypes: ["devDependencies"],
+      automerge: true,
+    },
+    // dependencies の patch / minor も automerge 対象。
+    {
+      matchUpdateTypes: ["patch", "minor"],
+      automerge: true,
+    },
+    // メジャーアップデートは破壊的変更の可能性があるため手動マージ。
+    {
+      matchUpdateTypes: ["major"],
+      automerge: false,
+      labels: ["major-update"],
+    },
+  ],
+  // 脆弱性パッチは 14 日待たず即時 PR 化する。
+  vulnerabilityAlerts: {
+    minimumReleaseAge: "0 days",
+    labels: ["security"],
+  },
+}

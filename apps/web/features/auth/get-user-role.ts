@@ -3,7 +3,7 @@ import { UserRole } from "./user/role";
 
 export { UserRole } from "./user/role";
 
-export async function getUserRole(): Promise<UserRole> {
+export async function getUserRole(): Promise<UserRole | null> {
 	const supabase = await createClient();
 
 	const {
@@ -11,7 +11,7 @@ export async function getUserRole(): Promise<UserRole> {
 	} = await supabase.auth.getUser();
 
 	if (!user) {
-		return UserRole.User;
+		return null;
 	}
 
 	const role = user.app_metadata?.["role"] as string | undefined;
@@ -19,10 +19,9 @@ export async function getUserRole(): Promise<UserRole> {
 	switch (role) {
 		case UserRole.Admin:
 			return UserRole.Admin;
-		case UserRole.User:
-		case undefined:
-			return UserRole.User;
+		case UserRole.OrgUser:
+			return UserRole.OrgUser;
 		default:
-			throw new Error("不明なロールです。");
+			return null;
 	}
 }

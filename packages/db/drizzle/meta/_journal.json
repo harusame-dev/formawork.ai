@@ -5,64 +5,22 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1765145014072,
-      "tag": "0000_perpetual_master_mold",
+      "when": 1778970086019,
+      "tag": "0000_smooth_the_watchers",
       "breakpoints": false
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1765194900429,
-      "tag": "0001_enable_pgmq",
+      "when": 1779000227497,
+      "tag": "0001_wonderful_christian_walker",
       "breakpoints": false
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1765280000000,
-      "tag": "0002_enable_pg_cron",
-      "breakpoints": false
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1765461215677,
-      "tag": "0003_needy_maggott",
-      "breakpoints": false
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1765495459413,
-      "tag": "0004_perfect_kulan_gath",
-      "breakpoints": false
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1765614932024,
-      "tag": "0005_kind_gateway",
-      "breakpoints": false
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1765837483878,
-      "tag": "0006_slim_mephisto",
-      "breakpoints": false
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1765903843394,
-      "tag": "0007_natural_gorgon",
-      "breakpoints": false
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1767379716292,
-      "tag": "0008_next_killraven",
+      "when": 1779001318447,
+      "tag": "0002_slippery_malice",
       "breakpoints": false
     }
   ]

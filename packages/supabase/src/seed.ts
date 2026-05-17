@@ -18,12 +18,24 @@ async function seedUsers() {
 		},
 	});
 
-	console.log("Starting test user seed...\n");
+	console.log("Starting admin user seed...\n");
 
 	for (const user of usersFixture) {
 		try {
+			// 既存ユーザーをメールアドレスで検索（旧データ・ID違いがあっても確実に消す）
+			const { data: list, error: listError } =
+				await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+			if (listError) {
+				throw listError;
+			}
+			const existing = list.users.find((u) => u.email === user.email);
+			if (existing) {
+				await supabase.auth.admin.deleteUser(existing.id);
+				console.log(`🗑️  ${user.email} - Removed existing (id=${existing.id})`);
+			}
+
 			const { data, error } = await supabase.auth.admin.createUser({
-				app_metadata: { role: user.role, staffId: user.staffId },
+				app_metadata: { role: user.role, userId: user.userId },
 				email: user.email,
 				email_confirm: true,
 				id: user.id,
@@ -31,11 +43,7 @@ async function seedUsers() {
 			});
 
 			if (error) {
-				if (error.message.includes("already registered")) {
-					console.log(`⚠️  ${user.email} - Already registered, skipping`);
-				} else {
-					console.error(`❌ ${user.email} - Error: ${error.message}`);
-				}
+				console.error(`❌ ${user.email} - Error: ${error.message}`);
 			} else {
 				console.log(
 					`✅ ${user.email} - Created successfully (ID: ${data.user?.id})`,
@@ -49,7 +57,7 @@ async function seedUsers() {
 		}
 	}
 
-	console.log("\nTest user seed completed");
+	console.log("\nAdmin user seed completed");
 }
 
 seedUsers().catch((error) => {

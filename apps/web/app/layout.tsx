@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import "@workspace/ui/globals.css";
 
 export const metadata: Metadata = {
-	description: "AI とともに仕事を形作る社内システムプラットフォーム",
+	description:
+		"終活から相続手続き、相続後の資産活用までを AI がサポートするチャットサービス",
 	title: {
-		default: "FORMAWORK.ai",
-		template: "%s - FORMAWORK.ai",
+		default: "お見送りサポートチャット",
+		template: "%s - お見送りサポートチャット",
 	},
 };
 

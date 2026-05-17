@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@ai-sdk/openai": "catalog:",
 		"@ai-sdk/valibot": "catalog:",
 		"@harusame0616/result": "catalog:",
 		"@hookform/resolvers": "catalog:",
@@ -8,15 +9,15 @@
 		"@workspace/db": "workspace:",
 		"@workspace/ui": "workspace:",
 		"ai": "catalog:",
-		"framer-motion": "catalog:",
 		"lucide-react": "catalog:",
 		"next": "catalog:",
-		"onborda": "catalog:",
 		"pino": "catalog:",
+		"qrcode.react": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",
 		"react-hook-form": "catalog:",
-		"swr": "catalog:",
+		"resend": "catalog:",
+		"streamdown": "catalog:",
 		"uuid": "catalog:",
 		"valibot": "catalog:"
 	},
@@ -31,12 +32,10 @@
 		"@vitest/ui": "catalog:",
 		"@workspace/tsconfig": "workspace:",
 		"drizzle-orm": "catalog:",
-		"msw": "catalog:",
 		"pino-pretty": "catalog:",
 		"tailwindcss": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:",
-		"vitest-browser-react": "catalog:"
+		"vitest": "catalog:"
 	},
 	"msw": {
 		"workerDirectory": [

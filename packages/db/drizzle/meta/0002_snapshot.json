@@ -1,13 +1,26 @@
 {
-  "id": "b947c449-c792-5a8b-9335-7628606e5c86",
-  "prevId": "a836b338-b681-497a-8224-6517595d4b75",
+  "id": "c86708ca-1971-4ca3-b9b8-7f93f7d164b4",
+  "prevId": "2f2c262e-e85a-43f7-89cc-db8f13755e4d",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "local.customers": {
-      "name": "customers",
+    "local.chats": {
+      "name": "chats",
       "schema": "local",
       "columns": {
+        "chat_id": {
+          "name": "chat_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "contact_email": {
+          "name": "contact_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -15,35 +28,127 @@
           "notNull": true,
           "default": "now()"
         },
-        "customer_id": {
-          "name": "customer_id",
+        "last_accessed_at": {
+          "name": "last_accessed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "referrer_org_id": {
+          "name": "referrer_org_id",
           "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "local.chat_messages": {
+      "name": "chat_messages",
+      "schema": "local",
+      "columns": {
+        "chat_id": {
+          "name": "chat_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "message_id": {
+          "name": "message_id",
+          "type": "bigserial",
           "primaryKey": true,
           "notNull": true
         },
-        "email": {
-          "name": "email",
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "local.chat_todos": {
+      "name": "chat_todos",
+      "schema": "local",
+      "columns": {
+        "chat_id": {
+          "name": "chat_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "done": {
+          "name": "done",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "priority": {
+          "name": "priority",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "suggested_category_id": {
+          "name": "suggested_category_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "first_name": {
-          "name": "first_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "last_name": {
-          "name": "last_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "phone": {
-          "name": "phone",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
+        "todo_id": {
+          "name": "todo_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "updated_at": {
           "name": "updated_at",
@@ -59,104 +164,102 @@
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
-    "local.customer_note_images": {
-      "name": "customer_note_images",
+    "local.consultations": {
+      "name": "consultations",
       "schema": "local",
       "columns": {
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "customer_note_id": {
-          "name": "customer_note_id",
+        "chat_id": {
+          "name": "chat_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "display_order": {
-          "name": "display_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "path": {
-          "name": "path",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "customer_note_images_customer_note_id_customer_notes_id_fk": {
-          "name": "customer_note_images_customer_note_id_customer_notes_id_fk",
-          "tableFrom": "customer_note_images",
-          "columnsFrom": [
-            "customer_note_id"
-          ],
-          "tableTo": "customer_notes",
-          "schemaTo": "local",
-          "columnsTo": [
-            "id"
-          ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
-        }
-      },
-      "compositePrimaryKeys": {
-        "customer_note_images_customer_note_id_display_order_pk": {
-          "name": "customer_note_images_customer_note_id_display_order_pk",
-          "columns": [
-            "customer_note_id",
-            "display_order"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "local.customer_notes": {
-      "name": "customer_notes",
-      "schema": "local",
-      "columns": {
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "customer_id": {
-          "name": "customer_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
+        "consultation_id": {
+          "name": "consultation_id",
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "staff_id": {
-          "name": "staff_id",
+        "contact_email": {
+          "name": "contact_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sent_at": {
+          "name": "sent_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "target_org_id": {
+          "name": "target_org_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "todo_id": {
+          "name": "todo_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "local.organizations": {
+      "name": "organizations",
+      "schema": "local",
+      "columns": {
+        "category_id": {
+          "name": "category_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "organization_id": {
+          "name": "organization_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "updated_at": {
           "name": "updated_at",
@@ -164,91 +267,33 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
-        }
-      },
-      "indexes": {
-        "idx_customer_notes_customer_created": {
-          "name": "idx_customer_notes_customer_created",
-          "columns": [
-            {
-              "expression": "customer_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": false,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "with": {},
-          "method": "btree",
-          "concurrently": false
         },
-        "idx_customer_notes_staff_id": {
-          "name": "idx_customer_notes_staff_id",
-          "columns": [
-            {
-              "expression": "staff_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "with": {},
-          "method": "btree",
-          "concurrently": false
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
         }
       },
-      "foreignKeys": {
-        "customer_notes_customer_id_customers_customer_id_fk": {
-          "name": "customer_notes_customer_id_customers_customer_id_fk",
-          "tableFrom": "customer_notes",
-          "columnsFrom": [
-            "customer_id"
-          ],
-          "tableTo": "customers",
-          "schemaTo": "local",
-          "columnsTo": [
-            "customer_id"
-          ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
-        },
-        "customer_notes_staff_id_staffs_staff_id_fk": {
-          "name": "customer_notes_staff_id_staffs_staff_id_fk",
-          "tableFrom": "customer_notes",
-          "columnsFrom": [
-            "staff_id"
-          ],
-          "tableTo": "staffs",
-          "schemaTo": "local",
-          "columnsTo": [
-            "staff_id"
-          ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
-        }
-      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
-    "local.customer_note_advice": {
-      "name": "customer_note_advice",
+    "local.organization_categories": {
+      "name": "organization_categories",
       "schema": "local",
       "columns": {
-        "advice": {
-          "name": "advice",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
+        "category_id": {
+          "name": "category_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "created_at": {
           "name": "created_at",
@@ -257,67 +302,36 @@
           "notNull": true,
           "default": "now()"
         },
-        "customer_note_id": {
-          "name": "customer_note_id",
-          "type": "uuid",
+        "is_system": {
+          "name": "is_system",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+        "sort_order": {
+          "name": "sort_order",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
         }
       },
-      "indexes": {
-        "idx_customer_note_advice_created": {
-          "name": "idx_customer_note_advice_created",
-          "columns": [
-            {
-              "expression": "customer_note_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": false,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "with": {},
-          "method": "btree",
-          "concurrently": false
-        }
-      },
-      "foreignKeys": {
-        "customer_note_advice_customer_note_id_customer_notes_id_fk": {
-          "name": "customer_note_advice_customer_note_id_customer_notes_id_fk",
-          "tableFrom": "customer_note_advice",
-          "columnsFrom": [
-            "customer_note_id"
-          ],
-          "tableTo": "customer_notes",
-          "schemaTo": "local",
-          "columnsTo": [
-            "id"
-          ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
-        }
-      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
-    "local.staffs": {
-      "name": "staffs",
+    "local.users": {
+      "name": "users",
       "schema": "local",
       "columns": {
         "auth_user_id": {
@@ -333,24 +347,11 @@
           "notNull": true,
           "default": "now()"
         },
-        "first_name": {
-          "name": "first_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "last_name": {
-          "name": "last_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "staff_id": {
-          "name": "staff_id",
+        "organization_id": {
+          "name": "organization_id",
           "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "primaryKey": false,
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -358,31 +359,38 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "staffs_auth_user_id_unique": {
-          "name": "staffs_auth_user_id_unique",
+        "users_auth_user_id_unique": {
+          "name": "users_auth_user_id_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "auth_user_id"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     }
   },
   "enums": {},
   "schemas": {},
-  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
+  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},
