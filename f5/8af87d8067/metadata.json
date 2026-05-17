@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "f58af87d8067",
+  "strategy": "manual-commit",
+  "branch": "format-fix",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/web/tsconfig.json",
+    "packages/db/tsconfig.json",
+    "packages/ui/tsconfig.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/f5/8af87d8067/0/metadata.json",
+      "transcript": "/f5/8af87d8067/0/full.jsonl",
+      "content_hash": "/f5/8af87d8067/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 37578,
+    "cache_read_tokens": 2493329,
+    "output_tokens": 8918,
+    "api_call_count": 29
+  }
+}
