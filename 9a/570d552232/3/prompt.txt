@@ -1,0 +1,17 @@
+pnpm install 実行してみて
+
+---
+
+pnpm install のエラーって何？
+
+---
+
+なんおでかな install 野地s店で .pnpm-store フォルダなかったはずでデフォルトのインストール先の ~/Library/pnpm/store には追加のアクセス権限を設定しているはずだけど、なんで .pnpm-store をみに行っている？
+
+---
+
+自己バージョン切り替えは ~/Library/pnpm/store じゃないの？
+
+---
+
+@.claude/settings.json
