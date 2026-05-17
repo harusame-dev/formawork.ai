@@ -1,0 +1,4 @@
+@apps/web/app/(public)/chats/page.tsx 現在ページの内容が丸ごと suspense になっています。ほとんどが静的なので動的な部分だけ props で受けとるようにしたいです。
+
+紹介もとと、相談ボタンを container と presenter に分離し、 container を Susepse でラップして Landingコンポーネントに渡します。
+container は promise を受け取り、 await して 紹介ボタンの presenter と 紹介もと表示の prenseter に渡します
