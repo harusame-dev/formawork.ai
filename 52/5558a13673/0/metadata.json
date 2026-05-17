@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "525558a13673",
+  "session_id": "1be79ba8-06fc-48ac-b87a-5be8d6022c47",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-17T10:33:02.235769Z",
+  "branch": "CU-86exmgr3d",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/web/features/chat/landing/start-chat-button.server.tsx",
+    "apps/web/features/chat/landing/start-chat-button.universal.tsx",
+    "apps/web/app/(public)/chats/page.tsx",
+    "apps/web/features/chat/landing/landing.server.tsx",
+    "apps/web/features/chat/landing/landing.universal.tsx",
+    "apps/web/features/chat/landing/referral.server.tsx",
+    "apps/web/features/chat/landing/referral.universal.tsx"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "b3375bbe0b13",
+  "checkpoint_transcript_start": 115,
+  "transcript_lines_at_start": 115,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-17T10:33:02.181147Z",
+    "agent_lines": 261,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 261,
+    "agent_percentage": 100
+  }
+}
