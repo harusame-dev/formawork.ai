@@ -22,7 +22,7 @@ import {
 	staffsConditionSchema,
 } from "./schema";
 
-export const formSchema = v.omit(staffsConditionSchema, ["page"]);
+const formSchema = v.omit(staffsConditionSchema, ["page"]);
 
 export function StaffSearchForm({
 	condition,
