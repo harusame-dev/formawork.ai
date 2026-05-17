@@ -79,7 +79,7 @@ export function useOnboarding() {
 		}
 
 		const previousStep = steps[currentStep - 1];
-		if (!previousStep || !previousStep.nextRoute) {
+		if (!previousStep?.nextRoute) {
 			return;
 		}
 
