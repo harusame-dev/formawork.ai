@@ -1,0 +1,36 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "94242ad2f821",
+  "session_id": "11b946dd-304a-4d49-9ad6-28c831e93216",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-17T10:16:06.733733Z",
+  "branch": "CU-86exmgr3d",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/web/app/(public)/chats/page.tsx",
+    "apps/web/features/chat/landing/landing.server.tsx",
+    "apps/web/app/(public)/chats/_components/start-chat-button.client.tsx",
+    "apps/web/app/(public)/chats/[chatId]/page.tsx",
+    "apps/web/features/chat/room/chat-room.client.tsx",
+    "apps/web/features/chat/room/chat-room.server.tsx",
+    "apps/web/features/chat/todos/todo-list.client.tsx"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "ac02830e0bb2",
+  "token_usage": {
+    "input_tokens": 221,
+    "cache_creation_tokens": 286725,
+    "cache_read_tokens": 20047785,
+    "output_tokens": 113220,
+    "api_call_count": 158
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-17T10:16:06.444652Z",
+    "agent_lines": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 0,
+    "agent_percentage": 0
+  }
+}
