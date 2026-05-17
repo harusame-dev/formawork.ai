@@ -3,7 +3,7 @@
   "checkpoint_id": "9a570d552232",
   "strategy": "manual-commit",
   "branch": "chore-settings-format-and-pnpm-path",
-  "checkpoints_count": 13,
+  "checkpoints_count": 14,
   "files_touched": [
     ".claude/settings.json"
   ],
@@ -37,13 +37,19 @@
       "transcript": "/9a/570d552232/4/full.jsonl",
       "content_hash": "/9a/570d552232/4/content_hash.txt",
       "prompt": "/9a/570d552232/4/prompt.txt"
+    },
+    {
+      "metadata": "/9a/570d552232/5/metadata.json",
+      "transcript": "/9a/570d552232/5/full.jsonl",
+      "content_hash": "/9a/570d552232/5/content_hash.txt",
+      "prompt": "/9a/570d552232/5/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 190,
-    "cache_creation_tokens": 257301,
-    "cache_read_tokens": 3585533,
-    "output_tokens": 58833,
-    "api_call_count": 86
+    "input_tokens": 197,
+    "cache_creation_tokens": 266012,
+    "cache_read_tokens": 3633419,
+    "output_tokens": 58946,
+    "api_call_count": 88
   }
 }
