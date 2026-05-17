@@ -22,7 +22,7 @@ import {
 	customersConditionSchema,
 } from "./schema";
 
-export const formSchema = v.omit(customersConditionSchema, ["page"]);
+const formSchema = v.omit(customersConditionSchema, ["page"]);
 
 export function CustomerSearchForm({
 	condition,
