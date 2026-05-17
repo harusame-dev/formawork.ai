@@ -35,6 +35,7 @@
 		"pino-pretty": "catalog:",
 		"tailwindcss": "catalog:",
 		"typescript": "catalog:",
+		"vite": "catalog:",
 		"vitest": "catalog:",
 		"vitest-browser-react": "catalog:"
 	},

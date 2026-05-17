@@ -58,6 +58,7 @@
 		"smallint",
 		"KTVK",
 		"Uodkm",
-		"unsandboxed"
+		"unsandboxed",
+		"vite"
 	]
 }
