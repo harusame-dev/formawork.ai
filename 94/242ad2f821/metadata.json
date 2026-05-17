@@ -9,10 +9,13 @@
     "apps/web/app/(public)/chats/_components/start-chat-button.client.tsx",
     "apps/web/app/(public)/chats/page.tsx",
     "apps/web/features/chat/landing/landing.server.tsx",
+    "apps/web/features/chat/llm/chat-model.ts",
     "apps/web/features/chat/room/chat-room.client.tsx",
     "apps/web/features/chat/room/chat-room.server.tsx",
     "apps/web/features/chat/todos/todo-list.client.tsx",
-    "apps/web/features/organization/detail/chat-lp-url-field.client.tsx"
+    "apps/web/features/organization/detail/chat-lp-url-field.client.tsx",
+    "packages/db/src/fixtures/organization-categories.ts",
+    "packages/db/src/fixtures/organizations.ts"
   ],
   "sessions": [
     {
@@ -26,13 +29,19 @@
       "transcript": "/94/242ad2f821/1/full.jsonl",
       "content_hash": "/94/242ad2f821/1/content_hash.txt",
       "prompt": "/94/242ad2f821/1/prompt.txt"
+    },
+    {
+      "metadata": "/94/242ad2f821/2/metadata.json",
+      "transcript": "/94/242ad2f821/2/full.jsonl",
+      "content_hash": "/94/242ad2f821/2/content_hash.txt",
+      "prompt": "/94/242ad2f821/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 260,
-    "cache_creation_tokens": 320107,
-    "cache_read_tokens": 21210935,
-    "output_tokens": 120006,
-    "api_call_count": 187
+    "input_tokens": 313,
+    "cache_creation_tokens": 370507,
+    "cache_read_tokens": 22078605,
+    "output_tokens": 130730,
+    "api_call_count": 211
   }
 }

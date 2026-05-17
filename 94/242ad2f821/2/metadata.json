@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "94242ad2f821",
+  "session_id": "339cc325-cf2a-4fb1-ba86-b446587eedd9",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-17T10:16:06.874176Z",
+  "branch": "CU-86exmgr3d",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "packages/db/src/fixtures/organizations.ts",
+    "packages/db/src/fixtures/organization-categories.ts",
+    "apps/web/features/chat/llm/chat-model.ts"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "8e30264f8c7e",
+  "token_usage": {
+    "input_tokens": 53,
+    "cache_creation_tokens": 50400,
+    "cache_read_tokens": 867670,
+    "output_tokens": 10724,
+    "api_call_count": 24
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-17T10:16:06.819088Z",
+    "agent_lines": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 0,
+    "agent_percentage": 0
+  }
+}
