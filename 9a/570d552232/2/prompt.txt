@@ -1,0 +1,13 @@
+pnpm install site
+
+---
+
+~/Library/pnpm/store 配下のファイルって見られる？
+
+---
+
+プロジェクトフォルダはいかに .pnpm-store ってフォルダある？
+
+---
+
+filesystem の allowwrite で追加の許可設定して
