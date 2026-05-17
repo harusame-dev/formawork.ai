@@ -46,7 +46,7 @@ export default function Page({ params }: PageProps<"/chats/[chatId]">) {
 				}}
 			/>
 
-			<div className="relative mx-auto flex h-full w-full max-w-6xl flex-col px-4 py-4 sm:px-6">
+			<div className="relative mx-auto flex h-full w-full max-w-6xl flex-col py-4 sm:px-6">
 				<Suspense
 					fallback={
 						<div className="flex h-full flex-col gap-4">

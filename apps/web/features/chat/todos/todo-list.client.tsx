@@ -222,8 +222,8 @@ export function TodoList({
 				</CardHeader>
 				<CardContent className="flex flex-1 flex-col gap-2 overflow-y-auto px-4 py-4">
 					{todos.length === 0 && (
-						<p className="font-[family-name:var(--font-sans-jp)] text-xs leading-relaxed text-[#8A867F]">
-							お話が進むにつれて、こちらに、これからのご準備が静かに並んでまいります。
+						<p className="font-[family-name:var(--font-sans-jp)] text-xs leading-relaxed text-[#5C5852]">
+							会話が進むと、ここに対応すべきタスクが表示されます。
 						</p>
 					)}
 					{todos.map((todo) => {

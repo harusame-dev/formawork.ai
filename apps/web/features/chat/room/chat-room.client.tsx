@@ -56,6 +56,7 @@ export function ChatRoom({
 		initialConsultedOrgIds,
 	);
 	const messagesEndRef = useRef<HTMLDivElement | null>(null);
+	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 	const [isTodoSheetOpen, setIsTodoSheetOpen] = useState(false);
 
 	const todosFingerprint = useMemo(
@@ -81,6 +82,14 @@ export function ChatRoom({
 	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, []);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: input 変更後の DOM サイズを反映する
+	useEffect(() => {
+		const el = textareaRef.current;
+		if (!el) return;
+		el.style.height = "auto";
+		el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
+	}, [input]);
 
 	const refreshTodos = useCallback(async () => {
 		try {
@@ -194,7 +203,7 @@ export function ChatRoom({
 				.chat-scroll::-webkit-scrollbar-thumb:hover { background: rgba(184, 153, 104, 0.5); }
 			`}</style>
 
-			<header className="flex shrink-0 items-center justify-between gap-3 border-b border-[#C9A961]/60 pb-3">
+			<header className="flex shrink-0 items-center justify-between gap-3 border-b border-[#C9A961]/60 px-4 pb-3 sm:px-0">
 				<div className="flex items-center gap-3">
 					<span
 						aria-hidden
@@ -317,48 +326,40 @@ export function ChatRoom({
 						)}
 
 						<form
-							className="relative flex flex-col gap-3 border-t border-[#D7C49E]/30 pt-4"
+							className="relative flex items-end gap-2 border-t border-[#D7C49E]/30 pt-4"
 							onSubmit={handleSubmit}
 						>
-							<div className="relative">
-								<textarea
-									className="min-h-[88px] w-full resize-none border border-[#D7C49E]/50 bg-[#FFFDF8] px-4 py-3 font-[family-name:var(--font-sans-jp)] text-[0.92rem] leading-[1.9] text-[#2A2622] placeholder:text-[#A8A39A] focus:border-[#B89968] focus:outline-none focus:ring-1 focus:ring-[#B89968]/30 disabled:cursor-not-allowed disabled:opacity-60"
-									disabled={isStreaming}
-									onChange={(e) => setInput(e.target.value)}
-									onKeyDown={(e) => {
-										if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-											e.preventDefault();
-											(
-												e.currentTarget.form as HTMLFormElement | null
-											)?.requestSubmit();
-										}
-									}}
-									placeholder="（Cmd / Ctrl + Enter で送信）"
-									value={input}
-								/>
-								<span
-									aria-hidden
-									className="pointer-events-none absolute right-3 top-3 font-[family-name:var(--font-mincho)] text-[0.6rem] tracking-[0.2em] text-[#C9BFAA]"
-								>
-									一 筆
-								</span>
-							</div>
-							<div className="flex items-center justify-end">
-								<button
-									aria-label="送信"
-									className="group relative inline-flex items-center justify-center overflow-hidden border border-[#2A2622] bg-[#2A2622] px-5 py-2.5 text-[#FAF7F1] transition-all duration-300 hover:bg-[#3A332C] disabled:cursor-not-allowed disabled:opacity-50"
-									disabled={isStreaming || input.trim().length === 0}
-									type="submit"
-								>
-									<span className="absolute inset-y-1.5 left-1.5 w-1.5 border-b border-l border-[#B89968]/60 transition-all duration-300 group-hover:w-2.5" />
-									<span className="absolute inset-y-1.5 right-1.5 w-1.5 border-b border-r border-[#B89968]/60 transition-all duration-300 group-hover:w-2.5" />
-									{isStreaming ? (
-										<Loader2 className="size-4 animate-spin" />
-									) : (
-										<Send className="size-4" />
-									)}
-								</button>
-							</div>
+							<textarea
+								className="max-h-[200px] flex-1 resize-none overflow-y-auto border border-[#D7C49E]/50 bg-[#FFFDF8] px-4 py-2.5 font-[family-name:var(--font-sans-jp)] text-[0.92rem] leading-[1.9] text-[#2A2622] placeholder:text-[#A8A39A] focus:border-[#B89968] focus:outline-none focus:ring-1 focus:ring-[#B89968]/30 disabled:cursor-not-allowed disabled:opacity-60"
+								disabled={isStreaming}
+								onChange={(e) => setInput(e.target.value)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+										e.preventDefault();
+										(
+											e.currentTarget.form as HTMLFormElement | null
+										)?.requestSubmit();
+									}
+								}}
+								placeholder="（Cmd / Ctrl + Enter で送信）"
+								ref={textareaRef}
+								rows={1}
+								value={input}
+							/>
+							<button
+								aria-label="送信"
+								className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden border border-[#2A2622] bg-[#2A2622] px-4 py-2.5 text-[#FAF7F1] transition-all duration-300 hover:bg-[#3A332C] disabled:cursor-not-allowed disabled:opacity-50"
+								disabled={isStreaming || input.trim().length === 0}
+								type="submit"
+							>
+								<span className="absolute inset-y-1.5 left-1.5 w-1.5 border-b border-l border-[#B89968]/60 transition-all duration-300 group-hover:w-2.5" />
+								<span className="absolute inset-y-1.5 right-1.5 w-1.5 border-b border-r border-[#B89968]/60 transition-all duration-300 group-hover:w-2.5" />
+								{isStreaming ? (
+									<Loader2 className="size-4 animate-spin" />
+								) : (
+									<Send className="size-4" />
+								)}
+							</button>
 						</form>
 					</div>
 				</section>
