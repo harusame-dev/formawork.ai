@@ -1,0 +1,5 @@
+チャットの開始画面に本システムは主に千葉県在住の方向けのシステムで、千葉県在住でない方には一部サービスが提供できない可能性があることを記載してください
+
+---
+
+@apps/web/app/(private)/organizations/[organizationId]/page.tsx  紹介チャット URL の下には QR コードを表示してください

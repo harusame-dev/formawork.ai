@@ -11,7 +11,8 @@
     "apps/web/features/chat/landing/landing.server.tsx",
     "apps/web/features/chat/room/chat-room.client.tsx",
     "apps/web/features/chat/room/chat-room.server.tsx",
-    "apps/web/features/chat/todos/todo-list.client.tsx"
+    "apps/web/features/chat/todos/todo-list.client.tsx",
+    "apps/web/features/organization/detail/chat-lp-url-field.client.tsx"
   ],
   "sessions": [
     {
@@ -19,13 +20,19 @@
       "transcript": "/94/242ad2f821/0/full.jsonl",
       "content_hash": "/94/242ad2f821/0/content_hash.txt",
       "prompt": "/94/242ad2f821/0/prompt.txt"
+    },
+    {
+      "metadata": "/94/242ad2f821/1/metadata.json",
+      "transcript": "/94/242ad2f821/1/full.jsonl",
+      "content_hash": "/94/242ad2f821/1/content_hash.txt",
+      "prompt": "/94/242ad2f821/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 221,
-    "cache_creation_tokens": 286725,
-    "cache_read_tokens": 20047785,
-    "output_tokens": 113220,
-    "api_call_count": 158
+    "input_tokens": 260,
+    "cache_creation_tokens": 320107,
+    "cache_read_tokens": 21210935,
+    "output_tokens": 120006,
+    "api_call_count": 187
   }
 }
