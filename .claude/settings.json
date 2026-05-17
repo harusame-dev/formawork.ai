@@ -146,7 +146,7 @@
 			"playwright-cli:*"
 		],
 		"filesystem": {
-			"allowWrite": ["//tmp/pnpm/store"]
+			"allowWrite": ["~/Library/pnpm", "~/.local/share/pnpm"]
 		},
 		"network": {
 			"allowedDomains": [
