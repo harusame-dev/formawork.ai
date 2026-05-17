@@ -1,0 +1,25 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "521abc2ee432",
+  "strategy": "manual-commit",
+  "branch": "fix-vite-plugin-react-and-biome-issues",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".claude/settings.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/52/1abc2ee432/0/metadata.json",
+      "transcript": "/52/1abc2ee432/0/full.jsonl",
+      "content_hash": "/52/1abc2ee432/0/content_hash.txt",
+      "prompt": "/52/1abc2ee432/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 54,
+    "cache_creation_tokens": 73429,
+    "cache_read_tokens": 1752014,
+    "output_tokens": 15637,
+    "api_call_count": 30
+  }
+}
