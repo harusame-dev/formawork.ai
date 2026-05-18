@@ -204,3 +204,7 @@ packagemanager って package.json の公式なフィールドなの？それと
 ---
 
 please commit
+
+---
+
+please create PR
