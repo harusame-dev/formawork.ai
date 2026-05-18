@@ -45,7 +45,11 @@ jobs:
       - name: Supabase CLI のセットアップ
         uses: supabase/setup-cli@df56b21da46c98abb12a9804e4fb1f657773e333 # v2.0.0
         with:
-          version: latest
+          # supabase/cli v2.99.0 でリリースアセットの命名規則が変わり、
+          # setup-cli が期待する `supabase_linux_amd64.tar.gz` が消えて 404 になるため、
+          # 直前の正常リリース v2.98.2 を暫定的に固定する。
+          # 参考: https://github.com/supabase/cli/issues/5257
+          version: 2.98.2
 
       - name: Supabase の起動
         run: |
