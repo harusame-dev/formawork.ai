@@ -1,0 +1,30 @@
+# 依存・ビルド成果物
+node_modules
+.next
+out
+build
+dist
+coverage
+
+# Next.js 自動生成
+**/next-env.d.ts
+**/public/mockServiceWorker.js
+
+# E2E / テスト成果物
+**/playwright-report
+**/test-results
+**/__screenshots__
+
+# Drizzle が自動生成するスナップショット (触らない)
+packages/db/drizzle/meta
+
+# Lockfile
+pnpm-lock.yaml
+
+# git 配下
+.git
+
+# Claude Code / entire のメタデータ
+.entire
+.claude
+.serena

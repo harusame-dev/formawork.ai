@@ -9,29 +9,31 @@ import { StaffsContainer } from "@/features/staff/list/staffs.server";
 import { StaffsSkeleton } from "@/features/staff/list/staffs-skeleton.universal";
 import { SuspenseOnSearch } from "@/libs/suspense-on-search.client";
 
-export default async function Page({ searchParams }: PageProps<"/staffs">) {
-	const validatedCondition = searchParams.then(
-		(params) => parseStaffsConditionSearchParams(params).data,
-	);
+export default async function Page({
+  searchParams,
+}: PageProps<"/staffs">): Promise<JSX.Element> {
+  const validatedCondition = searchParams.then(
+    (parameters) => parseStaffsConditionSearchParams(parameters).data,
+  );
 
-	return (
-		<div className="container mx-auto p-2 space-y-4">
-			<div className="flex items-center justify-between">
-				<h1 className="font-bold">スタッフ一覧</h1>
-				<Suspense fallback={<Skeleton className="h-5 w-16" />}>
-					<RegisterStaffLink />
-				</Suspense>
-			</div>
-			<Card className="p-4 w-full">
-				<SuspenseOnSearch fallback={<StaffSearchFormSkeleton />}>
-					<StaffSearchFormContainer conditionPromise={validatedCondition} />
-				</SuspenseOnSearch>
-			</Card>
-			<Card className="py-2 w-full">
-				<SuspenseOnSearch fallback={<StaffsSkeleton />}>
-					<StaffsContainer condition={validatedCondition} />
-				</SuspenseOnSearch>
-			</Card>
-		</div>
-	);
+  return (
+    <div className="container mx-auto space-y-4 p-2">
+      <div className="flex items-center justify-between">
+        <h1 className="font-bold">スタッフ一覧</h1>
+        <Suspense fallback={<Skeleton className="h-5 w-16" />}>
+          <RegisterStaffLink />
+        </Suspense>
+      </div>
+      <Card className="w-full p-4">
+        <SuspenseOnSearch fallback={<StaffSearchFormSkeleton />}>
+          <StaffSearchFormContainer conditionPromise={validatedCondition} />
+        </SuspenseOnSearch>
+      </Card>
+      <Card className="w-full py-2">
+        <SuspenseOnSearch fallback={<StaffsSkeleton />}>
+          <StaffsContainer condition={validatedCondition} />
+        </SuspenseOnSearch>
+      </Card>
+    </div>
+  );
 }

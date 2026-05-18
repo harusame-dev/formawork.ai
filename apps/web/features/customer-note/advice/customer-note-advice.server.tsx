@@ -2,20 +2,20 @@ import type { SelectCustomerNoteAdvice } from "@workspace/db/schema/customer-not
 import { CustomerNoteAdvicePresenter } from "./customer-note-advice.universal";
 import { CustomerNoteAdviceLoading } from "./customer-note-advice-loading.client";
 
-type Props = {
-	advice: SelectCustomerNoteAdvice | null;
-	noteId: string;
-	isTimeout: boolean;
-};
+interface Props {
+  advice: SelectCustomerNoteAdvice | null;
+  noteId: string;
+  isTimeout: boolean;
+}
 
 export function CustomerNoteAdviceContainer({
-	advice,
-	noteId,
-	isTimeout,
-}: Props) {
-	if (advice) {
-		return <CustomerNoteAdvicePresenter advice={advice} />;
-	}
+  advice,
+  noteId,
+  isTimeout,
+}: Props): JSX.Element {
+  if (advice) {
+    return <CustomerNoteAdvicePresenter advice={advice} />;
+  }
 
-	return <CustomerNoteAdviceLoading isTimeout={isTimeout} noteId={noteId} />;
+  return <CustomerNoteAdviceLoading isTimeout={isTimeout} noteId={noteId} />;
 }

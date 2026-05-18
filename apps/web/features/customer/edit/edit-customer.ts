@@ -3,59 +3,59 @@ import { getLogger } from "@repo/logger/nextjs/server";
 import { db } from "@workspace/db/client";
 import { customersTable } from "@workspace/db/schema/customer";
 import { eq } from "drizzle-orm";
-import type { EditCustomerParams } from "./schema";
+import type { EditCustomerParams as EditCustomerParameters } from "./schema";
 
 const CUSTOMER_NOT_FOUND_ERROR_MESSAGE =
-	"指定された顧客が見つかりません" as const;
+  "指定された顧客が見つかりません" as const;
 
 export async function editCustomer({
-	address,
-	birthDate,
-	customerId,
-	email,
-	firstName,
-	firstNameKana,
-	gender,
-	lastName,
-	lastNameKana,
-	phone,
-	remarks,
-}: EditCustomerParams): Promise<
-	Result<undefined, typeof CUSTOMER_NOT_FOUND_ERROR_MESSAGE>
+  address,
+  birthDate,
+  customerId,
+  email,
+  firstName,
+  firstNameKana,
+  gender,
+  lastName,
+  lastNameKana,
+  phone,
+  remarks,
+}: EditCustomerParameters): Promise<
+  Result<undefined, typeof CUSTOMER_NOT_FOUND_ERROR_MESSAGE>
 > {
-	const logger = await getLogger("editCustomer");
+  const logger = await getLogger("editCustomer");
 
-	const customer = await db.query.customersTable.findFirst({
-		where: eq(customersTable.customerId, customerId),
-	});
+  const customer = await db.query.customersTable.findFirst({
+    where: eq(customersTable.customerId, customerId),
+  });
 
-	if (!customer) {
-		logger.warn("顧客が見つかりません", {
-			customerId,
-		});
-		return fail(CUSTOMER_NOT_FOUND_ERROR_MESSAGE);
-	}
+  if (!customer) {
+    logger.warn("顧客が見つかりません", {
+      customerId,
+    });
+    return fail(CUSTOMER_NOT_FOUND_ERROR_MESSAGE);
+  }
 
-	await db
-		.update(customersTable)
-		.set({
-			address,
-			birthDate: birthDate || null,
-			email,
-			firstName,
-			firstNameKana,
-			gender,
-			lastName,
-			lastNameKana,
-			phone,
-			remarks,
-		})
-		.where(eq(customersTable.customerId, customerId));
+  await db
+    .update(customersTable)
+    .set({
+      address,
+      birthDate: birthDate || null,
+      email,
+      firstName,
+      firstNameKana,
+      gender,
+      lastName,
+      lastNameKana,
+      phone,
+      remarks,
+    })
+    .where(eq(customersTable.customerId, customerId));
 
-	logger.info("顧客情報の更新に成功", {
-		action: "edit-customer",
-		customerId,
-	});
+  logger.info("顧客情報の更新に成功", {
+    action: "edit-customer",
+    customerId,
+  });
 
-	return succeed();
+  return succeed();
 }

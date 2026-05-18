@@ -3,28 +3,28 @@ import { db } from "@workspace/db/client";
 import { customerMemoriesTable } from "@workspace/db/schema/customer-memory";
 import { eq } from "drizzle-orm";
 
-type DeleteCustomerMemoryInput = {
-	memoryId: string;
-};
+interface DeleteCustomerMemoryInput {
+  memoryId: string;
+}
 
 type ErrorMessage = "メモリが存在しません" | "メモリの削除に失敗しました";
 
 export async function deleteCustomerMemory(
-	input: DeleteCustomerMemoryInput,
+  input: DeleteCustomerMemoryInput,
 ): Promise<Result<void, ErrorMessage>> {
-	const memories = await db
-		.select({ id: customerMemoriesTable.id })
-		.from(customerMemoriesTable)
-		.where(eq(customerMemoriesTable.id, input.memoryId))
-		.limit(1);
+  const memories = await db
+    .select({ id: customerMemoriesTable.id })
+    .from(customerMemoriesTable)
+    .where(eq(customerMemoriesTable.id, input.memoryId))
+    .limit(1);
 
-	if (!memories[0]) {
-		return fail("メモリが存在しません");
-	}
+  if (!memories[0]) {
+    return fail("メモリが存在しません");
+  }
 
-	await db
-		.delete(customerMemoriesTable)
-		.where(eq(customerMemoriesTable.id, input.memoryId));
+  await db
+    .delete(customerMemoriesTable)
+    .where(eq(customerMemoriesTable.id, input.memoryId));
 
-	return succeed();
+  return succeed();
 }

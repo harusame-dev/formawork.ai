@@ -1,6 +1,9 @@
 import * as v from "valibot";
 
-export function getLoggerConfig() {
+export function getLoggerConfig(): {
+	deploymentId?: string;
+	gitCommitSha?: string;
+} {
 	return v.parse(
 		v.object({
 			deploymentId: v.optional(v.string()),

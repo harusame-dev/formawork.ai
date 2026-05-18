@@ -9,22 +9,22 @@ const getMock = vi.hoisted(() => vi.fn());
 const MAX_KEYWORD_LENGTH = 300;
 
 vi.mock("next/navigation", () => ({
-	useRouter: () => ({
-		push: vi.fn(),
-	}),
-	useSearchParams: () => ({
-		get: getMock,
-	}),
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+  useSearchParams: () => ({
+    get: getMock,
+  }),
 }));
 
 test("最大文字数を超えて入力できない", async () => {
-	render(<CustomerSearchForm condition={{ keyword: "" }} />);
+  render(<CustomerSearchForm condition={{ keyword: "" }} />);
 
-	const input = page.getByLabelText("キーワード");
+  const input = page.getByLabelText("キーワード");
 
-	const overLimitText = "あ".repeat(MAX_KEYWORD_LENGTH + 1);
+  const overLimitText = "あ".repeat(MAX_KEYWORD_LENGTH + 1);
 
-	await userEvent.fill(input, overLimitText);
+  await userEvent.fill(input, overLimitText);
 
-	await expect.element(input).toHaveValue("あ".repeat(MAX_KEYWORD_LENGTH));
+  await expect.element(input).toHaveValue("あ".repeat(MAX_KEYWORD_LENGTH));
 });

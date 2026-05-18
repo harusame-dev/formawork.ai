@@ -3,14 +3,16 @@ import { Suspense } from "react";
 import { CustomerBasicInfoContainer } from "@/features/customer/detail/customer-basic-info.server";
 import { CustomerBasicInfoSkeleton } from "@/features/customer/detail/customer-basic-info-skeleton.universal";
 
-export default function Page({ params }: PageProps<"/customers/[customerId]">) {
-	const customerIdPromise = params.then(({ customerId }) => customerId);
+export default function Page({
+  params,
+}: PageProps<"/customers/[customerId]">): JSX.Element {
+  const customerIdPromise = params.then(({ customerId }) => customerId);
 
-	return (
-		<Card className="p-4 w-full">
-			<Suspense fallback={<CustomerBasicInfoSkeleton />}>
-				<CustomerBasicInfoContainer customerIdPromise={customerIdPromise} />
-			</Suspense>
-		</Card>
-	);
+  return (
+    <Card className="w-full p-4">
+      <Suspense fallback={<CustomerBasicInfoSkeleton />}>
+        <CustomerBasicInfoContainer customerIdPromise={customerIdPromise} />
+      </Suspense>
+    </Card>
+  );
 }

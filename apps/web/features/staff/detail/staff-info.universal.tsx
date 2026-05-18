@@ -1,15 +1,15 @@
-type StaffInfoPresenterProps = {
-	firstName: string;
-	lastName: string;
-};
+interface StaffInfoPresenterProps {
+  firstName: string;
+  lastName: string;
+}
 
 export function StaffInfoPresenter({
-	firstName,
-	lastName,
-}: StaffInfoPresenterProps) {
-	return (
-		<h1 className="text-2xl font-bold h-8">
-			{lastName} {firstName}
-		</h1>
-	);
+  firstName,
+  lastName,
+}: StaffInfoPresenterProps): JSX.Element {
+  return (
+    <h1 className="h-8 text-2xl font-bold">
+      {lastName} {firstName}
+    </h1>
+  );
 }

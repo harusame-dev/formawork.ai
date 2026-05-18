@@ -2,19 +2,19 @@ import { notFound } from "next/navigation";
 import { getStaffDetail } from "./get-staff-detail";
 import { StaffBasicInfoPresenter } from "./staff-basic-info.universal";
 
-type StaffBasicInfoContainerProps = {
-	staffIdPromise: Promise<string>;
-};
+interface StaffBasicInfoContainerProps {
+  staffIdPromise: Promise<string>;
+}
 
 export async function StaffBasicInfoContainer({
-	staffIdPromise,
-}: StaffBasicInfoContainerProps) {
-	const staffId = await staffIdPromise;
-	const staff = await getStaffDetail(staffId);
+  staffIdPromise,
+}: StaffBasicInfoContainerProps): Promise<JSX.Element> {
+  const staffId = await staffIdPromise;
+  const staff = await getStaffDetail(staffId);
 
-	if (!staff) {
-		notFound();
-	}
+  if (!staff) {
+    notFound();
+  }
 
-	return <StaffBasicInfoPresenter staff={staff} />;
+  return <StaffBasicInfoPresenter staff={staff} />;
 }

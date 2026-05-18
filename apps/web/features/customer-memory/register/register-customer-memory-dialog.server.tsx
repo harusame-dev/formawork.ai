@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 import { RegisterCustomerMemoryDialog } from "./register-customer-memory-dialog.client";
 
-type RegisterCustomerMemoryDialogContainerProps = {
-	customerId: Promise<string>;
-};
+interface RegisterCustomerMemoryDialogContainerProps {
+  customerId: Promise<string>;
+}
 
 export async function RegisterCustomerMemoryDialogContainer({
-	customerId,
+  customerId,
 }: RegisterCustomerMemoryDialogContainerProps): Promise<ReactNode> {
-	const resolvedCustomerId = await customerId;
+  const resolvedCustomerId = await customerId;
 
-	return <RegisterCustomerMemoryDialog customerId={resolvedCustomerId} />;
+  return <RegisterCustomerMemoryDialog customerId={resolvedCustomerId} />;
 }

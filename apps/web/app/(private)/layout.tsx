@@ -4,24 +4,24 @@ import { NavigationMenu } from "./_components/navigation-menu.client";
 import { UserMenu } from "./_components/user-menu.client";
 
 export default function PrivateLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
-}) {
-	return (
-		<Onboarding>
-			<div className="grid grid-rows-[auto_1fr] h-dvh">
-				<header className="border-b grid grid-cols-[auto_1fr_auto] h-16 items-center gap-4 px-4">
-					<NavigationMenu />
-					<Link className="text-lg font-semibold hover:opacity-80" href="/">
-						FORMAWORK.AI -CRM-
-					</Link>
-					<UserMenu />
-				</header>
-				<main className="overflow-y-auto [scrollbar-gutter:stable] bg-background">
-					{children}
-				</main>
-			</div>
-		</Onboarding>
-	);
+  children: React.ReactNode;
+}): JSX.Element {
+  return (
+    <Onboarding>
+      <div className="grid h-dvh grid-rows-[auto_1fr]">
+        <header className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 border-b px-4">
+          <NavigationMenu />
+          <Link className="text-lg font-semibold hover:opacity-80" href="/">
+            FORMAWORK.AI -CRM-
+          </Link>
+          <UserMenu />
+        </header>
+        <main className="overflow-y-auto bg-background [scrollbar-gutter:stable]">
+          {children}
+        </main>
+      </div>
+    </Onboarding>
+  );
 }

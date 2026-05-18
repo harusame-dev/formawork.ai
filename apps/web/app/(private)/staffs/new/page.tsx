@@ -1,13 +1,13 @@
 import { Card } from "@workspace/ui/components/card";
 import { EditStaffForm } from "@/features/staff/register/edit-staff-form.client";
 
-export default function NewStaffPage() {
-	return (
-		<div className="container mx-auto p-2 space-y-4">
-			<h1 className="font-bold">新規スタッフ登録</h1>
-			<Card className="p-4 w-full">
-				<EditStaffForm />
-			</Card>
-		</div>
-	);
+export default function NewStaffPage(): JSX.Element {
+  return (
+    <div className="container mx-auto space-y-4 p-2">
+      <h1 className="font-bold">新規スタッフ登録</h1>
+      <Card className="w-full p-4">
+        <EditStaffForm />
+      </Card>
+    </div>
+  );
 }

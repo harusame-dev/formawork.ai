@@ -7,17 +7,17 @@ import { createServerAction } from "@/libs/create-server-action";
 import { deleteCustomerMemory } from "./delete-customer-memory";
 
 const schema = v.object({
-	customerId: v.pipe(v.string(), v.uuid()),
-	memoryId: v.pipe(v.string(), v.uuid()),
+  customerId: v.pipe(v.string(), v.uuid()),
+  memoryId: v.pipe(v.string(), v.uuid()),
 });
 
 export const deleteCustomerMemoryAction = createServerAction(
-	deleteCustomerMemory,
-	{
-		name: "deleteCustomerMemoryAction",
-		onSuccess: ({ input: { customerId } }) => {
-			updateTag(CustomerTag.MemoriesByCustomerId(customerId));
-		},
-		schema,
-	},
+  deleteCustomerMemory,
+  {
+    name: "deleteCustomerMemoryAction",
+    onSuccess: ({ input: { customerId } }) => {
+      updateTag(CustomerTag.MemoriesByCustomerId(customerId));
+    },
+    schema,
+  },
 );

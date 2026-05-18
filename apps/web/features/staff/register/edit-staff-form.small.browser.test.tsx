@@ -5,246 +5,246 @@ import { render } from "vitest-browser-react";
 import { EditStaffForm } from "./edit-staff-form.client";
 
 vi.mock("./register-staff.action", () => ({
-	registerStaffAction: vi.fn(),
+  registerStaffAction: vi.fn(),
 }));
 
 vi.mock("@/features/staff/edit/edit-staff.action", () => ({
-	editStaffAction: vi.fn(),
+  editStaffAction: vi.fn(),
 }));
 
 const test = base.extend<{
-	registerStaffActionMock: Mock;
+  registerStaffActionMock: Mock;
 }>({
-	registerStaffActionMock: async (
-		// biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
-		{},
-		// biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
-		use: any,
-	) => {
-		const registerStaffActionModule = await import("./register-staff.action");
-		await use(registerStaffActionModule.registerStaffAction);
-		vi.clearAllMocks();
-	},
+  registerStaffActionMock: async (
+    // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
+    {},
+    // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
+    use: any,
+  ) => {
+    const registerStaffActionModule = await import("./register-staff.action");
+    await use(registerStaffActionModule.registerStaffAction);
+    vi.clearAllMocks();
+  },
 });
 
 test("姓が空の場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("姓を入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("姓を入力してください"))
+    .toBeInTheDocument();
 });
 
 test("名が空の場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByLabelText("姓").fill("テスト");
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByLabelText("姓").fill("テスト");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("名を入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("名を入力してください"))
+    .toBeInTheDocument();
 });
 
 test("メールアドレスが空の場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByLabelText("姓").fill("テスト");
-	await page.getByLabelText("名").fill("太郎");
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByLabelText("姓").fill("テスト");
+  await page.getByLabelText("名").fill("太郎");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(
-			page.getByText("メールアドレスを入力してください", { exact: true }),
-		)
-		.toBeInTheDocument();
+  await expect
+    .element(
+      page.getByText("メールアドレスを入力してください", { exact: true }),
+    )
+    .toBeInTheDocument();
 });
 
 test("メールアドレスの形式が不正な場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByLabelText("姓").fill("テスト");
-	await page.getByLabelText("名").fill("太郎");
-	await page.getByLabelText("メールアドレス").fill("invalid-email");
-	await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByLabelText("姓").fill("テスト");
+  await page.getByLabelText("名").fill("太郎");
+  await page.getByLabelText("メールアドレス").fill("invalid-email");
+  await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("正しいメールアドレス形式で入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("正しいメールアドレス形式で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("パスワードが空の場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByLabelText("姓").fill("テスト");
-	await page.getByLabelText("名").fill("太郎");
-	await page.getByLabelText("メールアドレス").fill("test@example.com");
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByLabelText("姓").fill("テスト");
+  await page.getByLabelText("名").fill("太郎");
+  await page.getByLabelText("メールアドレス").fill("test@example.com");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("パスワードを入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("パスワードを入力してください"))
+    .toBeInTheDocument();
 });
 
 test("パスワードが8文字未満の場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByLabelText("姓").fill("テスト");
-	await page.getByLabelText("名").fill("太郎");
-	await page.getByLabelText("メールアドレス").fill("test@example.com");
-	await page.getByRole("textbox", { name: "パスワード" }).fill("1234567");
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByLabelText("姓").fill("テスト");
+  await page.getByLabelText("名").fill("太郎");
+  await page.getByLabelText("メールアドレス").fill("test@example.com");
+  await page.getByRole("textbox", { name: "パスワード" }).fill("1234567");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("パスワードは8文字以上で入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("パスワードは8文字以上で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("送信中はボタンが無効化され、ローディング表示になる", async ({
-	registerStaffActionMock,
+  registerStaffActionMock,
 }) => {
-	registerStaffActionMock.mockReturnValue(new Promise(() => {}));
+  registerStaffActionMock.mockReturnValue(new Promise(() => {}));
 
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByLabelText("姓").fill("テスト");
-	await page.getByLabelText("名").fill("太郎");
-	await page.getByLabelText("メールアドレス").fill("test@example.com");
-	await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByLabelText("姓").fill("テスト");
+  await page.getByLabelText("名").fill("太郎");
+  await page.getByLabelText("メールアドレス").fill("test@example.com");
+  await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	const button = page.getByRole("button", { name: /登録中/ });
+  const button = page.getByRole("button", { name: /登録中/ });
 
-	await expect.element(button).toBeDisabled();
-	await expect.element(page.getByText("登録中")).toBeInTheDocument();
+  await expect.element(button).toBeDisabled();
+  await expect.element(page.getByText("登録中")).toBeInTheDocument();
 });
 
 test("登録エラー時にエラーメッセージが表示される", async ({
-	registerStaffActionMock,
+  registerStaffActionMock,
 }) => {
-	registerStaffActionMock.mockResolvedValue({
-		error: "このメールアドレスは既に登録されています",
-		success: false,
-	});
+  registerStaffActionMock.mockResolvedValue({
+    error: "このメールアドレスは既に登録されています",
+    success: false,
+  });
 
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByLabelText("姓").fill("テスト");
-	await page.getByLabelText("名").fill("太郎");
-	await page.getByLabelText("メールアドレス").fill("test@example.com");
-	await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByLabelText("姓").fill("テスト");
+  await page.getByLabelText("名").fill("太郎");
+  await page.getByLabelText("メールアドレス").fill("test@example.com");
+  await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect.element(page.getByRole("alert")).toBeInTheDocument();
-	await expect
-		.element(page.getByText("このメールアドレスは既に登録されています"))
-		.toBeInTheDocument();
+  await expect.element(page.getByRole("alert")).toBeInTheDocument();
+  await expect
+    .element(page.getByText("このメールアドレスは既に登録されています"))
+    .toBeInTheDocument();
 });
 
 test("姓が25文字（最大値24文字を超える）場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page
-		.getByLabelText("姓")
-		.fill("あいうえおかきくけこさしすせそたちつてとなにぬねのは");
-	await page.getByLabelText("名").fill("太郎");
-	await page.getByLabelText("メールアドレス").fill("test@example.com");
-	await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page
+    .getByLabelText("姓")
+    .fill("あいうえおかきくけこさしすせそたちつてとなにぬねのは");
+  await page.getByLabelText("名").fill("太郎");
+  await page.getByLabelText("メールアドレス").fill("test@example.com");
+  await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("姓は24文字以内で入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("姓は24文字以内で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("名が25文字（最大値24文字を超える）場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByLabelText("姓").fill("テスト");
-	await page
-		.getByLabelText("名")
-		.fill("あいうえおかきくけこさしすせそたちつてとなにぬねのは");
-	await page.getByLabelText("メールアドレス").fill("test@example.com");
-	await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByLabelText("姓").fill("テスト");
+  await page
+    .getByLabelText("名")
+    .fill("あいうえおかきくけこさしすせそたちつてとなにぬねのは");
+  await page.getByLabelText("メールアドレス").fill("test@example.com");
+  await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("名は24文字以内で入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("名は24文字以内で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("メールアドレスが255文字（最大値254文字を超える）場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	const longEmail = `${"a".repeat(64)}@${"example-".repeat(22)}example123.com`;
-	await page.getByLabelText("姓").fill("テスト");
-	await page.getByLabelText("名").fill("太郎");
-	await page.getByLabelText("メールアドレス").fill(longEmail);
-	await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
-	await page.getByRole("button", { name: "登録する" }).click();
+  const longEmail = `${"a".repeat(64)}@${"example-".repeat(22)}example123.com`;
+  await page.getByLabelText("姓").fill("テスト");
+  await page.getByLabelText("名").fill("太郎");
+  await page.getByLabelText("メールアドレス").fill(longEmail);
+  await page.getByRole("textbox", { name: "パスワード" }).fill("password123");
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("メールアドレスは254文字以内で入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("メールアドレスは254文字以内で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("パスワードが129文字（最大値128文字を超える）場合、エラーが表示される", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByLabelText("姓").fill("テスト");
-	await page.getByLabelText("名").fill("太郎");
-	await page.getByLabelText("メールアドレス").fill("test@example.com");
-	await page.getByRole("textbox", { name: "パスワード" }).fill("a".repeat(129));
-	await page.getByRole("button", { name: "登録する" }).click();
+  await page.getByLabelText("姓").fill("テスト");
+  await page.getByLabelText("名").fill("太郎");
+  await page.getByLabelText("メールアドレス").fill("test@example.com");
+  await page.getByRole("textbox", { name: "パスワード" }).fill("a".repeat(129));
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("パスワードは128文字以内で入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("パスワードは128文字以内で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("ロールはデフォルトで一般が選択されている", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	const userRadio = page.getByRole("radio", { name: "一般" });
-	await expect.element(userRadio).toBeChecked();
+  const userRadio = page.getByRole("radio", { name: "一般" });
+  await expect.element(userRadio).toBeChecked();
 });
 
 test("ロールを管理者に変更できる", async () => {
-	render(<EditStaffForm />);
+  render(<EditStaffForm />);
 
-	await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
+  await expect.element(page.getByLabelText("姓")).not.toBeDisabled();
 
-	await page.getByRole("radio", { name: "管理者" }).click();
+  await page.getByRole("radio", { name: "管理者" }).click();
 
-	const adminRadio = page.getByRole("radio", { name: "管理者" });
-	await expect.element(adminRadio).toBeChecked();
+  const adminRadio = page.getByRole("radio", { name: "管理者" });
+  await expect.element(adminRadio).toBeChecked();
 });

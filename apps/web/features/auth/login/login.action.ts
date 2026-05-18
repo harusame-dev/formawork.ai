@@ -6,10 +6,10 @@ import { loginSchema } from "@/features/auth/login/schema";
 import { createServerAction } from "@/libs/create-server-action";
 
 export const loginAction = createServerAction(login, {
-	isPublic: true,
-	name: "loginAction",
-	onSuccess: () => {
-		redirect("/", RedirectType.replace);
-	},
-	schema: loginSchema,
+  isPublic: true,
+  name: "loginAction",
+  onSuccess: () => {
+    redirect("/", RedirectType.replace);
+  },
+  schema: loginSchema,
 });
