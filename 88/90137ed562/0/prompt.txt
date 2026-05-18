@@ -1,0 +1,202 @@
+# パッケージ管理のガイドライン
+
+## 概要
+
+パッケージ管理におけるセキュリティ・品質・メンテナンス性を統一するためのガイドライン。
+
+## 1. インストール可能なパッケージの公開日数
+
+### 方針
+
+パッケージ公開から 14 日以上経過していないパッケージのインストールを禁止する。
+
+### 理由
+
+- 悪意のあるパッケージは通常数時間以内に検知・削除されるため、インストールを遅らせるだけで、コンパイル時に汚染版を踏むリスクを大幅に下げられる
+- 14 日という数字は Renovate で automerge をする場合に推奨されている値で、レジストリが悪意のある依存関係を削除する時間を十分に確保できる
+- メジャーアップデート以外は基本的に automerge 前提のため、automerge 推奨値である 14 日に揃える
+
+### 実装方法
+
+#### pnpm
+
+`pnpm-workspace.yaml` で `minimumReleaseAge` を設定する（pnpm 11 以降、`pnpm-workspace.yaml` が正式な設定箇所）。
+
+```yaml
+# pnpm-workspace.yaml
+minimumReleaseAge: 20160
+```
+
+`minimumReleaseAge` の単位は分のため、14 日 = `20160` 分を指定する。
+
+#### Renovate
+
+`renovate.json` に `minimumReleaseAge` を設定する。
+
+```json
+{
+  "extends": ["config:recommended"],
+  "minimumReleaseAge": "14 days"
+}
+```
+
+#### Go
+
+Go には `minimumReleaseAge` に相当する機能が存在しないため、CI で `gomod-age` によるチェックワークフローを必ず作成する。
+
+ただし、ローカルでの `go get` などによるインストールを CI では防げない。根本的な対策が打てないため、新しいパッケージを導入する際はリリースから 14 日以上経過しているバージョンを指定すること。
+
+TODO: ローカルインストールに対するシステム的な防止策については別途検討
+
+## 2. JavaScript パッケージのバージョン指定
+
+### 方針
+
+`package.json` ではバージョン範囲指定（`^1.2.3` や `~1.2.3`）ではなく、exact version（`1.2.3`）でインストールすること。
+
+### 理由
+
+Renovate が推奨しており、以下のメリットがあるため。
+
+- **何が動いているかが明確になる**: `package.json` に固定バージョンが書かれていれば、誰がいつインストールしても同じバージョンが入る。範囲指定の場合は、インストール時期やロックファイルの状態によって実際に入るバージョンが変わるため、何が動いているかが分かりづらくなる
+- **障害発生時の切り分けが容易になる**: 不具合のあるバージョンがリリースされた場合、範囲指定だと知らないうちに本番に取り込まれて原因特定が難しくなる。exact version であれば、バージョンを上げた PR が CI で失敗し、その PR をマージしない判断ができるため、`main` ブランチや本番環境を壊さずに済む
+- **更新が PR として明示される**: バージョンアップは必ず Renovate の PR として現れるため、変更内容・タイミング・レビュー履歴が残り、変更管理が一貫する
+
+### 実装方法
+
+#### pnpm
+
+`pnpm-workspace.yaml` で `savePrefix` を空文字に設定する（pnpm 11 以降、`pnpm-workspace.yaml` が正式な設定箇所）。
+
+```yaml
+# pnpm-workspace.yaml
+savePrefix: ""
+```
+
+`savePrefix` のデフォルトは `^`。空文字を指定することで `pnpm add` 実行時に `^` や `~` が付かない exact version で `package.json` に記録される。
+
+#### Renovate
+
+`renovate.json` で `config:pinAllExceptPeerDependencies` を有効化する。
+
+```json
+{
+  "extends": ["config:recommended", "config:pinAllExceptPeerDependencies"]
+}
+```
+
+`peerDependencies` 以外のすべての依存関係を exact version にピン留めする。既存の範囲指定もピン留めする PR が自動で作成される。
+
+## 3. パッケージの自動更新
+
+### 方針
+
+パッケージの自動更新を必ず導入すること。
+
+### 理由
+
+- **セキュリティ脆弱性への追従コストを下げる**: 脆弱性が公表されてから手動で更新版を確認・適用するのは追従漏れが発生しやすい。自動化により脆弱性修正版が PR 化されるため、対応のリードタイムを短くできる
+- **手動更新の運用負荷を下げる**: 依存関係が増えるほど手動更新は現実的でなくなる。検知・PR 作成までが自動化されるため、レビューとマージに集中できる
+- **依存関係の鮮度を保てる**: 更新が後回しになると一度に大量のメジャーアップデートを処理することになり、破壊的変更の影響範囲が広がる。継続的に小さく更新することで、変更の影響を局所化できる
+
+### 実装方法
+
+[Renovate](https://docs.renovatebot.com/) を導入する。
+ 上記の方針に従うように修正をしたい。影響範囲の調査と修正内容をまとめて。 renovate の設定は以下を参考にして{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+
+  extends: [
+    // 一般的な推奨設定 (Dependency Dashboard, semantic commit, モノレポグルーピング 等)
+    "config:recommended",
+    // peerDependencies 以外を exact version にピン留め
+    ":pinAllExceptPeerDependencies",
+    // GitHub Actions のバージョン指定をコミット SHA にピン留め (タグ書き換え攻撃への防衛)
+    "helpers:pinGitHubActionDigests",
+  ],
+
+  // 公開から 14 日経過していないバージョンは PR を作らない
+  // (悪意あるパッケージがレジストリから取り下げられるまでの猶予)
+  minimumReleaseAge: "14 days",
+
+  // 金曜のみ Renovate を動かす (既存 Dependabot の運用に合わせる)
+  schedule: ["* * * * 5"],
+  timezone: "Asia/Tokyo",
+
+  labels: ["dependencies"],
+  reviewers: ["harusame0616"],
+
+  // direct deps を pin しているため間接依存 (transitive deps) は lockfile に固定されたまま古くなる。
+  // この設定で lockfile だけリフレッシュする PR を金曜に作って、間接依存の鮮度を保つ。
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ["* * * * 5"],
+  },
+
+  packageRules: [
+    // ----- ラベル付与 -----
+    { matchManagers: ["gomod"], addLabels: ["go"] },
+    { matchManagers: ["npm"], addLabels: ["javascript"] },
+
+    // ----- automerge 戦略 -----
+    // devDependencies (本番に影響しない開発用依存) は major も含めて全自動マージ
+    {
+      description: "devDependencies は全自動マージ",
+      matchDepTypes: ["devDependencies"],
+      automerge: true,
+      automergeType: "pr",
+    },
+    // dependencies (npm の prod) / require (gomod の prod) の patch / minor は自動マージ
+    // (SemVer 上は後方互換なのでリスクが低い)
+    {
+      description: "dependencies / require の patch / minor は自動マージ",
+      matchDepTypes: ["dependencies", "require"],
+      matchUpdateTypes: ["patch", "minor"],
+      automerge: true,
+      automergeType: "pr",
+    },
+    // dependencies / require の major は破壊的変更を含むため手動マージ
+    {
+      description: "dependencies / require の major は手動マージ",
+      matchDepTypes: ["dependencies", "require"],
+      matchUpdateTypes: ["major"],
+      automerge: false,
+      addLabels: ["major-update"],
+    },
+  ],
+
+  // GitHub の Dependabot vulnerability alerts と連動した緊急 PR の挙動
+  vulnerabilityAlerts: {
+    enabled: true,
+    labels: ["security"],
+    // 脆弱性修正は 14 日待たず即時 PR を作る (待機コストの方が高い)
+    minimumReleaseAge: null,
+  },
+}
+
+---
+
+OK
+
+---
+
+packagemanager のバージョン指定ってモノレポのサブパッケージにも指定したほうがいいの？
+
+---
+
+packagemanager って package.json の公式なフィールドなの？それとも pnpm 独自？
+
+---
+
+サブパッケージの削除は対応して
+
+---
+
+ちなみに この packageManager の値を読み取ってバージョンを切り替える機能は pnpm オリジナル？
+
+---
+
+でも今はバージョン切り替えって pnpm のネイティブな機能だよね
+
+---
+
+@renovate.json5  go がないのに go の設定が含まれている

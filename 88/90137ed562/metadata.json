@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "8890137ed562",
+  "strategy": "manual-commit",
+  "branch": "package-management-policy",
+  "checkpoints_count": 7,
+  "files_touched": [
+    ".github/dependabot.yml",
+    ".github/workflows/dependabot-auto-merge.yml",
+    ".npmrc",
+    "package.json",
+    "packages/logger/package.json",
+    "packages/supabase/package.json",
+    "pnpm-workspace.yaml",
+    "renovate.json5"
+  ],
+  "sessions": [
+    {
+      "metadata": "/88/90137ed562/0/metadata.json",
+      "transcript": "/88/90137ed562/0/full.jsonl",
+      "content_hash": "/88/90137ed562/0/content_hash.txt",
+      "prompt": "/88/90137ed562/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 93,
+    "cache_creation_tokens": 69202,
+    "cache_read_tokens": 2179562,
+    "output_tokens": 16692,
+    "api_call_count": 45
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "8890137ed562",
+  "session_id": "d3725d6d-20af-4abe-ac9d-f22a0b96321a",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-18T00:00:23.231393Z",
+  "branch": "package-management-policy",
+  "checkpoints_count": 7,
+  "files_touched": [
+    ".github/dependabot.yml",
+    ".github/workflows/dependabot-auto-merge.yml",
+    ".npmrc",
+    "package.json",
+    "packages/logger/package.json",
+    "packages/supabase/package.json",
+    "pnpm-workspace.yaml",
+    "renovate.json5"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "68e2128ac8b3",
+  "token_usage": {
+    "input_tokens": 93,
+    "cache_creation_tokens": 69202,
+    "cache_read_tokens": 2179562,
+    "output_tokens": 16692,
+    "api_call_count": 45
+  },
+  "session_metrics": {
+    "turn_count": 8
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-18T00:00:23.147895Z",
+    "agent_lines": 0,
+    "human_added": 0,
+    "human_modified": 6,
+    "human_removed": 63,
+    "total_committed": 4,
+    "agent_percentage": 0
+  }
+}
