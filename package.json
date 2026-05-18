@@ -4,7 +4,7 @@
 		"cspell": "catalog:",
 		"knip": "catalog:"
 	},
-	"packageManager": "pnpm@10.12.4",
+	"packageManager": "pnpm@11.1.2",
 	"scripts": {
 		"build": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web build",
 		"db:generate": "pnpm --filter @workspace/db db:generate",
