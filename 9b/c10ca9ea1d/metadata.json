@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "9bc10ca9ea1d",
+  "strategy": "manual-commit",
+  "branch": "package-management-policy",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/e2e-test.yml",
+    ".github/workflows/server-test.yml",
+    ".github/workflows/static-analytics.yml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/9b/c10ca9ea1d/0/metadata.json",
+      "transcript": "/9b/c10ca9ea1d/0/full.jsonl",
+      "content_hash": "/9b/c10ca9ea1d/0/content_hash.txt",
+      "prompt": "/9b/c10ca9ea1d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 90,
+    "cache_creation_tokens": 117406,
+    "cache_read_tokens": 3444526,
+    "output_tokens": 19525,
+    "api_call_count": 65
+  }
+}

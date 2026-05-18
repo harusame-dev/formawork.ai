@@ -1,0 +1,9 @@
+https://github.com/harusame-dev/formawork.ai/pull/263 ci でエラー
+
+---
+
+とりあえず issue tracker 調査して
+
+---
+
+それで。コメントにバージョンしている理由と issue へのリンク貼っておいてね
