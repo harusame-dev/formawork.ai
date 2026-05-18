@@ -19,7 +19,6 @@
 		"./nextjs/server": "./src/nextjs/server.ts"
 	},
 	"name": "@repo/supabase",
-	"packageManager": "pnpm@10.12.4",
 	"private": true,
 	"scripts": {
 		"supabase:reset": "supabase db reset && pnpm supabase:seed",

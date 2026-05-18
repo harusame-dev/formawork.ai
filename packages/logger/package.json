@@ -15,7 +15,6 @@
 		"./types": "./src/types.ts"
 	},
 	"name": "@repo/logger",
-	"packageManager": "pnpm@10.12.4",
 	"peerDependencies": {
 		"next": "catalog:",
 		"pino": "catalog:"
