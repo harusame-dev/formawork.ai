@@ -200,3 +200,7 @@ packagemanager って package.json の公式なフィールドなの？それと
 ---
 
 @renovate.json5  go がないのに go の設定が含まれている
+
+---
+
+please commit
