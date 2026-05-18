@@ -1,0 +1,50 @@
+lint のエラー修正して
+
+---
+
+なお tailwindcss プラグインの Cannot resolve default tailwindcss config path 警告は Tailwind v4 (CSS ベース設定) との互換性問題で、ESLint 終了コードには影響しないため未対応です。必要なら別途プラグイン設定で抑制できます。 
+詳細に解説して
+
+---
+
+eslint-plugin-better-tailwindcss はどのような設定？
+
+---
+
+eslint-plugin-better-tailwind を導入して クラスのソートもこっちでやる
+
+---
+
+フォーマットと lint しゅうせい差分で変更がわかりづらいので、フォーマットのみ biome で行い直して
+
+---
+
+クラスのソートはやっぱり prettier にして
+
+---
+
+prettier で .env, gitignore , dockerfile などもformat できるように prettier-plugin-sh を入れて
+
+---
+
+twクラスのソートはeslint にして（何回もごめん
+
+---
+
+prettier-plugin-toml    、prettier-plugin-sql も入れて
+
+---
+
+普通ものレポ場合、prettier-base のようなものを作って必要なパッケージでエクステンドするような感じ？
+
+---
+
+ちなみにルートプロジェクトの依存として追加＆設定して一括でフォーマットするっていう方法もあると思うけどどっちがいい？
+
+---
+
+ちなみに今回は関係ないけど別言語も含めたものレポのようなケースは？
+
+---
+
+OK一旦ルートに集約
