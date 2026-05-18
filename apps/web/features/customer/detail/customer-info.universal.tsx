@@ -1,15 +1,15 @@
-type CustomerInfoPresenterProps = {
-	firstName: string;
-	lastName: string;
-};
+interface CustomerInfoPresenterProps {
+  firstName: string;
+  lastName: string;
+}
 
 export function CustomerInfoPresenter({
-	firstName,
-	lastName,
-}: CustomerInfoPresenterProps) {
-	return (
-		<h1 className="text-2xl font-bold min-h-8">
-			{lastName} {firstName}
-		</h1>
-	);
+  firstName,
+  lastName,
+}: CustomerInfoPresenterProps): JSX.Element {
+  return (
+    <h1 className="min-h-8 text-2xl font-bold">
+      {lastName} {firstName}
+    </h1>
+  );
 }

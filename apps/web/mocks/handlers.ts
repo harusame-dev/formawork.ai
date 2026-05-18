@@ -7,8 +7,8 @@
 import { HttpResponse, http } from "msw";
 
 export const handlers = [
-	// デフォルトハンドラー: アドバイス未取得状態
-	http.get("/api/customer-notes/:noteId/advice", () => {
-		return HttpResponse.json(null);
-	}),
+  // デフォルトハンドラー: アドバイス未取得状態
+  http.get("/api/customer-notes/:noteId/advice", () => {
+    return HttpResponse.json(null);
+  }),
 ];

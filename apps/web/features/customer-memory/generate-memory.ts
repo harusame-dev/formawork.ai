@@ -1,182 +1,182 @@
 import { getLogger } from "@repo/logger/nextjs/server";
 import {
-	MEMORY_CATEGORY_LABEL,
-	MemoryCategory,
+  MEMORY_CATEGORY_LABEL,
+  MemoryCategory,
 } from "@workspace/db/schema/customer-memory";
 import { generateObject, jsonSchema } from "ai";
 import { GENDER_LABELS, type Gender } from "@/features/customer/schema";
 import { constructProtectedPrompt } from "@/libs/ai/prompt";
 
-type CustomerInfo = {
-	birthDate: string | null;
-	firstName: string;
-	gender: Gender;
-	lastName: string;
-	remarks: string;
-};
+interface CustomerInfo {
+  birthDate: string | null;
+  firstName: string;
+  gender: Gender;
+  lastName: string;
+  remarks: string;
+}
 
-type NoteInfo = {
-	id: string;
-	content: string;
-	serviceDate: string;
-};
+interface NoteInfo {
+  id: string;
+  content: string;
+  serviceDate: string;
+}
 
-type ExistingMemory = {
-	id: string;
-	category: MemoryCategory;
-	content: string;
-	importance: number;
-	isProtected: boolean;
-};
+interface ExistingMemory {
+  id: string;
+  category: MemoryCategory;
+  content: string;
+  importance: number;
+  isProtected: boolean;
+}
 
-export type GenerateMemoryOperationsParams = {
-	customer: CustomerInfo;
-	existingMemories: ExistingMemory[];
-	targetNotes: NoteInfo[];
-};
+export interface GenerateMemoryOperationsParams {
+  customer: CustomerInfo;
+  existingMemories: ExistingMemory[];
+  targetNotes: NoteInfo[];
+}
 
-type CreateOperation = {
-	category: number;
-	content: string;
-	importance: number;
-	operation: "create";
-	reason: string;
-};
+interface CreateOperation {
+  category: number;
+  content: string;
+  importance: number;
+  operation: "create";
+  reason: string;
+}
 
-type UpdateOperation = {
-	memoryId: string;
-	newContent?: string;
-	newImportance?: number;
-	operation: "update";
-	reason: string;
-};
+interface UpdateOperation {
+  memoryId: string;
+  newContent?: string;
+  newImportance?: number;
+  operation: "update";
+  reason: string;
+}
 
-type DeleteOperation = {
-	memoryId: string;
-	operation: "delete";
-	reason: string;
-};
+interface DeleteOperation {
+  memoryId: string;
+  operation: "delete";
+  reason: string;
+}
 
 export type MemoryOperation =
-	| CreateOperation
-	| DeleteOperation
-	| UpdateOperation;
-type MemoryResult = {
-	operations: MemoryOperation[];
-};
+  | CreateOperation
+  | DeleteOperation
+  | UpdateOperation;
+interface MemoryResult {
+  operations: MemoryOperation[];
+}
 
 // Gemini API は enum に type: "string" が必須
 const memoryResultJsonSchema = jsonSchema<MemoryResult>({
-	properties: {
-		operations: {
-			items: {
-				anyOf: [
-					{
-						properties: {
-							category: {
-								description: "カテゴリ番号（1-6）",
-								maximum: 6,
-								minimum: 1,
-								type: "number",
-							},
-							content: {
-								description: "メモリー内容",
-								maxLength: 500,
-								minLength: 1,
-								type: "string",
-							},
-							importance: {
-								description: "重要度（1-10）",
-								maximum: 10,
-								minimum: 1,
-								type: "number",
-							},
-							operation: {
-								description: "操作タイプ",
-								enum: ["create"],
-								type: "string",
-							},
-							reason: {
-								description: "この操作を行う理由",
-								type: "string",
-							},
-						},
-						required: [
-							"operation",
-							"category",
-							"content",
-							"importance",
-							"reason",
-						],
-						type: "object",
-					},
-					{
-						properties: {
-							memoryId: {
-								description: "更新対象のメモリーID",
-								format: "uuid",
-								type: "string",
-							},
-							newContent: {
-								description: "新しいメモリー内容",
-								maxLength: 500,
-								minLength: 1,
-								type: "string",
-							},
-							newImportance: {
-								description: "新しい重要度",
-								maximum: 10,
-								minimum: 1,
-								type: "number",
-							},
-							operation: {
-								description: "操作タイプ",
-								enum: ["update"],
-								type: "string",
-							},
-							reason: {
-								description: "更新理由",
-								type: "string",
-							},
-						},
-						required: ["operation", "memoryId", "reason"],
-						type: "object",
-					},
-					{
-						properties: {
-							memoryId: {
-								description: "削除対象のメモリーID",
-								format: "uuid",
-								type: "string",
-							},
-							operation: {
-								description: "操作タイプ",
-								enum: ["delete"],
-								type: "string",
-							},
-							reason: {
-								description: "削除理由",
-								type: "string",
-							},
-						},
-						required: ["operation", "memoryId", "reason"],
-						type: "object",
-					},
-				],
-			},
-			type: "array",
-		},
-	},
-	required: ["operations"],
-	type: "object",
+  properties: {
+    operations: {
+      items: {
+        anyOf: [
+          {
+            properties: {
+              category: {
+                description: "カテゴリ番号（1-6）",
+                maximum: 6,
+                minimum: 1,
+                type: "number",
+              },
+              content: {
+                description: "メモリー内容",
+                maxLength: 500,
+                minLength: 1,
+                type: "string",
+              },
+              importance: {
+                description: "重要度（1-10）",
+                maximum: 10,
+                minimum: 1,
+                type: "number",
+              },
+              operation: {
+                description: "操作タイプ",
+                enum: ["create"],
+                type: "string",
+              },
+              reason: {
+                description: "この操作を行う理由",
+                type: "string",
+              },
+            },
+            required: [
+              "operation",
+              "category",
+              "content",
+              "importance",
+              "reason",
+            ],
+            type: "object",
+          },
+          {
+            properties: {
+              memoryId: {
+                description: "更新対象のメモリーID",
+                format: "uuid",
+                type: "string",
+              },
+              newContent: {
+                description: "新しいメモリー内容",
+                maxLength: 500,
+                minLength: 1,
+                type: "string",
+              },
+              newImportance: {
+                description: "新しい重要度",
+                maximum: 10,
+                minimum: 1,
+                type: "number",
+              },
+              operation: {
+                description: "操作タイプ",
+                enum: ["update"],
+                type: "string",
+              },
+              reason: {
+                description: "更新理由",
+                type: "string",
+              },
+            },
+            required: ["operation", "memoryId", "reason"],
+            type: "object",
+          },
+          {
+            properties: {
+              memoryId: {
+                description: "削除対象のメモリーID",
+                format: "uuid",
+                type: "string",
+              },
+              operation: {
+                description: "操作タイプ",
+                enum: ["delete"],
+                type: "string",
+              },
+              reason: {
+                description: "削除理由",
+                type: "string",
+              },
+            },
+            required: ["operation", "memoryId", "reason"],
+            type: "object",
+          },
+        ],
+      },
+      type: "array",
+    },
+  },
+  required: ["operations"],
+  type: "object",
 });
 
 function buildSystemInstructions(): string {
-	const categoryDescriptions = Object.entries(MemoryCategory)
-		.map(([_key, value]) => `${value}: ${MEMORY_CATEGORY_LABEL[value]}`)
-		.join("\n");
+  const categoryDescriptions = Object.entries(MemoryCategory)
+    .map(([_key, value]) => `${value}: ${MEMORY_CATEGORY_LABEL[value]}`)
+    .join("\n");
 
-	return `あなたは顧客情報管理AIとして、接客ノートから顧客の重要な情報を抽出しメモリーとして管理するタスクを実行します。
+  return `あなたは顧客情報管理AIとして、接客ノートから顧客の重要な情報を抽出しメモリーとして管理するタスクを実行します。
 
 ## カテゴリ定義
 ${categoryDescriptions}
@@ -268,29 +268,29 @@ ${categoryDescriptions}
 }
 
 function generatePrompt({
-	customer,
-	existingMemories,
-	targetNotes,
+  customer,
+  existingMemories,
+  targetNotes,
 }: GenerateMemoryOperationsParams): string {
-	const targetNotesSection = targetNotes
-		.map(
-			(note, index) =>
-				`--- ${index + 1}件目 (${note.serviceDate}) ---
+  const targetNotesSection = targetNotes
+    .map(
+      (note, index) =>
+        `--- ${index + 1}件目 (${note.serviceDate}) ---
 ${note.content}`,
-		)
-		.join("\n\n");
+    )
+    .join("\n\n");
 
-	const existingMemoriesSection =
-		existingMemories.length > 0
-			? existingMemories
-					.map(
-						(memory) =>
-							`- [ID: ${memory.id}] [カテゴリ: ${MEMORY_CATEGORY_LABEL[memory.category]}] [重要度: ${memory.importance}]${memory.isProtected ? " [保護済み]" : ""} ${memory.content}`,
-					)
-					.join("\n")
-			: "なし";
+  const existingMemoriesSection =
+    existingMemories.length > 0
+      ? existingMemories
+          .map(
+            (memory) =>
+              `- [ID: ${memory.id}] [カテゴリ: ${MEMORY_CATEGORY_LABEL[memory.category]}] [重要度: ${memory.importance}]${memory.isProtected ? " [保護済み]" : ""} ${memory.content}`,
+          )
+          .join("\n")
+      : "なし";
 
-	const userInput = `[顧客情報]
+  const userInput = `[顧客情報]
 名前: ${customer.lastName} ${customer.firstName} 様
 生年月日: ${customer.birthDate || "未登録"}
 性別: ${GENDER_LABELS[customer.gender]}
@@ -302,30 +302,30 @@ ${targetNotesSection}
 [既存メモリー（現在 ${existingMemories.length}件 / 最大100件）]
 ${existingMemoriesSection}`;
 
-	return constructProtectedPrompt({
-		systemInstructions: buildSystemInstructions(),
-		userInput,
-	});
+  return constructProtectedPrompt({
+    systemInstructions: buildSystemInstructions(),
+    userInput,
+  });
 }
 
 export async function generateMemoryOperations(
-	params: GenerateMemoryOperationsParams,
+  parameters: GenerateMemoryOperationsParams,
 ): Promise<MemoryResult> {
-	const logger = await getLogger("generateMemoryOperations");
+  const logger = await getLogger("generateMemoryOperations");
 
-	const options = {
-		experimental_telemetry: { isEnabled: true },
-		maxOutputTokens: 8192,
-		model: "google/gemini-2.5-flash",
-		prompt: generatePrompt(params),
-		schema: memoryResultJsonSchema,
-		temperature: 0.3,
-		topP: 0.9,
-	} as const satisfies Parameters<typeof generateObject>[0];
+  const options = {
+    experimental_telemetry: { isEnabled: true },
+    maxOutputTokens: 8192,
+    model: "google/gemini-2.5-flash",
+    prompt: generatePrompt(parameters),
+    schema: memoryResultJsonSchema,
+    temperature: 0.3,
+    topP: 0.9,
+  } as const satisfies Parameters<typeof generateObject>[0];
 
-	logger.info("メモリー生成パラメーター：", { options });
+  logger.info("メモリー生成パラメーター：", { options });
 
-	const { object } = await generateObject(options);
+  const { object } = await generateObject(options);
 
-	return object;
+  return object;
 }

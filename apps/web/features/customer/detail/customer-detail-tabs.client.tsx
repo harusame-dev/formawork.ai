@@ -7,55 +7,55 @@ import { usePathname } from "next/navigation";
 import { use } from "react";
 import { OnboardingId } from "@/features/onboarding/constants/steps.universal";
 
-type CustomerDetailTabsProps = {
-	customerIdPromise: Promise<string>;
-};
+interface CustomerDetailTabsProps {
+  customerIdPromise: Promise<string>;
+}
 
 export function CustomerDetailTabs({
-	customerIdPromise,
-}: CustomerDetailTabsProps) {
-	const pathname = usePathname();
-	const customerId = use(customerIdPromise);
+  customerIdPromise,
+}: CustomerDetailTabsProps): JSX.Element {
+  const pathname = usePathname();
+  const customerId = use(customerIdPromise);
 
-	const tabs = [
-		{
-			href: `/customers/${customerId}`,
-			id: OnboardingId.BasicInfoTab,
-			label: "基本情報",
-			value: "basic",
-		},
-		{
-			href: `/customers/${customerId}/notes`,
-			id: OnboardingId.NotesTab,
-			label: "ノート",
-			value: "notes",
-		},
-		{
-			href: `/customers/${customerId}/memories`,
-			id: OnboardingId.MemoriesTab,
-			label: "メモリ",
-			value: "memories",
-		},
-	] as const;
+  const tabs = [
+    {
+      href: `/customers/${customerId}`,
+      id: OnboardingId.BasicInfoTab,
+      label: "基本情報",
+      value: "basic",
+    },
+    {
+      href: `/customers/${customerId}/notes`,
+      id: OnboardingId.NotesTab,
+      label: "ノート",
+      value: "notes",
+    },
+    {
+      href: `/customers/${customerId}/memories`,
+      id: OnboardingId.MemoriesTab,
+      label: "メモリ",
+      value: "memories",
+    },
+  ] as const;
 
-	const activeTab =
-		tabs.find((tab) => pathname === tab.href)?.value ?? tabs[0].value;
+  const activeTab =
+    tabs.find((tab) => pathname === tab.href)?.value ?? tabs[0].value;
 
-	return (
-		<Tabs className="w-full" value={activeTab}>
-			<TabsList className="grid grid-cols-3 bg-muted-foreground/10 w-full">
-				{tabs.map((tab) => (
-					<TabsTrigger asChild key={tab.value} value={tab.value}>
-						<Link
-							aria-current={activeTab === tab.value ? "page" : undefined}
-							href={tab.href as Route}
-							id={tab.id}
-						>
-							{tab.label}
-						</Link>
-					</TabsTrigger>
-				))}
-			</TabsList>
-		</Tabs>
-	);
+  return (
+    <Tabs className="w-full" value={activeTab}>
+      <TabsList className="grid w-full grid-cols-3 bg-muted-foreground/10">
+        {tabs.map((tab) => (
+          <TabsTrigger asChild key={tab.value} value={tab.value}>
+            <Link
+              aria-current={activeTab === tab.value ? "page" : undefined}
+              href={tab.href as Route}
+              id={tab.id}
+            >
+              {tab.label}
+            </Link>
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
+  );
 }

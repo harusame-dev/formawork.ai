@@ -4,26 +4,26 @@ import { StaffInfoContainer } from "@/features/staff/detail/staff-info.server";
 import { StaffInfoSkeleton } from "@/features/staff/detail/staff-info-skeleton.universal";
 
 type StaffDetailLayoutProps = LayoutProps<"/staffs/[staffId]"> & {
-	action: ReactNode;
+  action: ReactNode;
 };
 
 export default async function StaffDetailLayout({
-	params,
-	children,
-	action,
-}: StaffDetailLayoutProps) {
-	const staffIdPromise = params.then(({ staffId }) => staffId);
+  params,
+  children,
+  action,
+}: StaffDetailLayoutProps): Promise<JSX.Element> {
+  const staffIdPromise = params.then(({ staffId }) => staffId);
 
-	return (
-		<div className="container mx-auto p-2 space-y-4">
-			<div className="flex items-center justify-between">
-				<Suspense fallback={<StaffInfoSkeleton />}>
-					<StaffInfoContainer staffIdPromise={staffIdPromise} />
-				</Suspense>
-				{action}
-			</div>
+  return (
+    <div className="container mx-auto space-y-4 p-2">
+      <div className="flex items-center justify-between">
+        <Suspense fallback={<StaffInfoSkeleton />}>
+          <StaffInfoContainer staffIdPromise={staffIdPromise} />
+        </Suspense>
+        {action}
+      </div>
 
-			{children}
-		</div>
-	);
+      {children}
+    </div>
+  );
 }

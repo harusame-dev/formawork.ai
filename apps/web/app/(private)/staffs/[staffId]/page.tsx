@@ -3,14 +3,16 @@ import { Suspense } from "react";
 import { StaffBasicInfoContainer } from "@/features/staff/detail/staff-basic-info.server";
 import { StaffBasicInfoSkeleton } from "@/features/staff/detail/staff-basic-info-skeleton.universal";
 
-export default function Page({ params }: PageProps<"/staffs/[staffId]">) {
-	const staffIdPromise = params.then(({ staffId }) => staffId);
+export default function Page({
+  params,
+}: PageProps<"/staffs/[staffId]">): JSX.Element {
+  const staffIdPromise = params.then(({ staffId }) => staffId);
 
-	return (
-		<Card className="p-4 w-full">
-			<Suspense fallback={<StaffBasicInfoSkeleton />}>
-				<StaffBasicInfoContainer staffIdPromise={staffIdPromise} />
-			</Suspense>
-		</Card>
-	);
+  return (
+    <Card className="w-full p-4">
+      <Suspense fallback={<StaffBasicInfoSkeleton />}>
+        <StaffBasicInfoContainer staffIdPromise={staffIdPromise} />
+      </Suspense>
+    </Card>
+  );
 }

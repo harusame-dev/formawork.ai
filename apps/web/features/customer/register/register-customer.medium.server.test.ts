@@ -5,82 +5,82 @@ import { expect, test } from "vitest";
 import { registerCustomer } from "./register-customer";
 
 const baseInput = {
-	address: "",
-	birthDate: "",
-	email: "",
-	firstName: "太郎",
-	firstNameKana: "",
-	gender: 1,
-	lastName: "テスト",
-	lastNameKana: "",
-	phone: "",
-	remarks: "",
+  address: "",
+  birthDate: "",
+  email: "",
+  firstName: "太郎",
+  firstNameKana: "",
+  gender: 1,
+  lastName: "テスト",
+  lastNameKana: "",
+  phone: "",
+  remarks: "",
 };
 
 test("lastName が24文字（境界値）で登録できる", async () => {
-	const input = {
-		...baseInput,
-		email: `test-last-name-24-${Date.now()}@example.com`,
-		lastName: "あ".repeat(24),
-	};
+  const input = {
+    ...baseInput,
+    email: `test-last-name-24-${Date.now()}@example.com`,
+    lastName: "あ".repeat(24),
+  };
 
-	const result = await registerCustomer(input);
+  const result = await registerCustomer(input);
 
-	expect(result.success).toBe(true);
+  expect(result.success).toBe(true);
 
-	const customers = await db
-		.select()
-		.from(customersTable)
-		.where(eq(customersTable.email, input.email))
-		.limit(1);
+  const customers = await db
+    .select()
+    .from(customersTable)
+    .where(eq(customersTable.email, input.email))
+    .limit(1);
 
-	expect(customers).toHaveLength(1);
-	expect(customers[0]?.lastName).toBe(input.lastName);
+  expect(customers).toHaveLength(1);
+  expect(customers[0]?.lastName).toBe(input.lastName);
 
-	await db.delete(customersTable).where(eq(customersTable.email, input.email));
+  await db.delete(customersTable).where(eq(customersTable.email, input.email));
 });
 
 test("email が254文字（境界値）で登録できる", async () => {
-	const input = {
-		...baseInput,
-		email: `${"a".repeat(242)}@example.com`,
-	};
+  const input = {
+    ...baseInput,
+    email: `${"a".repeat(242)}@example.com`,
+  };
 
-	const result = await registerCustomer(input);
+  const result = await registerCustomer(input);
 
-	expect(result.success).toBe(true);
+  expect(result.success).toBe(true);
 
-	const customers = await db
-		.select()
-		.from(customersTable)
-		.where(eq(customersTable.email, input.email))
-		.limit(1);
+  const customers = await db
+    .select()
+    .from(customersTable)
+    .where(eq(customersTable.email, input.email))
+    .limit(1);
 
-	expect(customers).toHaveLength(1);
-	expect(customers[0]?.email).toBe(input.email);
+  expect(customers).toHaveLength(1);
+  expect(customers[0]?.email).toBe(input.email);
 
-	await db.delete(customersTable).where(eq(customersTable.email, input.email));
+  await db.delete(customersTable).where(eq(customersTable.email, input.email));
 });
 
 test("phone が20文字（境界値）で登録できる", async () => {
-	const input = {
-		...baseInput,
-		email: `test-phone-20-${Date.now()}@example.com`,
-		phone: "0".repeat(20),
-	};
+  const input = {
+    ...baseInput,
+    email: `test-phone-20-${Date.now()}@example.com`,
+    phone: "0".repeat(20),
+  };
 
-	const result = await registerCustomer(input);
+  const result = await registerCustomer(input);
 
-	expect(result.success).toBe(true);
+  expect(result.success).toBe(true);
 
-	const customers = await db
-		.select()
-		.from(customersTable)
-		.where(eq(customersTable.email, input.email))
-		.limit(1);
+  const customers = await db
+    .select()
+    .from(customersTable)
+    .where(eq(customersTable.email, input.email))
+    .limit(1);
 
-	expect(customers).toHaveLength(1);
-	expect(customers[0]?.phone).toBe(input.phone);
+  expect(customers).toHaveLength(1);
+  expect(customers[0]?.phone).toBe(input.phone);
 
-	await db.delete(customersTable).where(eq(customersTable.email, input.email));
+  await db.delete(customersTable).where(eq(customersTable.email, input.email));
 });

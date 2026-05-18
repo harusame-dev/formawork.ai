@@ -1,3 +1,3 @@
-export default function ActionSlotDefault() {
-	return null;
+export default function ActionSlotDefault(): null {
+  return null;
 }

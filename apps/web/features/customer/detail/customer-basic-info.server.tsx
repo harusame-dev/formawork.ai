@@ -2,18 +2,18 @@ import { notFound } from "next/navigation";
 import { CustomerBasicInfoPresenter } from "./customer-basic-info.universal";
 import { getCustomerDetail } from "./get-customer-detail";
 
-type CustomerBasicInfoContainerProps = {
-	customerIdPromise: Promise<string>;
-};
+interface CustomerBasicInfoContainerProps {
+  customerIdPromise: Promise<string>;
+}
 
 export async function CustomerBasicInfoContainer({
-	customerIdPromise,
-}: CustomerBasicInfoContainerProps) {
-	const customer = await getCustomerDetail(await customerIdPromise);
+  customerIdPromise,
+}: CustomerBasicInfoContainerProps): Promise<JSX.Element> {
+  const customer = await getCustomerDetail(await customerIdPromise);
 
-	if (!customer) {
-		notFound();
-	}
+  if (!customer) {
+    notFound();
+  }
 
-	return <CustomerBasicInfoPresenter customer={customer} />;
+  return <CustomerBasicInfoPresenter customer={customer} />;
 }

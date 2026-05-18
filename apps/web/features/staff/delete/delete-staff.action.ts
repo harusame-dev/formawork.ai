@@ -11,28 +11,28 @@ import { createServerAction } from "@/libs/create-server-action";
 import { deleteStaff } from "./delete-staff";
 
 const deleteStaffSchema = v.object({
-	staffId: v.pipe(v.string(), v.uuid()),
+  staffId: v.pipe(v.string(), v.uuid()),
 });
 
 export const deleteStaffAction = createServerAction(
-	async ({ staffId }) => {
-		const currentUserStaffId = await getUserStaffId();
+  async ({ staffId }) => {
+    const currentUserStaffId = await getUserStaffId();
 
-		if (!currentUserStaffId) {
-			return fail("認証に失敗しました");
-		}
+    if (!currentUserStaffId) {
+      return fail("認証に失敗しました");
+    }
 
-		return deleteStaff({ currentUserStaffId, staffId });
-	},
-	{
-		name: "deleteStaffAction",
-		onSuccess: ({ input: { staffId } }) => {
-			updateTag(StaffTag.Detail(staffId));
-			updateTag(StaffTag.List);
+    return deleteStaff({ currentUserStaffId, staffId });
+  },
+  {
+    name: "deleteStaffAction",
+    onSuccess: ({ input: { staffId } }) => {
+      updateTag(StaffTag.Detail(staffId));
+      updateTag(StaffTag.List);
 
-			redirect("/staffs", RedirectType.replace);
-		},
-		role: [UserRole.Admin],
-		schema: deleteStaffSchema,
-	},
+      redirect("/staffs", RedirectType.replace);
+    },
+    role: [UserRole.Admin],
+    schema: deleteStaffSchema,
+  },
 );

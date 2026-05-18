@@ -1,3 +1,3 @@
-export default function CustomerEditActionPage() {
-	return null;
+export default function CustomerEditActionPage(): JSX.element {
+  return null;
 }
