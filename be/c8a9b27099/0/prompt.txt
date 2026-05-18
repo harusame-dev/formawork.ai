@@ -48,3 +48,7 @@ prettier-plugin-toml    、prettier-plugin-sql も入れて
 ---
 
 OK一旦ルートに集約
+
+---
+
+please commit
