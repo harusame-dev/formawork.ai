@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "ea500c919f41",
+  "session_id": "790429ca-a4a4-4ce9-998c-bb97dd050857",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-19T03:39:06.180216Z",
+  "branch": "package-management-policy",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/web/types/jsx.d.ts",
+    "apps/web/app/(private)/customers/[customerId]/@action/default.tsx",
+    "apps/web/app/(private)/customers/[customerId]/@action/edit/page.tsx",
+    "apps/web/features/customer-note/advice/fetch-service-note-data.ts",
+    "apps/web/libs/queue.ts",
+    "packages/db/src/migrate.ts"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "a1ed7061364e",
+  "checkpoint_transcript_start": 796,
+  "transcript_lines_at_start": 796,
+  "token_usage": {
+    "input_tokens": 27,
+    "cache_creation_tokens": 257998,
+    "cache_read_tokens": 5206963,
+    "output_tokens": 12836,
+    "api_call_count": 22
+  },
+  "session_metrics": {
+    "turn_count": 14
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-19T03:39:05.819511Z",
+    "agent_lines": 29,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 29,
+    "agent_percentage": 100
+  }
+}

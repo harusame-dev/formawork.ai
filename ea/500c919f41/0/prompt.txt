@@ -1,0 +1,11 @@
+Type error: Cannot find namespace 'JSX'.
+  18 | } from "@/features/onboarding/hooks/use-onboarding.hook";
+  19 |
+> 20 | export function NavigationMenu(): JSX.Element {
+     |                                   ^
+  21 |   const { currentStep, refreshHighlight } = useOnboarding();
+  22 |   const [open, setOpen] = useState(false);
+  23 |
+Next.js build worker exited with code: 1 and signal: null
+[ELIFECYCLE] Command failed with exit code 1.
+Error: Command "pnpm -w db:reset && pnpm build" exited with

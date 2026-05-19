@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "ea500c919f41",
+  "strategy": "manual-commit",
+  "branch": "package-management-policy",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/web/app/(private)/customers/[customerId]/@action/default.tsx",
+    "apps/web/app/(private)/customers/[customerId]/@action/edit/page.tsx",
+    "apps/web/features/customer-note/advice/fetch-service-note-data.ts",
+    "apps/web/libs/queue.ts",
+    "apps/web/types/jsx.d.ts",
+    "packages/db/src/migrate.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/ea/500c919f41/0/metadata.json",
+      "transcript": "/ea/500c919f41/0/full.jsonl",
+      "content_hash": "/ea/500c919f41/0/content_hash.txt",
+      "prompt": "/ea/500c919f41/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 27,
+    "cache_creation_tokens": 257998,
+    "cache_read_tokens": 5206963,
+    "output_tokens": 12836,
+    "api_call_count": 22
+  }
+}
