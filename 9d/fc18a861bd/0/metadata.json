@@ -1,0 +1,24 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "9dfc18a861bd",
+  "session_id": "1d944ed4-7379-4eea-9b37-2914cc9d492c",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-19T12:53:21.876908Z",
+  "branch": "lint-migration",
+  "checkpoints_count": 1,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "turn_id": "515c91037e4c",
+  "checkpoint_transcript_start": 389,
+  "transcript_lines_at_start": 389,
+  "token_usage": {
+    "input_tokens": 32,
+    "cache_creation_tokens": 100650,
+    "cache_read_tokens": 1072568,
+    "output_tokens": 2284,
+    "api_call_count": 12
+  },
+  "session_metrics": {
+    "turn_count": 13
+  }
+}
