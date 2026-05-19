@@ -92,6 +92,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 export const config = {
   matcher: [
     // matcher は build-time に静的解析されるため、String.raw など実行時関数は使えない
+    // eslint-disable-next-line unicorn/prefer-string-raw
     "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icon-192x192\\.png|icon-512x512\\.png|apple-icon\\.png).*)",
   ],
 };
