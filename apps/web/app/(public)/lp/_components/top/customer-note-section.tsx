@@ -1,3 +1,4 @@
+import type React from "react";
 import {
   Card,
   CardContent,
@@ -30,7 +31,7 @@ const features = [
   },
 ] as const;
 
-export function CustomerNoteSection(): JSX.Element {
+export function CustomerNoteSection(): React.JSX.Element {
   return (
     <LpSection
       description="接客の記録が、AI 活用の基盤になる"

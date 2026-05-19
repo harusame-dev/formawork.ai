@@ -1,3 +1,4 @@
+import type React from "react";
 import {
   Card,
   CardContent,
@@ -50,7 +51,7 @@ const categories = [
   },
 ] as const;
 
-export function CustomerMemorySection(): JSX.Element {
+export function CustomerMemorySection(): React.JSX.Element {
   return (
     <LpSection
       description="接客ノートから自動で重要情報を抽出・蓄積"

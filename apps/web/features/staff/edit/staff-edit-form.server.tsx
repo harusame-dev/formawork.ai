@@ -1,3 +1,4 @@
+import type React from "react";
 import { notFound } from "next/navigation";
 import { getUserStaffId } from "@/features/auth/get-user-staff-id";
 import { getStaffDetail } from "@/features/staff/detail/get-staff-detail";
@@ -9,7 +10,7 @@ interface StaffEditFormContainerProps {
 
 export async function StaffEditFormContainer({
   staffIdPromise,
-}: StaffEditFormContainerProps): Promise<JSX.Element> {
+}: StaffEditFormContainerProps): Promise<React.JSX.Element> {
   const staffId = await staffIdPromise;
   const [staff, currentUserStaffId] = await Promise.all([
     getStaffDetail(staffId),

@@ -1,6 +1,7 @@
+import type React from "react";
 import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
 
-export function CustomerDetailTabsSkeleton(): JSX.Element {
+export function CustomerDetailTabsSkeleton(): React.JSX.Element {
   const tabs = [
     { label: "基本情報", value: "basic" },
     { label: "ノート", value: "notes" },

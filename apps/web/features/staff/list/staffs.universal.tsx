@@ -1,3 +1,4 @@
+import type React from "react";
 import { SearchPagination } from "@workspace/ui/components/search-pagination";
 import {
   Table,
@@ -20,7 +21,7 @@ export function StaffsPresenter({
   staffs,
   page,
   totalPages,
-}: StaffsPresenterProps): JSX.Element {
+}: StaffsPresenterProps): React.JSX.Element {
   if (staffs.length === 0) {
     return (
       <div className="space-y-4">

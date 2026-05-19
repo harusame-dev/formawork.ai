@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
 import type { Route } from "next";
 import Link from "next/link";
@@ -13,7 +14,7 @@ interface CustomerDetailTabsProps {
 
 export function CustomerDetailTabs({
   customerIdPromise,
-}: CustomerDetailTabsProps): JSX.Element {
+}: CustomerDetailTabsProps): React.JSX.Element {
   const pathname = usePathname();
   const customerId = use(customerIdPromise);
 

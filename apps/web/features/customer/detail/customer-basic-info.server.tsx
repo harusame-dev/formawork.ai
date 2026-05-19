@@ -1,3 +1,4 @@
+import type React from "react";
 import { notFound } from "next/navigation";
 import { CustomerBasicInfoPresenter } from "./customer-basic-info.universal";
 import { getCustomerDetail } from "./get-customer-detail";
@@ -8,7 +9,7 @@ interface CustomerBasicInfoContainerProps {
 
 export async function CustomerBasicInfoContainer({
   customerIdPromise,
-}: CustomerBasicInfoContainerProps): Promise<JSX.Element> {
+}: CustomerBasicInfoContainerProps): Promise<React.JSX.Element> {
   const customer = await getCustomerDetail(await customerIdPromise);
 
   if (!customer) {

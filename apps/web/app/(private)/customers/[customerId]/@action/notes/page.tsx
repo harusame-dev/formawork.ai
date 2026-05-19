@@ -1,10 +1,11 @@
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import { Suspense } from "react";
 import { RegisterCustomerNoteDialogContainer } from "@/features/customer-note/register/register-customer-note-dialog.server";
 
 export default async function CustomerNoteActionPage({
   params,
-}: PageProps<"/customers/[customerId]/notes">): Promise<JSX.Element> {
+}: PageProps<"/customers/[customerId]/notes">): Promise<React.JSX.Element> {
   const customerIdPromise = params.then(({ customerId }) => customerId);
 
   return (

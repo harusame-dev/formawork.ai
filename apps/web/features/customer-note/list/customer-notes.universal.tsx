@@ -1,3 +1,4 @@
+import type React from "react";
 import { SearchPagination } from "@workspace/ui/components/search-pagination";
 import { CustomerNoteCard } from "./customer-note-card.universal";
 import type { CustomerNoteWithImages } from "./get-customer-notes";
@@ -16,7 +17,7 @@ export function CustomerNotesPresenter({
   notes,
   currentPage,
   totalPages,
-}: CustomerNotesPresenterProps): JSX.Element {
+}: CustomerNotesPresenterProps): React.JSX.Element {
   if (notes.length === 0) {
     return (
       <div className="py-12 text-center text-muted-foreground">

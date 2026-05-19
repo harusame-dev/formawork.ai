@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -19,7 +20,7 @@ interface RegisterCustomerMemoryDialogProps {
 
 export function RegisterCustomerMemoryDialog({
   customerId,
-}: RegisterCustomerMemoryDialogProps): JSX.Element {
+}: RegisterCustomerMemoryDialogProps): React.JSX.Element {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [formKey, setFormKey] = useState(0);

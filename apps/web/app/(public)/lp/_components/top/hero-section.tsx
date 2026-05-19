@@ -1,9 +1,10 @@
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import icon from "@/public/icon-512x512.png";
 
-export function HeroSection(): JSX.Element {
+export function HeroSection(): React.JSX.Element {
   return (
     <section className="px-4 py-16">
       <div className="container mx-auto max-w-4xl text-center">

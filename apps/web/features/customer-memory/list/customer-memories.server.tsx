@@ -1,3 +1,4 @@
+import type React from "react";
 import { CustomerMemoriesPresenter } from "./customer-memories.universal";
 import { getCustomerMemories } from "./get-customer-memories";
 
@@ -7,7 +8,7 @@ interface CustomerMemoriesContainerProps {
 
 export async function CustomerMemoriesContainer({
   customerIdPromise,
-}: CustomerMemoriesContainerProps): Promise<JSX.Element> {
+}: CustomerMemoriesContainerProps): Promise<React.JSX.Element> {
   const customerId = await customerIdPromise;
   const memories = await getCustomerMemories(customerId);
 

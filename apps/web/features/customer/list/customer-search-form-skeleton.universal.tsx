@@ -1,6 +1,7 @@
+import type React from "react";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
-export function CustomerSearchFormSkeleton(): JSX.Element {
+export function CustomerSearchFormSkeleton(): React.JSX.Element {
   return (
     <div aria-busy="true">
       <div className="sr-only">読み込み中</div>

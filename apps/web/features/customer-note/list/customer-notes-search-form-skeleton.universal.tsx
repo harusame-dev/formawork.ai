@@ -1,7 +1,8 @@
+import type React from "react";
 import { Card, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { ChevronDown } from "lucide-react";
 
-export function CustomerNotesSearchFormSkeleton(): JSX.Element {
+export function CustomerNotesSearchFormSkeleton(): React.JSX.Element {
   return (
     <div aria-busy="true">
       <div className="sr-only">読み込み中</div>

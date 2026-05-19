@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -26,7 +27,7 @@ export function ChangePasswordForm({
   disabled,
 }: {
   disabled?: boolean;
-}): JSX.Element {
+}): React.JSX.Element {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { isHydrated } = useIsHydrated();

@@ -1,3 +1,4 @@
+import type React from "react";
 import { getUserRole, UserRole } from "@/features/auth/get-user-role";
 import { getUserStaffId } from "@/features/auth/get-user-staff-id";
 import { CustomerNotesPresenter } from "./customer-notes.universal";
@@ -28,7 +29,7 @@ interface CustomerNotesContainerProps {
 export async function CustomerNotesContainer({
   customerIdPromise,
   searchConditionPromise,
-}: CustomerNotesContainerProps): Promise<JSX.Element> {
+}: CustomerNotesContainerProps): Promise<React.JSX.Element> {
   const customerId = await customerIdPromise;
   const searchCondition = await searchConditionPromise;
 

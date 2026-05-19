@@ -1,3 +1,4 @@
+import type React from "react";
 import { notFound } from "next/navigation";
 import { getStaffDetail } from "./get-staff-detail";
 import { StaffInfoPresenter } from "./staff-info.universal";
@@ -8,7 +9,7 @@ interface StaffInfoContainerProps {
 
 export async function StaffInfoContainer({
   staffIdPromise,
-}: StaffInfoContainerProps): Promise<JSX.Element> {
+}: StaffInfoContainerProps): Promise<React.JSX.Element> {
   const staff = await getStaffDetail(await staffIdPromise);
 
   if (!staff) {

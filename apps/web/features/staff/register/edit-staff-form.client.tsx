@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -79,7 +80,7 @@ export function EditStaffForm({
   authUserId,
   initialValues,
   isSelf,
-}: EditStaffFormProps): JSX.Element {
+}: EditStaffFormProps): React.JSX.Element {
   const router = useRouter();
   const { isHydrated } = useIsHydrated();
   const isEditMode = !!staffId;

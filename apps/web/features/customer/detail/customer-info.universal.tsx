@@ -1,3 +1,4 @@
+import type React from "react";
 interface CustomerInfoPresenterProps {
   firstName: string;
   lastName: string;
@@ -6,7 +7,7 @@ interface CustomerInfoPresenterProps {
 export function CustomerInfoPresenter({
   firstName,
   lastName,
-}: CustomerInfoPresenterProps): JSX.Element {
+}: CustomerInfoPresenterProps): React.JSX.Element {
   return (
     <h1 className="min-h-8 text-2xl font-bold">
       {lastName} {firstName}

@@ -1,7 +1,8 @@
+import type React from "react";
 import Link from "next/link";
 import { getUserRole, UserRole } from "@/features/auth/get-user-role";
 
-export async function RegisterStaffLink(): Promise<JSX.Element | null> {
+export async function RegisterStaffLink(): Promise<React.JSX.Element | null> {
   const role = await getUserRole();
 
   if (role === UserRole.Admin) {

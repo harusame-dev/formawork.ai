@@ -1,3 +1,4 @@
+import type React from "react";
 import { notFound } from "next/navigation";
 import { getCustomerDetail } from "@/features/customer/detail/get-customer-detail";
 import { EditCustomerForm } from "@/features/customer/register/edit-customer-form.client";
@@ -8,7 +9,7 @@ interface CustomerEditFormContainerProps {
 
 export async function CustomerEditFormContainer({
   customerIdPromise,
-}: CustomerEditFormContainerProps): Promise<JSX.Element> {
+}: CustomerEditFormContainerProps): Promise<React.JSX.Element> {
   const customer = await getCustomerDetail(await customerIdPromise);
 
   if (!customer) {

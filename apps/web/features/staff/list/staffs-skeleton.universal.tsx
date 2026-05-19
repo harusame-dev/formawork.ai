@@ -1,3 +1,4 @@
+import type React from "react";
 import {
   Pagination,
   PaginationContent,
@@ -13,7 +14,7 @@ import {
   TableRow,
 } from "@workspace/ui/components/table";
 
-export function StaffsSkeleton(): JSX.Element {
+export function StaffsSkeleton(): React.JSX.Element {
   return (
     <div className="space-y-4">
       <div className="sr-only">読み込み中</div>

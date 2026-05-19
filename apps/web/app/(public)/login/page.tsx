@@ -1,3 +1,4 @@
+import type React from "react";
 import {
   Card,
   CardContent,
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   title: "ログイン",
 };
 
-export default function LoginPage(): JSX.Element {
+export default function LoginPage(): React.JSX.Element {
   return (
     <main className="flex min-h-screen flex-col items-center bg-background p-4">
       <div className="mx-auto mt-16 w-16">

@@ -1,8 +1,9 @@
+import type React from "react";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { MAX_MEMORIES } from "@/features/customer-memory/customer-memory";
 
-export function CustomerMemoriesSkeleton(): JSX.Element {
+export function CustomerMemoriesSkeleton(): React.JSX.Element {
   return (
     <Card>
       <CardContent className="pt-6">

@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -17,7 +18,7 @@ import { useIsHydrated } from "@/libs/use-is-hydrated.hook";
 import { defaultPassword, defaultUserName } from "./default-user";
 import { loginAction } from "./login.action";
 
-export function LoginForm(): JSX.Element {
+export function LoginForm(): React.JSX.Element {
   const { isHydrated } = useIsHydrated();
 
   const form = useForm<LoginParams>({

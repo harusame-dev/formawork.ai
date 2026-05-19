@@ -1,3 +1,4 @@
+import type React from "react";
 import { Badge } from "@workspace/ui/components/badge";
 import { LpSection } from "./lp-section";
 
@@ -20,7 +21,7 @@ const techStack = [
   },
 ] as const;
 
-export function TechStackSection(): JSX.Element {
+export function TechStackSection(): React.JSX.Element {
   return (
     <LpSection
       description="モダンな技術スタックで構築されています。"

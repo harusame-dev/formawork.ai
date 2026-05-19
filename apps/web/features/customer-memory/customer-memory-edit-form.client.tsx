@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import {
   MEMORY_CATEGORY_LABEL,
@@ -93,7 +94,7 @@ export function CustomerMemoryEditForm({
   memoryId,
   onCancel,
   onSuccess,
-}: CustomerMemoryEditFormProps): JSX.Element {
+}: CustomerMemoryEditFormProps): React.JSX.Element {
   const isEditMode = memoryId !== undefined;
   const submitLabel = isEditMode ? "更新" : "登録";
   const processingLabel = isEditMode ? "更新中" : "登録中";

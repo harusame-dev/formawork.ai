@@ -1,3 +1,4 @@
+import type React from "react";
 import type { Metadata } from "next";
 import { AiAdviceSection } from "./_components/top/ai-advice-section";
 import { CustomerMemorySection } from "./_components/top/customer-memory-section";
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   title: "FORMAWORK.ai CRM - AI があなたの接客を強くする顧客関係管理システム",
 };
 
-export default function Page(): JSX.Element {
+export default function Page(): React.JSX.Element {
   return (
     <div className="h-dvh overflow-auto *:odd:bg-background">
       <HeroSection />

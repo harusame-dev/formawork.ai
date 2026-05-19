@@ -1,7 +1,8 @@
+import type React from "react";
 import { RequiredBadge } from "@workspace/ui/components/required-badge";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
-export function StaffEditFormSkeleton(): JSX.Element {
+export function StaffEditFormSkeleton(): React.JSX.Element {
   return (
     <div aria-busy className="flex flex-col gap-6">
       <span className="sr-only">フォーム読み込み中</span>
