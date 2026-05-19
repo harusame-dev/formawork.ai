@@ -12,9 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>): React.JSX.Element {
+}: LayoutProps<"/">): React.JSX.Element {
   return (
     <html lang="ja">
       <body className="overflow-hidden bg-white font-sans antialiased">
