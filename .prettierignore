@@ -15,9 +15,8 @@ coverage
 **/test-results
 **/__screenshots__
 
-# Drizzle が自動生成するファイル (触らない)
+# Drizzle が自動生成するスナップショット (触らない)
 packages/db/drizzle/meta
-packages/db/drizzle/*.sql
 
 # Lockfile
 pnpm-lock.yaml
