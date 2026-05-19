@@ -10,6 +10,9 @@ concurrency:
   group: server-test-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   APP_NAME: FORMAWORK.AI
   SERVICE_NAME: web
@@ -24,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    # paths-filter によるスキップ設定は省略する。理由: 実行時間が概ね 3 分未満 (約 2〜3 分) のため、
+    # GitHub Actions の 1 分単位課金ではフィルター条件のメンテナンスコストが節約効果に見合わない。
     steps:
       - name: リポジトリのチェックアウト
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
