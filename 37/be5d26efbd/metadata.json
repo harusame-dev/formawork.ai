@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "37be5d26efbd",
+  "strategy": "manual-commit",
+  "branch": "actions-policy",
+  "checkpoints_count": 8,
+  "files_touched": [
+    ".github/workflows/browser-test.yml",
+    ".github/workflows/claude-code-review.yml",
+    ".github/workflows/claude.yml",
+    ".github/workflows/e2e-test.yml",
+    ".github/workflows/server-test.yml",
+    ".github/workflows/static-analytics.yml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/37/be5d26efbd/0/metadata.json",
+      "transcript": "/37/be5d26efbd/0/full.jsonl",
+      "content_hash": "/37/be5d26efbd/0/content_hash.txt",
+      "prompt": "/37/be5d26efbd/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 136,
+    "cache_creation_tokens": 266157,
+    "cache_read_tokens": 7299987,
+    "output_tokens": 84123,
+    "api_call_count": 79
+  }
+}
