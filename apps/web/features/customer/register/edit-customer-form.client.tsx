@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -38,7 +39,7 @@ interface EditCustomerFormProps {
 
 export function EditCustomerForm(
   props?: EditCustomerFormProps & { disabled?: boolean },
-): JSX.Element {
+): React.JSX.Element {
   const router = useRouter();
   const { isHydrated } = useIsHydrated();
 

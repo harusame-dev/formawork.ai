@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
@@ -44,7 +45,7 @@ type CustomerNotesSearchFormProps =
 
 export function CustomerNotesSearchForm(
   props: CustomerNotesSearchFormProps,
-): JSX.Element {
+): React.JSX.Element {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { isHydrated } = useIsHydrated();

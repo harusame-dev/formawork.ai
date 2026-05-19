@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import type { SelectCustomerNoteAdvice } from "@workspace/db/schema/customer-note-advice";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import useSWR from "swr";
@@ -23,7 +24,7 @@ async function fetcher(url: string): Promise<SelectCustomerNoteAdvice | null> {
 export function CustomerNoteAdviceLoading({
   noteId,
   isTimeout,
-}: Props): JSX.Element {
+}: Props): React.JSX.Element {
   const { data: advice, error } = useSWR<SelectCustomerNoteAdvice | null>(
     `/api/customer-notes/${noteId}/advice`,
     fetcher,

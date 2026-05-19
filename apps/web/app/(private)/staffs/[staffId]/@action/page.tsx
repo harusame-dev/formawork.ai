@@ -1,3 +1,4 @@
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
@@ -8,7 +9,7 @@ import { DeleteStaffDialog } from "@/features/staff/delete/delete-staff-dialog.c
 
 export default function Page({
   params,
-}: PageProps<"/staffs/[staffId]">): JSX.Element {
+}: PageProps<"/staffs/[staffId]">): React.JSX.Element {
   const staffIdPromise = params.then(({ staffId }) => staffId);
 
   return (
@@ -32,7 +33,7 @@ async function Action({
   staffIdPromise,
 }: {
   staffIdPromise: Promise<string>;
-}): Promise<JSX.Element | null> {
+}): Promise<React.JSX.Element | null> {
   const [staffId, userRole, currentUserStaffId] = await Promise.all([
     staffIdPromise,
     getUserRole(),

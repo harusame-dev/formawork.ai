@@ -1,3 +1,4 @@
+import type React from "react";
 import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { StaffInfoContainer } from "@/features/staff/detail/staff-info.server";
@@ -11,7 +12,7 @@ export default async function StaffDetailLayout({
   params,
   children,
   action,
-}: StaffDetailLayoutProps): Promise<JSX.Element> {
+}: StaffDetailLayoutProps): Promise<React.JSX.Element> {
   const staffIdPromise = params.then(({ staffId }) => staffId);
 
   return (

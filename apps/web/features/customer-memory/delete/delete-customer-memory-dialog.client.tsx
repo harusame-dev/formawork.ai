@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -23,7 +24,7 @@ interface DeleteCustomerMemoryDialogProps {
 export function DeleteCustomerMemoryDialog({
   customerId,
   memoryId,
-}: DeleteCustomerMemoryDialogProps): JSX.Element {
+}: DeleteCustomerMemoryDialogProps): React.JSX.Element {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();

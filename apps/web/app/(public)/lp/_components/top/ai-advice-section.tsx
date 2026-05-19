@@ -1,3 +1,4 @@
+import type React from "react";
 import {
   Card,
   CardContent,
@@ -28,7 +29,7 @@ const features = [
   },
 ] as const;
 
-export function AiAdviceSection(): JSX.Element {
+export function AiAdviceSection(): React.JSX.Element {
   return (
     <LpSection
       description="接客内容を分析し、次回に活かせるフィードバックを自動生成"

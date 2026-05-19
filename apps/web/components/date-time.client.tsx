@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { useSyncExternalStore } from "react";
 
 interface DateTimeProps {
@@ -11,7 +12,7 @@ interface DateTimeProps {
 const noop = (): void => {};
 const subscribe = (): (() => void) => noop;
 
-export function DateTime({ date }: DateTimeProps): JSX.Element {
+export function DateTime({ date }: DateTimeProps): React.JSX.Element {
   const formatted = useSyncExternalStore(
     subscribe,
     (): string =>

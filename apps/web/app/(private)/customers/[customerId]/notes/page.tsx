@@ -1,3 +1,4 @@
+import type React from "react";
 import * as v from "valibot";
 import { CustomerNotesContainer } from "@/features/customer-note/list/customer-notes.server";
 import { CustomerNotesSearchForm } from "@/features/customer-note/list/customer-notes-search-form.client";
@@ -15,7 +16,7 @@ const searchParametersSchema = v.object({
 export default async function CustomerNotesPage({
   params,
   searchParams,
-}: PageProps<"/customers/[customerId]/notes">): Promise<JSX.Element> {
+}: PageProps<"/customers/[customerId]/notes">): Promise<React.JSX.Element> {
   const customerIdPromise = params.then(({ customerId }) => customerId);
   const searchConditionPromise = searchParams.then((sp) =>
     v.parse(searchParametersSchema, sp),

@@ -1,3 +1,4 @@
+import type React from "react";
 import { Card } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
@@ -11,7 +12,7 @@ import { SuspenseOnSearch } from "@/libs/suspense-on-search.client";
 
 export default async function Page({
   searchParams,
-}: PageProps<"/staffs">): Promise<JSX.Element> {
+}: PageProps<"/staffs">): Promise<React.JSX.Element> {
   const validatedCondition = searchParams.then(
     (parameters) => parseStaffsConditionSearchParams(parameters).data,
   );

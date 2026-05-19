@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import {
   DropdownMenu,
@@ -12,7 +13,7 @@ import { User } from "lucide-react";
 import Link from "next/link";
 import { LogoutButton } from "@/features/auth/logout/logout-button.client";
 
-export function UserMenu(): JSX.Element {
+export function UserMenu(): React.JSX.Element {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

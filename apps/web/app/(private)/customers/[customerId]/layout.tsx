@@ -1,3 +1,4 @@
+import type React from "react";
 import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { CustomerDetailTabs } from "@/features/customer/detail/customer-detail-tabs.client";
@@ -13,7 +14,7 @@ export default async function CustomerDetailLayout({
   params,
   children,
   action,
-}: CustomerDetailLayoutProps): Promise<JSX.Element> {
+}: CustomerDetailLayoutProps): Promise<React.JSX.Element> {
   const customerIdPromise = params.then(({ customerId }) => customerId);
 
   return (

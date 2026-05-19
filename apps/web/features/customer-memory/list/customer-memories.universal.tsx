@@ -1,3 +1,4 @@
+import type React from "react";
 import {
   MEMORY_CATEGORY_LABEL,
   type MemoryCategory,
@@ -15,7 +16,7 @@ interface CustomerMemoriesPresenterProps {
 export function CustomerMemoriesPresenter({
   customerId,
   memories,
-}: CustomerMemoriesPresenterProps): JSX.Element {
+}: CustomerMemoriesPresenterProps): React.JSX.Element {
   return (
     <Card>
       <CardContent className="pt-6">

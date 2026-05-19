@@ -1,3 +1,4 @@
+import type React from "react";
 import type { ReactNode } from "react";
 import { DateTime } from "@/components/date-time.client";
 
@@ -27,7 +28,7 @@ interface StaffField {
 
 export function StaffBasicInfoPresenter({
   staff,
-}: StaffBasicInfoPresenterProps): JSX.Element {
+}: StaffBasicInfoPresenterProps): React.JSX.Element {
   const roleLabel =
     staff.role in RoleLabel
       ? RoleLabel[staff.role as keyof typeof RoleLabel]

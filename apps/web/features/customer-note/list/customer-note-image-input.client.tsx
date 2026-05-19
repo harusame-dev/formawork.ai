@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import { LoadingIcon } from "@workspace/ui/components/loading-icon";
 import { ImageIcon, X } from "lucide-react";
@@ -21,7 +22,7 @@ export function CustomerNoteImageInput({
   images,
   onAddImages,
   onRemoveImage,
-}: CustomerNoteImageInputProps): JSX.Element {
+}: CustomerNoteImageInputProps): React.JSX.Element {
   const inputReference = useRef<HTMLInputElement>(null);
 
   const handleFileChange = useCallback(

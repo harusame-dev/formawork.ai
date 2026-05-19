@@ -1,3 +1,4 @@
+import type React from "react";
 import {
   Card,
   CardContent,
@@ -8,7 +9,7 @@ import { AlertTriangle, Sparkles } from "lucide-react";
 import { StartTourButton } from "@/features/onboarding/components/start-tour-button.client";
 import { OnboardingId } from "@/features/onboarding/constants/steps.universal";
 
-export default function Page(): JSX.Element {
+export default function Page(): React.JSX.Element {
   return (
     <div className="container mx-auto space-y-4 p-4">
       <Card id={OnboardingId.Welcome}>

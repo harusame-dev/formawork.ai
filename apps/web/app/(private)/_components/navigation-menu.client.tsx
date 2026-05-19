@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import {
   Sheet,
@@ -17,7 +18,7 @@ import {
   useOnboarding,
 } from "@/features/onboarding/hooks/use-onboarding.hook";
 
-export function NavigationMenu(): JSX.Element {
+export function NavigationMenu(): React.JSX.Element {
   const { currentStep, refreshHighlight } = useOnboarding();
   const [open, setOpen] = useState(false);
 

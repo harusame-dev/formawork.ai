@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import {
   Carousel,
   type CarouselApi,
@@ -26,7 +27,7 @@ interface CustomerNoteImageGalleryProps {
 
 export function CustomerNoteImageGallery({
   images,
-}: CustomerNoteImageGalleryProps): JSX.Element | null {
+}: CustomerNoteImageGalleryProps): React.JSX.Element | null {
   const [open, setOpen] = useState(false);
   const [initialIndex, setInitialIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi>();

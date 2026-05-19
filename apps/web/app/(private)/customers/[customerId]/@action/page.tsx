@@ -1,3 +1,4 @@
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
@@ -7,7 +8,7 @@ import { DeleteCustomerDialog } from "@/features/customer/delete/delete-customer
 
 export default function Page({
   params,
-}: PageProps<"/customers/[customerId]">): JSX.Element {
+}: PageProps<"/customers/[customerId]">): React.JSX.Element {
   const customerIdPromise = params.then(({ customerId }) => customerId);
 
   return (
@@ -31,7 +32,7 @@ async function Action({
   customerIdPromise,
 }: {
   customerIdPromise: Promise<string>;
-}): Promise<JSX.Element | null> {
+}): Promise<React.JSX.Element | null> {
   const [customerId, userRole] = await Promise.all([
     customerIdPromise,
     getUserRole(),

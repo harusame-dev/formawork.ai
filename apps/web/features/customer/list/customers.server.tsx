@@ -1,3 +1,4 @@
+import type React from "react";
 import { CustomersPresenter } from "./customers.universal";
 import { getCustomers } from "./get-customers";
 import type { CustomersCondition } from "./schema";
@@ -6,7 +7,7 @@ export async function CustomersContainer({
   condition,
 }: {
   condition: Promise<CustomersCondition>;
-}): Promise<JSX.Element> {
+}): Promise<React.JSX.Element> {
   const { customers, page, totalPages } = await getCustomers(await condition);
 
   return (

@@ -1,3 +1,4 @@
+import type React from "react";
 import { Card } from "@workspace/ui/components/card";
 import { Suspense } from "react";
 import { CustomerBasicInfoContainer } from "@/features/customer/detail/customer-basic-info.server";
@@ -5,7 +6,7 @@ import { CustomerBasicInfoSkeleton } from "@/features/customer/detail/customer-b
 
 export default function Page({
   params,
-}: PageProps<"/customers/[customerId]">): JSX.Element {
+}: PageProps<"/customers/[customerId]">): React.JSX.Element {
   const customerIdPromise = params.then(({ customerId }) => customerId);
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import {
   Card,
@@ -17,7 +18,7 @@ export function OnboardingCard({
   totalSteps,
   nextStep,
   arrow,
-}: CardComponentProps): JSX.Element {
+}: CardComponentProps): React.JSX.Element {
   const { complete } = useOnboarding();
   const isLastStep = currentStep === totalSteps - 1;
 

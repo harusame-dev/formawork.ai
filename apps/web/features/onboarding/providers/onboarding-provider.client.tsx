@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Onborda, OnbordaProvider } from "onborda";
 import { type ReactNode, useCallback, useEffect, useRef } from "react";
 import { OnboardingCard } from "@/features/onboarding/components/onboarding-card.client";
@@ -13,7 +14,7 @@ interface OnboardingWrapperProps {
   children: ReactNode;
 }
 
-function OnboardingInner({ children }: { children: ReactNode }): JSX.Element {
+function OnboardingInner({ children }: { children: ReactNode }): React.JSX.Element {
   const { shouldShow, startTour, closeTour } = useOnboarding();
   const initializedReference = useRef(false);
 
@@ -49,7 +50,7 @@ function OnboardingInner({ children }: { children: ReactNode }): JSX.Element {
   );
 }
 
-export function Onboarding({ children }: OnboardingWrapperProps): JSX.Element {
+export function Onboarding({ children }: OnboardingWrapperProps): React.JSX.Element {
   return (
     <OnbordaProvider>
       <OnboardingInner>{children}</OnboardingInner>

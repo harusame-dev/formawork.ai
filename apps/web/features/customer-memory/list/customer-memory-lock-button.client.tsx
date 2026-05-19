@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import { Lock, Unlock } from "lucide-react";
 import { useOptimistic, useTransition } from "react";
@@ -13,7 +14,7 @@ interface CustomerMemoryLockButtonProps {
 export function CustomerMemoryLockButton({
   isProtected,
   memoryId,
-}: CustomerMemoryLockButtonProps): JSX.Element {
+}: CustomerMemoryLockButtonProps): React.JSX.Element {
   const [isPending, startTransition] = useTransition();
   const [optimisticIsProtected, setOptimisticIsProtected] =
     useOptimistic(isProtected);

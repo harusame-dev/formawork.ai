@@ -1,3 +1,4 @@
+import type React from "react";
 interface StaffInfoPresenterProps {
   firstName: string;
   lastName: string;
@@ -6,7 +7,7 @@ interface StaffInfoPresenterProps {
 export function StaffInfoPresenter({
   firstName,
   lastName,
-}: StaffInfoPresenterProps): JSX.Element {
+}: StaffInfoPresenterProps): React.JSX.Element {
   return (
     <h1 className="h-8 text-2xl font-bold">
       {lastName} {firstName}

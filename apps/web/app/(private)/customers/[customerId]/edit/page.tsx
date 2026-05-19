@@ -1,3 +1,4 @@
+import type React from "react";
 import { Card } from "@workspace/ui/components/card";
 import { Suspense } from "react";
 import { CustomerEditFormContainer } from "@/features/customer/edit/customer-edit-form.server";
@@ -5,7 +6,7 @@ import { CustomerEditFormSkeleton } from "@/features/customer/edit/customer-edit
 
 export default function Page({
   params,
-}: PageProps<"/customers/[customerId]/edit">): JSX.Element {
+}: PageProps<"/customers/[customerId]/edit">): React.JSX.Element {
   const customerIdPromise = params.then(({ customerId }) => customerId);
 
   return (

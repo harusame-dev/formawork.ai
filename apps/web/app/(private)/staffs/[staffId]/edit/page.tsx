@@ -1,3 +1,4 @@
+import type React from "react";
 import { Card } from "@workspace/ui/components/card";
 import { Suspense } from "react";
 import { StaffEditFormContainer } from "@/features/staff/edit/staff-edit-form.server";
@@ -5,7 +6,7 @@ import { StaffEditFormSkeleton } from "@/features/staff/edit/staff-edit-form-ske
 
 export default function Page({
   params,
-}: PageProps<"/staffs/[staffId]/edit">): JSX.Element {
+}: PageProps<"/staffs/[staffId]/edit">): React.JSX.Element {
   const staffIdPromise = params.then(({ staffId }) => staffId);
 
   return (

@@ -1,3 +1,4 @@
+import type React from "react";
 import type { SelectCustomerNoteAdvice } from "@workspace/db/schema/customer-note-advice";
 import { CustomerNoteAdvicePresenter } from "./customer-note-advice.universal";
 import { CustomerNoteAdviceLoading } from "./customer-note-advice-loading.client";
@@ -12,7 +13,7 @@ export function CustomerNoteAdviceContainer({
   advice,
   noteId,
   isTimeout,
-}: Props): JSX.Element {
+}: Props): React.JSX.Element {
   if (advice) {
     return <CustomerNoteAdvicePresenter advice={advice} />;
   }

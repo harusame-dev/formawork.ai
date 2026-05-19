@@ -1,11 +1,12 @@
 "use client";
+import type React from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, type SuspenseProps } from "react";
 
 function SuspenseOnSearchInner({
   children,
   fallback,
-}: SuspenseProps): JSX.Element {
+}: SuspenseProps): React.JSX.Element {
   const search = useSearchParams();
 
   return (
@@ -18,7 +19,7 @@ function SuspenseOnSearchInner({
 export function SuspenseOnSearch({
   children,
   fallback,
-}: SuspenseProps): JSX.Element {
+}: SuspenseProps): React.JSX.Element {
   return (
     <Suspense fallback={fallback}>
       <SuspenseOnSearchInner fallback={fallback}>

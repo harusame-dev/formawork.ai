@@ -1,3 +1,4 @@
+import type React from "react";
 import { ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
 import { DateTime } from "@/components/date-time.client";
@@ -30,7 +31,7 @@ interface CustomerField {
 
 export function CustomerBasicInfoPresenter({
   customer,
-}: CustomerBasicInfoPresenterProps): JSX.Element {
+}: CustomerBasicInfoPresenterProps): React.JSX.Element {
   const kanaName =
     customer.lastNameKana || customer.firstNameKana
       ? `${customer.lastNameKana} ${customer.firstNameKana}`.trim()

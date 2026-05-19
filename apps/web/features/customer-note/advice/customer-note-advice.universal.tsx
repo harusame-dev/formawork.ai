@@ -1,3 +1,4 @@
+import type React from "react";
 import type { SelectCustomerNoteAdvice } from "@workspace/db/schema/customer-note-advice";
 import {
   CheckCircle2,
@@ -21,7 +22,7 @@ function AdviceSection({
   children: React.ReactNode;
   icon: React.ComponentType<{ className?: string }>;
   title: string;
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
@@ -33,7 +34,7 @@ function AdviceSection({
   );
 }
 
-export function CustomerNoteAdvicePresenter({ advice }: Props): JSX.Element {
+export function CustomerNoteAdvicePresenter({ advice }: Props): React.JSX.Element {
   const { currentEvaluation, nextAdvice } = advice.advice;
 
   return (

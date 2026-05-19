@@ -1,3 +1,4 @@
+import type React from "react";
 import { OptionalBadge } from "@workspace/ui/components/optional-badge";
 import { RequiredBadge } from "@workspace/ui/components/required-badge";
 import { Skeleton } from "@workspace/ui/components/skeleton";
@@ -13,7 +14,7 @@ function FormItemSkeleton({
   required?: boolean;
   description?: string;
   inputClassName?: string;
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 text-sm leading-none font-bold">
@@ -28,7 +29,7 @@ function FormItemSkeleton({
   );
 }
 
-export function CustomerEditFormSkeleton(): JSX.Element {
+export function CustomerEditFormSkeleton(): React.JSX.Element {
   return (
     <div aria-busy="true">
       <div className="sr-only">読み込み中</div>

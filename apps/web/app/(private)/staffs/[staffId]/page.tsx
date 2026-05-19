@@ -1,3 +1,4 @@
+import type React from "react";
 import { Card } from "@workspace/ui/components/card";
 import { Suspense } from "react";
 import { StaffBasicInfoContainer } from "@/features/staff/detail/staff-basic-info.server";
@@ -5,7 +6,7 @@ import { StaffBasicInfoSkeleton } from "@/features/staff/detail/staff-basic-info
 
 export default function Page({
   params,
-}: PageProps<"/staffs/[staffId]">): JSX.Element {
+}: PageProps<"/staffs/[staffId]">): React.JSX.Element {
   const staffIdPromise = params.then(({ staffId }) => staffId);
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import type { SelectCustomerMemory } from "@workspace/db/schema/customer-memory";
 import { DeleteCustomerMemoryDialog } from "@/features/customer-memory/delete/delete-customer-memory-dialog.client";
 import { EditCustomerMemoryDialog } from "@/features/customer-memory/edit/edit-customer-memory-dialog.client";
@@ -13,7 +14,7 @@ interface CustomerMemoryActionButtonsProps {
 export function CustomerMemoryActionButtons({
   customerId,
   memory,
-}: CustomerMemoryActionButtonsProps): JSX.Element {
+}: CustomerMemoryActionButtonsProps): React.JSX.Element {
   return (
     <div className="flex items-center gap-1">
       <EditCustomerMemoryDialog customerId={customerId} memory={memory} />

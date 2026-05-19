@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import type { SelectCustomerMemory } from "@workspace/db/schema/customer-memory";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -23,7 +24,7 @@ interface EditCustomerMemoryDialogProps {
 export function EditCustomerMemoryDialog({
   customerId,
   memory,
-}: EditCustomerMemoryDialogProps): JSX.Element {
+}: EditCustomerMemoryDialogProps): React.JSX.Element {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [formKey, setFormKey] = useState(0);

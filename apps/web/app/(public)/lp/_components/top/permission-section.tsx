@@ -1,3 +1,4 @@
+import type React from "react";
 import { Card, CardContent } from "@workspace/ui/components/card";
 import { Check, X } from "lucide-react";
 import { LpSection } from "./lp-section";
@@ -9,7 +10,7 @@ const permissions = [
   { admin: true, feature: "自分のノートの編集・削除", user: true },
 ] as const;
 
-export function PermissionSection(): JSX.Element {
+export function PermissionSection(): React.JSX.Element {
   return (
     <LpSection
       description="チームでの運用に対応した2段階のアクセス制御"

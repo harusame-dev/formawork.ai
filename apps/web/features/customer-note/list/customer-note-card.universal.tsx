@@ -1,3 +1,4 @@
+import type React from "react";
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
 import { Calendar, UserPen } from "lucide-react";
 import { CustomerNoteAdviceContainer } from "@/features/customer-note/advice/customer-note-advice.server";
@@ -18,7 +19,7 @@ export function CustomerNoteCard({
   authorName,
   canEdit,
   isAdviceTimeout,
-}: CustomerNoteCardProps): JSX.Element {
+}: CustomerNoteCardProps): React.JSX.Element {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">

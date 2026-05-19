@@ -1,10 +1,11 @@
 "use client";
 
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import { useTransition } from "react";
 import { logoutAction } from "./logout.action";
 
-export function LogoutButton(): JSX.Element {
+export function LogoutButton(): React.JSX.Element {
   const [isPending, startTransition] = useTransition();
 
   const handleOnClick = (): void => {

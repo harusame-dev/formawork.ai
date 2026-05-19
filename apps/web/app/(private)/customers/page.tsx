@@ -1,3 +1,4 @@
+import type React from "react";
 import { Card } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
@@ -13,7 +14,7 @@ import { SuspenseOnSearch } from "@/libs/suspense-on-search.client";
 
 export default function Page({
   searchParams,
-}: PageProps<"/customers">): JSX.Element {
+}: PageProps<"/customers">): React.JSX.Element {
   const validatedCondition = searchParams.then(
     (parameters) => parseCustomersConditionSearchParams(parameters).data,
   );
@@ -40,7 +41,7 @@ export default function Page({
   );
 }
 
-async function RegisterLink(): Promise<JSX.Element | null> {
+async function RegisterLink(): Promise<React.JSX.Element | null> {
   const userRole = await getUserRole();
   if (userRole !== UserRole.Admin) {
     return null;

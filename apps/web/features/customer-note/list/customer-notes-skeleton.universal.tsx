@@ -1,7 +1,8 @@
+import type React from "react";
 import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
-function AdviceSectionSkeleton(): JSX.Element {
+function AdviceSectionSkeleton(): React.JSX.Element {
   return (
     <div className="space-y-1">
       {/* タイトル: アイコン + ラベル */}
@@ -17,7 +18,7 @@ function AdviceSectionSkeleton(): JSX.Element {
   );
 }
 
-function CustomerNoteAdviceSkeleton(): JSX.Element {
+function CustomerNoteAdviceSkeleton(): React.JSX.Element {
   return (
     <div className="space-y-4 rounded-md border border-dashed border-muted-foreground/30 bg-muted/30 p-3">
       {/* AI アドバイスヘッダー */}
@@ -50,7 +51,7 @@ function CustomerNoteAdviceSkeleton(): JSX.Element {
   );
 }
 
-function CustomerNoteCardSkeleton(): JSX.Element {
+function CustomerNoteCardSkeleton(): React.JSX.Element {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
@@ -95,7 +96,7 @@ function CustomerNoteCardSkeleton(): JSX.Element {
   );
 }
 
-function SearchPaginationSkeleton(): JSX.Element {
+function SearchPaginationSkeleton(): React.JSX.Element {
   return (
     <nav aria-label="pagination" className="mx-auto flex w-full justify-center">
       <ul className="flex flex-row items-center gap-1">
@@ -122,7 +123,7 @@ function SearchPaginationSkeleton(): JSX.Element {
   );
 }
 
-export function CustomerNotesSkeleton(): JSX.Element {
+export function CustomerNotesSkeleton(): React.JSX.Element {
   return (
     <div className="space-y-4">
       <ul className="space-y-4">

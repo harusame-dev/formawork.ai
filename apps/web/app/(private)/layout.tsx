@@ -1,3 +1,4 @@
+import type React from "react";
 import Link from "next/link";
 import { Onboarding } from "@/features/onboarding/providers/onboarding-provider.client";
 import { NavigationMenu } from "./_components/navigation-menu.client";
@@ -7,7 +8,7 @@ export default function PrivateLayout({
   children,
 }: {
   children: React.ReactNode;
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <Onboarding>
       <div className="grid h-dvh grid-rows-[auto_1fr]">

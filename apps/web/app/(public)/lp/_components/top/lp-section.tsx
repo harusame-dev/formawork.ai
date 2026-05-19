@@ -1,3 +1,4 @@
+import type React from "react";
 import type { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren<{
@@ -9,7 +10,7 @@ export function LpSection({
   title,
   description,
   children,
-}: Props): JSX.Element {
+}: Props): React.JSX.Element {
   return (
     <section className="px-4 py-16">
       <div className="container mx-auto max-w-5xl">

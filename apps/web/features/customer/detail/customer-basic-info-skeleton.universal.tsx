@@ -1,3 +1,4 @@
+import type React from "react";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
 const SKELETON_FIELDS = [
@@ -12,7 +13,7 @@ const SKELETON_FIELDS = [
   { labelWidth: "w-10", valueWidth: "w-32" }, // 更新日
 ] as const;
 
-export function CustomerBasicInfoSkeleton(): JSX.Element {
+export function CustomerBasicInfoSkeleton(): React.JSX.Element {
   return (
     <div className="space-y-4">
       {SKELETON_FIELDS.map((field, index) => (
