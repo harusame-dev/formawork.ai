@@ -1,0 +1,22 @@
+commit & puash
+
+---
+
+Run pnpm validate:check
+$ pnpm --filter web lint && pnpm format:check && DATABASE_URL=***localhost:5432/dummy knip && cspell . && pnpm -r type:check
+$ eslint .
+$ prettier --check .
+Checking formatting...
+All matched files use Prettier code style!
+Unused exports (1)
+editStaffSchema  apps/web/features/staff/edit/schema.ts:9:14
+Configuration hints (8)
+mocks/**                          apps/web         knip.jsonc  Remove from ignore            
+testing/msw-test.ts               apps/web         knip.jsonc  Remove from ignore            
+public/mockServiceWorker.js       apps/web         knip.jsonc  Remove from ignore            
+src/nextjs/middleware.example.ts  packages/logger  knip.jsonc  Remove from ignore            
+src/fixtures/production/**        packages/db      knip.jsonc  Remove from ignore            
+src/styles/globals.css            packages/ui      knip.jsonc  Remove from ignore            
+tailwindcss                       apps/web         knip.jsonc  Remove from ignoreDependencies
+type:check                                         knip.jsonc  Remove from ignoreBinaries    
+[ELIFECYCLE] Command failed with exit code 1.
