@@ -28,6 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    permissions:
+      contents: read
+      pull-requests: read # dorny/paths-filter が PR の変更ファイルを取得するために必要
+
     strategy:
       fail-fast: false
       matrix:
