@@ -91,6 +91,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 
 export const config = {
   matcher: [
-    String.raw`/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icon-192x192\.png|icon-512x512\.png|apple-icon\.png).*)`,
+    // matcher は build-time に静的解析されるため、String.raw など実行時関数は使えない
+    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icon-192x192\\.png|icon-512x512\\.png|apple-icon\\.png).*)",
   ],
 };
