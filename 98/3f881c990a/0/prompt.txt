@@ -1,0 +1,21 @@
+jsx.d.ts を作るんじゃなくて一括で React.JSX 形式にできない？
+
+---
+
+commit and push
+
+---
+
+✅️ シーディング完了
+$ TZ=Etc/UTC next build
+  Applying modifyConfig from Vercel
+▲ Next.js 16.2.4 (Turbopack)
+- Cache Components enabled
+  Creating an optimized production build ...
+✓ Compiled successfully in 16.1s
+  Running TypeScript ...
+  Finished TypeScript in 7.7s ...
+  Collecting page data using 3 workers ...
+⨯ Invalid segment configuration export detected. This can cause unexpected behavior from the configs not being applied. You should see the relevant failures in the logs above. Please fix them to continue.
+[ELIFECYCLE] Command failed with exit code 1.
+Error: Command "pnpm -w db:reset && pnpm build" exited with 1
