@@ -1,1 +1,22 @@
 prettier plugin tailwindcss って tailwind v4 に対応している？
+
+---
+
+✻ Sautéed for 4m 48s
+
+---
+
+pnpm validate:check
+$ pnpm --filter web lint && pnpm format:check && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy knip && cspell . && pnpm -r type:check
+$ eslint .
+$ prettier --check .
+Checking formatting...
+All matched files use Prettier code style!
+✂️  Excellent, Knip found no issues.
+373/377 pnpm-workspace.yaml 6.77ms X
+pnpm-workspace.yaml:73:3 - Unknown word (neostandard)
+pnpm-workspace.yaml:83:19 - Unknown word (packagejson)
+374/377 prettier.config.mjs 2.72ms X
+prettier.config.mjs:3:75 - Unknown word (jvmoptions)
+CSpell: Files checked: 377, Issues found: 3 in 2 files.
+[ELIFECYCLE] Command failed with exit code 1.
