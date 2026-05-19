@@ -1,0 +1,4 @@
+permissions:  # dorny/paths-filter には pull-requests の read 権限が必要
+          pull-requests: read
+
+のため、dorny/paths filter の job に permissions 設定を追加して

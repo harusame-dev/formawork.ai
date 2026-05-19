@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "09f44de16e5f",
+  "session_id": "8e10a06b-805d-4e03-89a1-1d1924d64d41",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-19T21:41:50.015754Z",
+  "branch": "actions-policy",
+  "checkpoints_count": 0,
+  "files_touched": [
+    ".github/workflows/e2e-test.yml"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "619ddea4dda3",
+  "checkpoint_transcript_start": 362,
+  "transcript_lines_at_start": 362,
+  "token_usage": {
+    "input_tokens": 13,
+    "cache_creation_tokens": 3032,
+    "cache_read_tokens": 1282175,
+    "output_tokens": 1650,
+    "api_call_count": 8
+  },
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-19T21:41:49.777548Z",
+    "agent_lines": 4,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 4,
+    "agent_percentage": 100
+  }
+}
