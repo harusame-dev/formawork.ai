@@ -85,7 +85,7 @@ export function CustomerSearchFormSkeleton() {
       <div className="sr-only">読み込み中</div>
       <div className="space-y-2">
         {/* FormLabel */}
-        <span className="text-sm font-bold leading-none">キーワード</span>
+        <span className="text-sm leading-none font-bold">キーワード</span>
 
         {/* FormDescription */}
         <p className="text-sm text-muted-foreground">
@@ -93,7 +93,7 @@ export function CustomerSearchFormSkeleton() {
         </p>
 
         {/* Input + Button */}
-        <div className="flex gap-4 items-center">
+        <div className="flex items-center gap-4">
           <Skeleton className="h-9 w-full rounded-md" />
           <Skeleton className="h-9 w-[76px] rounded-md" />
         </div>
@@ -116,7 +116,7 @@ export function StaffSearchFormSkeleton() {
       <div className="sr-only">読み込み中</div>
       <div className="space-y-2">
         {/* FormLabel */}
-        <span className="text-sm font-bold leading-none">キーワード</span>
+        <span className="text-sm leading-none font-bold">キーワード</span>
 
         {/* FormDescription */}
         <p className="text-sm text-muted-foreground">
@@ -124,7 +124,7 @@ export function StaffSearchFormSkeleton() {
         </p>
 
         {/* Input + Button */}
-        <div className="flex gap-4 items-center">
+        <div className="flex items-center gap-4">
           <Skeleton className="h-9 w-full rounded-md" />
           <Skeleton className="h-9 w-[76px] rounded-md" />
         </div>
