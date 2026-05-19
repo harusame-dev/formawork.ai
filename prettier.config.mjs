@@ -10,6 +10,13 @@ const config = {
     "prettier-plugin-sql",
     "prettier-plugin-packagejson",
   ],
+  overrides: [
+    {
+      // PL/pgSQL の DO $$ ... $$ ブロックを含む SQL を扱うため PostgreSQL dialect を指定
+      files: "*.sql",
+      options: { language: "postgresql" },
+    },
+  ],
 };
 
 export default config;
