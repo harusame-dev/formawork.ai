@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "e2df9aa8daa7",
+  "session_id": "1d944ed4-7379-4eea-9b37-2914cc9d492c",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-19T09:48:06.064259Z",
+  "branch": "lint-migration",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/proxy.ts"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "06f970547f1c",
+  "token_usage": {
+    "input_tokens": 28,
+    "cache_creation_tokens": 30589,
+    "cache_read_tokens": 234274,
+    "output_tokens": 1242,
+    "api_call_count": 9
+  },
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-19T09:48:06.03091Z",
+    "agent_lines": 0,
+    "human_added": 1,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 1,
+    "agent_percentage": 0
+  }
+}

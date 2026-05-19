@@ -1,0 +1,25 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "e2df9aa8daa7",
+  "strategy": "manual-commit",
+  "branch": "lint-migration",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/proxy.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/e2/df9aa8daa7/0/metadata.json",
+      "transcript": "/e2/df9aa8daa7/0/full.jsonl",
+      "content_hash": "/e2/df9aa8daa7/0/content_hash.txt",
+      "prompt": "/e2/df9aa8daa7/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 28,
+    "cache_creation_tokens": 30589,
+    "cache_read_tokens": 234274,
+    "output_tokens": 1242,
+    "api_call_count": 9
+  }
+}
