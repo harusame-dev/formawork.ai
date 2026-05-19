@@ -34,7 +34,9 @@ function AdviceSection({
   );
 }
 
-export function CustomerNoteAdvicePresenter({ advice }: Props): React.JSX.Element {
+export function CustomerNoteAdvicePresenter({
+  advice,
+}: Props): React.JSX.Element {
   const { currentEvaluation, nextAdvice } = advice.advice;
 
   return (

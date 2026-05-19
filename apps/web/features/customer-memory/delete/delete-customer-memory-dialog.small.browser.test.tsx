@@ -11,10 +11,7 @@ vi.mock("./delete-customer-memory.action", () => ({
 const test = base.extend<{
   deleteCustomerMemoryActionMock: Mock;
 }>({
-  deleteCustomerMemoryActionMock: async (
-    {},
-    use: any,
-  ) => {
+  deleteCustomerMemoryActionMock: async ({}, use: any) => {
     const module = await import("./delete-customer-memory.action");
     const mock = vi.mocked(module.deleteCustomerMemoryAction);
     await use(mock);

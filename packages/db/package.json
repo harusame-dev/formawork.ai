@@ -1,39 +1,39 @@
 {
-	"dependencies": {
-		"drizzle-orm": "catalog:",
-		"postgres": "catalog:",
-		"valibot": "catalog:"
-	},
-	"devDependencies": {
-		"@types/node": "catalog:",
-		"@workspace/tsconfig": "workspace:",
-		"drizzle-kit": "catalog:",
-		"tsx": "catalog:",
-		"typescript": "catalog:"
-	},
-	"exports": {
-		"./client": "./src/client.ts",
-		"./pgschema": "./src/pgschema.ts",
-		"./queue-names": "./src/queue-names.ts",
-		"./schema": "./src/schema/index.ts",
-		"./schema/customer": "./src/schema/customer.ts",
-		"./schema/customer-memory": "./src/schema/customer-memory.ts",
-		"./schema/customer-note": "./src/schema/customer-note.ts",
-		"./schema/customer-note-advice": "./src/schema/customer-note-advice.ts",
-		"./schema/staff": "./src/schema/staff.ts"
-	},
-	"name": "@workspace/db",
-	"private": true,
-	"scripts": {
-		"db:generate": "drizzle-kit generate",
-		"db:migrate": "pnpm db:pgschema:create && tsx --env-file-if-exists=.env src/migrate.ts",
-		"db:pgschema:create": "tsx --env-file-if-exists=.env src/create-pg-schema.ts",
-		"db:pgschema:drop": "tsx --env-file-if-exists=.env src/drop-pg-schema.ts",
-		"db:reset": "pnpm db:pgschema:drop && pnpm db:migrate && pnpm db:seed",
-		"db:seed": "tsx --env-file-if-exists=.env src/seed.ts",
-		"db:studio": "drizzle-kit studio",
-		"type:check": "tsc --noEmit"
-	},
-	"type": "module",
-	"version": "0.0.0"
+  "name": "@workspace/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./client": "./src/client.ts",
+    "./pgschema": "./src/pgschema.ts",
+    "./queue-names": "./src/queue-names.ts",
+    "./schema": "./src/schema/index.ts",
+    "./schema/customer": "./src/schema/customer.ts",
+    "./schema/customer-memory": "./src/schema/customer-memory.ts",
+    "./schema/customer-note": "./src/schema/customer-note.ts",
+    "./schema/customer-note-advice": "./src/schema/customer-note-advice.ts",
+    "./schema/staff": "./src/schema/staff.ts"
+  },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "pnpm db:pgschema:create && tsx --env-file-if-exists=.env src/migrate.ts",
+    "db:pgschema:create": "tsx --env-file-if-exists=.env src/create-pg-schema.ts",
+    "db:pgschema:drop": "tsx --env-file-if-exists=.env src/drop-pg-schema.ts",
+    "db:reset": "pnpm db:pgschema:drop && pnpm db:migrate && pnpm db:seed",
+    "db:seed": "tsx --env-file-if-exists=.env src/seed.ts",
+    "db:studio": "drizzle-kit studio",
+    "type:check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "catalog:",
+    "postgres": "catalog:",
+    "valibot": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@workspace/tsconfig": "workspace:",
+    "drizzle-kit": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
 }

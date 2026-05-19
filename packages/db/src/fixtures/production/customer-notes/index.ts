@@ -4,8 +4,8 @@ import { customer03YamamotoKeikoNotes } from "./customer-03-yamamoto-keiko";
 import { customer04SatoShotaNotes } from "./customer-04-sato-shota";
 
 export const productionCustomerNotes = [
-	...customer01TanakaMisakiNotes,
-	...customer02SuzukiAyakaNotes,
-	...customer03YamamotoKeikoNotes,
-	...customer04SatoShotaNotes,
+  ...customer01TanakaMisakiNotes,
+  ...customer02SuzukiAyakaNotes,
+  ...customer03YamamotoKeikoNotes,
+  ...customer04SatoShotaNotes,
 ];

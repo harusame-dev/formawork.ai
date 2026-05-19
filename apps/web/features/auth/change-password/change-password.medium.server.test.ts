@@ -22,10 +22,7 @@ const test = base.extend<{
   cleanup: { authUserIds: string[]; staffIds: string[] };
   testUser: { authUserId: string; email: string; password: string };
 }>({
-  cleanup: async (
-    {},
-    use,
-  ) => {
+  cleanup: async ({}, use) => {
     const authUserIds: string[] = [];
     const staffIds: string[] = [];
     await use({ authUserIds, staffIds });

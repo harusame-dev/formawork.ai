@@ -52,10 +52,7 @@ const test = base.extend<{
     await use(page);
   },
 
-  maxEmailUser: async (
-    {},
-    use,
-  ) => {
+  maxEmailUser: async ({}, use) => {
     // 254文字のメールアドレス (242 + 1(@) + 11(example.com) = 254文字)
     const randomString = randomUUID().slice(0, 8);
     const padding = "a".repeat(242 - randomString.length);
@@ -68,10 +65,7 @@ const test = base.extend<{
     await cleanupTestUser(staffId);
   },
 
-  maxPasswordUser: async (
-    {},
-    use,
-  ) => {
+  maxPasswordUser: async ({}, use) => {
     // 64文字のパスワードでユーザーを作成
     const randomString = randomUUID().slice(0, 8);
     const { staffId, testUser } = await createTestUser({
@@ -83,10 +77,7 @@ const test = base.extend<{
     await cleanupTestUser(staffId);
   },
 
-  minEmailUser: async (
-    {},
-    use,
-  ) => {
+  minEmailUser: async ({}, use) => {
     // 最小文字数のメールアドレス（email形式として有効な最短形式）
     const randomString = randomUUID().slice(0, 4);
     const { staffId, testUser } = await createTestUser({
@@ -98,10 +89,7 @@ const test = base.extend<{
     await cleanupTestUser(staffId);
   },
 
-  minPasswordUser: async (
-    {},
-    use,
-  ) => {
+  minPasswordUser: async ({}, use) => {
     // 最小文字数のパスワード（8文字）でユーザーを作成
     const randomString = randomUUID().slice(0, 8);
     const { staffId, testUser } = await createTestUser({

@@ -23,10 +23,7 @@ interface MswFixtures {
 
 const test = base.extend<MswFixtures>({
   worker: [
-    async (
-      {},
-      use: any,
-    ) => {
+    async ({}, use: any) => {
       await worker.start({
         onUnhandledRequest: "bypass",
         quiet: true,

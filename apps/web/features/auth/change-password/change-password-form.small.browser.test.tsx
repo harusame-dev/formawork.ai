@@ -17,10 +17,7 @@ vi.mock("next/navigation", () => ({
 const test = base.extend<{
   changePasswordActionMock: Mock;
 }>({
-  changePasswordActionMock: async (
-    {},
-    use: any,
-  ) => {
+  changePasswordActionMock: async ({}, use: any) => {
     const changePasswordActionModule = await import("./change-password.action");
     await use(changePasswordActionModule.changePasswordAction);
     vi.clearAllMocks();

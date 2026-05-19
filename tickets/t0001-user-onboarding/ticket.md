@@ -144,9 +144,11 @@
 [
   {
     tour: "main",
-    steps: [ /* 9ステップ */ ]
-  }
-]
+    steps: [
+      /* 9ステップ */
+    ],
+  },
+];
 ```
 
 ### Tailwind CSS設定
@@ -154,8 +156,8 @@
 ```typescript
 // tailwind.config.ts
 content: [
-  './node_modules/onborda/dist/**/*.{js,ts,jsx,tsx}' // 追加
-]
+  "./node_modules/onborda/dist/**/*.{js,ts,jsx,tsx}", // 追加
+];
 ```
 
 ### ディレクトリ構成
@@ -221,6 +223,7 @@ apps/web/features/onboarding/
 ## 実装タスク
 
 ### Phase 1: 基盤構築
+
 - [x] `onborda` `framer-motion` パッケージのインストール
 - [x] `tailwind.config.ts` に onborda クラス読み込み設定追加
 - [x] `use-onboarding.ts` フック実装
@@ -230,6 +233,7 @@ apps/web/features/onboarding/
 - [x] `start-tour-button.tsx` ツアー開始ボタン実装
 
 ### Phase 2: 既存コンポーネント修正
+
 - [x] `app/(private)/layout.tsx` に Provider 設置
 - [x] `app/(private)/page.tsx` ウェルカム・注意事項メッセージ追加 + ID + ツアー開始ボタン
 - [x] `navigation-menu.tsx` に ID + 自動オープンロジック
@@ -238,6 +242,7 @@ apps/web/features/onboarding/
 - [x] `customer-detail-tabs.tsx` に ID 付与
 
 ### Phase 3: UI改善・調整
+
 - [x] アイコンを絵文字から Lucide React アイコンに変更
 - [x] カードのレイアウトをコンパクト化
 - [x] アニメーション速度の調整
@@ -245,6 +250,7 @@ apps/web/features/onboarding/
 - [x] 戻るボタンの削除
 
 ### Phase 4: E2Eテスト対応
+
 - [x] `user.setup.ts` でオンボーディングスキップ設定追加
 - [x] `logout.e2e.test.ts` でオンボーディングスキップ設定追加
 - [x] `password-change.e2e.test.ts` でオンボーディングスキップ設定追加
@@ -256,6 +262,7 @@ apps/web/features/onboarding/
 ## 受け入れ条件
 
 ### 機能要件
+
 - [x] 初回ログイン後、オンボーディングが自動開始される
 - [x] 9ステップが順番に表示される
 - [x] ステップ2でデモ環境の注意事項が表示される
@@ -267,11 +274,13 @@ apps/web/features/onboarding/
 - [x] トップページの「使い方ガイドを見る」ボタンでオンボーディングを再開できる
 
 ### 非機能要件
+
 - [x] キーボード操作（Tab, Enter, Escape）で操作できる
 - [x] アニメーションがスムーズに動作する
 - [x] Chrome で正常に動作する
 
 ### E2Eテスト対応
+
 - [x] E2Eテストでオンボーディングがスキップされ、テストが正常に実行される
 
 ---

@@ -15,10 +15,7 @@ vi.mock("@/features/staff/edit/edit-staff.action", () => ({
 const test = base.extend<{
   registerStaffActionMock: Mock;
 }>({
-  registerStaffActionMock: async (
-    {},
-    use: any,
-  ) => {
+  registerStaffActionMock: async ({}, use: any) => {
     const registerStaffActionModule = await import("./register-staff.action");
     await use(registerStaffActionModule.registerStaffAction);
     vi.clearAllMocks();

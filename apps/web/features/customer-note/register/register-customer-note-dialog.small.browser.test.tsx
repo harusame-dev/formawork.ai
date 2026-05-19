@@ -12,10 +12,7 @@ vi.mock("./register-customer-note.action", () => ({
 const test = base.extend<{
   registerCustomerNoteActionMock: Mock;
 }>({
-  registerCustomerNoteActionMock: async (
-    {},
-    use: any,
-  ) => {
+  registerCustomerNoteActionMock: async ({}, use: any) => {
     const registerCustomerNoteActionModule =
       await import("./register-customer-note.action");
     const mock = vi.mocked(

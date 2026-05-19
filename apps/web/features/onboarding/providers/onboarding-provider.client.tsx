@@ -14,7 +14,11 @@ interface OnboardingWrapperProps {
   children: ReactNode;
 }
 
-function OnboardingInner({ children }: { children: ReactNode }): React.JSX.Element {
+function OnboardingInner({
+  children,
+}: {
+  children: ReactNode;
+}): React.JSX.Element {
   const { shouldShow, startTour, closeTour } = useOnboarding();
   const initializedReference = useRef(false);
 
@@ -50,7 +54,9 @@ function OnboardingInner({ children }: { children: ReactNode }): React.JSX.Eleme
   );
 }
 
-export function Onboarding({ children }: OnboardingWrapperProps): React.JSX.Element {
+export function Onboarding({
+  children,
+}: OnboardingWrapperProps): React.JSX.Element {
   return (
     <OnbordaProvider>
       <OnboardingInner>{children}</OnboardingInner>

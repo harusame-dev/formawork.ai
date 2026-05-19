@@ -9,10 +9,7 @@ import { registerStaff } from "./register-staff";
 const test = base.extend<{
   cleanup: { staffIds: string[]; authUserIds: string[] };
 }>({
-  cleanup: async (
-    {},
-    use,
-  ) => {
+  cleanup: async ({}, use) => {
     const staffIds: string[] = [];
     const authUserIds: string[] = [];
     await use({ authUserIds, staffIds });

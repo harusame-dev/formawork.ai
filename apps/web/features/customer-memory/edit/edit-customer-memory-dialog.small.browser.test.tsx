@@ -16,10 +16,7 @@ vi.mock("../register/register-customer-memory.action", () => ({
 const test = base.extend<{
   editCustomerMemoryActionMock: Mock;
 }>({
-  editCustomerMemoryActionMock: async (
-    {},
-    use: any,
-  ) => {
+  editCustomerMemoryActionMock: async ({}, use: any) => {
     const module = await import("./edit-customer-memory.action");
     const mock = vi.mocked(module.editCustomerMemoryAction);
     await use(mock);

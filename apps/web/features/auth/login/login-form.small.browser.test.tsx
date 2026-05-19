@@ -12,10 +12,7 @@ vi.mock("./login.action", () => ({
 const test = base.extend<{
   loginActionMock: Mock;
 }>({
-  loginActionMock: async (
-    {},
-    use: any,
-  ) => {
+  loginActionMock: async ({}, use: any) => {
     const loginActionModule = await import("./login.action");
     await use(loginActionModule.loginAction);
     vi.clearAllMocks();

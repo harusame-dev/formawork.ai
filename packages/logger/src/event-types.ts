@@ -6,29 +6,29 @@
  */
 
 export const AuthenticationEvent = {
-	AuthenticationFailure: "AuthenticationFailure",
-	AuthenticationSuccess: "AuthenticationSuccess",
+  AuthenticationFailure: "AuthenticationFailure",
+  AuthenticationSuccess: "AuthenticationSuccess",
 } as const;
 
 export const AuthorizationEvent = {
-	AuthorizationError: "AuthorizationError",
+  AuthorizationError: "AuthorizationError",
 } as const;
 
 export const ValidationEvent = {
-	InputValidationError: "InputValidationError",
-	OutputValidationError: "OutputValidationError",
+  InputValidationError: "InputValidationError",
+  OutputValidationError: "OutputValidationError",
 } as const;
 
 export const ErrorEvent = {
-	ApplicationError: "ApplicationError",
-	DatabaseError: "DatabaseError",
+  ApplicationError: "ApplicationError",
+  DatabaseError: "DatabaseError",
 } as const;
 
 export const EventType = {
-	...AuthenticationEvent,
-	...AuthorizationEvent,
-	...ValidationEvent,
-	...ErrorEvent,
+  ...AuthenticationEvent,
+  ...AuthorizationEvent,
+  ...ValidationEvent,
+  ...ErrorEvent,
 } as const;
 
 export type EventType = (typeof EventType)[keyof typeof EventType];

@@ -15,10 +15,7 @@ vi.mock("../edit/edit-customer.action", () => ({
 const test = base.extend<{
   registerCustomerActionMock: Mock;
 }>({
-  registerCustomerActionMock: async (
-    {},
-    use: any,
-  ) => {
+  registerCustomerActionMock: async ({}, use: any) => {
     const registerCustomerActionModule =
       await import("./register-customer.action");
     await use(registerCustomerActionModule.registerCustomerAction);

@@ -19,10 +19,10 @@
 
 ## 対象箇所
 
-| 対象 | ファイル | 現在の fallback |
-|------|---------|----------------|
-| CustomerSearchForm | `apps/web/app/(private)/customers/page.tsx` | disabled 状態のフォーム |
-| StaffSearchForm | `apps/web/app/(private)/staffs/page.tsx` | disabled 状態のフォーム |
+| 対象                    | ファイル                                                       | 現在の fallback         |
+| ----------------------- | -------------------------------------------------------------- | ----------------------- |
+| CustomerSearchForm      | `apps/web/app/(private)/customers/page.tsx`                    | disabled 状態のフォーム |
+| StaffSearchForm         | `apps/web/app/(private)/staffs/page.tsx`                       | disabled 状態のフォーム |
 | CustomerNotesSearchForm | `apps/web/app/(private)/customers/[customerId]/notes/page.tsx` | disabled 状態のフォーム |
 
 ---
@@ -50,6 +50,7 @@ FormItem (space-y-2)
 **ファイル**: `apps/web/features/staff/list/staff-search-form-presenter.tsx`
 
 CustomerSearchForm と**同一の構造**。
+
 - FormDescription の内容のみ異なる: "姓または名で完全一致検索（最大300文字）"
 
 ### 3. CustomerNotesSearchFormのDOM構造
@@ -135,15 +136,16 @@ export function StaffSearchFormSkeleton() {
 
 ### CLS防止のためのスタイル対応
 
-| 要素 | 実フォームのスタイル | スケルトンの対応 |
-|------|---------------------|-----------------|
-| FormItem | `space-y-2` | `space-y-2` |
-| FormLabel | `text-sm font-bold leading-none` | `text-sm font-bold leading-none` + 実テキスト「キーワード」 |
-| FormDescription | `text-sm text-muted-foreground` | 同クラス + 実テキスト |
-| Input | `h-9 w-full rounded-md` | `Skeleton className="h-9 w-full rounded-md"` |
-| Button | `h-9` + アイコン + テキスト | `Skeleton className="h-9 w-[76px] rounded-md"` |
+| 要素            | 実フォームのスタイル             | スケルトンの対応                                            |
+| --------------- | -------------------------------- | ----------------------------------------------------------- |
+| FormItem        | `space-y-2`                      | `space-y-2`                                                 |
+| FormLabel       | `text-sm font-bold leading-none` | `text-sm font-bold leading-none` + 実テキスト「キーワード」 |
+| FormDescription | `text-sm text-muted-foreground`  | 同クラス + 実テキスト                                       |
+| Input           | `h-9 w-full rounded-md`          | `Skeleton className="h-9 w-full rounded-md"`                |
+| Button          | `h-9` + アイコン + テキスト      | `Skeleton className="h-9 w-[76px] rounded-md"`              |
 
 **ボタン幅の計算**:
+
 - `px-4` (16px × 2 = 32px) + アイコン (16px) + `mr-2` (8px) + テキスト「検索」(約20px) ≈ 76px
 
 ### Step 3: customers/page.tsxの更新
@@ -183,12 +185,12 @@ import { StaffSearchFormSkeleton } from "@/features/staff/list/staff-search-form
 
 ## 関連ファイル
 
-| ファイル | 役割 |
-|---------|------|
-| `apps/web/features/customer/list/customer-search-form-skeleton.tsx` | 新規作成: 顧客検索フォーム専用スケルトン |
-| `apps/web/features/staff/list/staff-search-form-skeleton.tsx` | 新規作成: スタッフ検索フォーム専用スケルトン |
+| ファイル                                                                       | 役割                                           |
+| ------------------------------------------------------------------------------ | ---------------------------------------------- |
+| `apps/web/features/customer/list/customer-search-form-skeleton.tsx`            | 新規作成: 顧客検索フォーム専用スケルトン       |
+| `apps/web/features/staff/list/staff-search-form-skeleton.tsx`                  | 新規作成: スタッフ検索フォーム専用スケルトン   |
 | `apps/web/features/customer-note/list/customer-notes-search-form-skeleton.tsx` | 新規作成: 顧客ノート検索フォーム専用スケルトン |
-| `apps/web/app/(private)/customers/page.tsx` | 変更: fallback をスケルトンに置換 |
-| `apps/web/app/(private)/staffs/page.tsx` | 変更: fallback をスケルトンに置換 |
-| `apps/web/app/(private)/customers/[customerId]/notes/page.tsx` | 変更: fallback をスケルトンに置換 |
-| `apps/web/features/customer/edit/customer-edit-form-skeleton.tsx` | 参考: 既存スケルトン実装パターン |
+| `apps/web/app/(private)/customers/page.tsx`                                    | 変更: fallback をスケルトンに置換              |
+| `apps/web/app/(private)/staffs/page.tsx`                                       | 変更: fallback をスケルトンに置換              |
+| `apps/web/app/(private)/customers/[customerId]/notes/page.tsx`                 | 変更: fallback をスケルトンに置換              |
+| `apps/web/features/customer/edit/customer-edit-form-skeleton.tsx`              | 参考: 既存スケルトン実装パターン               |
