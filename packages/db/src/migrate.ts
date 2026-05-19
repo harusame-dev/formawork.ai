@@ -95,11 +95,11 @@ async function setupCronJob() {
 }
 
 async function createQueueIfNotExists(queueName: string) {
-	const result = await db.execute<{ exists: boolean }>(sql`
+	const result = (await db.execute(sql`
 		SELECT EXISTS (
 			SELECT 1 FROM pgmq.meta WHERE queue_name = ${queueName}
 		) as exists
-	`);
+	`)) as unknown as { exists: boolean }[];
 
 	if (result[0]?.exists) {
 		console.log(`  ⏭️ キュー "${queueName}" は既に存在します`);

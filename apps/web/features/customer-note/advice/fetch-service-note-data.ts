@@ -32,7 +32,7 @@ interface ServiceNoteData {
 export async function fetchServiceNoteData(
   serviceNoteId: string,
 ): Promise<ServiceNoteData | null> {
-  const results = await db.execute<ServiceNoteData>(sql`
+  const results = (await db.execute(sql`
 		SELECT
 			note.customer_note_id,
 			note.customer_id as "customerId",
@@ -68,7 +68,7 @@ export async function fetchServiceNoteData(
 		FROM ${sql.identifier(schemaName)}.customer_notes note
 		INNER JOIN ${sql.identifier(schemaName)}.customers customer ON note.customer_id = customer.customer_id
 		WHERE note.customer_note_id = ${serviceNoteId}::uuid
-	`);
+	`)) as unknown as ServiceNoteData[];
 
   return results[0] ?? null;
 }
