@@ -7,7 +7,6 @@ import { PgmqQueue } from "./queue";
 const test = base.extend<{
   testQueue: { queueName: string };
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: vitest fixture pattern
   async testQueue({}, use) {
     const queueName = `test_queue_${v4().replaceAll("-", "_")}`;
 

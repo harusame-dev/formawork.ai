@@ -35,24 +35,18 @@ const test = base.extend<{
   changePasswordMock: Mock;
   redirectMock: Mock;
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
-  // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
   changePasswordMock: async ({}, use: any) => {
     const module = await import("./change-password");
     const mock = vi.mocked(module.changePassword);
     await use(mock);
     vi.clearAllMocks();
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
-  // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
   getUserStaffIdMock: async ({}, use: any) => {
     const module = await import("@/features/auth/get-user-staff-id");
     const mock = vi.mocked(module.getUserStaffId);
     await use(mock);
     vi.clearAllMocks();
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
-  // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
   redirectMock: async ({}, use: any) => {
     const module = await import("next/navigation");
     const mock = vi.mocked(module.redirect);

@@ -34,7 +34,6 @@ interface TestData {
 }
 
 const test = base.extend<{ testData: TestData }>({
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
   testData: async ({}, use) => {
     const staffId = v4();
     const targetCustomerId = v4();
@@ -175,7 +174,6 @@ const test = base.extend<{ testData: TestData }>({
         lastName: "テスト",
         remarks: "テスト用備考",
       },
-      // biome-ignore lint/style/noNonNullAssertion: テスト用データは必ず10件以上作成しているため安全
       targetNoteId: targetNotes[9]!.customerNoteId,
       targetNotes,
     };

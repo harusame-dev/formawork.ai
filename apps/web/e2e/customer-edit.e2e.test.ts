@@ -8,7 +8,6 @@ import { testWithAuthenticated } from "./fixtures/authenticated-test";
 const test = testWithAuthenticated.extend<{
   testCustomer: { customerId: string };
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
   async testCustomer({}, use) {
     const customerId = randomUUID();
     await db.insert(customersTable).values({

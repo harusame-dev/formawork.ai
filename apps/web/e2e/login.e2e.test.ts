@@ -53,7 +53,6 @@ const test = base.extend<{
   },
 
   maxEmailUser: async (
-    // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
     {},
     use,
   ) => {
@@ -70,7 +69,6 @@ const test = base.extend<{
   },
 
   maxPasswordUser: async (
-    // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
     {},
     use,
   ) => {
@@ -86,7 +84,6 @@ const test = base.extend<{
   },
 
   minEmailUser: async (
-    // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
     {},
     use,
   ) => {
@@ -102,7 +99,6 @@ const test = base.extend<{
   },
 
   minPasswordUser: async (
-    // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
     {},
     use,
   ) => {

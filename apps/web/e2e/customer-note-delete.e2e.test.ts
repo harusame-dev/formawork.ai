@@ -85,7 +85,6 @@ const test = testWithAuthenticated.extend<{
       .delete(customerNotesTable)
       .where(eq(customerNotesTable.customerNoteId, customerNoteId));
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
   testCustomer: async ({}, use) => {
     const customerId = randomUUID();
 

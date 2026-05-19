@@ -12,9 +12,7 @@ const test = base.extend<{
   deleteCustomerMemoryActionMock: Mock;
 }>({
   deleteCustomerMemoryActionMock: async (
-    // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
     {},
-    // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
     use: any,
   ) => {
     const module = await import("./delete-customer-memory.action");

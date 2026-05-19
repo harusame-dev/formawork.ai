@@ -31,7 +31,6 @@ const test = base.extend<{
   };
   supabaseAdminMock: Mock;
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
   async staff({}, use) {
     const staff = {
       firstName: "太郎",
@@ -43,7 +42,6 @@ const test = base.extend<{
     await use(staff);
     await db.delete(staffsTable).where(eq(staffsTable.staffId, staff.staffId));
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
   async staffWithAuthUser({}, use) {
     const authUserId = v4();
     const staff = {
@@ -57,8 +55,6 @@ const test = base.extend<{
     await use(staff);
     await db.delete(staffsTable).where(eq(staffsTable.staffId, staff.staffId));
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
-  // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
   async supabaseAdminMock({}, use: any) {
     const supabaseModule = await import("@repo/supabase/admin");
     const mock = vi.mocked(supabaseModule.createAdminClient);

@@ -23,7 +23,6 @@ const test = base.extend<{
   testUser: { authUserId: string; email: string; password: string };
 }>({
   cleanup: async (
-    // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
     {},
     use,
   ) => {

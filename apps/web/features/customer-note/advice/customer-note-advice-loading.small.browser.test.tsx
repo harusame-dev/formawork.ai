@@ -24,9 +24,7 @@ interface MswFixtures {
 const test = base.extend<MswFixtures>({
   worker: [
     async (
-      // biome-ignore lint/correctness/noEmptyPattern: Vitest の fixture パターンで使用する標準的な記法
       {},
-      // biome-ignore lint/suspicious/noExplicitAny: Vitest の fixture パターンで use の型は any
       use: any,
     ) => {
       await worker.start({

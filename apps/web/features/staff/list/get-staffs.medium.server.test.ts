@@ -25,7 +25,6 @@ const test = base.extend<{
     email: string;
   };
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
   async staff({}, use) {
     const email = `test-staff-${v4()}@example.com`;
     const firstName = v4();

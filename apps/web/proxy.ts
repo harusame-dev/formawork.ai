@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/complexity/useLiteralKeys: ts(4111) */
 import { updateSession } from "@repo/supabase/nextjs/proxy";
 import { type NextRequest, NextResponse } from "next/server";
 import * as v from "valibot";

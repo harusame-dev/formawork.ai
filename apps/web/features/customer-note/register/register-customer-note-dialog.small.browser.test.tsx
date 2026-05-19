@@ -13,9 +13,7 @@ const test = base.extend<{
   registerCustomerNoteActionMock: Mock;
 }>({
   registerCustomerNoteActionMock: async (
-    // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
     {},
-    // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
     use: any,
   ) => {
     const registerCustomerNoteActionModule =

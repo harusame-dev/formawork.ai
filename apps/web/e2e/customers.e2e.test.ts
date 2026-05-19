@@ -40,7 +40,6 @@ const test = testWithAuthenticated.extend<{
 
     await use(page);
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
   searchPaginationCustomers: async ({}, use) => {
     const keyword = randomUUID().slice(0, 8);
     const count = 40;
@@ -61,7 +60,6 @@ const test = testWithAuthenticated.extend<{
       .delete(customersTable)
       .where(eq(customersTable.firstName, keyword));
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
   searchTestCustomer: async ({}, use) => {
     const uniqueId = randomUUID().slice(0, 8);
     // 電話番号用のランダムな数字を生成（11桁）

@@ -20,7 +20,6 @@ const test = testWithAuthenticated.extend<{
     await expect(page.getByText("読み込み中")).toBeHidden();
     await use(page);
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
   testCustomer: async ({}, use) => {
     const customerId = randomUUID();
 

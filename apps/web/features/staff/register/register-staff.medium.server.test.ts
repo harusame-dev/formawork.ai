@@ -10,7 +10,6 @@ const test = base.extend<{
   cleanup: { staffIds: string[]; authUserIds: string[] };
 }>({
   cleanup: async (
-    // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
     {},
     use,
   ) => {

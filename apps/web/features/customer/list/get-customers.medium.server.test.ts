@@ -20,7 +20,6 @@ const test = base.extend<{
     phone: string;
   };
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: The first argument inside a fixture must use object destructuring pattern, e.g. ({ test } => {}). Instead, received "_".
   async customer({}, use) {
     const customer = {
       customerId: v4(),

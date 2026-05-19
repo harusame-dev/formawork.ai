@@ -23,7 +23,6 @@ const test = testWithAuthenticated.extend<{
     await expect(page.getByRole("table")).toBeVisible();
     await use(page);
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
   async testCustomer({}, use) {
     const customerId = randomUUID();
 

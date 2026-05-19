@@ -42,16 +42,12 @@ const test = base.extend<{
   getUserStaffIdMock: Mock;
   getUserRoleMock: Mock;
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
-  // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
   getUserRoleMock: async ({}, use: any) => {
     const getUserRoleModule = await import("@/features/auth/get-user-role");
     const mock = vi.mocked(getUserRoleModule.getUserRole);
     await use(mock);
     vi.clearAllMocks();
   },
-  // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
-  // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
   getUserStaffIdMock: async ({}, use: any) => {
     const getUserStaffIdModule =
       await import("@/features/auth/get-user-staff-id");

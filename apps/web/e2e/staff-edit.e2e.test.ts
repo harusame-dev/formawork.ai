@@ -25,7 +25,6 @@ const test = base.extend<{
   pageWithAdminStaff: Page;
   pageWithGenericStaff: Page;
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
   async adminRoleStaff({}, use) {
     const uniqueId = randomUUID().slice(0, 8);
     const staffData = {

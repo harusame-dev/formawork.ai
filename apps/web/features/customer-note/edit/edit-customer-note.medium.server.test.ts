@@ -18,7 +18,6 @@ vi.mock("@repo/logger/nextjs/server", () => ({
 const test = base.extend<{
   customerNoteId: string;
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: vitest の標準記法
   async customerNoteId({}, use) {
     const customerNoteId = randomUUID();
 

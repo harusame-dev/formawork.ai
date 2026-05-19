@@ -16,9 +16,7 @@ const test = base.extend<{
   registerCustomerMemoryActionMock: Mock;
 }>({
   registerCustomerMemoryActionMock: async (
-    // biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
     {},
-    // biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
     use: any,
   ) => {
     const module = await import("./register-customer-memory.action");

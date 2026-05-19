@@ -14,7 +14,6 @@ const test = testWithAuthenticated.extend<{
     phone: string;
   };
 }>({
-  // biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
   async testCustomer({}, use) {
     const customerId = randomUUID();
     const customer = {
