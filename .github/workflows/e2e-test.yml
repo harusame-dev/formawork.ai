@@ -10,6 +10,9 @@ concurrency:
   group: e2e-test-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   APP_NAME: FORMAWORK.AI
   SERVICE_NAME: web
@@ -35,23 +38,58 @@ jobs:
       - name: リポジトリのチェックアウト
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: 変更ファイルの検出
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        id: filter
+        with:
+          predicate-quantifier: every # フィルターの条件を AND 条件にするために必要。 default は some で or 条件
+          filters: |
+            web:
+              - 'apps/web/**'
+              - '!**/*.md'
+              - '!apps/web/vitest.config.ts'
+              - '!apps/web/vitest-browser-setup.ts'
+              - '!apps/web/eslint.config.mjs'
+              - '!apps/web/vercel.json'
+              - '!apps/web/components.json'
+            packages:
+              - 'packages/**'
+              - '!**/*.md'
+              - '!packages/ui/tsconfig.lint.json'
+            root-config:
+              - 'pnpm-lock.yaml'
+              - 'package.json'
+              - 'pnpm-workspace.yaml'
+              - '.node-version'
+            workflow:
+              - '.github/workflows/e2e-test.yml'
+
+      - name: 実行要否の判定
+        id: should-run
+        run: echo "result=${{ steps.filter.outputs.web == 'true' || steps.filter.outputs.packages == 'true' || steps.filter.outputs.root-config == 'true' || steps.filter.outputs.workflow == 'true' }}" >> $GITHUB_OUTPUT
+
       - name: pnpm のセットアップ
+        if: steps.should-run.outputs.result == 'true'
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
 
       - name: Node.js のセットアップ
+        if: steps.should-run.outputs.result == 'true'
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: .node-version
           cache: pnpm
 
       - name: 依存関係のインストール
+        if: steps.should-run.outputs.result == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Playwright ブラウザのインストール
+        if: steps.should-run.outputs.result == 'true'
         # userSetupProject で chromium を使うため常に chromium はインストール
         run: pnpm --filter web exec playwright install --with-deps chromium ${{ matrix.browser }}
 
       - name: Supabase CLI のセットアップ
+        if: steps.should-run.outputs.result == 'true'
         uses: supabase/setup-cli@df56b21da46c98abb12a9804e4fb1f657773e333 # v2.0.0
         with:
           # supabase/cli v2.99.0 でリリースアセットの命名規則が変わり、
@@ -61,18 +99,22 @@ jobs:
           version: 2.98.2
 
       - name: Supabase の起動
+        if: steps.should-run.outputs.result == 'true'
         run: |
           pnpm -w supabase:start && pnpm -w supabase:seed
       - name: データベースリセット
+        if: steps.should-run.outputs.result == 'true'
         run: pnpm -w db:reset
       - name: Next.js のビルド
+        if: steps.should-run.outputs.result == 'true'
         run: pnpm --filter web build
 
       - name: E2E テストの実行
+        if: steps.should-run.outputs.result == 'true'
         run: pnpm -w test:e2e --project=${{ matrix.browser }}
 
       - name: テストレポートのアップロード
-        if: failure()
+        if: ${{ failure() && steps.should-run.outputs.result == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: playwright-report-${{ matrix.browser }}
@@ -80,7 +122,7 @@ jobs:
           retention-days: 7
 
       - name: テスト結果アップロード
-        if: failure()
+        if: ${{ failure() && steps.should-run.outputs.result == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: playwright-screenshots-${{ matrix.browser }}
