@@ -19,3 +19,7 @@ $ TZ=Etc/UTC next build
 ⨯ Invalid segment configuration export detected. This can cause unexpected behavior from the configs not being applied. You should see the relevant failures in the logs above. Please fix them to continue.
 [ELIFECYCLE] Command failed with exit code 1.
 Error: Command "pnpm -w db:reset && pnpm build" exited with 1
+
+---
+
+ビルド実行してみて
