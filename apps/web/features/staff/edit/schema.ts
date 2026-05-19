@@ -6,7 +6,7 @@ import {
   staffRoleSchema,
 } from "@/features/staff/schema";
 
-export const editStaffSchema = v.object({
+const editStaffSchema = v.object({
   email: staffEmailSchema,
   firstName: staffFirstNameSchema,
   lastName: staffLastNameSchema,
