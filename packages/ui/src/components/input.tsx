@@ -52,7 +52,7 @@ const PasswordInput = forwardRef<
       />
       <button
         aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+        className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
         onClick={togglePasswordVisibility}
         type="button"
       >

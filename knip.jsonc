@@ -27,6 +27,10 @@
         // turbo/gen 必要か調査
         "@turbo/gen",
         "postcss",
+        // src/styles/globals.css から @import / @plugin で参照（knip は CSS を解析しない）
+        "tailwindcss",
+        "tw-animate-css",
+        "@tailwindcss/typography",
       ],
     },
   },

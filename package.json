@@ -25,6 +25,7 @@
     "prettier-plugin-packagejson": "catalog:",
     "prettier-plugin-sh": "catalog:",
     "prettier-plugin-sql": "catalog:",
+    "prettier-plugin-tailwindcss": "catalog:",
     "prettier-plugin-toml": "catalog:"
   },
   "packageManager": "pnpm@11.1.2"

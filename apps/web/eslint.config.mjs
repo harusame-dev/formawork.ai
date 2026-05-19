@@ -22,7 +22,7 @@ const eslintConfig = defineConfig([
   // React hooks
   reactHooks.configs.flat.recommended,
 
-  // Tailwind CSS v4 対応の品質ルール + クラスソート
+  // Tailwind CSS v4 対応の品質ルール
   // entryPoint は packages/ui の CSS-first 設定ファイル（apps/web からの相対パス）
   {
     files: ["**/*.{ts,tsx}"],
@@ -34,8 +34,10 @@ const eslintConfig = defineConfig([
     },
     rules: {
       ...betterTailwindcss.configs.recommended.rules,
-      // 改行整形は prettier に委ねる（クラス順序のみ better-tailwindcss が担当）
+      // 改行整形は prettier に委ねる
       "better-tailwindcss/enforce-consistent-line-wrapping": "off",
+      // クラスソートは prettier-plugin-tailwindcss に委ねる
+      "better-tailwindcss/enforce-consistent-class-order": "off",
     },
   },
 

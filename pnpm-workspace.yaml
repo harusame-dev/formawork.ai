@@ -83,6 +83,7 @@ catalog:
   prettier-plugin-packagejson: 3.0.2
   prettier-plugin-sh: 0.18.1
   prettier-plugin-sql: 0.20.0
+  prettier-plugin-tailwindcss: 0.7.4
   prettier-plugin-toml: 2.0.6
 
 catalogMode: strict

@@ -5,14 +5,9 @@ import { redirect } from "next/navigation";
 import * as v from "valibot";
 import { UserRole } from "@/features/auth/get-user-role";
 import { createServerAction } from "@/libs/create-server-action";
-import {
-  staffEmailSchema,
-  staffFirstNameSchema,
-  staffLastNameSchema,
-  staffRoleSchema,
-} from "@/features/staff/schema";
 import { StaffTag } from "@/features/staff/tag";
 import { editStaff } from "./edit-staff";
+import { editStaffSchema } from "./schema";
 
 export const editStaffAction = createServerAction(
   (parameters) => editStaff(parameters),
@@ -26,12 +21,9 @@ export const editStaffAction = createServerAction(
     },
     role: [UserRole.Admin],
     schema: v.object({
+      ...editStaffSchema.entries,
       authUserId: v.string(),
-      email: staffEmailSchema,
-      firstName: staffFirstNameSchema,
-      lastName: staffLastNameSchema,
       originalRole: v.string(),
-      role: staffRoleSchema,
       staffId: v.string(),
     }),
   },
