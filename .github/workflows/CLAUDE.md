@@ -2,9 +2,7 @@
 
 GitHub Actions ワークフローは以下のルールに従うこと。
 
-## 必須設定
-
-### ステップ名の日本語化
+## ステップ名の日本語化
 
 各ステップには日本語でわかりやすい名前を必ず付けること。
 
@@ -13,14 +11,14 @@ GitHub Actions ワークフローは以下のルールに従うこと。
 - `name: リポジトリのチェックアウト`
 - `name: 依存関係のインストール`
 
-### pnpm バージョン
+## pnpm バージョン
 
 `pnpm/action-setup` でバージョンを省略し、`package.json` の `packageManager` フィールドのバージョンを自動使用させること。
 
 - ❌ 悪い例: `version: 10.12.4`
 - ✅ 良い例: バージョン指定なし（省略）
 
-### Node.js バージョン
+## Node.js バージョン
 
 `setup-node` で `.node-version` ファイルを参照すること。
 
@@ -30,7 +28,7 @@ GitHub Actions ワークフローは以下のルールに従うこと。
     node-version-file: .node-version
 ```
 
-### concurrency 設定
+## concurrency 設定
 
 重複実行を防ぐため、原則的に concurrency を設定すること。設定しない場合はワークフローファイルにその理由をコメントで残すこと。
 
@@ -40,7 +38,7 @@ concurrency:
   cancel-in-progress: true
 ```
 
-### タイムアウト設定
+## タイムアウト設定
 
 各ジョブには最低でも 10 分のタイムアウトを設定すること。
 
