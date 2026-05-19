@@ -2,7 +2,7 @@
 
 import { useOnborda } from "onborda";
 import { useCallback, useEffect, useSyncExternalStore } from "react";
-import { steps } from "../constants/steps.universal";
+import { steps } from "@/features/onboarding/constants/steps.universal";
 
 const STORAGE_KEY = "onboarding-completed";
 const COMPLETE_EVENT = "onboarding-complete";
@@ -12,107 +12,119 @@ export const TOUR_NAME = "main";
 export const CUSTOMER_MENU_STEP_INDEX = 3;
 
 function getSnapshot(): boolean {
-	try {
-		return localStorage.getItem(STORAGE_KEY) === "true";
-	} catch {
-		return false;
-	}
+  try {
+    return localStorage.getItem(STORAGE_KEY) === "true";
+  } catch {
+    return false;
+  }
 }
 
 function getServerSnapshot(): boolean {
-	return false;
+  return false;
 }
 
 function subscribe(callback: () => void): () => void {
-	// 他タブからのストレージ変更を検知
-	const handleStorageChange = (event: StorageEvent) => {
-		if (event.key === STORAGE_KEY) {
-			callback();
-		}
-	};
+  // 他タブからのストレージ変更を検知
+  const handleStorageChange = (event: StorageEvent): void => {
+    if (event.key === STORAGE_KEY) {
+      callback();
+    }
+  };
 
-	// 同一タブからの完了/リセットイベントを検知
-	const handleStateChange = () => {
-		callback();
-	};
+  // 同一タブからの完了/リセットイベントを検知
+  const handleStateChange = (): void => {
+    callback();
+  };
 
-	window.addEventListener("storage", handleStorageChange);
-	window.addEventListener(COMPLETE_EVENT, handleStateChange);
-	window.addEventListener(RESET_EVENT, handleStateChange);
-	return () => {
-		window.removeEventListener("storage", handleStorageChange);
-		window.removeEventListener(COMPLETE_EVENT, handleStateChange);
-		window.removeEventListener(RESET_EVENT, handleStateChange);
-	};
+  globalThis.addEventListener("storage", handleStorageChange);
+  globalThis.addEventListener(COMPLETE_EVENT, handleStateChange);
+  globalThis.addEventListener(RESET_EVENT, handleStateChange);
+  return (): void => {
+    globalThis.removeEventListener("storage", handleStorageChange);
+    globalThis.removeEventListener(COMPLETE_EVENT, handleStateChange);
+    globalThis.removeEventListener(RESET_EVENT, handleStateChange);
+  };
 }
 
-export function useOnboarding() {
-	const { currentStep, startOnborda, closeOnborda, isOnbordaVisible } =
-		useOnborda();
-	const isCompleted = useSyncExternalStore(
-		subscribe,
-		getSnapshot,
-		getServerSnapshot,
-	);
+interface UseOnboardingReturn {
+  closeTour: () => void;
+  complete: () => void;
+  currentStep: number;
+  isCompleted: boolean;
+  isLastStep: boolean;
+  refreshHighlight: () => void;
+  reset: () => void;
+  shouldShow: boolean;
+  startTour: (tourName: string) => void;
+}
 
-	const isLastStep = currentStep === steps.length - 1;
-	const refreshHighlight = useCallback(() => {
-		window.dispatchEvent(new Event("resize"));
-	}, []);
+export function useOnboarding(): UseOnboardingReturn {
+  const { currentStep, startOnborda, closeOnborda, isOnbordaVisible } =
+    useOnborda();
+  const isCompleted = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
-	const complete = useCallback(() => {
-		try {
-			localStorage.setItem(STORAGE_KEY, "true");
-			// 同一タブで再レンダリングをトリガー
-			window.dispatchEvent(new Event(COMPLETE_EVENT));
-		} catch {
-			// localStorage が無効な場合は無視
-		}
-	}, []);
+  const isLastStep = currentStep === steps.length - 1;
+  const refreshHighlight = useCallback(() => {
+    globalThis.dispatchEvent(new Event("resize"));
+  }, []);
 
-	// ページ遷移が伴う場合、最初の要素の位置が関係ない位置でハイライトされてしまう問題がある
-	// おそらくキャッシュ or Activity 周りが関連していそうだが根本的な原因が不明
-	// 暫定対策としてページ遷移を伴う場合は遅延リフレッシュさせることで対処
-	useEffect(() => {
-		if (!isOnbordaVisible) {
-			return;
-		}
+  const complete = useCallback(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, "true");
+      // 同一タブで再レンダリングをトリガー
+      globalThis.dispatchEvent(new Event(COMPLETE_EVENT));
+    } catch {
+      // localStorage が無効な場合は無視
+    }
+  }, []);
 
-		const previousStep = steps[currentStep - 1];
-		if (!previousStep?.nextRoute) {
-			return;
-		}
+  // ページ遷移が伴う場合、最初の要素の位置が関係ない位置でハイライトされてしまう問題がある
+  // おそらくキャッシュ or Activity 周りが関連していそうだが根本的な原因が不明
+  // 暫定対策としてページ遷移を伴う場合は遅延リフレッシュさせることで対処
+  useEffect(() => {
+    if (!isOnbordaVisible) {
+      return;
+    }
 
-		const timeoutId = setInterval(() => {
-			refreshHighlight();
-		}, 500);
+    const previousStep = steps[currentStep - 1];
+    if (!previousStep?.nextRoute) {
+      return;
+    }
 
-		return () => {
-			clearInterval(timeoutId);
-		};
-	}, [isOnbordaVisible, refreshHighlight, currentStep]);
+    const timeoutId = setInterval(() => {
+      refreshHighlight();
+    }, 500);
 
-	const reset = useCallback(() => {
-		try {
-			localStorage.removeItem(STORAGE_KEY);
-			// 同一タブで再レンダリングをトリガー
-			window.dispatchEvent(new Event(RESET_EVENT));
-			// ツアーを開始
-			startOnborda(TOUR_NAME);
-		} catch {
-			// localStorage が無効な場合は無視
-		}
-	}, [startOnborda]);
+    return (): void => {
+      clearInterval(timeoutId);
+    };
+  }, [isOnbordaVisible, refreshHighlight, currentStep]);
 
-	return {
-		closeTour: closeOnborda,
-		complete,
-		currentStep,
-		isCompleted,
-		isLastStep,
-		refreshHighlight,
-		reset,
-		shouldShow: !isCompleted,
-		startTour: startOnborda,
-	};
+  const reset = useCallback(() => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      // 同一タブで再レンダリングをトリガー
+      globalThis.dispatchEvent(new Event(RESET_EVENT));
+      // ツアーを開始
+      startOnborda(TOUR_NAME);
+    } catch {
+      // localStorage が無効な場合は無視
+    }
+  }, [startOnborda]);
+
+  return {
+    closeTour: closeOnborda,
+    complete,
+    currentStep,
+    isCompleted,
+    isLastStep,
+    refreshHighlight,
+    reset,
+    shouldShow: !isCompleted,
+    startTour: startOnborda,
+  };
 }

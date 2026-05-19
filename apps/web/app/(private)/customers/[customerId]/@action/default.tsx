@@ -1,3 +1,4 @@
-export default function ActionSlotDefault() {
-	return null;
+import type React from "react";
+export default function ActionSlotDefault(): React.JSX.Element | null {
+  return null;
 }

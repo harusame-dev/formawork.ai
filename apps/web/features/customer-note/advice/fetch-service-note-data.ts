@@ -4,35 +4,35 @@ import { sql } from "drizzle-orm";
 
 const RECENT_NOTES_LIMIT = 10;
 
-type CustomerMemory = {
-	category: number;
-	content: string;
-	importance: number;
-};
+interface CustomerMemory {
+  category: number;
+  content: string;
+  importance: number;
+}
 
-type RecentNote = {
-	content: string;
-	serviceDate: string;
-};
+interface RecentNote {
+  content: string;
+  serviceDate: string;
+}
 
-type ServiceNoteData = {
-	birthDate: string | null;
-	content: string;
-	customerId: string;
-	firstName: string;
-	gender: number;
-	id: string;
-	lastName: string;
-	memories: CustomerMemory[] | null;
-	recentNotes: RecentNote[] | null;
-	remarks: string | null;
-	serviceDate: string;
-};
+interface ServiceNoteData {
+  birthDate: string | null;
+  content: string;
+  customerId: string;
+  firstName: string;
+  gender: number;
+  id: string;
+  lastName: string;
+  memories: CustomerMemory[] | null;
+  recentNotes: RecentNote[] | null;
+  remarks: string | null;
+  serviceDate: string;
+}
 
 export async function fetchServiceNoteData(
-	serviceNoteId: string,
+  serviceNoteId: string,
 ): Promise<ServiceNoteData | null> {
-	const results = await db.execute<ServiceNoteData>(sql`
+  const results = (await db.execute(sql`
 		SELECT
 			note.customer_note_id,
 			note.customer_id as "customerId",
@@ -68,7 +68,7 @@ export async function fetchServiceNoteData(
 		FROM ${sql.identifier(schemaName)}.customer_notes note
 		INNER JOIN ${sql.identifier(schemaName)}.customers customer ON note.customer_id = customer.customer_id
 		WHERE note.customer_note_id = ${serviceNoteId}::uuid
-	`);
+	`)) as unknown as ServiceNoteData[];
 
-	return results[0] ?? null;
+  return results[0] ?? null;
 }

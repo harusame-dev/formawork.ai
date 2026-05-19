@@ -1,32 +1,32 @@
 {
-	"dependencies": {
-		"@supabase/ssr": "catalog:",
-		"@supabase/supabase-js": "catalog:",
-		"next": "catalog:",
-		"supabase": "catalog:",
-		"valibot": "catalog:"
-	},
-	"devDependencies": {
-		"@workspace/tsconfig": "workspace:",
-		"tsx": "catalog:",
-		"typescript": "catalog:"
-	},
-	"exports": {
-		"./admin": "./src/admin.ts",
-		"./config": "./src/config.ts",
-		"./fixtures/users-fixture": "./src/fixtures/users-fixture.ts",
-		"./nextjs/proxy": "./src/nextjs/proxy.ts",
-		"./nextjs/server": "./src/nextjs/server.ts"
-	},
-	"name": "@repo/supabase",
-	"private": true,
-	"scripts": {
-		"supabase:reset": "supabase db reset && pnpm supabase:seed",
-		"supabase:seed": "tsx --env-file-if-exists=.env src/seed.ts",
-		"supabase:start": "supabase start",
-		"supabase:stop": "supabase stop",
-		"type:check": "tsc --noEmit"
-	},
-	"type": "module",
-	"version": "0.0.0"
+  "name": "@repo/supabase",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./admin": "./src/admin.ts",
+    "./config": "./src/config.ts",
+    "./fixtures/users-fixture": "./src/fixtures/users-fixture.ts",
+    "./nextjs/proxy": "./src/nextjs/proxy.ts",
+    "./nextjs/server": "./src/nextjs/server.ts"
+  },
+  "scripts": {
+    "supabase:reset": "supabase db reset && pnpm supabase:seed",
+    "supabase:seed": "tsx --env-file-if-exists=.env src/seed.ts",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "type:check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "catalog:",
+    "@supabase/supabase-js": "catalog:",
+    "next": "catalog:",
+    "supabase": "catalog:",
+    "valibot": "catalog:"
+  },
+  "devDependencies": {
+    "@workspace/tsconfig": "workspace:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
 }

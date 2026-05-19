@@ -1,9 +1,9 @@
 {
-	"compilerOptions": {
-		"outDir": "./dist",
-		"types": ["node"]
-	},
-	"exclude": ["node_modules", "dist"],
-	"extends": "@workspace/tsconfig/base.json",
-	"include": ["src/**/*", "drizzle.config.ts"]
+  "compilerOptions": {
+    "outDir": "./dist",
+    "types": ["node"]
+  },
+  "exclude": ["node_modules", "dist"],
+  "extends": "@workspace/tsconfig/base.json",
+  "include": ["src/**/*", "drizzle.config.ts"]
 }

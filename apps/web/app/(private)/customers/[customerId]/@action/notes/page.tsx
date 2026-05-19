@@ -1,21 +1,22 @@
+import type React from "react";
 import { Button } from "@workspace/ui/components/button";
 import { Suspense } from "react";
 import { RegisterCustomerNoteDialogContainer } from "@/features/customer-note/register/register-customer-note-dialog.server";
 
 export default async function CustomerNoteActionPage({
-	params,
-}: PageProps<"/customers/[customerId]/notes">) {
-	const customerIdPromise = params.then(({ customerId }) => customerId);
+  params,
+}: PageProps<"/customers/[customerId]/notes">): Promise<React.JSX.Element> {
+  const customerIdPromise = params.then(({ customerId }) => customerId);
 
-	return (
-		<Suspense
-			fallback={
-				<Button disabled size="sm">
-					ノートを追加
-				</Button>
-			}
-		>
-			<RegisterCustomerNoteDialogContainer customerId={customerIdPromise} />
-		</Suspense>
-	);
+  return (
+    <Suspense
+      fallback={
+        <Button disabled size="sm">
+          ノートを追加
+        </Button>
+      }
+    >
+      <RegisterCustomerNoteDialogContainer customerId={customerIdPromise} />
+    </Suspense>
+  );
 }

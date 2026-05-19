@@ -1,27 +1,28 @@
+import type React from "react";
 import { CustomersPresenter } from "./customers.universal";
 import { getCustomers } from "./get-customers";
 import type { CustomersCondition } from "./schema";
 
 export async function CustomersContainer({
-	condition,
+  condition,
 }: {
-	condition: Promise<CustomersCondition>;
-}) {
-	const { customers, page, totalPages } = await getCustomers(await condition);
+  condition: Promise<CustomersCondition>;
+}): Promise<React.JSX.Element> {
+  const { customers, page, totalPages } = await getCustomers(await condition);
 
-	return (
-		<CustomersPresenter
-			customers={customers.map(
-				({ customerId, firstName, lastName, phone, email }) => ({
-					customerId,
-					email,
-					firstName,
-					lastName,
-					phone,
-				}),
-			)}
-			page={page}
-			totalPages={totalPages}
-		/>
-	);
+  return (
+    <CustomersPresenter
+      customers={customers.map(
+        ({ customerId, firstName, lastName, phone, email }) => ({
+          customerId,
+          email,
+          firstName,
+          lastName,
+          phone,
+        }),
+      )}
+      page={page}
+      totalPages={totalPages}
+    />
+  );
 }

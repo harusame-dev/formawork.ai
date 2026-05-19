@@ -4,24 +4,24 @@ import { eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 import * as v from "valibot";
-import { genderSchema } from "../schema";
-import { CustomerTag } from "../tag";
+import { genderSchema } from "@/features/customer/schema";
+import { CustomerTag } from "@/features/customer/tag";
 
 export const getCustomerDetail = cache(async (customerId: string) => {
-	"use cache";
-	cacheLife("permanent");
-	cacheTag(CustomerTag.Detail(customerId));
+  "use cache";
+  cacheLife("permanent");
+  cacheTag(CustomerTag.Detail(customerId));
 
-	const customers = await db
-		.select()
-		.from(customersTable)
-		.where(eq(customersTable.customerId, customerId))
-		.limit(1);
+  const customers = await db
+    .select()
+    .from(customersTable)
+    .where(eq(customersTable.customerId, customerId))
+    .limit(1);
 
-	return customers[0]
-		? {
-				...customers[0],
-				gender: v.parse(genderSchema, customers[0].gender),
-			}
-		: null;
+  return customers[0]
+    ? {
+        ...customers[0],
+        gender: v.parse(genderSchema, customers[0].gender),
+      }
+    : null;
 });

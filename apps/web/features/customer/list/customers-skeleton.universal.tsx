@@ -1,58 +1,59 @@
+import type React from "react";
 import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
+  Pagination,
+  PaginationContent,
+  PaginationItem,
 } from "@workspace/ui/components/pagination";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@workspace/ui/components/table";
 
-export function CustomersSkeleton() {
-	return (
-		<div className="space-y-4">
-			<div className="sr-only">読み込み中</div>
-			<Table aria-hidden>
-				<TableHeader>
-					<TableRow>
-						<TableHead>名前</TableHead>
-						<TableHead>メールアドレス</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{Array.from({ length: 5 }).map((_, index) => (
-						<TableRow key={index}>
-							<TableCell>
-								<Skeleton className="h-5 max-w-32 w-full" />
-							</TableCell>
-							<TableCell>
-								<Skeleton className="h-5 max-w-48 w-full" />
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+export function CustomersSkeleton(): React.JSX.Element {
+  return (
+    <div className="space-y-4">
+      <div className="sr-only">読み込み中</div>
+      <Table aria-hidden>
+        <TableHeader>
+          <TableRow>
+            <TableHead>名前</TableHead>
+            <TableHead>メールアドレス</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <TableRow key={index}>
+              <TableCell>
+                <Skeleton className="h-5 w-full max-w-32" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-5 w-full max-w-48" />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-			<Pagination>
-				<PaginationContent>
-					<PaginationItem>
-						<Skeleton className="h-5 w-10" />
-					</PaginationItem>
-					{Array.from({ length: 5 }).map((_, index) => (
-						<PaginationItem key={index}>
-							<Skeleton className="h-5 w-4" />
-						</PaginationItem>
-					))}
-					<PaginationItem>
-						<Skeleton className="h-5 w-10" />
-					</PaginationItem>
-				</PaginationContent>
-			</Pagination>
-		</div>
-	);
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <Skeleton className="h-5 w-10" />
+          </PaginationItem>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <PaginationItem key={index}>
+              <Skeleton className="h-5 w-4" />
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <Skeleton className="h-5 w-10" />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
+  );
 }

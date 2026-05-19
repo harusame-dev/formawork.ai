@@ -1,3 +1,4 @@
+import type React from "react";
 import { Card } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import Link from "next/link";
@@ -11,42 +12,44 @@ import { parseCustomersConditionSearchParams } from "@/features/customer/list/sc
 import { OnboardingId } from "@/features/onboarding/constants/steps.universal";
 import { SuspenseOnSearch } from "@/libs/suspense-on-search.client";
 
-export default function Page({ searchParams }: PageProps<"/customers">) {
-	const validatedCondition = searchParams.then(
-		(params) => parseCustomersConditionSearchParams(params).data,
-	);
+export default function Page({
+  searchParams,
+}: PageProps<"/customers">): React.JSX.Element {
+  const validatedCondition = searchParams.then(
+    (parameters) => parseCustomersConditionSearchParams(parameters).data,
+  );
 
-	return (
-		<div className="container mx-auto p-2 space-y-4">
-			<div className="flex items-center justify-between">
-				<h1 className="font-bold">顧客一覧</h1>
-				<Suspense fallback={<Skeleton className="h-4 w-16 bg-black/10" />}>
-					<RegisterLink />
-				</Suspense>
-			</div>
-			<Card className="p-4 w-full" id={OnboardingId.SearchForm}>
-				<SuspenseOnSearch fallback={<CustomerSearchFormSkeleton />}>
-					<CustomerSearchFormContainer conditionPromise={validatedCondition} />
-				</SuspenseOnSearch>
-			</Card>
-			<Card className="py-2 w-full">
-				<SuspenseOnSearch fallback={<CustomersSkeleton />}>
-					<CustomersContainer condition={validatedCondition} />
-				</SuspenseOnSearch>
-			</Card>
-		</div>
-	);
+  return (
+    <div className="container mx-auto space-y-4 p-2">
+      <div className="flex items-center justify-between">
+        <h1 className="font-bold">顧客一覧</h1>
+        <Suspense fallback={<Skeleton className="h-4 w-16 bg-black/10" />}>
+          <RegisterLink />
+        </Suspense>
+      </div>
+      <Card className="w-full p-4" id={OnboardingId.SearchForm}>
+        <SuspenseOnSearch fallback={<CustomerSearchFormSkeleton />}>
+          <CustomerSearchFormContainer conditionPromise={validatedCondition} />
+        </SuspenseOnSearch>
+      </Card>
+      <Card className="w-full py-2">
+        <SuspenseOnSearch fallback={<CustomersSkeleton />}>
+          <CustomersContainer condition={validatedCondition} />
+        </SuspenseOnSearch>
+      </Card>
+    </div>
+  );
 }
 
-async function RegisterLink() {
-	const userRole = await getUserRole();
-	if (userRole !== UserRole.Admin) {
-		return null;
-	}
+async function RegisterLink(): Promise<React.JSX.Element | null> {
+  const userRole = await getUserRole();
+  if (userRole !== UserRole.Admin) {
+    return null;
+  }
 
-	return (
-		<Link className="text-primary underline" href="/customers/new">
-			新規登録
-		</Link>
-	);
+  return (
+    <Link className="text-primary underline" href="/customers/new">
+      新規登録
+    </Link>
+  );
 }

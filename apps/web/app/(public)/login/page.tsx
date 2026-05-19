@@ -1,37 +1,38 @@
+import type React from "react";
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@workspace/ui/components/card";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { LoginForm } from "@/features/auth/login/login-form.client";
-import Logo from "../../../public/icon-512x512.png";
+import Logo from "@/public/icon-512x512.png";
 
 export const metadata: Metadata = {
-	title: "ログイン",
+  title: "ログイン",
 };
 
-export default function LoginPage() {
-	return (
-		<main className="flex flex-col min-h-screen items-center p-4 bg-background">
-			<div className="w-16 mx-auto mt-16">
-				<Image alt="" sizes="64px" src={Logo} />
-			</div>
-			<p className="font-mono text-sm">FORMAWORK.ai</p>
-			<Card className="w-full max-w-sm mt-8">
-				<CardHeader>
-					<CardTitle className="text-2xl mx-auto">ログイン</CardTitle>
-					<CardDescription className="text-sm mx-auto">
-						デモ環境
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<LoginForm />
-				</CardContent>
-			</Card>
-		</main>
-	);
+export default function LoginPage(): React.JSX.Element {
+  return (
+    <main className="flex min-h-screen flex-col items-center bg-background p-4">
+      <div className="mx-auto mt-16 w-16">
+        <Image alt="" sizes="64px" src={Logo} />
+      </div>
+      <p className="font-mono text-sm">FORMAWORK.ai</p>
+      <Card className="mt-8 w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="mx-auto text-2xl">ログイン</CardTitle>
+          <CardDescription className="mx-auto text-sm">
+            デモ環境
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LoginForm />
+        </CardContent>
+      </Card>
+    </main>
+  );
 }

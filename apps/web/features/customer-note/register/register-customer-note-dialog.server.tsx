@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 import { RegisterCustomerNoteDialog } from "./register-customer-note-dialog.client";
 
-type RegisterCustomerNoteDialogContainerProps = {
-	customerId: Promise<string>;
-};
+interface RegisterCustomerNoteDialogContainerProps {
+  customerId: Promise<string>;
+}
 
 export async function RegisterCustomerNoteDialogContainer({
-	customerId,
+  customerId,
 }: RegisterCustomerNoteDialogContainerProps): Promise<ReactNode> {
-	const resolvedCustomerId = await customerId;
+  const resolvedCustomerId = await customerId;
 
-	return <RegisterCustomerNoteDialog customerId={resolvedCustomerId} />;
+  return <RegisterCustomerNoteDialog customerId={resolvedCustomerId} />;
 }

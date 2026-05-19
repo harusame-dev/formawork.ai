@@ -9,13 +9,13 @@ import { editCustomer } from "./edit-customer";
 import { editCustomerSchema } from "./schema";
 
 export const editCustomerAction = createServerAction(editCustomer, {
-	name: "editCustomerAction",
-	onSuccess: ({ input: { customerId } }) => {
-		updateTag(CustomerTag.List);
-		updateTag(CustomerTag.Detail(customerId));
+  name: "editCustomerAction",
+  onSuccess: ({ input: { customerId } }) => {
+    updateTag(CustomerTag.List);
+    updateTag(CustomerTag.Detail(customerId));
 
-		redirect(`/customers/${customerId}`);
-	},
-	role: [UserRole.Admin],
-	schema: editCustomerSchema,
+    redirect(`/customers/${customerId}`);
+  },
+  role: [UserRole.Admin],
+  schema: editCustomerSchema,
 });

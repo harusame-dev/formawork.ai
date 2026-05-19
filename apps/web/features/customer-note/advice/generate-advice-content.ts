@@ -1,8 +1,8 @@
 import { valibotSchema } from "@ai-sdk/valibot";
 import { getLogger } from "@repo/logger/nextjs/server";
 import {
-	MEMORY_CATEGORY_LABEL,
-	type MemoryCategory,
+  MEMORY_CATEGORY_LABEL,
+  type MemoryCategory,
 } from "@workspace/db/schema/customer-memory";
 import type { AdviceContent } from "@workspace/db/schema/customer-note-advice";
 import { generateObject } from "ai";
@@ -10,32 +10,32 @@ import * as v from "valibot";
 import { GENDER_LABELS, type Gender } from "@/features/customer/schema";
 import { constructProtectedPrompt } from "@/libs/ai/prompt";
 
-type CustomerInfo = {
-	birthDate: string | null;
-	firstName: string;
-	gender: Gender;
-	lastName: string;
-	remarks: string | null;
-};
+interface CustomerInfo {
+  birthDate: string | null;
+  firstName: string;
+  gender: Gender;
+  lastName: string;
+  remarks: string | null;
+}
 
-type Memory = {
-	category: number;
-	content: string;
-	importance: number;
-};
+interface Memory {
+  category: number;
+  content: string;
+  importance: number;
+}
 
-type RecentNote = {
-	content: string;
-	createdAt: Date;
-};
+interface RecentNote {
+  content: string;
+  createdAt: Date;
+}
 
-type GenerateAdviceParams = {
-	customer: CustomerInfo;
-	memories: Memory[];
-	noteContent: string;
-	recentNotes: RecentNote[];
-	serviceDate: string;
-};
+interface GenerateAdviceParameters {
+  customer: CustomerInfo;
+  memories: Memory[];
+  noteContent: string;
+  recentNotes: RecentNote[];
+  serviceDate: string;
+}
 
 /**
  * AI 生成結果のバリデーション用スキーマ
@@ -44,44 +44,44 @@ type GenerateAdviceParams = {
  * 型定義は packages/db/src/schema/customer-note-advice.ts を参照。
  */
 const adviceSchema = v.object({
-	currentEvaluation: v.object({
-		good: v.pipe(
-			v.string(),
-			v.description("今回の接客で良かった点。具体的な行動と顧客への影響"),
-		),
-		improvement: v.pipe(
-			v.string(),
-			v.description("今回の接客の改善ポイント。課題と代替案"),
-		),
-	}),
-	nextAdvice: v.object({
-		caution: v.pipe(
-			v.string(),
-			v.description(
-				"注意点・避けるべきこと。過去の反応から避けた方がよいアプローチ",
-			),
-		),
-		followUpItems: v.pipe(
-			v.string(),
-			v.description(
-				"確認・フォローすべきこと。未解決の要望、クレーム、宿題など",
-			),
-		),
-		nextActions: v.pipe(
-			v.string(),
-			v.description(
-				"次回に向けて確認しておくこと。接客の最後に確認・約束すべきこと",
-			),
-		),
-		openingTopics: v.pipe(
-			v.string(),
-			v.description("冒頭で触れるべきこと。前回からの繋がりを感じさせる話題"),
-		),
-		salesOpportunities: v.pipe(
-			v.string(),
-			v.description("提案の機会。顧客に提案できる商品・サービス・情報と理由"),
-		),
-	}),
+  currentEvaluation: v.object({
+    good: v.pipe(
+      v.string(),
+      v.description("今回の接客で良かった点。具体的な行動と顧客への影響"),
+    ),
+    improvement: v.pipe(
+      v.string(),
+      v.description("今回の接客の改善ポイント。課題と代替案"),
+    ),
+  }),
+  nextAdvice: v.object({
+    caution: v.pipe(
+      v.string(),
+      v.description(
+        "注意点・避けるべきこと。過去の反応から避けた方がよいアプローチ",
+      ),
+    ),
+    followUpItems: v.pipe(
+      v.string(),
+      v.description(
+        "確認・フォローすべきこと。未解決の要望、クレーム、宿題など",
+      ),
+    ),
+    nextActions: v.pipe(
+      v.string(),
+      v.description(
+        "次回に向けて確認しておくこと。接客の最後に確認・約束すべきこと",
+      ),
+    ),
+    openingTopics: v.pipe(
+      v.string(),
+      v.description("冒頭で触れるべきこと。前回からの繋がりを感じさせる話題"),
+    ),
+    salesOpportunities: v.pipe(
+      v.string(),
+      v.description("提案の機会。顧客に提案できる商品・サービス・情報と理由"),
+    ),
+  }),
 }) satisfies v.GenericSchema<AdviceContent>;
 
 const SYSTEM_INSTRUCTIONS = `あなたは接客コーチとして、接客の評価とアドバイスを行います。
@@ -153,36 +153,36 @@ const SYSTEM_INSTRUCTIONS = `あなたは接客コーチとして、接客の評
 - 必ず上記のJSON形式で出力すること`;
 
 function generatePrompt({
-	customer,
-	memories,
-	noteContent,
-	recentNotes,
-	serviceDate,
-}: GenerateAdviceParams): string {
-	const recentNotesSection =
-		recentNotes.length > 0
-			? recentNotes
-					.map(
-						(note, index) =>
-							`--- ${index + 1}件目 (${note.createdAt.toLocaleDateString("ja-JP")}) ---
+  customer,
+  memories,
+  noteContent,
+  recentNotes,
+  serviceDate,
+}: GenerateAdviceParameters): string {
+  const recentNotesSection =
+    recentNotes.length > 0
+      ? recentNotes
+          .map(
+            (note, index) =>
+              `--- ${index + 1}件目 (${note.createdAt.toLocaleDateString("ja-JP")}) ---
 ${note.content}`,
-					)
-					.join("\n\n")
-			: "なし";
+          )
+          .join("\n\n")
+      : "なし";
 
-	const memoriesSection =
-		memories.length > 0
-			? memories
-					.map((memory) => {
-						const categoryLabel =
-							MEMORY_CATEGORY_LABEL[memory.category as MemoryCategory] ??
-							"その他";
-						return `- [${categoryLabel}] ${memory.content}`;
-					})
-					.join("\n")
-			: "なし";
+  const memoriesSection =
+    memories.length > 0
+      ? memories
+          .map((memory) => {
+            const categoryLabel =
+              MEMORY_CATEGORY_LABEL[memory.category as MemoryCategory] ??
+              "その他";
+            return `- [${categoryLabel}] ${memory.content}`;
+          })
+          .join("\n")
+      : "なし";
 
-	const userInput = `[接客日]
+  const userInput = `[接客日]
 ${serviceDate}
 
 [顧客情報]
@@ -200,30 +200,30 @@ ${noteContent}
 [直近10回の接客メモ（新しい順）]
 ${recentNotesSection}`;
 
-	return constructProtectedPrompt({
-		systemInstructions: SYSTEM_INSTRUCTIONS,
-		userInput,
-	});
+  return constructProtectedPrompt({
+    systemInstructions: SYSTEM_INSTRUCTIONS,
+    userInput,
+  });
 }
 
 export async function generateAdviceContent(
-	params: GenerateAdviceParams,
+  parameters: GenerateAdviceParameters,
 ): Promise<AdviceContent> {
-	const logger = await getLogger("generateAdviceContent");
+  const logger = await getLogger("generateAdviceContent");
 
-	const options = {
-		experimental_telemetry: { isEnabled: true },
-		maxOutputTokens: 8192,
-		model: "google/gemini-2.5-flash",
-		prompt: generatePrompt(params),
-		schema: valibotSchema(adviceSchema),
-		temperature: 0.3,
-		topP: 0.9,
-	} as const satisfies Parameters<typeof generateObject>[0];
+  const options = {
+    experimental_telemetry: { isEnabled: true },
+    maxOutputTokens: 8192,
+    model: "google/gemini-2.5-flash",
+    prompt: generatePrompt(parameters),
+    schema: valibotSchema(adviceSchema),
+    temperature: 0.3,
+    topP: 0.9,
+  } as const satisfies Parameters<typeof generateObject>[0];
 
-	logger.info("生成パラメーター：", { options });
+  logger.info("生成パラメーター：", { options });
 
-	const { object } = await generateObject(options);
+  const { object } = await generateObject(options);
 
-	return object;
+  return object;
 }

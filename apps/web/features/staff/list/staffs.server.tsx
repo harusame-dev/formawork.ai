@@ -1,15 +1,16 @@
+import type React from "react";
 import { getStaffs } from "./get-staffs";
 import type { StaffsCondition } from "./schema";
 import { StaffsPresenter } from "./staffs.universal";
 
 export async function StaffsContainer({
-	condition,
+  condition,
 }: {
-	condition: Promise<StaffsCondition>;
-}) {
-	const { staffs, page, totalPages } = await getStaffs(await condition);
+  condition: Promise<StaffsCondition>;
+}): Promise<React.JSX.Element> {
+  const { staffs, page, totalPages } = await getStaffs(await condition);
 
-	return (
-		<StaffsPresenter page={page} staffs={staffs} totalPages={totalPages} />
-	);
+  return (
+    <StaffsPresenter page={page} staffs={staffs} totalPages={totalPages} />
+  );
 }

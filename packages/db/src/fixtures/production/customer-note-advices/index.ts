@@ -4,8 +4,8 @@ import { customer03YamamotoKeikoAdvices } from "./customer-03-yamamoto-keiko.js"
 import { customer04SatoShotaAdvices } from "./customer-04-sato-shota.js";
 
 export const productionCustomerNoteAdvices = [
-	...customer01TanakaMisakiAdvices,
-	...customer02SuzukiAyakaAdvices,
-	...customer03YamamotoKeikoAdvices,
-	...customer04SatoShotaAdvices,
+  ...customer01TanakaMisakiAdvices,
+  ...customer02SuzukiAyakaAdvices,
+  ...customer03YamamotoKeikoAdvices,
+  ...customer04SatoShotaAdvices,
 ];

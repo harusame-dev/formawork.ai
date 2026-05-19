@@ -9,19 +9,19 @@ import { createServerAction } from "@/libs/create-server-action";
 import { deleteCustomer } from "./delete-customer";
 
 const deleteCustomerSchema = v.object({
-	customerId: v.pipe(v.string(), v.uuid()),
+  customerId: v.pipe(v.string(), v.uuid()),
 });
 
 export const deleteCustomerAction = createServerAction(deleteCustomer, {
-	name: "deleteCustomerAction",
-	onSuccess: ({ input: { customerId } }) => {
-		updateTag(CustomerTag.List);
-		updateTag(CustomerTag.Detail(customerId));
-		updateTag(CustomerTag.NotesByCustomerId(customerId));
-		updateTag(CustomerTag.MemoriesByCustomerId(customerId));
+  name: "deleteCustomerAction",
+  onSuccess: ({ input: { customerId } }) => {
+    updateTag(CustomerTag.List);
+    updateTag(CustomerTag.Detail(customerId));
+    updateTag(CustomerTag.NotesByCustomerId(customerId));
+    updateTag(CustomerTag.MemoriesByCustomerId(customerId));
 
-		redirect("/customers", RedirectType.replace);
-	},
-	role: [UserRole.Admin],
-	schema: deleteCustomerSchema,
+    redirect("/customers", RedirectType.replace);
+  },
+  role: [UserRole.Admin],
+  schema: deleteCustomerSchema,
 });

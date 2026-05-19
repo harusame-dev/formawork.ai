@@ -5,219 +5,213 @@ import { render } from "vitest-browser-react";
 import { EditCustomerForm } from "./edit-customer-form.client";
 
 vi.mock("./register-customer.action", () => ({
-	registerCustomerAction: vi.fn(),
+  registerCustomerAction: vi.fn(),
 }));
 
 vi.mock("../edit/edit-customer.action", () => ({
-	editCustomerAction: vi.fn(),
+  editCustomerAction: vi.fn(),
 }));
 
 const test = base.extend<{
-	registerCustomerActionMock: Mock;
+  registerCustomerActionMock: Mock;
 }>({
-	registerCustomerActionMock: async (
-		// biome-ignore lint/correctness/noEmptyPattern: Vitestのfixtureパターンで使用する標準的な記法
-		{},
-		// biome-ignore lint/suspicious/noExplicitAny: https://github.com/vitest-dev/vitest/discussions/5710
-		use: any,
-	) => {
-		const registerCustomerActionModule = await import(
-			"./register-customer.action"
-		);
-		await use(registerCustomerActionModule.registerCustomerAction);
-		vi.clearAllMocks();
-	},
+  registerCustomerActionMock: async ({}, use: any) => {
+    const registerCustomerActionModule =
+      await import("./register-customer.action");
+    await use(registerCustomerActionModule.registerCustomerAction);
+    vi.clearAllMocks();
+  },
 });
 
 test("姓名が空の場合、エラーが表示される", async () => {
-	render(<EditCustomerForm />);
+  render(<EditCustomerForm />);
 
-	// ハイドレーション完了を待つ
-	await expect
-		.element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
-		.not.toBeDisabled();
+  // ハイドレーション完了を待つ
+  await expect
+    .element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
+    .not.toBeDisabled();
 
-	// 送信ボタンをクリック（姓名を入力せず）
-	await page.getByRole("button", { name: "登録する" }).click();
+  // 送信ボタンをクリック（姓名を入力せず）
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	await expect
-		.element(page.getByText("姓を入力してください"))
-		.toBeInTheDocument();
-	await expect
-		.element(page.getByText("名を入力してください"))
-		.toBeInTheDocument();
+  await expect
+    .element(page.getByText("姓を入力してください"))
+    .toBeInTheDocument();
+  await expect
+    .element(page.getByText("名を入力してください"))
+    .toBeInTheDocument();
 });
 
 test("メールアドレスの形式が不正な場合、エラーが表示される", async () => {
-	render(<EditCustomerForm />);
+  render(<EditCustomerForm />);
 
-	// ハイドレーション完了を待つ
-	await expect
-		.element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
-		.not.toBeDisabled();
+  // ハイドレーション完了を待つ
+  await expect
+    .element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
+    .not.toBeDisabled();
 
-	// 不正な形式のメールアドレスを入力
-	await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
-	await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
-	await page.getByLabelText("メールアドレス").fill("invalid-email");
+  // 不正な形式のメールアドレスを入力
+  await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
+  await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
+  await page.getByLabelText("メールアドレス").fill("invalid-email");
 
-	// 送信ボタンをクリック
-	await page.getByRole("button", { name: "登録する" }).click();
+  // 送信ボタンをクリック
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	// バリデーションエラーが表示されることを確認
-	await expect
-		.element(page.getByText("正しいメールアドレス形式で入力してください"))
-		.toBeInTheDocument();
+  // バリデーションエラーが表示されることを確認
+  await expect
+    .element(page.getByText("正しいメールアドレス形式で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("送信中はボタンが無効化され、ローディング表示になる", async ({
-	registerCustomerActionMock,
+  registerCustomerActionMock,
 }) => {
-	registerCustomerActionMock.mockReturnValue(new Promise(() => {}));
+  registerCustomerActionMock.mockReturnValue(new Promise(() => {}));
 
-	render(<EditCustomerForm />);
+  render(<EditCustomerForm />);
 
-	// ハイドレーション完了を待つ
-	await expect
-		.element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
-		.not.toBeDisabled();
+  // ハイドレーション完了を待つ
+  await expect
+    .element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
+    .not.toBeDisabled();
 
-	// 有効な入力
-	await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
-	await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
+  // 有効な入力
+  await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
+  await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
 
-	// 送信ボタンをクリック
-	await page.getByRole("button", { name: "登録する" }).click();
+  // 送信ボタンをクリック
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	// 送信中の状態を確認
-	const button = page.getByRole("button", { name: /登録中/ });
+  // 送信中の状態を確認
+  const button = page.getByRole("button", { name: /登録中/ });
 
-	await expect.element(button).toBeDisabled();
-	await expect.element(page.getByText("登録中")).toBeInTheDocument();
+  await expect.element(button).toBeDisabled();
+  await expect.element(page.getByText("登録中")).toBeInTheDocument();
 });
 
 test("登録エラー時にエラーメッセージが表示される", async ({
-	registerCustomerActionMock,
+  registerCustomerActionMock,
 }) => {
-	// registerCustomerAction がエラーを返すようにモック
-	registerCustomerActionMock.mockResolvedValue({
-		error: "サーバーエラーが発生しました。時間をおいて再度お試しください",
-		success: false,
-	});
+  // registerCustomerAction がエラーを返すようにモック
+  registerCustomerActionMock.mockResolvedValue({
+    error: "サーバーエラーが発生しました。時間をおいて再度お試しください",
+    success: false,
+  });
 
-	render(<EditCustomerForm />);
+  render(<EditCustomerForm />);
 
-	// ハイドレーション完了を待つ
-	await expect
-		.element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
-		.not.toBeDisabled();
+  // ハイドレーション完了を待つ
+  await expect
+    .element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
+    .not.toBeDisabled();
 
-	// 有効な入力
-	await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
-	await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
+  // 有効な入力
+  await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
+  await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
 
-	// 送信ボタンをクリック
-	await page.getByRole("button", { name: "登録する" }).click();
+  // 送信ボタンをクリック
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	// エラーメッセージが表示されることを確認
-	await expect.element(page.getByRole("alert")).toBeInTheDocument();
-	await expect
-		.element(
-			page.getByText(
-				"サーバーエラーが発生しました。時間をおいて再度お試しください",
-			),
-		)
-		.toBeInTheDocument();
+  // エラーメッセージが表示されることを確認
+  await expect.element(page.getByRole("alert")).toBeInTheDocument();
+  await expect
+    .element(
+      page.getByText(
+        "サーバーエラーが発生しました。時間をおいて再度お試しください",
+      ),
+    )
+    .toBeInTheDocument();
 });
 
 test("姓が25文字（最大値24文字を超える）場合、エラーが表示される", async () => {
-	render(<EditCustomerForm />);
+  render(<EditCustomerForm />);
 
-	// ハイドレーション完了を待つ
-	await expect
-		.element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
-		.not.toBeDisabled();
+  // ハイドレーション完了を待つ
+  await expect
+    .element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
+    .not.toBeDisabled();
 
-	// 25文字の姓を入力
-	await page
-		.getByRole("textbox", { name: /^姓\W必須$/ })
-		.fill("あいうえおかきくけこさしすせそたちつてとなにぬねの");
-	await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
+  // 25文字の姓を入力
+  await page
+    .getByRole("textbox", { name: /^姓\W必須$/ })
+    .fill("あいうえおかきくけこさしすせそたちつてとなにぬねの");
+  await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
 
-	// 送信ボタンをクリック
-	await page.getByRole("button", { name: "登録する" }).click();
+  // 送信ボタンをクリック
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	// バリデーションエラーが表示されることを確認
-	await expect
-		.element(page.getByText("姓は24文字以内で入力してください"))
-		.toBeInTheDocument();
+  // バリデーションエラーが表示されることを確認
+  await expect
+    .element(page.getByText("姓は24文字以内で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("名が25文字（最大値24文字を超える）場合、エラーが表示される", async () => {
-	render(<EditCustomerForm />);
+  render(<EditCustomerForm />);
 
-	// ハイドレーション完了を待つ
-	await expect
-		.element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
-		.not.toBeDisabled();
+  // ハイドレーション完了を待つ
+  await expect
+    .element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
+    .not.toBeDisabled();
 
-	// 25文字の名を入力
-	await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
-	await page
-		.getByRole("textbox", { name: /^名\W必須$/ })
-		.fill("あいうえおかきくけこさしすせそたちつてとなにぬねの");
+  // 25文字の名を入力
+  await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
+  await page
+    .getByRole("textbox", { name: /^名\W必須$/ })
+    .fill("あいうえおかきくけこさしすせそたちつてとなにぬねの");
 
-	// 送信ボタンをクリック
-	await page.getByRole("button", { name: "登録する" }).click();
+  // 送信ボタンをクリック
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	// バリデーションエラーが表示されることを確認
-	await expect
-		.element(page.getByText("名は24文字以内で入力してください"))
-		.toBeInTheDocument();
+  // バリデーションエラーが表示されることを確認
+  await expect
+    .element(page.getByText("名は24文字以内で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("メールアドレスが255文字（最大値254文字を超える）場合、エラーが表示される", async () => {
-	render(<EditCustomerForm />);
+  render(<EditCustomerForm />);
 
-	// ハイドレーション完了を待つ
-	await expect
-		.element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
-		.not.toBeDisabled();
+  // ハイドレーション完了を待つ
+  await expect
+    .element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
+    .not.toBeDisabled();
 
-	// 255文字のメールアドレスを入力（ローカル部分64文字 + @ + ドメイン部分190文字 = 255文字）
+  // 255文字のメールアドレスを入力（ローカル部分64文字 + @ + ドメイン部分190文字 = 255文字）
 
-	const longEmail = `${"a".repeat(64)}@${"example-".repeat(22)}example123.com`;
-	await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
-	await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
-	await page.getByLabelText("メールアドレス").fill(longEmail);
+  const longEmail = `${"a".repeat(64)}@${"example-".repeat(22)}example123.com`;
+  await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
+  await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
+  await page.getByLabelText("メールアドレス").fill(longEmail);
 
-	// 送信ボタンをクリック
-	await page.getByRole("button", { name: "登録する" }).click();
+  // 送信ボタンをクリック
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	// バリデーションエラーが表示されることを確認
-	await expect
-		.element(page.getByText("メールアドレスは254文字以内で入力してください"))
-		.toBeInTheDocument();
+  // バリデーションエラーが表示されることを確認
+  await expect
+    .element(page.getByText("メールアドレスは254文字以内で入力してください"))
+    .toBeInTheDocument();
 });
 
 test("電話番号が21文字（最大値20文字を超える）場合、エラーが表示される", async () => {
-	render(<EditCustomerForm />);
+  render(<EditCustomerForm />);
 
-	// ハイドレーション完了を待つ
-	await expect
-		.element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
-		.not.toBeDisabled();
+  // ハイドレーション完了を待つ
+  await expect
+    .element(page.getByRole("textbox", { name: /^姓\W必須$/ }))
+    .not.toBeDisabled();
 
-	// 21文字の電話番号を入力（ハイフン込みで入力し、ハイフン除去後に21文字になる）
-	await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
-	await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
-	await page.getByLabelText("電話番号").fill("012-3456-7890-1234567890");
+  // 21文字の電話番号を入力（ハイフン込みで入力し、ハイフン除去後に21文字になる）
+  await page.getByRole("textbox", { name: /^姓\W必須$/ }).fill("テスト");
+  await page.getByRole("textbox", { name: /^名\W必須$/ }).fill("太郎");
+  await page.getByLabelText("電話番号").fill("012-3456-7890-1234567890");
 
-	// 送信ボタンをクリック
-	await page.getByRole("button", { name: "登録する" }).click();
+  // 送信ボタンをクリック
+  await page.getByRole("button", { name: "登録する" }).click();
 
-	// バリデーションエラーが表示されることを確認
-	await expect
-		.element(page.getByText("電話番号は20文字以内で入力してください"))
-		.toBeInTheDocument();
+  // バリデーションエラーが表示されることを確認
+  await expect
+    .element(page.getByText("電話番号は20文字以内で入力してください"))
+    .toBeInTheDocument();
 });

@@ -1,5 +1,6 @@
+import type React from "react";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
-export function CustomerInfoSkeleton() {
-	return <Skeleton className="text-2xl font-bold h-8 w-48 bg-black/10" />;
+export function CustomerInfoSkeleton(): React.JSX.Element {
+  return <Skeleton className="h-8 w-48 bg-black/10 text-2xl font-bold" />;
 }

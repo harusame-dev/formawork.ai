@@ -18,86 +18,87 @@ const ADMIN_STAFF_ID = "00000000-0000-0000-0000-000000000003";
  * テスト内でログイン→ログアウトを行うことで、他のテストに影響を与えないようにする。
  */
 const test = base.extend<{
-	logoutTestPage: Page;
-	testUser: {
-		email: string;
-		password: string;
-		staffId: string;
-	};
+  logoutTestPage: Page;
+  testUser: {
+    email: string;
+    password: string;
+    staffId: string;
+  };
 }>({
-	async logoutTestPage({ browser, testUser }, use) {
-		const page = await browser.newContext().then((ctx) => ctx.newPage());
+  async logoutTestPage({ browser, testUser }, use) {
+    const page = await browser
+      .newContext()
+      .then((context) => context.newPage());
 
-		// ログインページにアクセス
-		await page.goto("/login");
-		await page.waitForURL("/login");
+    // ログインページにアクセス
+    await page.goto("/login");
+    await page.waitForURL("/login");
 
-		// ログイン
-		await page.getByLabel("メールアドレス").fill(testUser.email);
-		await page
-			.getByRole("textbox", { name: "パスワード" })
-			.fill(testUser.password);
-		await page.getByRole("button", { name: "ログイン" }).click();
+    // ログイン
+    await page.getByLabel("メールアドレス").fill(testUser.email);
+    await page
+      .getByRole("textbox", { name: "パスワード" })
+      .fill(testUser.password);
+    await page.getByRole("button", { name: "ログイン" }).click();
 
-		// ホームにリダイレクトされるまで待機
-		await page.waitForURL("/");
+    // ホームにリダイレクトされるまで待機
+    await page.waitForURL("/");
 
-		// オンボーディングをスキップ状態に設定
-		await page.evaluate(() => {
-			localStorage.setItem("onboarding-completed", "true");
-		});
-		await page.reload();
-		await page.waitForURL("/");
+    // オンボーディングをスキップ状態に設定
+    await page.evaluate(() => {
+      localStorage.setItem("onboarding-completed", "true");
+    });
+    await page.reload();
+    await page.waitForURL("/");
 
-		await use(page);
-	},
-	// biome-ignore lint/correctness/noEmptyPattern: Playwrightのfixtureパターンで使用する標準的な記法
-	async testUser({}, use) {
-		const uniqueId = randomUUID().slice(0, 8);
-		const userData = {
-			email: `logout-test-${uniqueId}@example.com`,
-			firstName: "ログアウト",
-			lastName: `テスト${uniqueId}`,
-			password: "Test@Pass123",
-			role: "user" as const,
-		};
+    await use(page);
+  },
+  async testUser({}, use) {
+    const uniqueId = randomUUID().slice(0, 8);
+    const userData = {
+      email: `logout-test-${uniqueId}@example.com`,
+      firstName: "ログアウト",
+      lastName: `テスト${uniqueId}`,
+      password: "Test@Pass123",
+      role: "user" as const,
+    };
 
-		const result = await registerStaff(userData);
-		if (!result.success) {
-			throw new Error(`テストユーザーの登録に失敗: ${result.error}`);
-		}
+    const result = await registerStaff(userData);
+    if (!result.success) {
+      throw new Error(`テストユーザーの登録に失敗: ${result.error}`);
+    }
 
-		await use({
-			email: userData.email,
-			password: userData.password,
-			staffId: result.data.staffId,
-		});
+    await use({
+      email: userData.email,
+      password: userData.password,
+      staffId: result.data.staffId,
+    });
 
-		// テスト後にクリーンアップ
-		await deleteStaff({
-			currentUserStaffId: ADMIN_STAFF_ID,
-			staffId: result.data.staffId,
-		});
-	},
+    // テスト後にクリーンアップ
+    await deleteStaff({
+      currentUserStaffId: ADMIN_STAFF_ID,
+      staffId: result.data.staffId,
+    });
+  },
 });
 
 test("ログイン後、ログアウトするとログインページにリダイレクトされ、バックしてもホームに戻らない", async ({
-	logoutTestPage,
+  logoutTestPage,
 }) => {
-	await test.step("ユーザーメニューを開く", async () => {
-		await logoutTestPage
-			.getByRole("button", { name: "ユーザーメニューを開く" })
-			.click();
-	});
+  await test.step("ユーザーメニューを開く", async () => {
+    await logoutTestPage
+      .getByRole("button", { name: "ユーザーメニューを開く" })
+      .click();
+  });
 
-	await test.step("ログアウトボタンをクリックしてログインページにリダイレクトされることを確認", async () => {
-		await logoutTestPage.getByRole("button", { name: "ログアウト" }).click();
-		await logoutTestPage.waitForURL("/login");
-	});
+  await test.step("ログアウトボタンをクリックしてログインページにリダイレクトされることを確認", async () => {
+    await logoutTestPage.getByRole("button", { name: "ログアウト" }).click();
+    await logoutTestPage.waitForURL("/login");
+  });
 
-	await test.step("ブラウザバックしてもホームページに戻らないことを確認", async () => {
-		await logoutTestPage.goBack();
-		// RedirectType.replace を使用しているため、ホームページには戻らない
-		await expect(logoutTestPage).not.toHaveURL("/");
-	});
+  await test.step("ブラウザバックしてもホームページに戻らないことを確認", async () => {
+    await logoutTestPage.goBack();
+    // RedirectType.replace を使用しているため、ホームページには戻らない
+    await expect(logoutTestPage).not.toHaveURL("/");
+  });
 });

@@ -6,12 +6,12 @@ import { getSupabasePrivateConfig } from "./config";
  * Cookie 処理が不要なサーバーサイド専用の操作（Storage など）に使用
  */
 export function createAdminClient() {
-	const config = getSupabasePrivateConfig();
+  const config = getSupabasePrivateConfig();
 
-	return createClient(config.url, config.serviceRoleKey, {
-		auth: {
-			autoRefreshToken: false,
-			persistSession: false,
-		},
-	});
+  return createClient(config.url, config.serviceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
 }

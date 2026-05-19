@@ -1,29 +1,29 @@
 {
-	"dependencies": {
-		"valibot": "catalog:"
-	},
-	"devDependencies": {
-		"@types/node": "catalog:",
-		"@workspace/tsconfig": "workspace:",
-		"typescript": "catalog:"
-	},
-	"exports": {
-		".": "./src/get-logger.ts",
-		"./event-types": "./src/event-types.ts",
-		"./logger": "./src/logger.ts",
-		"./nextjs/server": "./src/nextjs/server.ts",
-		"./types": "./src/types.ts"
-	},
-	"name": "@repo/logger",
-	"peerDependencies": {
-		"next": "catalog:",
-		"pino": "catalog:"
-	},
-	"peerDependenciesMeta": {
-		"next": {
-			"optional": true
-		}
-	},
-	"private": true,
-	"version": "0.0.0"
+  "name": "@repo/logger",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/get-logger.ts",
+    "./event-types": "./src/event-types.ts",
+    "./logger": "./src/logger.ts",
+    "./nextjs/server": "./src/nextjs/server.ts",
+    "./types": "./src/types.ts"
+  },
+  "dependencies": {
+    "valibot": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@workspace/tsconfig": "workspace:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "next": "catalog:",
+    "pino": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
+  }
 }

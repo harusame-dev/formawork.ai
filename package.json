@@ -1,25 +1,32 @@
 {
-	"devDependencies": {
-		"@biomejs/biome": "catalog:",
-		"cspell": "catalog:",
-		"knip": "catalog:"
-	},
-	"packageManager": "pnpm@11.1.2",
-	"scripts": {
-		"build": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web build",
-		"db:generate": "pnpm --filter @workspace/db db:generate",
-		"db:migrate": "pnpm --filter @workspace/db db:migrate",
-		"db:reset": "pnpm --filter @workspace/db db:reset",
-		"db:seed": "pnpm --filter @workspace/db db:seed",
-		"dev": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web dev",
-		"start": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web start",
-		"supabase:seed": "pnpm --filter @repo/supabase supabase:seed",
-		"supabase:start": "pnpm --filter @repo/supabase supabase:start",
-		"supabase:stop": "pnpm --filter @repo/supabase supabase:stop",
-		"test:browser": "pnpm --filter web test:browser",
-		"test:e2e": "pnpm --filter web test:e2e",
-		"test:server": "pnpm --filter web test:server",
-		"validate:check": "biome check . && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy knip && cspell . && pnpm -r type:check",
-		"validate:fix": "biome check --write . && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy knip --fix --allow-remove-files"
-	}
+  "scripts": {
+    "build": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web build",
+    "db:generate": "pnpm --filter @workspace/db db:generate",
+    "db:migrate": "pnpm --filter @workspace/db db:migrate",
+    "db:reset": "pnpm --filter @workspace/db db:reset",
+    "db:seed": "pnpm --filter @workspace/db db:seed",
+    "dev": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "start": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web start",
+    "supabase:seed": "pnpm --filter @repo/supabase supabase:seed",
+    "supabase:start": "pnpm --filter @repo/supabase supabase:start",
+    "supabase:stop": "pnpm --filter @repo/supabase supabase:stop",
+    "test:browser": "pnpm --filter web test:browser",
+    "test:e2e": "pnpm --filter web test:e2e",
+    "test:server": "pnpm --filter web test:server",
+    "validate:check": "pnpm --filter web lint && pnpm format:check && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy knip && cspell . && pnpm -r type:check",
+    "validate:fix": "pnpm --filter web lint:fix && pnpm format && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy knip --fix --allow-remove-files"
+  },
+  "devDependencies": {
+    "cspell": "catalog:",
+    "knip": "catalog:",
+    "prettier": "catalog:",
+    "prettier-plugin-packagejson": "catalog:",
+    "prettier-plugin-sh": "catalog:",
+    "prettier-plugin-sql": "catalog:",
+    "prettier-plugin-tailwindcss": "catalog:",
+    "prettier-plugin-toml": "catalog:"
+  },
+  "packageManager": "pnpm@11.1.2"
 }
