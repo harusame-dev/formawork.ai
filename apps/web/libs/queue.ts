@@ -25,9 +25,9 @@ export class PgmqQueue<TMessage> {
   }
 
   async readMessages(): Promise<PgmqMessage<TMessage>[]> {
-    return this.executor.execute<PgmqMessage<TMessage>>(sql`
+    return (await this.executor.execute(sql`
 			SELECT * FROM pgmq.read(${this.queueName}::text, ${VISIBILITY_TIMEOUT_SECONDS}::integer, ${READ_QUANTITY}::integer)
-		`);
+		`)) as unknown as PgmqMessage<TMessage>[];
   }
 
   async sendMessage(payload: TMessage): Promise<void> {
