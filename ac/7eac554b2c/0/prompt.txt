@@ -1,0 +1,40 @@
+docs/claude-code/README.md 12ms (unchanged)
+knip.jsonc 1ms (unchanged)
+package.json 1ms (unchanged)
+packages/db/.env.sample 3ms (unchanged)
+packages/db/.gitignore 9ms (unchanged)
+packages/db/drizzle.config.ts 1ms (unchanged)
+packages/db/drizzle/0000_perpetual_master_mold.sql 16ms (unchanged)
+packages/db/drizzle/0001_enable_pgmq.sql
+[error] packages/db/drizzle/0001_enable_pgmq.sql: Error: Parse error: Unexpected "$$
+[error] BEGIN
+[error]  " at line 3 column 4.
+[error] This likely happens because you're using the default "sql" dialect.
+[error] If possible, please select a more specific dialect (like sqlite, postgresql, etc).
+[error]     at TokenizerEngine.createParseError (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/lexer/TokenizerEngine.js:40:16)
+[error]     at TokenizerEngine.tokenize (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/lexer/TokenizerEngine.js:30:32)
+[error]     at Tokenizer.tokenize (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/lexer/Tokenizer.js:20:69)
+[error]     at LexerAdapter.tokenize (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/parser/createParser.js:13:41)
+[error]     at LexerAdapter.reset (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/parser/LexerAdapter.js:13:28)
+[error]     at Parser.feed (/Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/nearley@2.20.1/node_modules/nearley/lib/nearley.js:281:15)
+[error]     at Object.parse (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/parser/createParser.js:21:40)
+[error]     at Formatter.parse (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/formatter/Formatter.js:25:53)
+[error]     at Formatter.format (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/formatter/Formatter.js:20:26)
+[error]     at formatDialect (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/sqlFormatter.js:82:59)
+packages/db/drizzle/0002_enable_pg_cron.sql
+[error] packages/db/drizzle/0002_enable_pg_cron.sql: Error: Parse error: Unexpected "$$
+[error] BEGIN
+[error]  " at line 3 column 4.
+[error] This likely happens because you're using the default "sql" dialect.
+[error] If possible, please select a more specific dialect (like sqlite, postgresql, etc).
+[error]     at TokenizerEngine.createParseError (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/lexer/TokenizerEngine.js:40:16)
+[error]     at TokenizerEngine.tokenize (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/lexer/TokenizerEngine.js:30:32)
+[error]     at Tokenizer.tokenize (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/lexer/Tokenizer.js:20:69)
+[error]     at LexerAdapter.tokenize (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/parser/createParser.js:13:41)
+[error]     at LexerAdapter.reset (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/parser/LexerAdapter.js:13:28)
+[error]     at Parser.feed (/Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/nearley@2.20.1/node_modules/nearley/lib/nearley.js:281:15)
+[error]     at Object.parse (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/parser/createParser.js:21:40)
+[error]     at Formatter.parse (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/formatter/Formatter.js:25:53)
+[error]     at Formatter.format (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/formatter/Formatter.js:20:26)
+[error]     at formatDialect (file:///Users/haru/ghq/github.com/harusame-dev/formawork.ai/node_modules/.pnpm/sql-formatter@15.8.0/node_modules/sql-formatter/dist/esm/sqlFormatter.js:82:59)
+packages/db/drizzle/0003_needy_maggott.sql 1ms (unchanged)

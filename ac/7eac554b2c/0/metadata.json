@@ -1,0 +1,36 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "ac7eac554b2c",
+  "session_id": "1d944ed4-7379-4eea-9b37-2914cc9d492c",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-19T12:00:29.905938Z",
+  "branch": "lint-migration",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "prettier.config.mjs",
+    ".prettierignore"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "e4da20881bac",
+  "checkpoint_transcript_start": 138,
+  "transcript_lines_at_start": 138,
+  "token_usage": {
+    "input_tokens": 23,
+    "cache_creation_tokens": 68203,
+    "cache_read_tokens": 1083681,
+    "output_tokens": 5064,
+    "api_call_count": 18
+  },
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-19T12:00:29.815973Z",
+    "agent_lines": 9,
+    "human_added": 6426,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 6435,
+    "agent_percentage": 0.13986013986013987
+  }
+}
