@@ -65,11 +65,15 @@ Github Actions 標準の paths-ignore を指定する
 paths-ignore を指定した場合、ワークフロー自体が起動せず、マージが行えなくなってしまうため、 dorny/paths-filter を使用する
 
 ```yaml
+# トップレベルで指定
+permissions: # dorny/paths-filter には pull-requests の read 権限が必要
+  contents: read
+  pull-requests: read
+
+# ジョブのステップで判別する例
 - name: 変更ファイルの検出
   uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
   id: filter
-  permissions: # dorny/paths-filter には pull-requests の read 権限が必要
-    pull-requests: read
   with:
     predicate-quantifier: every # フィルターの条件を AND 条件にするために必要。 default は same で or 条件
     filters: |

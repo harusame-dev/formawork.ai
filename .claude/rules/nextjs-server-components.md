@@ -1,0 +1,48 @@
+---
+paths:
+  - *.server.tsx
+  - page.tsx
+  - layout.tsx
+---
+
+# Next.js Server Components
+
+## ロジックの切り出し
+
+Server Component 内でデータの取得やデータ整形などのロジックを直接記載せず、外部ファイルに切り出す
+Server Component ではロジックの関数の呼び出し、コンポーネントのだしわけ、 jsx のみを記載する
+
+
+```tsx
+async function FooBar(){
+  const fooResult = await handleFooResult(await getFoo());
+
+  if (foo.type === 'bar'){
+    return <FooBar foo={foo} />
+  }
+
+  return <Foo foo={foo} />
+}
+```
+
+## データフェッチ
+
+データフェッチは必ずデータを必要とする末端のコンポーネントで行い、 Suspense で Skeleton 表示を行う
+
+```tsx
+async function UserArticles(){
+  // const name = await getName();  
+  // const articles = await getArticles();
+  return <div>
+    {/*Suspense もデータ取得の最小単位で Skeleton 表示を行う*/}
+    <Suspense fallback={<UserNameSkeleton />}>  
+      <UserName />
+    </Suspense>
+    <Suspense fallback={<ArticlesSkeleton />}>
+      <Articles />
+    </Suspense>
+  </div>
+}
+```
+
+##
