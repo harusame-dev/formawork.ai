@@ -48,40 +48,54 @@ jobs:
     timeout-minutes: 10
 ```
 
-## 実装例
+
+## 3rd パーティーアクションのバージョン指定
+
+`@v4` や `@main` などのタグ名、ブランチ名で指定するのは禁止
+代わりにコミット SHA 形式での指定を行うこと
+
+
+## 無関係なワークフローのスキップ
+
+そのワークフローとは無関係なファイルが更新されたときにワークフローの実行をスキップする。
+
+### マージ条件としてワークフローの pass が必須でない場合
+
+Github Actions 標準の paths-ignore を指定する
+
+### マージ条件としてワークフローのパスが必須の場合
+
+paths-ignore を指定した場合、ワークフロー自体が起動せず、マージが行えなくなってしまうため、 dorny/paths-filter を使用する
 
 ```yaml
-name: CI
-
-on:
-  pull_request:
-    branches: [main]
-
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: リポジトリのチェックアウト
-        uses: actions/checkout@v4
-
-      - name: pnpm のセットアップ
-        uses: pnpm/action-setup@v4
-        # version は省略（package.json の packageManager を使用）
-
-      - name: Node.js のセットアップ
-        uses: actions/setup-node@v4
+      - name: 変更ファイルの検出
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        id: filter
+        permissions:  # dorny/paths-filter には pull-requests の read 権限が必要
+          pull-requests: read
         with:
-          node-version-file: .node-version
-          cache: pnpm
+          predicate-quantifier: every # フィルターの条件を AND 条件にするために必要。 default は same で or 条件
+          filters: |
+            web:
+              - 'apps/web/**'  # apps/web ディレクトリ内の任意のファイルを対象とする
+              - '!**/*.md'     # And .md ファイルは除外（サーバーテストでドキュメントの更新は無関係なため
+              - '!**/eslint.config.mjs' # And eslint.config.mjs は除外（サーバーテストでは ESLint の設定変更は無関係なため
+            logger:
+              - 'packages/logger/**'
+              - '!**/*.md'
+              
+      - name: 実行要否の判定
+        id: should-run
+        run: echo "result=${{ steps.filter.outputs.web == 'true' || steps.filter.outputs.logger == 'true' }}" >> $GITHUB_OUTPUT
 
-      - name: 依存関係のインストール
-        run: pnpm install
-
-      - name: ビルド
-        run: pnpm -w build
+      - name: web のテスト実行
+        if: steps.should-run.outputs.result == 'true'
+        run: test
 ```
+
+### 例外条件
+
+以下のいずれかに該当する場合は例外として、コメントでスキップ設定の省略理由を記載すること
+
+- ほとんどのファイルがワークフローの対象
+- 実行時間が 3分未満
