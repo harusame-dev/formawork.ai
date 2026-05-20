@@ -48,12 +48,10 @@ jobs:
     timeout-minutes: 10
 ```
 
-
 ## 3rd パーティーアクションのバージョン指定
 
 `@v4` や `@main` などのタグ名、ブランチ名で指定するのは禁止
 代わりにコミット SHA 形式での指定を行うこと
-
 
 ## 無関係なワークフローのスキップ
 
@@ -68,29 +66,29 @@ Github Actions 標準の paths-ignore を指定する
 paths-ignore を指定した場合、ワークフロー自体が起動せず、マージが行えなくなってしまうため、 dorny/paths-filter を使用する
 
 ```yaml
-      - name: 変更ファイルの検出
-        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
-        id: filter
-        permissions:  # dorny/paths-filter には pull-requests の read 権限が必要
-          pull-requests: read
-        with:
-          predicate-quantifier: every # フィルターの条件を AND 条件にするために必要。 default は same で or 条件
-          filters: |
-            web:
-              - 'apps/web/**'  # apps/web ディレクトリ内の任意のファイルを対象とする
-              - '!**/*.md'     # And .md ファイルは除外（サーバーテストでドキュメントの更新は無関係なため
-              - '!**/eslint.config.mjs' # And eslint.config.mjs は除外（サーバーテストでは ESLint の設定変更は無関係なため
-            logger:
-              - 'packages/logger/**'
-              - '!**/*.md'
-              
-      - name: 実行要否の判定
-        id: should-run
-        run: echo "result=${{ steps.filter.outputs.web == 'true' || steps.filter.outputs.logger == 'true' }}" >> $GITHUB_OUTPUT
+- name: 変更ファイルの検出
+  uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+  id: filter
+  permissions: # dorny/paths-filter には pull-requests の read 権限が必要
+    pull-requests: read
+  with:
+    predicate-quantifier: every # フィルターの条件を AND 条件にするために必要。 default は same で or 条件
+    filters: |
+      web:
+        - 'apps/web/**'  # apps/web ディレクトリ内の任意のファイルを対象とする
+        - '!**/*.md'     # And .md ファイルは除外（サーバーテストでドキュメントの更新は無関係なため
+        - '!**/eslint.config.mjs' # And eslint.config.mjs は除外（サーバーテストでは ESLint の設定変更は無関係なため
+      logger:
+        - 'packages/logger/**'
+        - '!**/*.md'
 
-      - name: web のテスト実行
-        if: steps.should-run.outputs.result == 'true'
-        run: test
+- name: 実行要否の判定
+  id: should-run
+  run: echo "result=${{ steps.filter.outputs.web == 'true' || steps.filter.outputs.logger == 'true' }}" >> $GITHUB_OUTPUT
+
+- name: web のテスト実行
+  if: steps.should-run.outputs.result == 'true'
+  run: test
 ```
 
 ### 例外条件

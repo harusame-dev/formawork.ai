@@ -1,4 +1,3 @@
-
 # GitHub Actions ワークフロー設定ガイドライン
 
 ## 概要
@@ -182,7 +181,7 @@ jobs:
       - name: 変更ファイルの検出
         uses: dorny/paths-filter@v2
         id: filter
-        permissions:  # dorny/paths-filter には pull-requests の read 権限が必要
+        permissions: # dorny/paths-filter には pull-requests の read 権限が必要
           pull-requests: read
         with:
           predicate-quantifier: every # フィルターの条件を AND 条件にするために必要。 default は same で or 条件
@@ -194,7 +193,7 @@ jobs:
             logger:
               - 'packages/logger/**'
               - '!**/*.md'
-              
+
       - name: 実行要否の判定
         id: should-run
         run: echo "result=${{ steps.filter.outputs.web == 'true' || steps.filter.outputs.logger == 'true' }}" >> $GITHUB_OUTPUT
