@@ -16,11 +16,30 @@ interface AdminUser {
   appMetadata: AdminUserMetadata;
 }
 
-export function getAuthAdmin(): AuthAdmin {
-  return new AuthAdmin(createAdminClient());
+interface AuthAdmin {
+  createUser(params: {
+    id?: string;
+    email: string;
+    password: string;
+    emailConfirm?: boolean;
+    appMetadata?: AdminUserMetadata;
+  }): Promise<Result<{ id: string }, AuthError>>;
+  updateUserById(
+    id: string,
+    params: {
+      email?: string;
+      appMetadata?: AdminUserMetadata;
+    },
+  ): Promise<Result<void, AuthError>>;
+  deleteUser(id: string): Promise<Result<void, AuthError>>;
+  listUsers(): Promise<Result<AdminUser[], AuthError>>;
 }
 
-class AuthAdmin {
+export function getAuthAdmin(): AuthAdmin {
+  return new SupabaseAuthAdmin(createAdminClient());
+}
+
+class SupabaseAuthAdmin implements AuthAdmin {
   constructor(private readonly supabase: AdminSupabaseClient) {}
 
   async createUser(params: {

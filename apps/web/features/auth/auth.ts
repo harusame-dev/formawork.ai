@@ -17,6 +17,19 @@ interface AppMetadata {
   staffId?: string;
 }
 
+interface Auth {
+  signInWithPassword(params: {
+    email: string;
+    password: string;
+  }): Promise<Result<void, AuthError>>;
+  signOut(): Promise<Result<void, AuthError>>;
+  getAuthUser(): Promise<AuthUser | null>;
+  verifyCurrentPassword(
+    currentPassword: string,
+  ): Promise<Result<void, AuthError>>;
+  updatePassword(newPassword: string): Promise<Result<void, AuthError>>;
+}
+
 function toAuthUserRole(value: unknown): UserRole {
   switch (value) {
     case UserRole.Admin: {
@@ -33,10 +46,10 @@ function toAuthUserRole(value: unknown): UserRole {
 }
 
 export async function getAuth(): Promise<Auth> {
-  return new Auth(await createClient());
+  return new SupabaseAuth(await createClient());
 }
 
-class Auth {
+class SupabaseAuth implements Auth {
   constructor(private readonly supabase: SupabaseClient) {}
 
   async signInWithPassword({

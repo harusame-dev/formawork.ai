@@ -13,9 +13,14 @@ vi.mock("@repo/logger/nextjs/server", () => ({
   }),
 }));
 
-vi.mock("@repo/supabase/admin", () => ({
-  createAdminClient: vi.fn(),
-}));
+vi.mock("@/features/auth/auth-admin", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/features/auth/auth-admin")>();
+  return {
+    ...actual,
+    getAuthAdmin: vi.fn(),
+  };
+});
 
 const test = base.extend<{
   staff: {
@@ -29,7 +34,7 @@ const test = base.extend<{
     lastName: string;
     staffId: string;
   };
-  supabaseAdminMock: Mock;
+  authAdminMock: Mock;
 }>({
   async staff({}, use) {
     const staff = {
@@ -55,9 +60,9 @@ const test = base.extend<{
     await use(staff);
     await db.delete(staffsTable).where(eq(staffsTable.staffId, staff.staffId));
   },
-  async supabaseAdminMock({}, use: any) {
-    const supabaseModule = await import("@repo/supabase/admin");
-    const mock = vi.mocked(supabaseModule.createAdminClient);
+  async authAdminMock({}, use) {
+    const authAdminModule = await import("@/features/auth/auth-admin");
+    const mock = vi.mocked(authAdminModule.getAuthAdmin);
     await use(mock);
     vi.clearAllMocks();
   },
@@ -92,16 +97,15 @@ test("自分自身を削除しようとした場合にエラーが返される",
 
 test("存在するスタッフを削除できる", async ({
   staffWithAuthUser,
-  supabaseAdminMock,
+  authAdminMock,
 }) => {
   const currentUserStaffId = "00000000-0000-0000-0000-000000000001";
 
-  supabaseAdminMock.mockReturnValue({
-    auth: {
-      admin: {
-        deleteUser: vi.fn().mockResolvedValue({ error: null }),
-      },
-    },
+  authAdminMock.mockReturnValue({
+    createUser: vi.fn(),
+    deleteUser: vi.fn().mockResolvedValue({ success: true, data: undefined }),
+    listUsers: vi.fn(),
+    updateUserById: vi.fn(),
   });
 
   const result = await deleteStaff({
