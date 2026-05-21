@@ -1,10 +1,10 @@
 import { fail, type Result, succeed } from "@harusame0616/result";
 import { getLogger } from "@repo/logger/nextjs/server";
-import { createAdminClient } from "@repo/supabase/admin";
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
 import { authUsers } from "drizzle-orm/supabase";
+import { getAuthAdmin } from "@/features/auth/auth-admin";
 import type { EditStaffParams as EditStaffParameters } from "./schema";
 
 const STAFF_NOT_FOUND_ERROR_MESSAGE =
@@ -58,21 +58,18 @@ export async function editStaff(
         .where(eq(authUsers.id, authUserId));
     });
     if (originalRole !== role) {
-      const supabase = createAdminClient();
-      const { error: updateError } = await supabase.auth.admin.updateUserById(
-        authUserId,
-        {
-          app_metadata: {
-            role,
-            staffId,
-          },
+      const authAdmin = getAuthAdmin();
+      const updateResult = await authAdmin.updateUserById(authUserId, {
+        appMetadata: {
+          role,
+          staffId,
         },
-      );
+      });
 
-      if (updateError) {
+      if (!updateResult.success) {
         logger.error("ロールの更新に失敗", {
           authUserId,
-          error: updateError.message,
+          error: updateResult.error,
         });
         throw new Error(UPDATE_AUTH_ERROR_MESSAGE);
       }

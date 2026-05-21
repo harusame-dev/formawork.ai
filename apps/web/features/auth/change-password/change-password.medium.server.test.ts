@@ -1,20 +1,17 @@
 import { randomUUID } from "node:crypto";
-import { createAdminClient } from "@repo/supabase/admin";
-import { createClient } from "@repo/supabase/nextjs/server";
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
 import { test as base, expect, vi } from "vitest";
+import { AuthError, getAuth } from "@/features/auth/auth";
+import { getAuthAdmin } from "@/features/auth/auth-admin";
 import { changePassword } from "./change-password";
 
-// createClient をモックして、テスト用のSupabaseクライアントを返す
-vi.mock("@repo/supabase/nextjs/server", async () => {
-  const { createAdminClient } = await import("@repo/supabase/admin");
+vi.mock("@/features/auth/auth", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/features/auth/auth")>();
   return {
-    createClient: vi.fn().mockImplementation(async () => {
-      // テスト用のクライアントを返す（admin clientを使用）
-      return createAdminClient();
-    }),
+    ...actual,
+    getAuth: vi.fn(),
   };
 });
 
@@ -27,23 +24,22 @@ const test = base.extend<{
     const staffIds: string[] = [];
     await use({ authUserIds, staffIds });
 
-    const supabase = createAdminClient();
+    const authAdmin = getAuthAdmin();
     for (const staffId of staffIds) {
       await db.delete(staffsTable).where(eq(staffsTable.staffId, staffId));
     }
     for (const authUserId of authUserIds) {
-      await supabase.auth.admin.deleteUser(authUserId);
+      await authAdmin.deleteUser(authUserId);
     }
   },
   testUser: async ({ cleanup }, use) => {
-    const supabase = createAdminClient();
+    const authAdmin = getAuthAdmin();
     const uniqueId = randomUUID().slice(0, 8);
     const email = `change-password-test-${uniqueId}@example.com`;
     const password = "Test@Pass123";
     const staffId = randomUUID();
     const authUserId = randomUUID();
 
-    // スタッフを作成
     await db.insert(staffsTable).values({
       authUserId,
       firstName: "テスト",
@@ -52,44 +48,34 @@ const test = base.extend<{
     });
     cleanup.staffIds.push(staffId);
 
-    // Authユーザーを作成
-    const { data, error } = await supabase.auth.admin.createUser({
-      app_metadata: { role: "user", staffId },
+    const createResult = await authAdmin.createUser({
+      appMetadata: { role: "user", staffId },
       email,
-      email_confirm: true,
       id: authUserId,
       password,
     });
 
-    if (error) {
-      throw new Error(`テストユーザーの作成に失敗: ${error.message}`);
+    if (!createResult.success) {
+      throw new Error(`テストユーザーの作成に失敗: ${createResult.error}`);
     }
 
-    cleanup.authUserIds.push(data.user.id);
+    cleanup.authUserIds.push(createResult.data.id);
 
-    // createClient のモックを更新してこのユーザーを返す
-    const mockClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { email, id: authUserId } },
-          error: null,
-        }),
-        signInWithPassword: vi
-          .fn()
-          .mockImplementation(async ({ password: inputPassword }) => {
-            // 正しいパスワードの場合は成功
-            if (inputPassword === password) {
-              return { data: {}, error: null };
-            }
-            return { data: null, error: { message: "Invalid credentials" } };
-          }),
-        updateUser: vi.fn().mockResolvedValue({ data: {}, error: null }),
-      },
-    };
-
-    vi.mocked(createClient).mockResolvedValue(mockClient as never);
+    vi.mocked(getAuth).mockResolvedValue({
+      verifyCurrentPassword: vi.fn(async (inputPassword: string) =>
+        inputPassword === password
+          ? { success: true, data: undefined }
+          : { success: false, error: AuthError.InvalidCredentials },
+      ),
+      updatePassword: vi.fn().mockResolvedValue({
+        success: true,
+        data: undefined,
+      }),
+    } as never);
 
     await use({ authUserId, email, password });
+
+    vi.mocked(getAuth).mockReset();
   },
 });
 
@@ -124,14 +110,11 @@ test("間違った現在のパスワードでエラーが返る", async ({
 });
 
 test("セッションが無効な場合エラーが返る", async () => {
-  // createClient のモックを更新してセッションなしを返す
-  vi.mocked(createClient).mockResolvedValue({
-    auth: {
-      getUser: vi.fn().mockResolvedValue({
-        data: { user: null },
-        error: null,
-      }),
-    },
+  vi.mocked(getAuth).mockResolvedValue({
+    verifyCurrentPassword: vi.fn().mockResolvedValue({
+      success: false,
+      error: AuthError.SessionExpired,
+    }),
   } as never);
 
   const result = await changePassword({
@@ -146,22 +129,15 @@ test("セッションが無効な場合エラーが返る", async () => {
 });
 
 test("パスワード更新に失敗した場合エラーが返る", async ({ testUser }) => {
-  // createClient のモックを更新してupdateUserでエラーを返す
-  vi.mocked(createClient).mockResolvedValue({
-    auth: {
-      getUser: vi.fn().mockResolvedValue({
-        data: { user: { email: testUser.email, id: testUser.authUserId } },
-        error: null,
-      }),
-      signInWithPassword: vi.fn().mockResolvedValue({
-        data: {},
-        error: null,
-      }),
-      updateUser: vi.fn().mockResolvedValue({
-        data: null,
-        error: { message: "Update failed" },
-      }),
-    },
+  vi.mocked(getAuth).mockResolvedValue({
+    verifyCurrentPassword: vi.fn().mockResolvedValue({
+      success: true,
+      data: undefined,
+    }),
+    updatePassword: vi.fn().mockResolvedValue({
+      success: false,
+      error: AuthError.UpdateFailed,
+    }),
   } as never);
 
   const result = await changePassword({

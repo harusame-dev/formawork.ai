@@ -1,9 +1,9 @@
 import { type Success, succeed } from "@harusame0616/result";
-import { createClient } from "@repo/supabase/nextjs/server";
+import { getAuth } from "@/features/auth/auth";
 
 export async function logout(): Promise<Success<undefined>> {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
+  const auth = await getAuth();
+  await auth.signOut();
 
   return succeed();
 }

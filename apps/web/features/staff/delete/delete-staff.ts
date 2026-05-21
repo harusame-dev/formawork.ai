@@ -1,8 +1,8 @@
 import { fail, type Result, succeed } from "@harusame0616/result";
-import { createAdminClient } from "@repo/supabase/admin";
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
+import { getAuthAdmin } from "@/features/auth/auth-admin";
 
 const STAFF_NOT_FOUND_ERROR_MESSAGE =
   "指定されたスタッフが見つかりません" as const;
@@ -38,7 +38,7 @@ export async function deleteStaff({
     return fail(STAFF_NOT_FOUND_ERROR_MESSAGE);
   }
 
-  const supabase = createAdminClient();
+  const authAdmin = getAuthAdmin();
 
   await db.transaction(async (tx) => {
     await tx.delete(staffsTable).where(eq(staffsTable.staffId, staffId));
@@ -47,12 +47,12 @@ export async function deleteStaff({
       return;
     }
 
-    const { error: deleteError } = await supabase.auth.admin.deleteUser(
-      staff.authUserId,
-    );
+    const deleteResult = await authAdmin.deleteUser(staff.authUserId);
 
-    if (deleteError) {
-      throw deleteError;
+    if (!deleteResult.success) {
+      throw new Error(
+        `認証ユーザーの削除に失敗しました: ${deleteResult.error}`,
+      );
     }
   });
 

@@ -1,8 +1,9 @@
 import { type Result, succeed, tryCatchAsync } from "@harusame0616/result";
-import { createAdminClient } from "@repo/supabase/admin";
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { v7 as uuidv7 } from "uuid";
+import { getAuthAdmin } from "@/features/auth/auth-admin";
+import { AuthError } from "@/features/auth/auth-error";
 import type { RegisterStaffParams as RegisterStaffParameters } from "./schema";
 
 const EMAIL_EXISTS_ERROR = "このメールアドレスは既に登録されています" as const;
@@ -19,7 +20,7 @@ export async function registerStaff({
 }: RegisterStaffParameters): Promise<
   Result<{ staffId: string }, ErrorMessage>
 > {
-  const supabase = createAdminClient();
+  const authAdmin = getAuthAdmin();
   const staffId = uuidv7();
   const authUserId = uuidv7();
 
@@ -29,19 +30,17 @@ export async function registerStaff({
         .insert(staffsTable)
         .values({ authUserId, firstName, lastName, staffId });
 
-      const { error } = await supabase.auth.admin.createUser({
-        app_metadata: { role, staffId },
+      const result = await authAdmin.createUser({
+        appMetadata: { role, staffId },
         email,
-        email_confirm: true,
         id: authUserId,
         password,
       });
 
-      if (error) {
-        if (error.code === "email_exists") {
+      if (!result.success) {
+        if (result.error === AuthError.EmailExists) {
           throw EMAIL_EXISTS_ERROR;
         }
-
         throw CREATE_AUTH_ERROR;
       }
 
