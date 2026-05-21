@@ -3,3 +3,59 @@
 ---
 
 コミットして PR 作って
+
+---
+
+Auth と AuthAdmin は Interface にして SupabaseAuth と SupabaseAuthAdmin という実装を作る形にして
+
+🟥 高：【delete-staff.medium.server.test.ts のモック戦略が実装と乖離している】
+🎯 対象箇所
+apps/web/features/staff/delete/delete-staff.medium.server.test.ts - L16-L63, L94-L121
+vi.mock("@repo/supabase/admin", () => ({
+  createAdminClient: vi.fn(),
+}));
+// ...
+async supabaseAdminMock({}, use: any) {
+  const supabaseModule = await import("@repo/supabase/admin");
+  const mock = vi.mocked(supabaseModule.createAdminClient);
+  await use(mock);
+  vi.clearAllMocks();
+},
+// ...
+supabaseAdminMock.mockReturnValue({
+  auth: {
+    admin: {
+      deleteUser: vi.fn().mockResolvedValue({ error: null }),
+    },
+  },
+});
+💬 指摘内容
+このテストは @repo/supabase/admin の createAdminClient を直接モックしているが、delete-staff.ts の実装は getAuthAdmin() から返される AuthAdmin クラスを経由して deleteUser を呼び出している。このテストは変更前の実装を対象に書かれたものであり、新しいラッパー（auth-admin.ts）を正しくモックしていない。
+
+createAdminClient は auth-admin.ts の内部でも呼ばれているため、結果的にモックが貫通しテストは（偶然）通る可能性がある。だが、「実装の内部構造（createAdminClient）に依存したモック」になっており、将来 auth-admin.ts の内部実装が変わると壊れるリスクがある。
+
+また、フィクスチャ名 supabaseAdminMock と use: any という型アサーションも問題で、PR の趣旨（Supabase を直接触らず抽象ラッパー経由にする）に反している。
+
+📝 修正案
+auth-admin モジュールをモックする方針に変更する：
+
+vi.mock("@/features/auth/auth-admin", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/features/auth/auth-admin")>();
+  return {
+    ...actual,
+    getAuthAdmin: vi.fn(),
+  };
+});
+
+// フィクスチャ内
+async authAdminMock({}, use) {
+  const authAdminModule = await import("@/features/auth/auth-admin");
+  const mock = vi.mocked(authAdminModule.getAuthAdmin);
+  await use(mock);
+  vi.clearAllMocks();
+},
+
+// テスト内
+authAdminMock.mockReturnValue({
+  deleteUser: vi.fn().mockResolvedValue({ success: true, data: undefined }),
+});
