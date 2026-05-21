@@ -59,3 +59,7 @@ async authAdminMock({}, use) {
 authAdminMock.mockReturnValue({
   deleteUser: vi.fn().mockResolvedValue({ success: true, data: undefined }),
 });
+
+---
+
+supabase の実装とインターフェイスは別ファイルに分けて
