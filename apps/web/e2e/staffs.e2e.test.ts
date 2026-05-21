@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
-import { createAdminClient } from "@repo/supabase/admin";
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
+import { getAuthAdmin } from "@/features/auth/auth-admin";
 import { registerStaff } from "@/features/staff/register/register-staff";
 import { testWithAuthenticated } from "./fixtures/authenticated-test";
 
@@ -56,8 +56,8 @@ const test = testWithAuthenticated.extend<{
     await db.delete(staffsTable).where(eq(staffsTable.staffId, staffId));
 
     if (staff?.authUserId) {
-      const supabase = createAdminClient();
-      await supabase.auth.admin.deleteUser(staff.authUserId);
+      const authAdmin = getAuthAdmin();
+      await authAdmin.deleteUser(staff.authUserId);
     }
   },
 });

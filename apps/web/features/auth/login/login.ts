@@ -1,5 +1,5 @@
 import { fail, type Result, succeed } from "@harusame0616/result";
-import { createClient } from "@repo/supabase/nextjs/server";
+import { getAuth } from "@/features/auth/auth";
 import type { LoginParams as LoginParameters } from "./schema";
 
 const LoginErrorMessage =
@@ -8,14 +8,13 @@ const LoginErrorMessage =
 export async function login(
   parameters: LoginParameters,
 ): Promise<Result<void, typeof LoginErrorMessage>> {
-  const supabase = await createClient();
-
-  const { error } = await supabase.auth.signInWithPassword({
+  const auth = await getAuth();
+  const result = await auth.signInWithPassword({
     email: parameters.username,
     password: parameters.password,
   });
 
-  if (error) {
+  if (!result.success) {
     return fail(LoginErrorMessage);
   }
 

@@ -1,15 +1,13 @@
-import { createClient } from "@repo/supabase/nextjs/server";
 import { NextResponse } from "next/server";
+import { getAuth } from "@/features/auth/auth";
 import { getLatestAdvice } from "@/features/customer-note/advice/get-latest-advice";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ noteId: string }> },
 ): Promise<NextResponse> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const auth = await getAuth();
+  const user = await auth.getAuthUser();
 
   if (!user) {
     return new NextResponse(null, { status: 401 });

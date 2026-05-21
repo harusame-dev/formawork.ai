@@ -1,5 +1,5 @@
 import { fail, type Result, succeed } from "@harusame0616/result";
-import { createClient } from "@repo/supabase/nextjs/server";
+import { AuthError, getAuth } from "@/features/auth/auth";
 
 const SessionError = "セッションが無効です。再度ログインしてください" as const;
 const CurrentPasswordError = "現在のパスワードが正しくありません" as const;
@@ -17,29 +17,18 @@ export async function changePassword({
   currentPassword: string;
   newPassword: string;
 }): Promise<Result<void, ChangePasswordError>> {
-  const supabase = await createClient();
+  const auth = await getAuth();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user?.email) {
-    return fail(SessionError);
-  }
-
-  const { error: signInError } = await supabase.auth.signInWithPassword({
-    email: user.email,
-    password: currentPassword,
-  });
-
-  if (signInError) {
+  const verifyResult = await auth.verifyCurrentPassword(currentPassword);
+  if (!verifyResult.success) {
+    if (verifyResult.error === AuthError.SessionExpired) {
+      return fail(SessionError);
+    }
     return fail(CurrentPasswordError);
   }
 
-  const { error: updateError } = await supabase.auth.updateUser({
-    password: newPassword,
-  });
-
-  if (updateError) {
+  const updateResult = await auth.updatePassword(newPassword);
+  if (!updateResult.success) {
     return fail(UpdateError);
   }
 

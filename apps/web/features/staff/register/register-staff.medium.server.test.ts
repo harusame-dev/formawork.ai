@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
-import { createAdminClient } from "@repo/supabase/admin";
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
 import { test as base, expect } from "vitest";
+import { getAuthAdmin } from "@/features/auth/auth-admin";
 import { registerStaff } from "./register-staff";
 
 const test = base.extend<{
@@ -14,7 +14,7 @@ const test = base.extend<{
     const authUserIds: string[] = [];
     await use({ authUserIds, staffIds });
 
-    const supabase = createAdminClient();
+    const authAdmin = getAuthAdmin();
     for (const staffId of staffIds) {
       const [staff] = await db
         .select({ authUserId: staffsTable.authUserId })
@@ -25,11 +25,11 @@ const test = base.extend<{
       await db.delete(staffsTable).where(eq(staffsTable.staffId, staffId));
 
       if (staff?.authUserId) {
-        await supabase.auth.admin.deleteUser(staff.authUserId);
+        await authAdmin.deleteUser(staff.authUserId);
       }
     }
     for (const authUserId of authUserIds) {
-      await supabase.auth.admin.deleteUser(authUserId);
+      await authAdmin.deleteUser(authUserId);
     }
   },
 });
@@ -64,12 +64,14 @@ test("スタッフを正常に登録できる", async ({ cleanup }) => {
   expect(staffs[0]?.firstName).toBe(input.firstName);
   expect(staffs[0]?.lastName).toBe(input.lastName);
 
-  const supabase = createAdminClient();
-  const { data } = await supabase.auth.admin.listUsers();
-  const user = data.users.find((u) => u.email === input.email);
+  const authAdmin = getAuthAdmin();
+  const listResult = await authAdmin.listUsers();
+  expect(listResult.success).toBe(true);
+  if (!listResult.success) return;
+  const user = listResult.data.find((u) => u.email === input.email);
   expect(user).toBeDefined();
-  expect(user?.app_metadata?.["role"]).toBe(input.role);
-  expect(user?.app_metadata?.["staffId"]).toBe(result.data.staffId);
+  expect(user?.appMetadata.role).toBe(input.role);
+  expect(user?.appMetadata.staffId).toBe(result.data.staffId);
 });
 
 test("firstName と lastName が24文字（境界値）で登録できる", async ({
@@ -121,10 +123,12 @@ test("管理者ロールで登録できる", async ({ cleanup }) => {
     cleanup.staffIds.push(result.data.staffId);
   }
 
-  const supabase = createAdminClient();
-  const { data } = await supabase.auth.admin.listUsers();
-  const user = data.users.find((u) => u.email === input.email);
-  expect(user?.app_metadata?.["role"]).toBe("admin");
+  const authAdmin = getAuthAdmin();
+  const listResult = await authAdmin.listUsers();
+  expect(listResult.success).toBe(true);
+  if (!listResult.success) return;
+  const user = listResult.data.find((u) => u.email === input.email);
+  expect(user?.appMetadata.role).toBe("admin");
 });
 
 test("Supabase Auth に既に存在するメールアドレスで登録するとエラーになる", async ({
@@ -133,14 +137,14 @@ test("Supabase Auth に既に存在するメールアドレスで登録すると
   const uniqueId = randomUUID().slice(0, 8);
   const email = `staff-dup-${uniqueId}@example.com`;
 
-  const supabase = createAdminClient();
-  const { data: existingUser } = await supabase.auth.admin.createUser({
+  const authAdmin = getAuthAdmin();
+  const existingUserResult = await authAdmin.createUser({
     email,
-    email_confirm: true,
     password: "TestPassword123!",
   });
-  if (existingUser.user) {
-    cleanup.authUserIds.push(existingUser.user.id);
+  expect(existingUserResult.success).toBe(true);
+  if (existingUserResult.success) {
+    cleanup.authUserIds.push(existingUserResult.data.id);
   }
 
   const input = {
