@@ -1,0 +1,37 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "4b61a6a392d1",
+  "strategy": "manual-commit",
+  "branch": "CU-86expf865_supabase-auth_nemoto-masaharu",
+  "checkpoints_count": 12,
+  "files_touched": [
+    "apps/web/app/api/customer-notes/[noteId]/advice/route.ts",
+    "apps/web/e2e/staffs.e2e.test.ts",
+    "apps/web/features/auth/change-password/change-password.medium.server.test.ts",
+    "apps/web/features/auth/change-password/change-password.ts",
+    "apps/web/features/auth/get-user-role.ts",
+    "apps/web/features/auth/get-user-staff-id.ts",
+    "apps/web/features/auth/login/login.ts",
+    "apps/web/features/auth/logout/logout.ts",
+    "apps/web/features/auth/user/role.ts",
+    "apps/web/features/staff/delete/delete-staff.ts",
+    "apps/web/features/staff/edit/edit-staff.ts",
+    "apps/web/features/staff/register/register-staff.medium.server.test.ts",
+    "apps/web/features/staff/register/register-staff.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/4b/61a6a392d1/0/metadata.json",
+      "transcript": "/4b/61a6a392d1/0/full.jsonl",
+      "content_hash": "/4b/61a6a392d1/0/content_hash.txt",
+      "prompt": "/4b/61a6a392d1/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 95,
+    "cache_creation_tokens": 24491,
+    "cache_read_tokens": 839872,
+    "output_tokens": 13554,
+    "api_call_count": 26
+  }
+}
