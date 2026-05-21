@@ -1,0 +1,23 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "de5cd568bb08",
+  "strategy": "manual-commit",
+  "branch": "CU-86expf865_supabase-auth_nemoto-masaharu",
+  "checkpoints_count": 2,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/de/5cd568bb08/0/metadata.json",
+      "transcript": "/de/5cd568bb08/0/full.jsonl",
+      "content_hash": "/de/5cd568bb08/0/content_hash.txt",
+      "prompt": "/de/5cd568bb08/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 172,
+    "cache_creation_tokens": 260696,
+    "cache_read_tokens": 21426365,
+    "output_tokens": 97910,
+    "api_call_count": 144
+  }
+}
