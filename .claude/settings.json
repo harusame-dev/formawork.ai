@@ -340,7 +340,7 @@
         "json.schemastore.org",
         "www.schemastore.org",
         "*.modelcontextprotocol.io",
-        "*.api.clickup.com"
+        "api.clickup.com"
       ],
       "allowLocalBinding": true
     }
