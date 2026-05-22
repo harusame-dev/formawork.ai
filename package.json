@@ -15,7 +15,7 @@
     "test:browser": "pnpm --filter web test:browser",
     "test:e2e": "pnpm --filter web test:e2e",
     "test:server": "pnpm --filter web test:server",
-    "validate:check": "pnpm --filter web lint && pnpm format:check && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy knip && cspell . && pnpm -r type:check",
+    "validate:check": "pnpm --filter web lint && pnpm format:check && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy knip && cspell . && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy pnpm -r type:check",
     "validate:fix": "pnpm --filter web lint:fix && pnpm format && DATABASE_URL=postgres://dummy:dummy@localhost:5432/dummy knip --fix --allow-remove-files"
   },
   "devDependencies": {
