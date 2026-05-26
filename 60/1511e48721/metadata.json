@@ -3,7 +3,7 @@
   "checkpoint_id": "601511e48721",
   "strategy": "manual-commit",
   "branch": "CU-86exqu1um_pg-kyesly_nemoto-masaharu",
-  "checkpoints_count": 1,
+  "checkpoints_count": 4,
   "files_touched": [
     "package.json"
   ],
@@ -13,13 +13,19 @@
       "transcript": "/60/1511e48721/0/full.jsonl",
       "content_hash": "/60/1511e48721/0/content_hash.txt",
       "prompt": "/60/1511e48721/0/prompt.txt"
+    },
+    {
+      "metadata": "/60/1511e48721/1/metadata.json",
+      "transcript": "/60/1511e48721/1/full.jsonl",
+      "content_hash": "/60/1511e48721/1/content_hash.txt",
+      "prompt": "/60/1511e48721/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 19,
-    "cache_creation_tokens": 52918,
-    "cache_read_tokens": 270238,
-    "output_tokens": 6252,
-    "api_call_count": 10
+    "input_tokens": 39,
+    "cache_creation_tokens": 86096,
+    "cache_read_tokens": 540330,
+    "output_tokens": 9414,
+    "api_call_count": 20
   }
 }

@@ -1,0 +1,9 @@
+neovim の explorer snacks の find files（space+space) で特定ファイルを gitignore に含まれているファイルを除外する方法を教えてください
+
+---
+
+設定を確認して
+
+---
+
+find files 飲み
