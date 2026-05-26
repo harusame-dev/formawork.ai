@@ -1,0 +1,85 @@
+チケットの詳細を取得して内容を理解して
+
+---
+
+手動でマイグレーションファイル作りました。エラーが起きているので構文的に間違っているところを調査してください
+❮ pnpm db:migrate:dev
+$ migrate -path packages/db/migrations -database 'postgresql://postgres:postgres@127.0.0.1:62022/postgres?sslmode=disable&search_path=local' up
+error: migration failed: syntax error at or near "," (column 63) in line 25: CREATE TABLE staffs(
+  staff_id UUID NOT NULL,
+  auth_user_id UUID,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT staffs_pkey PRIMARY KEY (staff_id),
+  CONSTRAINT staffs_fkey_auth_user_id_auth_users_id FOREIGN KEY (auth_user_id) REFERENCES auth.users(id)
+);
+
+
+CREATE TABLE customers(
+  customer_id UUID NOT NULL,
+  first_name TEXT NOT NULL,
+  first_name_kana TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  last_name_kana TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  address TEXT NOT NULL,
+  birth_date DATE,
+  gender INT2 NOT NULL,
+  remarks TEXT NOT NULL,
+  full_name TEXT GENERATED ALWAYS AS (first_name || last_name),
+  full_name_kana TEXT GENERATED ALWAYS AS (first_name_kana || last_name_kana),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT customers_pkey PRIMARY KEY (customer_id)
+);
+
+CREATE TABLE customer_notes(
+  customer_note_id UUID NOT NULL,
+  customer_id UUID NOT NULL,
+  staff_id UUID NOT NULL,
+  content TEXT NOT NULL,
+  service_date DATE NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT customer_notes_pkey PRIMARY KEY (customer_note_id),
+  CONSTRAINT customer_notes_fkey_staff_id_staffs_staffid FOREIGN KEY (staff_id) REFERENCES staffs(staff_id),
+  CONSTRAINT customer_notes_fkey_customer_id FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+CREATE TABLE customer_note_images(
+  customer_note_id UUID NOT NULL,
+  display_order INT2 NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT customer_note_images_pkey PRIMARY KEY (customer_note_id, display_order) DEFFERABLE INITIALLY IMMEDIATE,
+  CONSTRAINT customer_note_images_fkey_customer_notes FOREIGN KEY (customer_note_id) REFERENCES customer_notes(customer_note_id)
+);
+
+CREATE TABLE customer_note_advice(
+  id UUID NOT NULL,
+  customer_note_id UUID NOT NULL,
+  advice TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT customer_note_advice_pkey PRIMARY KEY (id),
+  CONSTRAINT customer_note_adovice_fkey_customer_note_id_customers_customer_note_id FOREIGN KEY (customer_note_id) REFERENCES customers(customer_id)
+);
+
+CREATE TABLE custoemr_memories(
+  id UUID NOT NULL,
+  customer_id UUID NOT NULL,
+  category INT2 NOT NULL,
+  content TEXT NOT NULL,
+  importance INT2 NOT NULL,
+  source_note_id UUID NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT customer_memories_pkey PRIMARY KEY (id),
+  CONSTRAINT customer_memories_fkey_customer_id FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+ (details: pq: syntax error at or near ",")
+[ELIFECYCLE] Command failed with exit code 1.
