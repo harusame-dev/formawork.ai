@@ -2,12 +2,15 @@ packages:
   - apps/*
   - packages/*
 
+# 依存パッケージのビルドスクリプト (preinstall / postinstall 等) はデフォルト実行禁止。
+# ビルドスクリプトを持つパッケージはレビューのうえ false (禁止) / true (許可) を明示的に列挙する
+# (未列挙のままだとインストールが ERR_PNPM_IGNORED_BUILDS でエラーになる)
 allowBuilds:
   esbuild: false
   msw: false
   sharp: false
   supabase: false
-  unrs-resolver: true
+  unrs-resolver: false
 
 catalog:
   react: 19.2.5
@@ -87,8 +90,3 @@ catalog:
   prettier-plugin-toml: 2.0.6
 
 catalogMode: strict
-
-onlyBuiltDependencies:
-  - supabase
-  - sharp
-  - unrs-resolver
