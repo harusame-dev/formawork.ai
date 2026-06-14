@@ -1,0 +1,22 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "6627208edf4b",
+  "session_id": "8f515bb5-dab4-42a7-9bd7-db96fa1fbd95",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-14T23:10:24.084642Z",
+  "branch": "replace-uuid-with-node-native-uuidv7_nemoto-masaharu",
+  "checkpoints_count": 3,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "turn_id": "643fcdf41d34",
+  "token_usage": {
+    "input_tokens": 8952,
+    "cache_creation_tokens": 458953,
+    "cache_read_tokens": 6805897,
+    "output_tokens": 99138,
+    "api_call_count": 66
+  },
+  "session_metrics": {
+    "turn_count": 3
+  }
+}

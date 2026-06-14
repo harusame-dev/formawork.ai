@@ -1,0 +1,25 @@
+node の最新バージョンで UUIDv7 の生成が node 自体に組み込まれました。
+現在は uuid パッケージを用いて生成しているため、全て node ネイティブに置き換えてください。
+また、node のバージョンも最新に修正してください
+新しいブランチ切って実装計画を立ててください
+
+---
+
+# uuid → Node ネイティブ UUID 移行 実装計画 — 回答サマリー
+対象: FORMAWORK.ai / ブランチ: replace-uuid-with-node-native-uuidv7_nemoto-masaharu
+Node 引き上げ方針: 最新 LTS (24.x)  ※ 確定済み
+
+## 意思決定
+Q1 import スタイル: node:crypto から named import に統一（randomUUIDv7 / randomUUID）
+Q2 register-staff の集約: generateUniqueId() に集約してリファクタも実施
+Q3 @types/node 方針: まず据え置き、型が解決すればそのまま
+Q4 .node-version 固定値: v24.16.0
+
+## 各セクションのメモ
+(メモ未入力)
+
+なお、並列でできるタスクはサブエージェントを立ち上げ並列で実行し、タスクの内容によって haiku, sonet, opus のモデルを振り分けてください
+
+---
+
+vercel.json に設定ってでk利産んだっけ？

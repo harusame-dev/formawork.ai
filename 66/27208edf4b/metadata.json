@@ -1,0 +1,23 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "6627208edf4b",
+  "strategy": "manual-commit",
+  "branch": "replace-uuid-with-node-native-uuidv7_nemoto-masaharu",
+  "checkpoints_count": 3,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/66/27208edf4b/0/metadata.json",
+      "transcript": "/66/27208edf4b/0/full.jsonl",
+      "content_hash": "/66/27208edf4b/0/content_hash.txt",
+      "prompt": "/66/27208edf4b/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 8952,
+    "cache_creation_tokens": 458953,
+    "cache_read_tokens": 6805897,
+    "output_tokens": 99138,
+    "api_call_count": 66
+  }
+}
