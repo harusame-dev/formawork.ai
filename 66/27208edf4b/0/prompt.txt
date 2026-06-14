@@ -23,3 +23,11 @@ Q4 .node-version 固定値: v24.16.0
 ---
 
 vercel.json に設定ってでk利産んだっけ？
+
+---
+
+engines.node を指定して（そもそも
+
+---
+
+engines.node を指定して（そもそも vercel は メジャーバージョン以外指定不可

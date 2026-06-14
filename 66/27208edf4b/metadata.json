@@ -3,7 +3,7 @@
   "checkpoint_id": "6627208edf4b",
   "strategy": "manual-commit",
   "branch": "replace-uuid-with-node-native-uuidv7_nemoto-masaharu",
-  "checkpoints_count": 3,
+  "checkpoints_count": 1,
   "files_touched": null,
   "sessions": [
     {
@@ -14,10 +14,10 @@
     }
   ],
   "token_usage": {
-    "input_tokens": 8952,
-    "cache_creation_tokens": 458953,
-    "cache_read_tokens": 6805897,
-    "output_tokens": 99138,
-    "api_call_count": 66
+    "input_tokens": 9520,
+    "cache_creation_tokens": 460394,
+    "cache_read_tokens": 7157826,
+    "output_tokens": 100123,
+    "api_call_count": 68
   }
 }
