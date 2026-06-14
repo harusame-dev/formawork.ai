@@ -1,4 +1,4 @@
-import { v4 } from "uuid";
+import { randomUUID } from "node:crypto";
 import { test as base, expect, vi } from "vitest";
 import { deleteStaff } from "@/features/staff/delete/delete-staff";
 import { registerStaff } from "@/features/staff/register/register-staff";
@@ -26,9 +26,9 @@ const test = base.extend<{
   };
 }>({
   async staff({}, use) {
-    const email = `test-staff-${v4()}@example.com`;
-    const firstName = v4();
-    const lastName = v4();
+    const email = `test-staff-${randomUUID()}@example.com`;
+    const firstName = randomUUID();
+    const lastName = randomUUID();
 
     const result = await registerStaff({
       email,

@@ -33,7 +33,6 @@
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
     "swr": "catalog:",
-    "uuid": "catalog:",
     "valibot": "catalog:"
   },
   "devDependencies": {
@@ -65,6 +64,9 @@
     "vite": "catalog:",
     "vitest": "catalog:",
     "vitest-browser-react": "catalog:"
+  },
+  "engines": {
+    "node": "24.x"
   },
   "msw": {
     "workerDirectory": [

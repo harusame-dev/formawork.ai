@@ -1,8 +1,8 @@
 import { type Result, succeed, tryCatchAsync } from "@harusame0616/result";
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
-import { v7 as uuidv7 } from "uuid";
 import { getAuthAdmin } from "@/features/auth/auth-admin";
+import { generateUniqueId } from "@/libs/generate-unique-id";
 import { AuthError } from "@/features/auth/auth-error";
 import type { RegisterStaffParams as RegisterStaffParameters } from "./schema";
 
@@ -21,8 +21,8 @@ export async function registerStaff({
   Result<{ staffId: string }, ErrorMessage>
 > {
   const authAdmin = getAuthAdmin();
-  const staffId = uuidv7();
-  const authUserId = uuidv7();
+  const staffId = generateUniqueId();
+  const authUserId = generateUniqueId();
 
   return tryCatchAsync(() =>
     db.transaction(async (tx) => {

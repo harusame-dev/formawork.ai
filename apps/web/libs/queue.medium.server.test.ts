@@ -1,6 +1,6 @@
 import { db } from "@workspace/db/client";
 import { sql } from "drizzle-orm";
-import { v4 } from "uuid";
+import { randomUUID } from "node:crypto";
 import { test as base, expect } from "vitest";
 import { PgmqQueue } from "./queue";
 
@@ -8,7 +8,7 @@ const test = base.extend<{
   testQueue: { queueName: string };
 }>({
   async testQueue({}, use) {
-    const queueName = `test_queue_${v4().replaceAll("-", "_")}`;
+    const queueName = `test_queue_${randomUUID().replaceAll("-", "_")}`;
 
     await db.execute(sql`SELECT pgmq.create(${queueName}::text)`);
 
