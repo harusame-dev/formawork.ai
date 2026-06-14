@@ -65,6 +65,9 @@
     "vitest": "catalog:",
     "vitest-browser-react": "catalog:"
   },
+  "engines": {
+    "node": "24.x"
+  },
   "msw": {
     "workerDirectory": [
       "public"
