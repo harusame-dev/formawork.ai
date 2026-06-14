@@ -33,7 +33,6 @@
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
     "swr": "catalog:",
-    "uuid": "catalog:",
     "valibot": "catalog:"
   },
   "devDependencies": {

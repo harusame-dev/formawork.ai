@@ -3,7 +3,7 @@ import { customersTable } from "@workspace/db/schema/customer";
 import { customerNotesTable } from "@workspace/db/schema/customer-note";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq, inArray } from "drizzle-orm";
-import { v4 } from "uuid";
+import { randomUUID } from "node:crypto";
 import { test as base, expect } from "vitest";
 import { fetchServiceNoteData } from "./fetch-service-note-data";
 
@@ -35,9 +35,9 @@ interface TestData {
 
 const test = base.extend<{ testData: TestData }>({
   testData: async ({}, use) => {
-    const staffId = v4();
-    const targetCustomerId = v4();
-    const otherCustomerId = v4();
+    const staffId = randomUUID();
+    const targetCustomerId = randomUUID();
+    const otherCustomerId = randomUUID();
 
     await db.insert(staffsTable).values({
       firstName: "テスト",
@@ -49,7 +49,7 @@ const test = base.extend<{ testData: TestData }>({
       {
         birthDate: "1990-05-15",
         customerId: targetCustomerId,
-        email: `target-${v4()}@example.com`,
+        email: `target-${randomUUID()}@example.com`,
         firstName: "太郎",
         gender: 1,
         lastName: "テスト",
@@ -58,7 +58,7 @@ const test = base.extend<{ testData: TestData }>({
       },
       {
         customerId: otherCustomerId,
-        email: `other-${v4()}@example.com`,
+        email: `other-${randomUUID()}@example.com`,
         firstName: "花子",
         lastName: "他顧客",
         phone: "09087654321",
@@ -68,62 +68,62 @@ const test = base.extend<{ testData: TestData }>({
     const targetNotes: TestData["targetNotes"] = [
       {
         content: "対象顧客ノート1",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-01",
       },
       {
         content: "対象顧客ノート2",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-02",
       },
       {
         content: "対象顧客ノート3",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-03",
       },
       {
         content: "対象顧客ノート4",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-04",
       },
       {
         content: "対象顧客ノート5",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-05",
       },
       {
         content: "対象顧客ノート6",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-06",
       },
       {
         content: "対象顧客ノート7",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-07",
       },
       {
         content: "対象顧客ノート8",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-08",
       },
       {
         content: "対象顧客ノート9",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-09",
       },
       {
         content: "対象顧客ノート10",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-10",
       },
       {
         content: "対象顧客ノート11",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-11",
       },
       {
         content: "対象顧客ノート12",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-12",
       },
     ];
@@ -131,12 +131,12 @@ const test = base.extend<{ testData: TestData }>({
     const otherCustomerNotes = [
       {
         content: "他顧客ノートA",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-05",
       },
       {
         content: "他顧客ノートB",
-        customerNoteId: v4(),
+        customerNoteId: randomUUID(),
         serviceDate: "2024-01-08",
       },
     ];
@@ -258,7 +258,7 @@ test("他の顧客のノートがrecentNotesに含まれない", async ({ testDa
 });
 
 test("存在しないserviceNoteIdの場合nullを返す", async () => {
-  const nonExistentId = v4();
+  const nonExistentId = randomUUID();
   const result = await fetchServiceNoteData(nonExistentId);
 
   expect(result).toBeNull();

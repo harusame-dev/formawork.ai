@@ -1,7 +1,7 @@
 import { db } from "@workspace/db/client";
 import { staffsTable } from "@workspace/db/schema/staff";
 import { eq } from "drizzle-orm";
-import { v4 } from "uuid";
+import { randomUUID } from "node:crypto";
 import { test as base, expect, type Mock, vi } from "vitest";
 import { deleteStaff } from "./delete-staff";
 
@@ -40,7 +40,7 @@ const test = base.extend<{
     const staff = {
       firstName: "太郎",
       lastName: "テスト",
-      staffId: v4(),
+      staffId: randomUUID(),
     };
 
     await db.insert(staffsTable).values(staff);
@@ -48,12 +48,12 @@ const test = base.extend<{
     await db.delete(staffsTable).where(eq(staffsTable.staffId, staff.staffId));
   },
   async staffWithAuthUser({}, use) {
-    const authUserId = v4();
+    const authUserId = randomUUID();
     const staff = {
       authUserId,
       firstName: "太郎",
       lastName: "テスト",
-      staffId: v4(),
+      staffId: randomUUID(),
     };
 
     await db.insert(staffsTable).values(staff);

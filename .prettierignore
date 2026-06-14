@@ -14,6 +14,7 @@ coverage
 **/playwright-report
 **/test-results
 **/__screenshots__
+**/.auth
 
 # Drizzle が自動生成するスナップショット (触らない)
 packages/db/drizzle/meta

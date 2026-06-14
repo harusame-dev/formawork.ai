@@ -1,5 +1,5 @@
-import { v7 as uuidv7 } from "uuid";
+import { randomUUIDv7 } from "node:crypto";
 
 export function generateUniqueId(): string {
-  return uuidv7();
+  return randomUUIDv7();
 }
