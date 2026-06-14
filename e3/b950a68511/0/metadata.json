@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "e3b950a68511",
+  "session_id": "8f515bb5-dab4-42a7-9bd7-db96fa1fbd95",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-14T21:04:46.557388Z",
+  "branch": "replace-uuid-with-node-native-uuidv7_nemoto-masaharu",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".node-version",
+    "apps/web/features/customer-note/advice/fetch-service-note-data.medium.server.test.ts",
+    "apps/web/features/customer/delete/delete-customer.medium.server.test.ts",
+    "apps/web/features/customer/list/get-customers.medium.server.test.ts",
+    "apps/web/features/staff/delete/delete-staff.medium.server.test.ts",
+    "apps/web/features/staff/list/get-staffs.medium.server.test.ts",
+    "apps/web/features/staff/register/register-staff.ts",
+    "apps/web/libs/generate-unique-id.ts",
+    "apps/web/libs/queue.medium.server.test.ts",
+    "apps/web/package.json",
+    "pnpm-workspace.yaml"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "faa1f4a8e981",
+  "token_usage": {
+    "input_tokens": 8537,
+    "cache_creation_tokens": 279473,
+    "cache_read_tokens": 4708998,
+    "output_tokens": 85840,
+    "api_call_count": 52
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-14T21:04:46.411154Z",
+    "agent_lines": 51,
+    "human_added": 95,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 146,
+    "agent_percentage": 34.93150684931507
+  }
+}
