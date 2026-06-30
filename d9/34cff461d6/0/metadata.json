@@ -1,0 +1,53 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "d934cff461d6",
+  "session_id": "614a2349-8f15-4d94-bd68-148728611988",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-30T18:03:14.746919Z",
+  "branch": "crawdworks_13271198",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/app/(private)/_components/navigation-menu.client.tsx",
+    "apps/web/app/(private)/layout.tsx",
+    "apps/web/app/(private)/page.tsx",
+    "apps/web/app/(private)/projects/[projectId]/glossary/page.tsx",
+    "apps/web/app/(private)/projects/page.tsx",
+    "apps/web/app/(public)/login/page.tsx",
+    "apps/web/app/layout.tsx",
+    "apps/web/features/glossary/match-glossary.ts",
+    "apps/web/features/project/detail/project-detail.server.tsx",
+    "apps/web/features/project/detail/project-header.universal.tsx",
+    "apps/web/features/project/members/members-card-skeleton.universal.tsx",
+    "apps/web/features/project/members/members-card.client.tsx",
+    "apps/web/features/segment/assist-panel.client.tsx",
+    "apps/web/features/work/import/upload-work-button.client.tsx",
+    "apps/web/features/work/list/works-skeleton.universal.tsx",
+    "apps/web/features/work/list/works.universal.tsx",
+    "apps/web/package.json",
+    "apps/web/proxy.ts",
+    "packages/db/src/seed.ts",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "b5afd11a3c3a",
+  "token_usage": {
+    "input_tokens": 10624,
+    "cache_creation_tokens": 60846,
+    "cache_read_tokens": 403594,
+    "output_tokens": 24161,
+    "api_call_count": 9
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-30T18:03:14.693401Z",
+    "agent_lines": 163,
+    "human_added": 4175,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 4338,
+    "agent_percentage": 3.7574919317657907
+  }
+}
