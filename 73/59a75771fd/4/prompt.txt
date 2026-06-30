@@ -1,0 +1,270 @@
+確定　と　下書きって何が違う？
+
+---
+
+<task-notification>
+<task-id>a6460e6b41f6e2ad6</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/9303169c-ac4d-4634-83df-c83db3d8c791/tasks/a6460e6b41f6e2ad6.output</output-file>
+<status>completed</status>
+<summary>Agent "確定と下書きの違いを調査" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>調査が完了しました。以下が「確定(Confirmed)」と「下書き(Draft)」状態に関する調査結果です。
+
+## 1. 状態の定義場所
+
+セグメントのステータスは **3 値の数値 enum** として 1 箇所で定義されています。DB 上は専用の Postgres enum ではなく `smallint` カラムです。
+
+`packages/db/src/schema/segment.ts:16-28`
+```ts
+export const SegmentStatus = {
+  Confirmed: 3,
+  Draft: 2,
+  Untranslated: 1,
+} as const;
+
+export const SEGMENT_STATUS_LABEL: Record&lt;SegmentStatus, string&gt; = {
+  [SegmentStatus.Untranslated]: "未訳",
+  [SegmentStatus.Draft]: "下書き",
+  [SegmentStatus.Confirmed]: "確定",
+};
+```
+
+`segments` テーブルのカラム定義（同ファイル `:39`）
+```ts
+status: smallint("status").notNull().default(SegmentStatus.Untranslated),
+targetText: text("target_text"),  // nullable
+```
+
+つまりセグメントは「未訳(1) → 下書き(2) → 確定(3)」の 3 段階を取り、初期値は未訳です。「確定／下書き」という独立した boolean ではなく、この 1 つの `status` カラムで表現されます。
+
+## 2. 各状態の意味と遷移ロジック
+
+### 下書き(Draft)への遷移 — 訳文編集時
+`apps/web/features/segment/update-segment.ts:23-34`
+```ts
+const status =
+  targetText.trim().length === 0
+    ? SegmentStatus.Untranslated   // 空にすると未訳へ戻る
+    : SegmentStatus.Draft;          // 何か入力されれば下書き
+```
+訳文テキストを編集・保存（エディタの textarea の blur で自動保存、`editor.client.tsx:102-108`, `66-90`）すると、内容があれば自動的に **Draft**、空なら **Untranslated** になります。下書きは「訳文は入っているが、まだ翻訳者が確定していない暫定状態」を意味します。
+
+### 確定(Confirmed)への遷移 — 「確定」ボタン
+`apps/web/features/segment/confirm-segment.ts:26-44`
+```ts
+if (!segment.targetText || segment.targetText.trim().length === 0) {
+  return fail(EMPTY_TARGET_ERROR);   // 訳文が空だと確定不可
+}
+await db.transaction(async (tx) =&gt; {
+  await tx.update(segmentsTable)
+    .set({ status: SegmentStatus.Confirmed })
+    .where(eq(segmentsTable.id, segmentId));
+  await updateWorkStatus(tx, segment.workId);
+});
+// 確定した対訳を翻訳メモリへ蓄積
+await accumulateTranslationMemory({ projectId, sourceText, targetText });
+```
+確定は AssistPanel の「確定」ボタン（`assist-panel.client.tsx:103-113`、訳文が空だと disabled）から `confirmSegmentAction`（`confirm-segment.action.ts`）経由で実行されます。確定は「翻訳者がこの訳文で良いと最終承認した状態」を意味します。
+
+## 3. 確定すると何が起きるか（下書きとの機能的差分）
+
+### (a) 翻訳メモリ(TM)への蓄積 — 最大の差分
+確定時のみ `accumulateTranslationMemory`（`accumulate-translation-memory.ts:14-48`）が呼ばれ、原文を OpenAI 埋め込みベクトル化して `translation_memories` テーブルへ INSERT/UPDATE します（同一プロジェクト・同一原文があれば更新）。下書きや未訳の訳文は **TM に一切蓄積されません**。TM は他セグメント・他ワークの「類似の過去訳」として類似度検索で再利用されるため（`assist-panel.client.tsx:172-209`）、確定して初めて訳文が組織の資産になります。
+
+なお埋め込み生成に失敗しても確定自体は成功扱いで、TM 蓄積失敗はログのみ（`confirm-segment.ts:38-39`, `accumulate-translation-memory.ts:44-47`）。
+
+### (b) ワーク（ドキュメント）ステータスの再計算
+確定・更新いずれもトランザクション内で `updateWorkStatus`（`update-work-status.ts:12-40`）を呼びます。判定基準は確定数ベースです。
+```ts
+if (total &gt; 0 &amp;&amp; confirmed === total) status = WorkStatus.Completed;   // 全確定で「完了」
+else if (translated &gt; 0)              status = WorkStatus.InProgress;  // 訳出ありで「翻訳中」
+// それ以外は NotStarted（未着手）
+```
+- `completed` は `status = Confirmed` のセグメント数で判定。**下書きは「完了」にカウントされない。**
+- `translated`(=翻訳中) は `status &lt;&gt; Untranslated`（＝Draft または Confirmed）でカウント。下書きは「翻訳中」には寄与する。
+
+WorkStatus 自体は `packages/db/src/schema/work.ts:15-26`（Completed:3 / InProgress:2 / NotStarted:1、ラベル 完了／翻訳中／未着手）。
+
+### (c) UI 上の表示差分
+- ステータスドット／バッジ（`segment-status-badge.universal.tsx:9-13`）: 未訳=グレー、**下書き=amber(琥珀)**、**確定=green**。エディタ行頭（`editor.client.tsx:306`）と AssistPanel ヘッダ（`assist-panel.client.tsx:98`）に表示。
+- エディタ上部の進捗表示（`editor.client.tsx:58-64, 219`）は「確定 {confirmed}/{total}」で、**確定数のみ**を分子にカウント。下書きは進捗にカウントされない。
+
+### (d) 確定後に再編集すると下書きへ戻る（不可逆ではない）
+確定済みセグメントの textarea も編集可能（`editor.client.tsx:320-331`、disabled は `!canEdit || mode !== "normal"` のみ）。確定後に訳文を編集して blur すると `updateSegment` が走り、status は **Draft に降格**します（`update-segment.ts:23-26`）。つまり確定は最終ロックではなく、編集すれば下書きに戻る運用です。
+
+### (e) 構造編集（結合・分割）時の扱い
+- 結合 `merge-segments.ts:75`: 結合後の訳文があれば **Draft**、無ければ Untranslated。確定状態は維持されず Draft に落ちる。
+- 分割 `split-segment.ts:42-46, 60-66`: 分割元は status・訳文を維持（確定なら確定のまま）、新規後半セグメントは Untranslated で挿入。
+
+## まとめ
+
+| 項目 | 下書き(Draft=2) | 確定(Confirmed=3) |
+|---|---|---|
+| 遷移契機 | 訳文を入力・保存（自動） | 「確定」ボタン押下（訳文必須） |
+| TM への蓄積 | されない | される（埋め込み生成しINSERT/UPDATE） |
+| ワーク「完了」判定 | カウントされない | 全セグメント確定で完了 |
+| ワーク「翻訳中」判定 | 寄与する | 寄与する |
+| 進捗表示「確定 n/total」 | 分子に含まれない | 含まれる |
+| 表示色 | amber | green |
+| 再編集時 | — | 編集すると Draft に降格 |
+
+主要な関連ファイル:
+- `packages/db/src/schema/segment.ts`（定義）
+- `packages/db/src/schema/work.ts`（WorkStatus）
+- `apps/web/features/segment/confirm-segment.ts` / `confirm-segment.action.ts`（確定）
+- `apps/web/features/segment/update-segment.ts`（下書き遷移）
+- `apps/web/features/translation-memory/accumulate-translation-memory.ts`（TM蓄積）
+- `apps/web/features/work/update-work-status.ts`（ワーク状態再計算）
+- `apps/web/features/segment/editor.client.tsx` / `assist-panel.client.tsx` / `segment-status-badge.universal.tsx`（UI）
+- `apps/web/features/segment/merge-segments.ts` / `split-segment.ts`（構造編集時の状態）</result>
+<usage><subagent_tokens>46860</subagent_tokens><tool_uses>18</tool_uses><duration_ms>75855</duration_ms></usage>
+</task-notification>
+
+---
+
+確定と下書きの違いの調査結果を確認して回答する
+
+---
+
+ちなみに全く同じな原文と訳文を確定した場合って 過去約どうなる？
+２つ出てくる？
+
+---
+
+今 docx ってアップロードしたらセグメントの抽出するようになっている？
+
+---
+
+<task-notification>
+<task-id>a52f983ba2364f32a</task-id>
+<tool-use-id>toolu_01WZBzdSC72iAEKBRrAr2Ypr</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/9303169c-ac4d-4634-83df-c83db3d8c791/tasks/a52f983ba2364f32a.output</output-file>
+<status>completed</status>
+<summary>Agent "docxアップロード時のセグメント抽出を調査" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>調査が完了しました。結論として、**docx アップロードから原文をセグメント（1文単位）へ抽出・分割・保存する処理は完全に実装されています。**
+
+## 調査結果
+
+### 1. ドキュメントアップロード機能の実装場所
+
+`apps/web/features/work/import/` 配下に一式が実装されています。
+
+- **UI（アップロードボタン）**: `apps/web/features/work/import/upload-work-button.client.tsx`
+  - `.docx` のみ受け付ける file input（28行目で拡張子チェック、35行目で `importWorkAction` を呼び出し）
+- **Server Action**: `apps/web/features/work/import/import-work.action.ts`
+  - `createServerAction` で定義（プロジェクトルール準拠）。16行目で `File` を `Buffer` に変換し、ロジックは `importWork` に委譲。`valibot` で `file`/`projectId` をバリデーション
+- **ユースケース本体**: `apps/web/features/work/import/import-work.ts`
+
+### 2. docx からのテキスト抽出処理 — 実装済み（mammoth 使用）
+
+- `apps/web/features/work/import/extract-docx.server.ts`
+  ```ts
+  import mammoth from "mammoth";
+  export async function extractParagraphs(buffer: Buffer): Promise&lt;string[]&gt; {
+    const result = await mammoth.extractRawText({ buffer });
+    return result.value.split(/\r?\n/).map((line) =&gt; line.trim()).filter((line) =&gt; line.length &gt; 0);
+  }
+  ```
+  `mammoth.extractRawText` で書式を捨て、段落（改行区切り）の配列を返す薄いラッパー。
+- 依存: `apps/web/package.json:29` で `"mammoth": "catalog:"`、`pnpm-workspace.yaml:88` で `mammoth: 1.12.0` に固定。
+
+### 3. セグメント分割と segments テーブルへの保存 — 実装済み
+
+- **文分割ロジック**: `apps/web/features/work/import/split-into-segments.ts`
+  - `splitIntoSegments(paragraphs)`（9行目）: 各段落を文末記号「。！？」の直後で分割。直後に閉じ括弧「」』）】 が続く場合はその括弧まで同一文に含めて過分割を防ぐ正規表現 `SENTENCE_END`（7行目）を使用。
+  - `splitSentences(text)`（22行目）: 対訳エディタのクライアント／サーバー双方が同一境界を得るための共用関数。
+- **保存処理**: `apps/web/features/work/import/import-work.ts`
+  - 45行目で抽出 → 50行目で分割 → 59〜76行目の `db.transaction` 内で `worksTable`（ワーク）と `segmentsTable` を同時 insert。
+  - セグメントは `seq: index + 1`、`sourceText`、`status: SegmentStatus.Untranslated`、`workId` を付与して一括 insert（68〜75行目）。
+  - 認可も実装（33〜41行目で `getProjectAccess` / `canEditProject`）。
+- **テスト**: `apps/web/features/work/import/split-into-segments.small.server.test.ts` あり。
+
+### 4. セグメントの作り方（現状）
+
+未実装ではなく、**実 docx アップロード経由で自動生成される**のが本流です。加えて開発用にシードデータも存在します。
+
+- シード: `packages/db/src/fixtures/segments.ts`（`segmentsFixture` に `seq`/`sourceText`/`targetText`/`status` を持つ確定済み対訳サンプル）、`packages/db/src/fixtures/works.ts`（`worksFixture`）。これらは `pnpm db:reset` のシードで投入される開発用データで、本番のセグメント生成経路ではありません。
+
+### 処理フロー全体
+```
+UploadWorkButton (.docx選択)
+  → importWorkAction (Server Action, File→Buffer, バリデーション)
+    → importWork (認可チェック)
+      → extractParagraphs (mammoth で段落抽出)
+      → splitIntoSegments (「。！？」で1文単位に分割)
+      → db.transaction で worksTable + segmentsTable に一括 insert
+```
+
+補足: CLAUDE.md には「文分割はルールベース＋手動結合」とあり、ルールベース分割（`SENTENCE_END`）は実装済みですが、抽出時点での「手動結合」UI 機能は import フローには見当たりませんでした（対訳エディタ側の `splitSentences` 共用がそれに相当する可能性があります）。</result>
+<usage><subagent_tokens>30376</subagent_tokens><tool_uses>13</tool_uses><duration_ms>54308</duration_ms></usage>
+</task-notification>
+
+---
+
+/Users/haru/Downloads/sample2020.docx を取り込んだけど、セグメントが 0 のまま
+
+---
+
+プロジェクトの用語集登録・編集機能って実装済み？
+まだだったら追加して
+
+---
+
+docxアップロード時のセグメント抽出の調査結果を確認して回答する
+
+---
+
+用語集機能の実装状況の調査結果を確認し、未実装なら実装方針を提示する
+
+---
+
+全部やるんだよ
+
+---
+
+<task-notification>
+<task-id>aaa52a07bd2d7969a</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/9303169c-ac4d-4634-83df-c83db3d8c791/tasks/aaa52a07bd2d7969a.output</output-file>
+<status>completed</status>
+<summary>Agent "対訳エディタの保存モデル刷新" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>All type errors are in unrelated files (glossary typedRoutes, staff tests) and pre-exist on this branch. The segment feature compiles cleanly.
+
+## 実装完了報告
+
+### 変更ファイル
+
+**1. `apps/web/features/segment/editor.client.tsx`**
+- **スナップショット管理**: モジュールレベルに `Snapshot` 型 `{ status, targetText }` と `buildSnapshotMap()` を追加。`snapshotRef = useRef&lt;Map&lt;string, Snapshot&gt;&gt;(buildSnapshotMap(initialSegments))` で「サーバー永続化済み状態」を保持。`segments` state は編集中(working) targetText を保持。
+- **自動保存廃止**: `handleBlur` / `persistTarget` / `dirtyRef` / `saved` state を全削除。textarea の `onBlur` を除去。`updateLocalTarget` はローカル state 更新のみ。
+- **dirty 判定**: `isDirty(segment)` = `(segment.targetText ?? "") !== snapshot.targetText`（スナップショット無しなら false）。
+- **表示用ステータス計算** (`getDisplayStatus`): dirty の間は編集中テキストを見て、`trim()` が空でなければ `Draft`、空なら `Untranslated`。dirty でなければ永続化済み `snapshot.status`（無ければ `segment.status`）を返す。行頭ドット (`SegmentStatusDot`) と AssistPanel ヘッダの両方にこれを使用。
+- **progress**: `snapshot.status === Confirmed` の数で確定数をカウント（dirty の下書きは含めない）。
+- **確定** (`handleConfirm`): dirty のときのみ先に `updateSegmentAction` で targetText を保存（失敗時は confirmError 表示で中断）、続けて `confirmSegmentAction`。成功時にスナップショットを `{ targetText: 現在値, status: Confirmed }` に更新し dirty 解除。
+- **キャンセル** (`handleCancel`): 編集中 targetText をスナップショットの targetText に戻すだけ（サーバー呼び出しなし）。dirty は working===snapshot により自動解除。
+- **handleApply**: async/persist を廃止し `updateLocalTarget` のみ（挿入で dirty になる）。
+- **merge/split**: 成功時 `snapshotRef.current = buildSnapshotMap(result.data)` でスナップショット全再構築し dirty を一括クリア、その後 `setSegments(result.data)`。
+- AssistPanel へ `displayStatus` / `isDirty` / `onCancel` を追加で渡し、ヘッダの「● 自動保存しました」表示を削除。
+
+**2. `apps/web/features/segment/assist-panel.client.tsx`**
+- props に `displayStatus: SegmentStatus` / `isDirty: boolean` / `onCancel` を追加。
+- ヘッダバッジを `segment.status` → `displayStatus` に変更。
+- ヘッダの操作ボタンを「キャンセル」（`disabled={!isDirty}`, variant ghost）＋「確定」（既存通り `disabled={isConfirming || !targetText.trim()}`）の2ボタン構成に。`canEdit` のときのみ表示。
+
+### 補足
+- 仕様変更 (永続化モデル B) に従い「下書き保存」ボタンは作成していません。DB 永続化は確定時のみ。下書き(dirty)は画面上の一時状態でページ離脱で消えます。
+- `confirm-segment.ts` 等のサーバーロジック・TM 蓄積は未変更。
+- 型チェック: `features/segment` 配下にエラーなし（他の既存エラーは glossary/staff など本タスク無関係のもの）。build・lint・git 操作は未実施。</result>
+<usage><subagent_tokens>65094</subagent_tokens><tool_uses>28</tool_uses><duration_ms>261380</duration_ms></usage>
+</task-notification>
+
+---
+
+エディタ刷新サブエージェントの結果を確認し、用語集とあわせて validate:check・build・test を実行して検証する
+
+---
+
+確定ボタンは下書き中の時のみ有効にして
