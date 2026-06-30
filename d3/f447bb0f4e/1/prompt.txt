@@ -1,0 +1,386 @@
+コードベースを調査して問題点・改善点を報告してください
+３つのエージェントで並列で調査させ、信頼性の高い報告のみをレポートにまとめてください
+
+---
+
+<task-notification>
+<task-id>a71f77959d18e4e20</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/a4b541aa-be2c-4015-a3ad-17a7b9fe8a71/tasks/a71f77959d18e4e20.output</output-file>
+<status>completed</status>
+<summary>Agent "アーキテクチャ・Next.js設計調査" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I have completed my investigation. Here are the structured findings.
+
+---
+
+# Next.js アーキテクチャ レビュー報告
+
+調査対象: `apps/web`（特にコミット `db4fcce` でのCATツール移行）。参照ガイドラインと突き合わせて確認できた事実のみを記載します。なお全体として `use cache` + `cacheTag` + `updateTag` によるキャッシュ無効化や、Container/Presenter 分離、末端Suspense（`WorksContainer`）など、ガイドラインに沿った良い実装が大半です。Critical/High 相当の致命的欠陥は見つかりませんでした。
+
+## 良好な点（前提）
+- データフェッチ関数（`get-*.ts`）に `"use cache"` + `cacheLife("permanent")` + `cacheTag(...)` が一貫して付与され、各ミューテーション `*.action.ts` の `onSuccess` で対応タグを `updateTag` 無効化している（`features/*/tag.ts` で集約）。
+- params を `await` せず `.then()` で Promise を子へ渡し、Page 側で Suspense ラップ（`projects/[projectId]/page.tsx` 等）。
+
+---
+
+## 問題点リスト
+
+### 1. クライアント起点の「データ取得」を Server Action で実装している
+- **該当**: `apps/web/features/segment/assist-panel.client.tsx:57`（`useEffect` 内で `getSegmentAssistAction`）、`apps/web/features/segment/get-segment-assist.action.ts:12`、実体 `apps/web/features/segment/get-segment-assist.ts:17`
+- **内容**: `getSegmentAssist` は DB 参照＋pgvector 類似検索＋用語集マッチを行う純粋な**読み取り**（ミューテーションなし）。これをセグメント選択ごとに Server Action として client から呼び出している。`translate-segment.action.ts` も同様にクライアントからの生成呼び出し（こちらは Claude 生成のためボーダーライン）。
+- **なぜ問題か**: `agent-docs/nextjs-アーキテクチャガイドライン.md` の Route Handler 節「データフェッチなどのミューテーションを伴わないサーバー操作に使用すること」「クライアントからのデータフェッチ用 API には Route Handler を使用すること」に反する。実害として Server Action は React のキューで直列化され、GETキャッシュも効かないため、セグメントを素早く切り替えると assist 取得リクエストが直列で詰まる。
+- **改善案**: `getSegmentAssist` を Route Handler（例 `app/api/projects/[projectId]/segments/[segmentId]/assist/route.ts`）に移し、client は `fetch`（必要なら SWR 等）で取得。CSV出力（`app/api/works/[workId]/export/route.ts`）と同じ Route Handler 方式に揃える。
+- **深刻度**: Medium / **確信度**: 高
+
+### 2. クロスエンティティのキャッシュ無効化漏れ（JOIN したカラムが stale 化）
+- **該当A**: `apps/web/features/project/members/get-project-members.ts:20` は `cacheTag(ProjectTag.MembersByProjectId)` のみだが、`staffsTable` を JOIN してスタッフ氏名を返す。一方 `apps/web/features/staff/edit/edit-staff.action.ts:17-18` は `StaffTag.*` しか無効化しない → スタッフ氏名変更後もメンバー一覧の氏名が古いまま。
+- **該当B**: `apps/web/features/translation-memory/list/get-translation-memories.ts:29` は `cacheTag(TranslationMemoryTag.All)` のみだが `projectsTable` を JOIN して `projectName` を返す。`apps/web/features/project/edit/edit-project.action.ts:15-16` は `ProjectTag.*` のみ無効化 → プロジェクト改名後も TM 一覧のプロジェクト名が古いまま。
+- **なぜ問題か**: `agent-docs/Nextjs-キャッシュ戦略ガイドライン.md`「キャッシュの更新が必要なタイミングで `revalidateTag()`（本実装では `updateTag`）を行うこと」。JOIN 元エンティティ更新時に該当タグを invalidate していない。
+- **改善案**: `editStaffAction` で関係プロジェクトの `ProjectTag.MembersByProjectId` も無効化、`editProjectAction` で `TranslationMemoryTag.All`（および `TranslationMemoryTag.ByProjectId`）も無効化。あるいは JOIN を避け表示時に名前を解決する。
+- **深刻度**: Medium / **確信度**: 高（無効化漏れの事実）、ユーザー影響度: 中（氏名・案件名変更は低頻度）
+
+### 3. サーバーコンポーネントの命名規則違反（`.server.tsx` だが universal 相当）
+- **該当**: `apps/web/features/glossary/common/common-glossary-header.server.tsx:4`
+- **内容**: 非 async、サーバー専用依存（DB / `next/headers` 等）なし、client コンポーネント `RegisterGlossaryDialog` を JSX で包むだけ。
+- **なぜ問題か**: `agent-docs/命名規則-nextjs.md` の判定フロー優先度4「props を受けて JSX を返すだけ／子に client component を含むだけ」→ **universal**。`.server.tsx` は誤り。
+- **改善案**: `common-glossary-header.universal.tsx` にリネーム（参照元 `app/(private)/glossary/page.tsx:4` も更新）。
+- **深刻度**: Low / **確信度**: 高
+
+### 4. 静的なページchromeがデータ取得 Suspense の背後でブロックされる
+- **該当**: `apps/web/features/glossary/project/project-glossary.server.tsx:30-57`、`apps/web/features/project/members/project-members.server.tsx:29-48`
+- **内容**: Container 内で `getProjectAccess`（認可）→ データ取得まで `await` した後にパンくず・見出し（静的）をレンダリングしている。Page 側は Container 全体を1つの Suspense で包むため、用語集/メンバー読み込み中はパンくず・見出しも表示されない。
+- **なぜ問題か**: `agent-docs/nextjs-アーキテクチャガイドライン.md`「データの取得は極力末端で行い」/ server-components ルールの「データ取得の最小単位で Skeleton 表示」。静的部分はデータ非依存で先行表示できる。
+- **改善案**: パンくず・見出しを Page 側（または非データ依存の universal）へ引き上げ、データ依存部分のみを末端 Suspense でラップ。`ProjectDetailContainer`（ヘッダ即時表示＋`WorksContainer` を入れ子 Suspense）が良い手本。
+- **深刻度**: Low / **確信度**: 中
+
+### 5. `updateTag` と client `router.refresh()` の二重無効化
+- **該当**: `apps/web/features/glossary/register/register-glossary-dialog.client.tsx:60`、`apps/web/features/project/members/members-card.client.tsx:81,93` ほか多数の dialog client
+- **内容**: action 側 `onSuccess` で `updateTag(...)` 済みにもかかわらず、client 側でも `router.refresh()` を呼ぶ。`updateTag`（expireTag ではない）はリクエスト内で対象キャッシュを即時更新しページを再レンダリングするため、`router.refresh()` は冗長。
+- **改善案**: `updateTag` に統一するなら `router.refresh()` を削除（逆もまた可）。実害は二重フェッチ程度。
+- **深刻度**: Low / **確信度**: 中（Next canary の `updateTag` 挙動依存）
+
+### 6. レイアウトの型に `LayoutProps` を未使用
+- **該当**: `apps/web/app/(private)/layout.tsx:6-10`（`{ children }: { children: React.ReactNode }`）
+- **なぜ問題か**: `.claude/rules/nextjs-layout.md`「引数の型には `LayoutProps&lt;ルートリテラル&gt;` を使用すること」。
+- **改善案**: `LayoutProps&lt;"/"&gt;`（該当ルートリテラル）に変更。
+- **深刻度**: Low / **確信度**: 高
+
+### 7. Page の fallback スケルトンが実レイアウトと不一致（CLS 懸念）
+- **該当**: `apps/web/app/(private)/projects/[projectId]/page.tsx:13-19`、`works/[workId]/page.tsx:15-21`
+- **内容**: 汎用 `Skeleton`（`h-4 w-40` 等）を直書きしており、ロード後の `ProjectDetailContainer` の実レイアウト（パンくず＋ヘッダカード＋ワーク一覧）と構造が一致しない。専用スケルトン（`ProjectsSkeleton` 等）を持つ画面もある一方、ここは未整備。
+- **なぜ問題か**: `.claude/rules/nextjs-page-layout.md`「スケルトンはロード後のデザインと一致させ、CLS を防ぐこと」。
+- **改善案**: `ProjectDetailSkeleton` 等の専用 universal スケルトンを用意。
+- **深刻度**: Low / **確信度**: 中
+
+---
+
+## 情報提供（バグではないが要確認）
+
+- **`updateTag` vs ガイドライン記載の `revalidateTag`**: ガイドライン本文は `revalidateTag()` と記載だが、実装は新しい `updateTag`（cacheComponents の read-your-writes 向け）を使用。これは意図的かつより適切と思われるが、ガイドライン文言と乖離があるためドキュメント側の更新を推奨。（確信度: 高 / 実害なし）
+- **`getProjects` / `getTranslationMemories` のユーザー依存データを `use cache`（共有スコープ）で `userId` 引数キャッシュ**（`get-projects.ts:23-26`, `get-translation-memories.ts:24-29`）: 引数キーで分離されるため動作は正しいが、ガイドラインの「ユーザーごとにパーソナライズ」は `use cache: private` も選択肢。現状は共有キャッシュにユーザー別エントリが永続蓄積される点に留意。（確信度: 高 / 実害は限定的）
+- **`projects/[projectId]/edit/page.tsx:8`**: `async function` だが `await` なし（params は `.then()`）。Dynamic 化は招かないため無害だが `async` は不要。
+
+---
+
+参照した主要ファイル: `apps/web/features/segment/{editor.client.tsx,editor.server.tsx,get-segment-assist.ts,get-segment-assist.action.ts,assist-panel.client.tsx,confirm-segment.action.ts}`、`apps/web/features/{glossary,project,work,translation-memory}/**`、`apps/web/app/(private)/**`、`agent-docs/{nextjs-アーキテクチャガイドライン.md,Nextjs-キャッシュ戦略ガイドライン.md,命名規則-nextjs.md}`、`.claude/rules/nextjs-*.md`。</result>
+<usage><subagent_tokens>93361</subagent_tokens><tool_uses>46</tool_uses><duration_ms>321608</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>a72197b33025e69b9</task-id>
+<tool-use-id>toolu_01QuQnwvnbxdE8ztXqVtEvim</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/a4b541aa-be2c-4015-a3ad-17a7b9fe8a71/tasks/a72197b33025e69b9.output</output-file>
+<status>completed</status>
+<summary>Agent "セキュリティ・認証認可・DB調査" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I have completed a thorough review. Here is my structured report.
+
+---
+
+# セキュリティ・認証認可・DB設計レビュー報告
+
+調査範囲: `apps/web/features` 配下の Server Action / Server Component、`apps/web/proxy.ts`、`apps/web/app/api`、`packages/db`・`packages/logger`・`packages/supabase`。コミット `db4fcce`（CAT 移行）で追加・変更された箇所を中心に、認可チェックは呼び出し元まで追跡して確認済み。
+
+## 総評（堅牢に作られている点）
+
+実コードを読んで確認した結果、認可の土台は健全です。誤検知を避けるため明記します。
+
+- `createServerAction`（`apps/web/libs/create-server-action.ts:182-227`）が認証（`getUserStaffId`）・ロール（`role` オプション）・バリデーション（valibot `safeParse`）を一元実施。各 Action のロジック関数も `getProjectAccess` / `loadSegmentForEdit` / `canEditGlossary` を呼んでプロジェクトメンバーシップを再確認しており、確認した限りプロジェクト系・セグメント系・ワーク系・用語集系すべてに認可チェックがある。
+- 認証は `supabase.auth.getUser()`（Auth サーバ検証あり）を `proxy.ts:46` と `supabase-auth.ts` の `getAuthUser()` 双方で使用。role/staffId は **`app_metadata`**（サーバ側のみ設定可）から取得しており、`user_metadata` 経由のなりすましは不可。妥当。
+- pgvector 検索（`search-tm.ts`）の `vectorLiteral` は Drizzle `sql` テンプレートのバインドパラメータとして渡り、かつ埋め込みはサーバ生成の数値配列。**SQL インジェクションは成立しない**。
+- ログのパスワード混入は、`packages/logger/src/sanitizer.ts:59-70` のキー名ベース redaction（`/^.*password.*$/` 等）で `{ input: { password } }` が再帰的に `[REDACTED]` 化されるため**実質的に防がれている**（login/change-password とも安全）。
+- スタッフ管理（ユーザー作成・削除・編集）は `role: [UserRole.Admin]` でガード済み。
+
+以下、確認できた問題点のみを深刻度順に挙げます。
+
+---
+
+## High
+
+### H-1. クライアントに露出するデフォルト管理者認証情報 + 同一パスワードでの admin シード
+- 該当: `apps/web/.env.sample`（`NEXT_PUBLIC_DEFAULT_PASSWORD="Admin@789!"` / `NEXT_PUBLIC_DEFAULT_USERNAME=admin@example.com`）、`packages/supabase/src/fixtures/users-fixture.ts`（`adminUser` … `password: "Admin@789!", role: "admin"`）、シード実行 `packages/supabase/src/seed.ts:28-34`（`app_metadata: { role: "admin" }` で作成）
+- 内容: `NEXT_PUBLIC_` プレフィックスのため管理者の既定資格情報がクライアントバンドルに出力される。同じ `Admin@789!` を持つ `role=admin` ユーザーがシードで作成される。
+- 攻撃シナリオ: このシード/環境がデモ以外（本番・検証）に流用された場合、誰でも `admin@example.com` / `Admin@789!` で管理者ログイン → スタッフ作成・削除等の Admin 操作を奪取できる。
+- 改善案: 本番ビルドでは `NEXT_PUBLIC_DEFAULT_*` を出力しない（デモ環境変数で分岐）。シードの admin パスワードは環境変数化し、本番シードから admin 固定資格情報を除外。
+- 深刻度 High / 確信度 高（ただしログイン画面は「デモ環境です」と明記されており、デモ用途なら設計どおり。本番転用時のみ High）。
+
+---
+
+## Medium
+
+### M-1. CSV エクスポートの数式インジェクション（Formula/CSV Injection）
+- 該当: `apps/web/app/api/works/[workId]/export/route.ts`（`escapeCsv` … `"` のダブルクオート化のみ）、`apps/web/app/api/translation-memory/export/route.ts`（`escapeCsvField` 同様）
+- 内容: 値を `"..."` で囲み `"` を二重化するのみで、先頭 `=`, `+`, `-`, `@`, タブ/CR を無害化していない。
+- 攻撃シナリオ: 原文（アップロード docx 由来）や訳文（手入力）に `=HYPERLINK(...)` や `=cmd|...` 等を仕込み、確定 → TM 蓄積。出力 CSV を Excel/Sheets で開いた閲覧者の環境で数式・DDE が実行され、情報窃取につながる。`sourceText`/`targetText` は攻撃者が制御可能。
+- 改善案: フィールドが `= + - @ \t \r` で始まる場合に先頭へ `'` を付与（または CSV ライブラリ使用）。
+- 深刻度 Medium / 確信度 高。
+
+### M-2. 永続キャッシュによる認可のステイル化（翻訳メモリ横断一覧／CSV）
+- 該当: `apps/web/features/translation-memory/list/get-translation-memories.ts`（`"use cache"` + `cacheLife("permanent")` + `cacheTag(TranslationMemoryTag.All)`、引数 `userId` でキー化）。無効化側 `apps/web/features/project/members/remove-member.action.ts` は `ProjectTag.MembersByProjectId` / `ProjectTag.List` のみ `updateTag`。
+- 内容: クエリ自体の認可（Public OR メンバー）は正しいが、結果がユーザー単位で permanent キャッシュされる。メンバー削除時に `TranslationMemoryTag.All` を無効化しないため、**Private プロジェクトから外されたユーザーが、当該 Private の TM 一覧・CSV エクスポートをキャッシュ経由で閲覧し続ける**（次に誰かが `confirmSegment` 等で `TranslationMemoryTag.All` を無効化するまで）。
+- 改善案: `removeMember`（および `addMember`）で `TranslationMemoryTag.All` も無効化、または TM 一覧キャッシュをユーザー権限変更に追従させる。
+- 深刻度 Medium / 確信度 中（グローバル無効化が頻繁に起きるため窓は限定的だが、認可のステイルは実在）。
+
+### M-3. 機密原文の OpenAI 送信とドキュメント記載の不一致
+- 該当: `apps/web/config/ai.ts`（`getTranslationModel()` が `gpt-4o-mini`、`getEmbeddingModel()` が `text-embedding-3-small`）、`apps/web/libs/ai/translate.server.ts`
+- 内容: CLAUDE.md は「AI 英訳：Claude API」と記すが、実装は翻訳・埋め込みとも OpenAI。社内機密の和文原文・確定対訳が OpenAI へ送信される。データガバナンス上の取り扱い（送信先・保持・オプトアウト）が文書と乖離。
+- 改善案: 実際の送信先をドキュメント・規約に反映し、データ処理契約／オプトアウト設定を明示。
+- 深刻度 Medium / 確信度 高（事実の不一致）。データ漏洩というより取扱合意の問題。
+
+---
+
+## Low
+
+### L-1. 共通用語集を全ログインユーザーが編集・削除可能
+- 該当: `apps/web/features/glossary/authz.ts`（`canEditGlossary` は `projectId === null` で無条件 `true`）
+- 内容: プロジェクトの Viewer や非メンバーを含む任意のログインユーザーが、全プロジェクト横断の共通用語集を登録・編集・**削除**できる。共通用語集は全 AI 英訳のヒントに使われるため、改ざん/全削除の影響が広い。設計（doc 記載）どおりだがロール制限・監査がない。
+- 改善案: 共通用語集の編集を Admin（または専用ロール）に限定。少なくとも操作の監査ログを必須化。
+- 深刻度 Low / 確信度 高。
+
+### L-2. AI エンドポイントにレート制限・コスト上限なし
+- 該当: `translate-segment.ts`（編集権限ガード）、`get-segment-assist.ts`（読取権限ガード=Public 非メンバーも可）。両者とも `embedText`/`generateTranslation` を毎回呼ぶ。
+- 内容: 認証済みユーザーが連打すれば OpenAI 課金を増大させられる（コストベース DoS）。`getSegmentAssist` は Public プロジェクトの非メンバーでも実行可能。
+- 改善案: ユーザー/プロジェクト単位のレート制限・上限を導入。
+- 深刻度 Low / 確信度 中。
+
+### L-3. ファイルアップロードのサイズ/MIME 検証が薄い
+- 該当: `apps/web/features/work/import/import-work.action.ts`（schema は `v.instance(File)` と `projectId` uuid のみ）、`extract-docx.server.ts`（`mammoth` が任意バッファを解析）。`next.config.ts` の `serverActions.bodySizeLimit: "10mb"` で上限はある。
+- 内容: MIME/拡張子検証なし、`Buffer.from(await file.arrayBuffer())` で全量メモリ展開。10MB 上限で緩和されるが明示検証はない。
+- 改善案: スキーマで MIME（docx）・サイズを検証。
+- 深刻度 Low / 確信度 高。
+
+### L-4. cron シークレット比較が非定数時間
+- 該当: `apps/web/proxy.ts:37`（`token === cronConfig.cronSecret`）
+- 内容: 文字列 `===` でタイミング差が出うる。ネットワーク越しでは実用性は低い。
+- 改善案: 固定長ハッシュ後の定数時間比較（`crypto.timingSafeEqual`）。
+- 深刻度 Low / 確信度 中。
+
+### L-5. 読取系の一部がミドルウェア依存で多層防御に欠ける
+- 該当: `apps/web/features/glossary/common/common-glossary.server.tsx`（`getUserStaffId` 等の認証チェックなし、`proxy.ts` のリダイレクトのみに依存）、スタッフ一覧 `features/staff/list/staffs.server.tsx`（ロールチェックなし＝任意ログインユーザーがスタッフ一覧を閲覧可）。
+- 内容: プロジェクト規約「Server Component/Action で認証・認可を実施」に対し、これらはミドルウェア依存。機能上は (private) 配下で守られるが多層防御に欠ける。
+- 改善案: コンポーネント側でも認証（必要に応じてロール）を確認。
+- 深刻度 Low / 確信度 高。
+
+### L-6. フィクスチャで複数 Supabase アカウントが同一 staffId を共有
+- 該当: `packages/supabase/src/fixtures/users-fixture.ts`（例: `test1@example.com` と `test1@formawork.example.com` が `staffId=...001`、admin 系が `...003` を共有）
+- 内容: 異なるログインアカウントがアプリ層の同一スタッフ ID（=メンバーシップ・ロールの単位）に collapse する。テスト用だが、認可単位の一意性前提が崩れる設計上の注意点。
+- 深刻度 Low / 確信度 高（情報提供）。
+
+### L-7. Public プロジェクトのメンバー名簿が全ログインユーザーに開示
+- 該当: `apps/web/features/project/members/project-members.server.tsx`（`getProjectAccess` の読取可否のみ判定 → Public 非メンバーも閲覧可）、`get-project-members.ts`
+- 内容: 任意のログインユーザーが Public プロジェクトのメンバー氏名・ロールを閲覧可能。意図的な可能性が高いが情報開示の認識として記載。
+- 深刻度 Low / 確信度 高（仕様の可能性）。
+
+---
+
+## 補足（誤検知ではないことの確認メモ）
+- セグメントの merge/split/confirm/update は全て `loadSegmentForEdit`（segment→work→project→`canEditProject`）を経由。`mergeSegments` は先頭セグメントの所属 work に限定して `selected.length === segmentIds.length` を検証するため、他 work のセグメント混入は弾かれる。認可漏れなし。
+- `translate-segment.ts` は `loaded.data.projectId !== projectId` を追加検証。`get-segment-assist.ts` は read 権限で TM/用語集を返すのみ。いずれも妥当。
+- env は `valibot`/`config/ai.ts`・`packages/db/client.ts`・`pgschema.ts` でパース済み（規約準拠）。`OPENAI_API_KEY` 等のキーはコードに直書きされておらず、ログにも出力されない。
+
+最重要対応候補: **H-1（本番転用時のデフォルト管理者資格情報）**、**M-1（CSV インジェクション）**、**M-2（メンバー削除後の TM キャッシュ認可ステイル）** の 3 点。</result>
+<usage><subagent_tokens>101787</subagent_tokens><tool_uses>32</tool_uses><duration_ms>393451</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>a2ac3a3d4ed529664</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/a4b541aa-be2c-4015-a3ad-17a7b9fe8a71/tasks/a2ac3a3d4ed529664.output</output-file>
+<status>completed</status>
+<summary>Agent "コード品質・パフォーマンス・テスト調査" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Both reviews are complete. I have a comprehensive picture from my own investigation plus two parallel deep-dives. Here is the consolidated report.
+
+---
+
+# コード品質・パフォーマンス・テスト レビュー報告
+
+調査対象: `apps/web`・`packages` 配下、特に CAT 移行コミット（db4fcce 以降）。両 subagent の結果と自身の確認を統合。
+
+## サマリ（最重要）
+1. **新ドメイン（CAT）のテストがほぼ皆無** — Server Action 15 本に対しテスト 1 本、E2E は CAT フロー 0 件（High）
+2. **AI 英訳が CLAUDE.md の設計と不一致** — Claude ではなく OpenAI gpt-4o-mini を Vercel AI SDK 経由で使用（Medium）
+3. **対訳エディタが 1 文字入力ごとに全セグメント再レンダー**（High）
+4. **proxy.ts に削除済み cron のデッドコードが残存**（Medium）
+5. **埋め込み API がセグメント選択ごと・翻訳ごとに重複コール**（High コスト）
+
+---
+
+## A. デッドコード・残骸（移行起因）
+
+**A-1. `apps/web/proxy.ts:5-37,57-61` — 削除済み cron のデッドコード** / 深刻度: Medium / 確信: 高
+移行コミットで `apps/web/app/api/cron/*`（generate-advice / generate-memory）は削除済みだが、proxy.ts には `/api/cron` 判定・`verifyCronSecret`・`cronConfig`（`CRON_SECRET` の valibot 検証）が丸ごと残存。`/api/cron` ルートは存在しない（`ls` で確認、ヒットは `.next` ビルドキャッシュのみ）。
+- 影響: production/preview で不要な `CRON_SECRET` 必須化（未設定だと起動時 throw）、混乱を招く死蔵分岐。
+- 改善: cron 関連分岐・`cronConfig`・`verifyCronSecret` を削除。
+
+**A-2. `packages/db/src/seed.ts:16-21` — `isProduction` が未使用・本番ガードなし** / Low / 中
+`const isProduction = process.env["VERCEL_ENV"]` はログ文字列にしか使われず、本番シード防止に使われていない。`vercel.json` の `buildCommand` は `pnpm -w db:reset &amp;&amp; pnpm build`（= seed 実行）なので、本番ビルドでも fixture 投入が走る。命名上ガード意図が読めるが未実装。社内ツールで意図的な可能性あり要確認。
+- 改善: ガードを入れるか、誤解を招く変数を削除。
+
+**A-3. `register-glossary.ts:27` / `edit-glossary.ts:41` — 到達しない `note ?? ""`** / Low / 中
+`noteSchema` 通過後 `note` は常に string のため `?? ""` は死コード。
+
+---
+
+## B. アーキテクチャ／ドキュメント不整合
+
+**B-1. AI 英訳が Claude ではなく OpenAI** / Medium / 高
+- `apps/web/config/ai.ts:37-39` `getTranslationModel()` は `createOpenAiProvider()("gpt-4o-mini")`
+- `apps/web/libs/ai/translate.server.ts:1,47` は `import { generateText } from "ai"`（Vercel AI SDK）
+- `package.json` に `@anthropic-ai/sdk` 依存なし
+
+CLAUDE.md の技術選定「AI 英訳：Claude API（公式 SDK を直接利用。抽象化層は設けない）」と二重に矛盾（モデルが OpenAI、かつ抽象化層 `ai` を経由）。埋め込みは仕様どおり OpenAI text-embedding-3-small（schema の vector 次元 1536 とも一致、`packages/db/src/schema/translation-memory.ts:47`）。意図的乗り換えなら CLAUDE.md / agent-docs の更新が必要。
+
+---
+
+## C. パフォーマンス
+
+**C-1. `apps/web/features/segment/editor.client.tsx:121-127,350-386` — 入力ごとに全行再レンダー** / High / 高
+`updateLocalTarget` → `setSegments(全配列 map)` で `Editor` 全体が再描画。行 / `AutoGrowTextarea` は `React.memo` 化されておらず、ハンドラもインライン生成。長文ドキュメントで 1 文字打つたびに全行が再レンダーされ体感ラグ。
+- 改善: `SegmentRow` を `React.memo` 化し、id ごとの安定 `useCallback` を渡して編集行のみ更新。
+
+**C-2. 埋め込み API の重複コール** / High（コスト）/ 中
+- `get-segment-assist.ts:54` がセグメント選択（`assist-panel.client.tsx` の `useEffect`）ごとに `embedText(sourceText)` を有料コール。固定原文なのにキャッシュなし。
+- さらに「AI 生成」押下時 `translate-segment.ts:43` が同一原文を再度 `embedText` + `searchSimilarTm` + `matchGlossary`。同じ作業を 2 度実行。
+- 改善: segments テーブルに source_embedding を保持 or segmentId 単位でメモ化し、クライアントが取得済み assist を翻訳に再利用。
+
+**C-3. `apps/web/features/glossary/match-glossary.ts:19-35` — 全用語集ロード→JS フィルタ、キャッシュなし** / Medium / 中
+プロジェクト＋共通の全行を毎回 SELECT し `sourceText.includes(...)` を JS で実行。assist と translate の両方から毎回呼ばれ `"use cache"` なし。共通用語集の増加に対し非有界。
+- 改善: 用語リスト取得を `"use cache"`（GlossaryTag.Common / ByProjectId）でタグ付け。
+
+**C-4. `apps/web/features/translation-memory/accumulate-translation-memory.ts:30-43` — read-then-write（upsert 不在）** / Medium / 中
+`findFirst` → 無ければ insert。同一 `(projectId, sourceText)` の同時確定で二重 INSERT（重複 TM →`searchSimilarTm` が重複返却）。
+- 改善: `(projectId, sourceText)` の unique 制約 + `onConflictDoUpdate` に。
+
+**C-5. `apps/web/features/segment/get-segment-assist.ts:26-52` — 直列クエリ** / Medium / 中
+segment→work→access→glossary→embed→TM を全直列。`getProjectAccess` は segment/work と独立、`matchGlossary` と `embedText` も並列可。`segment-authz.loadSegmentForEdit` の traversal を再実装している点も重複（ただし assist は read 権限、edit と権限レベルが異なるため完全な統合は不可）。
+- 改善: `Promise.all` で並列化。
+
+**C-6. `apps/web/features/translation-memory/list/get-translation-memories.ts:33` — 不要な `selectDistinct`** / Low / 中
+TM→project(innerJoin)→members(単一 userId で leftJoin) は行増殖しないため distinct のソート/重複排除は無駄。
+
+**C-7. `apps/web/features/translation-memory/search-tm.ts:31-53` — distance 式が 3 回展開** / Low / 中
+`score = 1 - distance` を WHERE/ORDER BY で再インライン化し距離計算が行ごと最大 3 回。`distance &lt;= 1 - minScore` で単一式化可能。なお `translation_memories.source_embedding` に ivfflat/hnsw インデックスがなく（`idx_tm_project` のみ）、件数増で類似検索が全件スキャン化する懸念（Low / 中）。
+
+**C-8. `apps/web/features/project/members/get-candidate-users.ts:11-19` — 非キャッシュ・非有界** / Low / 中
+全 staff を `"use cache"` なしで毎回取得。兄弟の `get-project-members.ts` はキャッシュ済みで不整合。
+
+---
+
+## D. 型安全性
+
+**D-1. DB 行→ドメイン enum の unsafe キャストが蔓延** / Low〜Medium / 中
+`get-projects.ts:57`（`visibility as ProjectVisibility`）、`get-project-members.ts:36` / `project/authz.ts:48`（`role as ProjectMemberRole`）、`get-work-segments.ts:60,67`（`status as SegmentStatus`/`WorkStatus`）、`merge-segments.ts:132`、`members-card.client.tsx:70-72`(`Number(selectedRole) as ...`) など。DB/UI 由来値を無検証で union に断定。
+- 改善: Drizzle スキーマ側で enum カラムを `$type&lt;&gt;()` で型付けし、キャストを不要化。なお新ドメインに生の `any` は検出されず（`createServerAction` 実装の意図的 `any` のみ）。
+
+---
+
+## E. エラーハンドリング
+
+**E-1. `apps/web/features/segment/assist-panel.client.tsx:57-67` — `.catch(() =&gt; {})` でスピナー無限化** / Medium / 高
+`setIsLoadingAssist(false)` が `.then` 内のみ。action が reject（ネットワーク例外等）すると `isLoadingAssist` が true のまま `Loader2` が回り続け、`result.success === false` 時も「翻訳メモリはありません」と表示され失敗が握り潰される。
+- 改善: `finally` で loading 解除し、失敗時はエラー UI 表示。
+
+**E-2. `apps/web/features/work/import/import-work.action.ts:9-16` — サーバー側のファイルサイズ/種別ガードなし** / Medium / 中
+schema は `v.instance(File)` のみ。`.docx` 検査はクライアント（`upload-work-button.client.tsx:28`）だけ。サーバーは `await input.file.arrayBuffer()` で全量メモリ展開、上限/MIME 検査なし。巨大 or 非 docx で OOM もしくは `extractParagraphs` 例外。
+- 改善: schema/action でサイズ上限・拡張子/MIME を検証。
+
+**E-3. `apps/web/features/work/import/import-work.ts:47-49` — 抽出例外をログなしで握り潰し** / Low / 中
+`catch { return fail(EXTRACT_FAILED_ERROR); }` で mammoth の原因詳細が消失。
+
+**E-4. `apps/web/libs/ai/translate.server.ts:47-54` — `maxTokens`/タイムアウトなし** / Low / 低
+`generateText` に出力上限・タイムアウト未指定。呼び出し側は try/catch 済みなので軽微。
+
+---
+
+## F. DRY 違反・重複
+
+**F-1. glossary の register/edit ダイアログが ~95% 重複** / High（保守性）/ 高
+`glossary/register/register-glossary-dialog.client.tsx`（96-151）と `glossary/edit/edit-glossary-dialog.client.tsx`（102-157）の 3 FormField＋ダイアログ骨格＋`useIsHydrated`/`useTransition`/`onSubmit`/フッターがほぼ同一（各 ~180 行）。差分は label/title/submit と `projectId`/`glossaryId` のみ。
+- 改善: `GlossaryFormFields`（＋`GlossaryDialog` シェル）を mode パラメータで共通化。
+
+**F-2. エラーメッセージ定数の重複（8+ ファイル）** / Medium / 高
+`"この操作を実行する権限がありません"` が `delete-project.ts:8`/`edit-project.ts:9`/`add-member.ts:8`/`remove-member.ts:9`/`import-work.ts:11`/`register-glossary.ts:8`/`edit-glossary.ts:9`/`delete-glossary.ts:8`＋`create-server-action.ts:14` に再定義。`"プロジェクトが見つかりません"` も 5 ファイル。
+- 改善: 機能ごとの `errors.ts` に集約。
+
+**F-3. プロジェクト認可ガードブロックの重複** / Medium / 高
+`delete-project.ts:19-27`/`edit-project.ts:22-30`/`add-member.ts:20-28`/`remove-member.ts:24-32` が `getProjectAccess → !access fail → !canManage fail` を反復。
+- 改善: `requireProjectManage` / `requireProjectEdit` ヘルパーに抽出（`import-work.ts:33-41` も対象）。
+
+**F-4. Server Component に認証/認可ロジックが直書き（ルール違反＋重複）** / Medium / 中
+`project-detail.server.tsx:23-43`/`project-members.server.tsx:15-32`/`project-glossary.server.tsx:16-30`/`project-edit-form.server.tsx:13-25` が `getUserStaffId → notFound → getProjectAccess → notFound → canX` ＋整形を各々インライン。`nextjs-server-components.md`（ロジックは外部切り出し、SC は fetch＋出し分け＋JSX のみ）に反する。
+- 改善: `requireProjectAccess(projectIdPromise)` ヘルパーに集約。
+
+**F-5. パンくず JSX の重複** / Medium / 高
+`project-members.server.tsx:36-48` と `project-glossary.server.tsx:34-46`（＋`project-glossary-skeleton.universal.tsx:9-14`）でほぼ同一。`ProjectBreadcrumb` 化推奨。
+
+**F-6. CSV エスケープ処理が 2 ルートで重複・不整合** / Low / 高
+`app/api/works/[workId]/export/route.ts` の `escapeCsv` と `app/api/translation-memory/export/route.ts` の `escapeCsvField` が同一実装の別名。さらに改行が前者 `\r\n`／後者 `\n`、BOM の与え方も別表現で不統一。
+- 改善: 共有 CSV ユーティリティに集約。
+
+---
+
+## G. テスト不足（最重要）
+
+**G-1. 新 CAT ドメインのテストがほぼ皆無** / High / 高
+- 新ドメイン（segment/project/glossary/work/translation-memory）の Server Action は 15 本、テストは `split-into-segments.small.server.test.ts` の 1 本のみ。
+- E2E は `login/logout/password-change/staff-*/assets` のみで、**プロジェクト作成・ワーク取込・対訳編集・確定・用語集・TM の CAT 主要フローに E2E が 0 件**。旧 staff/auth 機能のみテスト資産が残る。
+- テスト戦略（agent-docs）に照らすと、本来：
+  - 認可/バリデーション/エラー分岐 → `*.small.server.test.ts`（confirm/translate/merge/split/import など権限・空訳文・projectId 不一致）
+  - DB ロジック網羅 → `*.medium.server.test.ts`（`searchSimilarTm` のスコア閾値、`matchGlossary` の長い用語優先、`splitIntoSegments`）
+  - クライアント UI → `*.small.browser.test.tsx`（assist-panel のローディング/失敗表示、editor の dirty/確定ボタン活性）
+  - 主要フロー → E2E
+  が必要。
+- 改善: 最低限、確定フロー E2E＋各 action の small.server.test＋assist-panel/editor の browser.test を追加。
+
+**G-2. キャッシュのスタッフ名スタール** / Low / 中
+`get-project-members.ts:18-32` は `cacheLife("permanent")` でタグ `MembersByProjectId` のみだが `staffsTable` を join して name を取得。staff 名変更でこのキャッシュは無効化されない。
+
+---
+
+## H. 命名規則（確認結果）
+
+- `get-*.ts`（DB アクセスを行うが `.data.ts`/`.server.ts` でない）は**違反ではない**。リポジトリ全体で RSC データ取得は `get-*.ts`、副作用 import を伴う真のサーバー専用ユーティリティのみ `*.server.ts`（`extract-docx.server.ts`/`embed.server.ts`）という確立済み慣習に新コードも従っている（確信 高）。
+- 軽微: E2E ファイルが doc の `*.small.e2e.test.ts` ではなく `*.e2e.test.ts`（`.small` 欠落）。ただし全 E2E で一貫し移行前から存在（Low / 低）。
+
+---
+
+## 良かった点（非問題として確認）
+- `get-works.ts:23-36` / `get-projects.ts:30-51` は単一 leftJoin＋集計で N+1 を回避。
+- `translate-segment.ts` / `get-segment-assist.ts` は TM 取得失敗時に用語集のみで継続するグレースフルデグレード＋文脈付きログ。
+- `confirm-segment.ts` は TM 蓄積をトランザクション外で実行し、埋め込み失敗が確定をロールバックしない。
+- 全 `*.action.ts` が `createServerAction`＋schema を使用、認証はラッパーで強制、リソース認可はユースケース関数へ一貫委譲。
+- `glossary/authz.ts` は `project/authz.ts` を合成し重複を回避。
+
+承知しました。HTML レポート化が必要であれば、上記を `docs/reports/` 配下の 1 枚 HTML（mermaid/テーブル/shiki/diff2html）に整形して出力します。</result>
+<usage><subagent_tokens>104228</subagent_tokens><tool_uses>32</tool_uses><duration_ms>427004</duration_ms></usage>
+</task-notification>
+
+---
+
+openai を直接使ってほしい
