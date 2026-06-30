@@ -1,0 +1,38 @@
+## Error Type
+Runtime ReferenceError
+
+## Error Message
+useLayoutEffect is not defined
+
+
+    at AutoGrowTextarea (features/segment/editor.client.tsx:439:3)
+    at <unknown> (features/segment/editor.client.tsx:376:21)
+    at Array.map (<anonymous>:null:null)
+    at Editor (features/segment/editor.client.tsx:350:23)
+    at EditorContainer (features/segment/editor.server.tsx:38:5)
+    at Page (app/(private)/projects/[projectId]/works/[workId]/page.tsx:22:9)
+
+## Code Frame
+  437 |   const ref = useRef<HTMLTextAreaElement>(null);
+  438 |
+> 439 |   useLayoutEffect(() => {
+      |   ^
+  440 |     const element = ref.current;
+  441 |     if (!element) {
+  442 |       return;
+
+Next.js version: 16.2.4 (Turbopack)
+
+翻訳ページの各行を自動リサイズする処理の途中でエラーが出ています
+
+---
+
+テキストエリアの自動リサイズってネイティブのプロパティーでないんだっけ？
+
+---
+
+ちなみにリサイズ可能のプロパティーと併用できる？
+
+---
+
+ok じゃぁ field-sizing:content に変更して

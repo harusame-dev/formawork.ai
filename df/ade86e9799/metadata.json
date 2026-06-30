@@ -3,7 +3,7 @@
   "checkpoint_id": "dfade86e9799",
   "strategy": "manual-commit",
   "branch": "crawdworks_13271198",
-  "checkpoints_count": 1,
+  "checkpoints_count": 5,
   "files_touched": [
     "apps/web/features/segment/editor.client.tsx"
   ],
@@ -13,13 +13,19 @@
       "transcript": "/df/ade86e9799/0/full.jsonl",
       "content_hash": "/df/ade86e9799/0/content_hash.txt",
       "prompt": "/df/ade86e9799/0/prompt.txt"
+    },
+    {
+      "metadata": "/df/ade86e9799/1/metadata.json",
+      "transcript": "/df/ade86e9799/1/full.jsonl",
+      "content_hash": "/df/ade86e9799/1/content_hash.txt",
+      "prompt": "/df/ade86e9799/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 10624,
-    "cache_creation_tokens": 60846,
-    "cache_read_tokens": 403594,
-    "output_tokens": 24161,
-    "api_call_count": 9
+    "input_tokens": 18270,
+    "cache_creation_tokens": 86202,
+    "cache_read_tokens": 1349470,
+    "output_tokens": 31002,
+    "api_call_count": 31
   }
 }
