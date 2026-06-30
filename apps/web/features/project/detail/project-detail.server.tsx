@@ -9,8 +9,6 @@ import {
   canManageProject,
   getProjectAccess,
 } from "@/features/project/authz";
-import { MembersCardSkeleton } from "@/features/project/members/members-card-skeleton.universal";
-import { MembersCardContainer } from "@/features/project/members/members-card.server";
 import { UploadWorkButton } from "@/features/work/import/upload-work-button.client";
 import { WorksContainer } from "@/features/work/list/works.server";
 import { WorksSkeleton } from "@/features/work/list/works-skeleton.universal";
@@ -53,11 +51,7 @@ export async function ProjectDetailContainer({
         / {project.name}
       </div>
 
-      <ProjectHeaderPresenter
-        canEdit={canEdit}
-        canManage={canManage}
-        project={project}
-      />
+      <ProjectHeaderPresenter canManage={canManage} project={project} />
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
@@ -68,14 +62,6 @@ export async function ProjectDetailContainer({
           <WorksContainer projectId={projectId} />
         </Suspense>
       </section>
-
-      <Suspense fallback={<MembersCardSkeleton />}>
-        <MembersCardContainer
-          canManage={canManage}
-          ownerUserId={project.ownerUserId}
-          projectId={projectId}
-        />
-      </Suspense>
     </div>
   );
 }

@@ -7,12 +7,7 @@ import {
 } from "@workspace/db/schema/project";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card";
+import { Card } from "@workspace/ui/components/card";
 import {
   Dialog,
   DialogContent,
@@ -100,81 +95,82 @@ export function MembersCard({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-base">メンバー</CardTitle>
-          {canManage && (
-            <Dialog onOpenChange={setOpen} open={open}>
-              <DialogTrigger asChild>
-                <Button size="sm" variant="outline">
-                  <UserPlus className="size-4" />
-                  メンバーを追加
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>メンバーを追加</DialogTitle>
-                </DialogHeader>
-                <div className="flex flex-col gap-4">
-                  <div className="flex flex-col gap-2">
-                    <span className="text-sm font-medium">ユーザー</span>
-                    <Select
-                      onValueChange={setSelectedUserId}
-                      value={selectedUserId}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="ユーザーを選択" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {addableCandidates.map((candidate) => (
-                          <SelectItem
-                            key={candidate.userId}
-                            value={candidate.userId}
-                          >
-                            {candidate.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <span className="text-sm font-medium">ロール</span>
-                    <Select
-                      onValueChange={setSelectedRole}
-                      value={selectedRole}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={String(ProjectMemberRole.Editor)}>
-                          {PROJECT_MEMBER_ROLE_LABEL[ProjectMemberRole.Editor]}
-                        </SelectItem>
-                        <SelectItem value={String(ProjectMemberRole.Viewer)}>
-                          {PROJECT_MEMBER_ROLE_LABEL[ProjectMemberRole.Viewer]}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {errorMessage && (
-                    <div className="text-sm text-destructive" role="alert">
-                      {errorMessage}
-                    </div>
-                  )}
-                  <Button
-                    disabled={!selectedUserId || isPending}
-                    onClick={handleAdd}
-                  >
-                    追加する
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="space-y-1">
+          <h1 className="font-bold">メンバー</h1>
+          <p className="text-sm text-muted-foreground">
+            このプロジェクトに参加しているメンバーの一覧です。
+          </p>
         </div>
-      </CardHeader>
-      <CardContent>
+        {canManage && (
+          <Dialog onOpenChange={setOpen} open={open}>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="outline">
+                <UserPlus className="size-4" />
+                メンバーを追加
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>メンバーを追加</DialogTitle>
+              </DialogHeader>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium">ユーザー</span>
+                  <Select
+                    onValueChange={setSelectedUserId}
+                    value={selectedUserId}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="ユーザーを選択" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {addableCandidates.map((candidate) => (
+                        <SelectItem
+                          key={candidate.userId}
+                          value={candidate.userId}
+                        >
+                          {candidate.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium">ロール</span>
+                  <Select onValueChange={setSelectedRole} value={selectedRole}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={String(ProjectMemberRole.Editor)}>
+                        {PROJECT_MEMBER_ROLE_LABEL[ProjectMemberRole.Editor]}
+                      </SelectItem>
+                      <SelectItem value={String(ProjectMemberRole.Viewer)}>
+                        {PROJECT_MEMBER_ROLE_LABEL[ProjectMemberRole.Viewer]}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {errorMessage && (
+                  <div className="text-sm text-destructive" role="alert">
+                    {errorMessage}
+                  </div>
+                )}
+                <Button
+                  disabled={!selectedUserId || isPending}
+                  onClick={handleAdd}
+                >
+                  追加する
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
+
+      <Card className="p-4">
         <ul className="divide-y">
           {members.map((member) => (
             <li
@@ -206,7 +202,7 @@ export function MembersCard({
             メンバーの管理はオーナーのみ行えます
           </p>
         )}
-      </CardContent>
-    </Card>
+      </Card>
+    </div>
   );
 }

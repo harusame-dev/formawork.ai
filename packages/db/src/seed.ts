@@ -4,11 +4,13 @@ import { projectMembersFixture } from "./fixtures/project-members.js";
 import { projectsFixture } from "./fixtures/projects.js";
 import { segmentsFixture } from "./fixtures/segments.js";
 import { staffsFixture } from "./fixtures/staffs.js";
+import { translationMemoriesFixture } from "./fixtures/translation-memories.js";
 import { worksFixture } from "./fixtures/works.js";
 import { glossariesTable } from "./schema/glossary";
 import { projectMembersTable, projectsTable } from "./schema/project";
 import { segmentsTable } from "./schema/segment";
 import { staffsTable } from "./schema/staff";
+import { translationMemoriesTable } from "./schema/translation-memory";
 import { worksTable } from "./schema/work";
 
 const isProduction = process.env["VERCEL_ENV"];
@@ -41,6 +43,12 @@ async function seed() {
   // 用語集を投入
   await db.insert(glossariesTable).values(glossariesFixture);
   console.log(`💾 用語集追加： ${glossariesFixture.length} 件`);
+
+  // 翻訳メモリを投入（原文埋め込みは fixture に固定値として保持済み）
+  if (translationMemoriesFixture.length > 0) {
+    await db.insert(translationMemoriesTable).values(translationMemoriesFixture);
+    console.log(`💾 翻訳メモリ追加： ${translationMemoriesFixture.length} 件`);
+  }
 }
 
 seed()

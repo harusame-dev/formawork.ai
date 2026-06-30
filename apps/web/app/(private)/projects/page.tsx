@@ -1,5 +1,4 @@
 import type React from "react";
-import { Button } from "@workspace/ui/components/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -16,12 +15,13 @@ export default function Page(): React.JSX.Element {
             和文 → 英訳の翻訳プロジェクトを管理します
           </p>
         </div>
-        <Button asChild>
-          <Link href="/projects/new">
-            <Plus className="size-4" />
-            新規プロジェクト
-          </Link>
-        </Button>
+        <Link
+          className="flex items-center gap-1 text-sm text-primary underline-offset-4 hover:underline"
+          href="/projects/new"
+        >
+          <Plus className="size-4" />
+          新規プロジェクト
+        </Link>
       </div>
       <Suspense fallback={<ProjectsSkeleton />}>
         <ProjectsContainer />

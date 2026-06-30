@@ -59,7 +59,7 @@ export function UploadWorkButton({
         variant="outline"
       >
         <Upload className="size-4" />
-        ドキュメントをアップロード（.docx）
+        ドキュメントを取り込む（.docx）
       </Button>
       {errorMessage && (
         <span className="text-xs text-destructive" role="alert">

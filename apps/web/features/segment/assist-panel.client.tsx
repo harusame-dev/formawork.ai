@@ -95,7 +95,7 @@ export function AssistPanel({
   if (!segment) {
     return (
       <div className="flex h-full items-center justify-center p-8 text-center text-sm text-muted-foreground">
-        セグメントを選択すると、AI 英訳候補・類似の過去訳・用語集が表示されます
+        セグメントを選択すると、AI 英訳候補・翻訳メモリ・用語集が表示されます
       </div>
     );
   }
@@ -166,7 +166,7 @@ export function AssistPanel({
               </div>
             ) : (
               <p className="text-xs text-muted-foreground">
-                「AI 生成」で原文を英訳します。類似の過去訳・用語集を
+                「AI 生成」で原文を英訳します。翻訳メモリ・用語集を
                 ヒントとして渡します。
               </p>
             )}
@@ -202,8 +202,7 @@ export function AssistPanel({
 
         <section className="space-y-2">
           <h4 className="flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            類似の過去訳（TM）
-            <Badge variant="secondary">類似度70%以上</Badge>
+            翻訳メモリ
           </h4>
           {isLoadingAssist ? (
             <Loader2 className="size-4 animate-spin text-muted-foreground" />
@@ -234,7 +233,7 @@ export function AssistPanel({
             </ul>
           ) : (
             <p className="text-xs text-muted-foreground">
-              類似の過去訳はありません
+              翻訳メモリはありません
             </p>
           )}
         </section>
@@ -242,7 +241,6 @@ export function AssistPanel({
         <section className="space-y-2">
           <h4 className="flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
             用語集マッチ
-            <Badge variant="secondary">上位5</Badge>
           </h4>
           {assist && assist.glossaryMatches.length > 0 ? (
             <ul className="space-y-1">

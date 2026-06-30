@@ -8,7 +8,7 @@ import type { GlossaryMatch } from "@/features/segment/assist-types";
  * 部分一致で照合し、より長い（具体的な）用語を優先して上位 limit 件返す。
  */
 export async function matchGlossary({
-  limit = 5,
+  limit = 20,
   projectId,
   sourceText,
 }: {

@@ -1,7 +1,7 @@
 import type React from "react";
 import type { ProjectVisibility } from "@workspace/db/schema/project";
 import { Button } from "@workspace/ui/components/button";
-import { BookOpen, Pencil } from "lucide-react";
+import { BookOpen, Pencil, Users } from "lucide-react";
 import Link from "next/link";
 import { DeleteProjectDialog } from "@/features/project/delete/delete-project-dialog.client";
 import { ProjectVisibilityBadge } from "@/features/project/project-visibility-badge.universal";
@@ -15,11 +15,9 @@ interface ProjectHeaderData {
 }
 
 export function ProjectHeaderPresenter({
-  canEdit,
   canManage,
   project,
 }: {
-  canEdit: boolean;
   canManage: boolean;
   project: ProjectHeaderData;
 }): React.JSX.Element {
@@ -34,15 +32,21 @@ export function ProjectHeaderPresenter({
           <p className="text-sm text-muted-foreground">{project.description}</p>
         )}
       </div>
-      <div className="flex gap-2">
-        <Button asChild size="sm" variant="outline">
+      <div className="flex items-center gap-3">
+        <Button asChild size="sm" variant="link">
           <Link href={`/projects/${project.id}/glossary`}>
             <BookOpen className="size-4" />
             用語集
           </Link>
         </Button>
-        {canEdit && (
-          <Button asChild size="sm" variant="outline">
+        <Button asChild size="sm" variant="link">
+          <Link href={`/projects/${project.id}/members`}>
+            <Users className="size-4" />
+            メンバー一覧
+          </Link>
+        </Button>
+        {canManage && (
+          <Button asChild size="sm" variant="link">
             <Link href={`/projects/${project.id}/edit`}>
               <Pencil className="size-4" />
               編集

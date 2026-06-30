@@ -21,12 +21,12 @@ export default function LoginPage(): React.JSX.Element {
       <div className="mx-auto mt-16 w-16">
         <Image alt="" sizes="64px" src={Logo} />
       </div>
-      <p className="font-mono text-sm">FORMAWORK.ai</p>
+      <p className="font-mono text-sm">TransDesk</p>
       <Card className="mt-8 w-full max-w-sm">
         <CardHeader>
           <CardTitle className="mx-auto text-2xl">ログイン</CardTitle>
-          <CardDescription className="mx-auto text-sm">
-            デモ環境
+          <CardDescription className="mx-auto text-center text-sm">
+            デモ環境です。ログインボタンを押して自由にお試しいただけます
           </CardDescription>
         </CardHeader>
         <CardContent>

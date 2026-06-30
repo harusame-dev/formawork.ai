@@ -77,7 +77,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 
   if (isLoggedIn && isLoginPage) {
     const redirectResponse = NextResponse.redirect(
-      new URL("/customers", request.url),
+      new URL("/projects", request.url),
     );
     setLoggerHeaders(redirectResponse, request, userId);
     return redirectResponse;

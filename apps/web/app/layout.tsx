@@ -5,8 +5,8 @@ import "@workspace/ui/globals.css";
 export const metadata: Metadata = {
   description: "AI とともに仕事を形作る社内システムプラットフォーム",
   title: {
-    default: "FORMAWORK.ai",
-    template: "%s - FORMAWORK.ai",
+    default: "TransDesk",
+    template: "%s - TransDesk",
   },
 };
 
