@@ -9,7 +9,8 @@
     "packages/db/drizzle/meta/_journal.json",
     "**/test-results/**",
     "packages/db/src/fixtures/production/**",
-    "tickets/**"
+    "tickets/**",
+    "docs/reports/**"
   ],
   "language": "en",
   "version": "0.2",
@@ -67,6 +68,12 @@
     "dorny",
     "shunsuke",
     "pinact",
-    "gomod"
+    "gomod",
+    "pgvector",
+    "Dtos",
+    "TransDesk",
+    "docx",
+    "mammoth",
+    "hnsw"
   ]
 }

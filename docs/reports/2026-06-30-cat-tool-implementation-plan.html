@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>翻訳支援（CAT）ツール — 実装計画</title>
+    <style>
+      :root {
+        --bg: #0f1115;
+        --panel: #171a21;
+        --panel2: #1d2129;
+        --border: #2a2f3a;
+        --text: #e6e9ef;
+        --muted: #9aa3b2;
+        --accent: #6ea8fe;
+        --accent2: #7ee787;
+        --warn: #ffb454;
+        --danger: #ff7b72;
+        --chip: #232834;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+      }
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          "Hiragino Kaku Gothic ProN",
+          "Noto Sans JP",
+          sans-serif;
+        line-height: 1.7;
+        font-size: 15px;
+      }
+      header.page {
+        padding: 32px 40px 20px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, #131722, #0f1115);
+      }
+      header.page h1 {
+        margin: 0 0 6px;
+        font-size: 26px;
+      }
+      header.page .sub {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .meta-chips {
+        margin-top: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chip {
+        background: var(--chip);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12.5px;
+      }
+      .chip b {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      main {
+        padding: 24px 40px 80px;
+        max-width: none;
+      }
+      section.card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 22px 26px;
+        margin: 18px 0;
+      }
+      section.card > h2 {
+        margin: 0 0 4px;
+        font-size: 19px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      section.card > h2 .num {
+        background: var(--accent);
+        color: #0b0e14;
+        font-size: 13px;
+        font-weight: 700;
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 7px;
+      }
+      section.card > .lead {
+        color: var(--muted);
+        margin: 0 0 16px;
+        font-size: 14px;
+      }
+      h3 {
+        font-size: 15.5px;
+        margin: 22px 0 8px;
+        color: #cdd5e2;
+      }
+      h3::before {
+        content: "▸ ";
+        color: var(--accent);
+      }
+      p {
+        margin: 8px 0;
+      }
+      ul,
+      ol {
+        margin: 8px 0 8px;
+        padding-left: 22px;
+      }
+      li {
+        margin: 4px 0;
+      }
+      code.inline {
+        background: #0c0f15;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        padding: 1px 6px;
+        font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+        font-size: 12.5px;
+        color: #ffd9a0;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 12px 0;
+        font-size: 13.5px;
+      }
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 8px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: var(--panel2);
+        color: #cdd5e2;
+        font-weight: 600;
+      }
+      td code {
+        color: #ffd9a0;
+        font-family: "SF Mono", ui-monospace, Menlo, monospace;
+        font-size: 12.5px;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      @media (max-width: 1100px) {
+        .grid2,
+        .grid3 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .mini {
+        background: var(--panel2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
+      .mini h4 {
+        margin: 0 0 6px;
+        font-size: 14px;
+        color: var(--accent2);
+      }
+      .mini p {
+        margin: 4px 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .tag {
+        display: inline-block;
+        font-size: 11.5px;
+        padding: 1px 7px;
+        border-radius: 5px;
+        margin-right: 4px;
+      }
+      .t-core {
+        background: rgba(126, 231, 135, 0.15);
+        color: var(--accent2);
+        border: 1px solid rgba(126, 231, 135, 0.3);
+      }
+      .t-min {
+        background: rgba(255, 180, 84, 0.15);
+        color: var(--warn);
+        border: 1px solid rgba(255, 180, 84, 0.3);
+      }
+      .t-later {
+        background: rgba(154, 163, 178, 0.15);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .mermaid {
+        background: #0c0f15;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 18px;
+        margin: 12px 0;
+        text-align: center;
+      }
+      pre.shiki-block {
+        margin: 10px 0;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        overflow: auto;
+        font-size: 12.8px;
+      }
+      pre.code-fallback {
+        background: #0c0f15;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        overflow: auto;
+        font-family: "SF Mono", ui-monospace, Menlo, monospace;
+        font-size: 12.8px;
+        color: #d6deeb;
+        margin: 10px 0;
+      }
+      .callout {
+        border-left: 3px solid var(--accent);
+        background: var(--panel2);
+        padding: 10px 16px;
+        border-radius: 0 8px 8px 0;
+        margin: 12px 0;
+      }
+      .callout.warn {
+        border-left-color: var(--warn);
+      }
+      .callout.danger {
+        border-left-color: var(--danger);
+      }
+      .callout p {
+        margin: 4px 0;
+        font-size: 13.5px;
+      }
+      .toc {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .toc a {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 13px;
+        border: 1px solid var(--border);
+        padding: 4px 10px;
+        border-radius: 7px;
+      }
+      .toc a:hover {
+        background: var(--panel2);
+      }
+      .legend {
+        font-size: 12.5px;
+        color: var(--muted);
+        margin: 6px 0 0;
+      }
+      hr.soft {
+        border: none;
+        border-top: 1px dashed var(--border);
+        margin: 18px 0;
+      }
+      .num-pill {
+        color: var(--accent2);
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="page">
+      <h1>翻訳支援（CAT）ツール — 実装計画</h1>
+      <div class="sub">
+        和文 → 英訳 / AI 英訳 × 翻訳メモリ・用語集 / Next.js + Supabase + Claude
+        API（デモ）
+      </div>
+      <div class="meta-chips">
+        <span class="chip"><b>作成日</b> 2026-06-30</span>
+        <span class="chip"><b>予算/納期</b> 6万円 / 7月末</span>
+        <span class="chip"><b>スコープ</b> コア機能に集中</span>
+        <span class="chip"><b>配置</b> 現モノレポをベースに改修</span>
+        <span class="chip"><b>認可</b> アプリ層（createServerAction）</span>
+        <span class="chip"><b>TM検索</b> pgvector + OpenAI embedding</span>
+      </div>
+      <div class="toc">
+        <a href="#s1">1. 確定要件</a>
+        <a href="#s2">2. アーキテクチャ</a>
+        <a href="#s3">3. ユーザーフロー</a>
+        <a href="#s4">4. DBスキーマ</a>
+        <a href="#s5">5. 抽出・分割</a>
+        <a href="#s6">6. AI英訳 & RAG</a>
+        <a href="#s7">7. ディレクトリ/層</a>
+        <a href="#s8">8. ライブラリ</a>
+        <a href="#s9">9. マイルストーン</a>
+        <a href="#s10">10. 未決・リスク</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- 1 -->
+      <section class="card" id="s1">
+        <h2><span class="num">1</span> 確定した要件・意思決定</h2>
+        <p class="lead">
+          ヒアリングで合意済みの方針。以降の設計はこれを前提とする。
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 22%">項目</th>
+              <th style="width: 34%">決定</th>
+              <th>補足</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>スコープ</td>
+              <td>コア機能に集中</td>
+              <td>
+                アップロード→抽出→分割→対訳エディタ→AI英訳→TM保存/再利用を作り込む。用語集・可視性は最小実装
+              </td>
+            </tr>
+            <tr>
+              <td>配置</td>
+              <td>現モノレポを改修</td>
+              <td>
+                本リポジトリはプロジェクト雛形。ブランチ単位で派生。既存の
+                db/ui/logger/supabase/認証基盤を流用
+              </td>
+            </tr>
+            <tr>
+              <td>認証</td>
+              <td>メール＆パスワード</td>
+              <td>
+                Supabase Auth。既存の
+                <code class="inline">Auth/AuthAdmin</code>
+                ラッパーをそのまま利用
+              </td>
+            </tr>
+            <tr>
+              <td>認可</td>
+              <td>アプリ層で実施（RLS不使用）</td>
+              <td>
+                既存構成が server クライアントで service role key を使い RLS
+                をバイパス。<code class="inline">createServerAction</code> の
+                role と各ユースケースで認可
+              </td>
+            </tr>
+            <tr>
+              <td>TM類似検索</td>
+              <td>
+                pgvector + OpenAI <code class="inline">text-embedding-3</code>
+              </td>
+              <td>
+                Claude には埋め込み API が無いため埋め込みは OpenAI を併用
+              </td>
+            </tr>
+            <tr>
+              <td>AI英訳</td>
+              <td>単一訳 + 再生成</td>
+              <td>
+                1セグメント1訳。Claude SDK
+                を直接利用（AIのみ抽象化層を設けない方針）
+              </td>
+            </tr>
+            <tr>
+              <td>抽出ファイル</td>
+              <td>まず docx のみ</td>
+              <td>ライブラリ抽出。pptx は余裕があれば追加</td>
+            </tr>
+            <tr>
+              <td>文分割</td>
+              <td>ルールベース + 手動結合</td>
+              <td>「。！？」+ 閉じ括弧を考慮。エディタ上でセグメント結合可</td>
+            </tr>
+            <tr>
+              <td>実行環境</td>
+              <td>当面 Supabase クラウド前提</td>
+              <td>最終的に Docker 完結を視野</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 2 -->
+      <section class="card" id="s2">
+        <h2><span class="num">2</span> システムアーキテクチャ</h2>
+        <p class="lead">
+          既存モノレポの層構成（App Router + features + packages）に CAT
+          機能を載せる。外部 API は Claude（英訳）と OpenAI（埋め込み）の2系統。
+        </p>
+        <div class="mermaid">
+          flowchart TB subgraph Client["ブラウザ（対訳エディタ）"]
+          UI["対訳エディタ / プロジェクト・ワーク画面<br />*.client.tsx
+          (react-hook-form + valibot)"] end subgraph Next["Next.js App Router
+          (apps/web)"] RSC["Server Components<br />Container/Presenter +
+          Suspense"] SA["Server Actions<br />createServerAction（認証・認可・バリデーション）"]
+          UC["ユースケース層 *.ts<br />（抽出/分割/英訳/TM検索/CSV出力）"] end
+          subgraph Pkg["packages"] DB["@workspace/db<br />Drizzle +
+          postgres-js"] AUTH["features/auth<br />Auth / AuthAdmin ラッパー"]
+          LOG["@repo/logger"] end subgraph Ext["外部"] SUPA[("Supabase<br />Postgres
+          + pgvector<br />Auth")] CLAUDE["Claude API<br />@anthropic-ai/sdk"]
+          OPENAI["OpenAI<br />text-embedding-3"] end UI -->|呼び出し| SA RSC -->
+          UC SA --> UC UC --> DB UC --> AUTH UC --> CLAUDE UC --> OPENAI DB -->
+          SUPA AUTH --> SUPA
+        </div>
+        <p class="legend">
+          英訳は Claude、TM の類似検索ベクトルは OpenAI
+          埋め込み。いずれもユースケース層から呼ぶ（AI は方針どおり SDK
+          直接、埋め込み・docx 抽出は薄いラッパーを推奨）。
+        </p>
+      </section>
+
+      <!-- 3 -->
+      <section class="card" id="s3">
+        <h2><span class="num">3</span> ユーザーフロー</h2>
+        <p class="lead">
+          プロジェクト作成からバイリンガル CSV 出力までの主要動線。1ワーク =
+          1ドキュメント。
+        </p>
+        <div class="mermaid">
+          flowchart LR A["プロジェクト作成<br />(可視性 Public/Private)"] -->
+          B["メンバー紐付け<br />(Private は招待者のみ)"] B --> C["ワーク作成<br />+
+          docx アップロード"] C --> D["テキスト抽出<br />(mammoth)"] D -->
+          E["文分割<br />(ルールベース)"] E --> F["対訳エディタ表示<br />1行 =
+          1セグメント"] F --> G{"翻訳ループ"} G -->|AI英訳要求| H["RAG:
+          類似TM上位5 + 用語集<br />→ Claude で英訳生成"] H --> F G
+          -->|手動編集/確定| I["セグメント確定<br />訳文を保存"] I -->
+          J["翻訳メモリへ蓄積<br />(原文を埋め込み)"] J --> G G -->|完了|
+          K["バイリンガル CSV 出力"]
+        </div>
+        <div class="callout">
+          <p>
+            <b>翻訳単位と API 呼び出し：</b> 翻訳は 1 セグメント単位。AI
+            英訳は「1 セグメント = 1 API 呼び出し」で、呼び出し前に RAG
+            で<b>類似過去訳・用語集を各上位5件</b>取得しプロンプトに同梱する。
+          </p>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="card" id="s4">
+        <h2><span class="num">4</span> DB スキーマ設計</h2>
+        <p class="lead">
+          既存
+          <code class="inline">packages/db/src/schema/</code> 規約に準拠：<code
+            class="inline"
+            >pgSchema(schemaName).table(...)</code
+          >、PK は
+          <code class="inline">uuid().primaryKey().defaultRandom()</code>、enum
+          は smallint + const、FK は
+          <code class="inline">.references(..., { onDelete: "cascade" })</code
+          >、全テーブル
+          <code class="inline">.enableRLS()</code
+          >（ポリシーは作らずアプリ層で認可）。
+        </p>
+        <div class="mermaid">
+          erDiagram projects ||--o{ project_members : has projects ||--o{ works
+          : contains projects ||--o{ translation_memories : owns projects ||--o{
+          glossaries : owns works ||--o{ segments : "splits into" projects {
+          uuid id PK text name smallint visibility "1=Public 2=Private" uuid
+          owner_user_id timestamp created_at } project_members { uuid project_id
+          FK uuid user_id smallint role "1=Owner 2=Editor 3=Viewer" } works {
+          uuid id PK uuid project_id FK text name text source_file_name smallint
+          status "1=未着手 2=翻訳中 3=完了" timestamp created_at } segments {
+          uuid id PK uuid work_id FK integer seq "表示順" text source_text text
+          target_text "nullable" smallint status "1=未訳 2=下書き 3=確定"
+          timestamp created_at } translation_memories { uuid id PK uuid
+          project_id FK text source_text "和文" text target_text "英文" vector
+          source_embedding "vector(1536)" timestamp created_at } glossaries {
+          uuid id PK uuid project_id FK "null=共通用語集" text source_term text
+          target_term text note }
+        </div>
+        <div class="grid2">
+          <div class="mini">
+            <h4>可視性とアクセス制御</h4>
+            <p>
+              <code class="inline">projects.visibility</code> が Public
+              ならログインユーザー全員が閲覧可、Private は
+              <code class="inline">project_members</code>
+              に存在するユーザーのみ。判定は各ユースケースの認可ヘルパーで行う（RLS
+              なし）。
+            </p>
+          </div>
+          <div class="mini">
+            <h4>共通用語集の表現</h4>
+            <p>
+              <code class="inline">glossaries.project_id</code> を nullable
+              にし、<b>NULL = 全プロジェクト共通</b>。英訳時はプロジェクト用語集
+              + 共通用語集をマージして参照する。
+            </p>
+          </div>
+        </div>
+        <h3>pgvector の導入（既存の拡張導入パターンを踏襲）</h3>
+        <p>
+          Drizzle の generate は拡張を出力しないため、<code class="inline"
+            >drizzle/00XX_enable_pgvector.sql</code
+          >
+          を手書き追加し
+          <code class="inline">meta/_journal.json</code> にエントリ追記（既存
+          <code class="inline">0001_enable_pgmq.sql</code> /
+          <code class="inline">0002_enable_pg_cron.sql</code> と同形式）。
+        </p>
+        <pre
+          class="code-fallback"
+          data-lang="sql"
+          data-code="-- drizzle/00XX_enable_pgvector.sql
+-- CREATE EXTENSION で search_path がクリアされるため退避・復元する
+DO $$ BEGIN
+  PERFORM set_config('app.saved_search_path', current_setting('search_path'), false);
+END $$;
+
+CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA extensions;
+
+DO $$ BEGIN
+  PERFORM set_config('search_path', current_setting('app.saved_search_path'), false);
+END $$;
+
+-- 類似検索インデックス（cosine）
+CREATE INDEX idx_tm_embedding ON translation_memories
+  USING hnsw (source_embedding vector_cosine_ops);"
+        >
+-- drizzle/00XX_enable_pgvector.sql ...（Shiki ロード後にハイライト表示）</pre
+        >
+        <p class="legend">
+          embedding カラムは <code class="inline">drizzle-orm/pg-core</code> の
+          <code class="inline">customType</code> で
+          <code class="inline">vector(1536)</code> を自前定義（OpenAI
+          <code class="inline">text-embedding-3-small</code> = 1536 次元）。
+        </p>
+      </section>
+
+      <!-- 5 -->
+      <section class="card" id="s5">
+        <h2><span class="num">5</span> テキスト抽出・文分割</h2>
+        <div class="grid2">
+          <div>
+            <h3>抽出：ライブラリ（AIではない）</h3>
+            <ul>
+              <li>
+                <b>docx</b>：<code class="inline">mammoth</code>
+                で段落テキストを抽出（書式は捨て、段落の区切りは保持）
+              </li>
+              <li>
+                AI 抽出は取りこぼし・コスト・ブレのリスクがあり CAT
+                の「原文を欠落させない」要件に不適
+              </li>
+              <li>
+                抽出は薄いラッパー
+                <code class="inline">extract-docx.server.ts</code>
+                に閉じ込め（外部ライブラリ規約に準拠）
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>分割：ルールベース + 手動調整</h3>
+            <ul>
+              <li>
+                段落ごとに
+                <code class="inline">。！？</code> を区切り、直後の閉じ括弧
+                <code class="inline">」』）</code> を含めて1文に
+              </li>
+              <li>
+                <code class="inline"
+                  >Intl.Segmenter("ja", { granularity: "sentence" })</code
+                >
+                を併用可
+              </li>
+              <li>
+                過分割対策として、エディタ上で<b>隣接セグメントの結合</b>を提供
+              </li>
+            </ul>
+          </div>
+        </div>
+        <pre
+          class="code-fallback"
+          data-lang="ts"
+          data-code="// features/work/import/split-into-segments.ts（ユースケース／純粋関数でテスト可能）
+const SENTENCE_END = /(?&lt;=[。！？])(?![」』）】])/u;
+
+export function splitIntoSegments(paragraphs: string[]): string[] {
+  return paragraphs
+    .flatMap((p) =&gt; p.split(SENTENCE_END))
+    .map((s) =&gt; s.trim())
+    .filter((s) =&gt; s.length &gt; 0);
+}"
+        >
+// split-into-segments.ts ...（Shiki ロード後にハイライト表示）</pre
+        >
+        <div class="callout warn">
+          <p>
+            <b>テスト方針：</b>
+            分割ロジックは純粋関数として切り出し、Vitest（small）で全角記号・括弧・改行のケースを網羅。Server
+            Component / 抽出 I/O は E2E で担保（テスト戦略ドキュメント準拠）。
+          </p>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="card" id="s6">
+        <h2><span class="num">6</span> AI 英訳 & RAG（翻訳メモリ・用語集）</h2>
+        <p class="lead">
+          1セグメントの英訳要求ごとに、類似過去訳と用語集を取得して Claude
+          に渡す。
+        </p>
+        <div class="mermaid">
+          sequenceDiagram participant E as 対訳エディタ participant A as
+          translateSegment.action participant U as ユースケース participant O as
+          OpenAI(embedding) participant DB as pgvector / glossary participant C
+          as Claude API E->>A: 英訳要求(segmentId) A->>A:
+          認証・認可・バリデーション A->>U: translateSegment(segment) U->>O:
+          原文を埋め込み O-->>U: vector(1536) U->>DB: 類似TM 上位5（cosine） +
+          用語集マッチ 上位5 DB-->>U: 過去訳・用語ペア U->>C:
+          プロンプト（原文＋類似訳＋用語集） C-->>U: 英訳（単一） U-->>E:
+          訳文候補を表示（編集可）
+        </div>
+        <div class="grid2">
+          <div class="mini">
+            <h4>類似 TM 検索</h4>
+            <p>
+              原文（和文）を OpenAI で埋め込み、<code class="inline"
+                >translation_memories.source_embedding</code
+              >
+              と cosine 距離で上位5件。プロジェクト単位でフィルタ。
+            </p>
+          </div>
+          <div class="mini">
+            <h4>用語集マッチ</h4>
+            <p>
+              原文に含まれる
+              <code class="inline">source_term</code>
+              を抽出（部分一致／trigram）。プロジェクト用語集 +
+              共通用語集から上位5件を訳語ヒントとして同梱。
+            </p>
+          </div>
+        </div>
+        <div class="callout">
+          <p>
+            <b>TM への蓄積：</b>
+            セグメントを<b>確定</b>したタイミングで原文＋訳文を
+            <code class="inline">translation_memories</code> へ insert
+            し、原文の埋め込みも併せて保存。これが次回以降の類似検索の母集団になる。
+          </p>
+        </div>
+        <div class="callout danger">
+          <p>
+            <b>方針メモ（AIの抽象化）：</b> ご指定どおり Claude は SDK
+            を直接利用し抽象化層を設けない。一方で OpenAI 埋め込みと docx
+            抽出は将来差し替えに備え薄いラッパーを推奨（外部ライブラリ規約）。この非対称は意図的なものとして明記する。
+          </p>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="card" id="s7">
+        <h2><span class="num">7</span> ディレクトリ構成・層の分け方</h2>
+        <p class="lead">
+          既存の
+          <code class="inline"
+            >features/&lt;機能&gt;/&lt;ユースケース&gt;/</code
+          >
+          2階層と命名サフィックス規約に準拠。
+        </p>
+        <div class="grid2">
+          <div>
+            <h3>packages/db/src/schema 追加</h3>
+            <pre
+              class="code-fallback"
+              data-lang="text"
+              data-code="schema/
+  project.ts            # projects + project_members
+  work.ts               # works
+  segment.ts            # segments
+  translation-memory.ts # translation_memories(vector)
+  glossary.ts           # glossaries
+  index.ts              # 追記（re-export）
+# package.json の exports にも subpath 追記
+# drizzle/00XX_enable_pgvector.sql 手書き追加"
+            >
+schema/ ...</pre
+            >
+          </div>
+          <div>
+            <h3>apps/web/features 追加</h3>
+            <pre
+              class="code-fallback"
+              data-lang="text"
+              data-code="features/
+  project/   list|create|detail|members ...
+  work/      create|import|detail ...
+    import/  extract-docx.server.ts
+             split-into-segments.ts
+  segment/   editor.client.tsx
+             update-segment.ts / .action.ts
+             translate-segment.ts / .action.ts
+             confirm-segment.ts / .action.ts
+  translation-memory/  search-tm.ts / embed.ts
+  glossary/  list|register|match ...
+  export/    export-bilingual-csv.ts / .action.ts"
+            >
+features/ ...</pre
+            >
+          </div>
+        </div>
+        <h3>層の責務（既存規約）</h3>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 24%">ファイル</th>
+              <th>責務</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>*.action.ts</code></td>
+              <td>
+                薄い Server Action。<code>createServerAction</code> でラップし
+                schema(valibot)・role・onSuccess(updateTag/redirect)
+                を指定。ロジックは持たない
+              </td>
+            </tr>
+            <tr>
+              <td><code>*.ts</code>（サフィックス無し）</td>
+              <td>
+                ユースケース本体・クエリ。DB アクセス、英訳、TM 検索、CSV
+                生成。<code>Result</code> を返す
+              </td>
+            </tr>
+            <tr>
+              <td><code>*.server.tsx</code></td>
+              <td>
+                async な Container。データ取得して Presenter に渡す（末端で取得
+                + Suspense）
+              </td>
+            </tr>
+            <tr>
+              <td><code>*.universal.tsx</code></td>
+              <td>Presenter / Skeleton。props のみで描画</td>
+            </tr>
+            <tr>
+              <td><code>*.client.tsx</code></td>
+              <td>
+                対訳エディタ等インタラクション。react-hook-form +
+                valibotResolver
+              </td>
+            </tr>
+            <tr>
+              <td><code>tag.ts</code> / <code>schema.ts</code></td>
+              <td>キャッシュタグ定義 / valibot スキーマ</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="legend">
+          キャッシュは <code class="inline">"use cache"</code> +
+          <code class="inline">cacheTag</code>（<code class="inline"
+            >permanent</code
+          >）、更新側 Action で
+          <code class="inline">updateTag()</code>。フォームは valibot（zod
+          は使わない）、<code class="inline">@repo/logger</code>
+          でセキュリティイベントを記録。
+        </p>
+      </section>
+
+      <!-- 8 -->
+      <section class="card" id="s8">
+        <h2><span class="num">8</span> 追加ライブラリ</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 24%">ライブラリ</th>
+              <th style="width: 18%">用途</th>
+              <th>方針</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>@anthropic-ai/sdk</code></td>
+              <td>AI 英訳</td>
+              <td>SDK を直接利用（抽象化層なし／ご指定）</td>
+            </tr>
+            <tr>
+              <td><code>openai</code> もしくは fetch</td>
+              <td>埋め込み</td>
+              <td>
+                <code>embed.ts</code>
+                薄いラッパー経由。<code>text-embedding-3-small</code>（1536次元）
+              </td>
+            </tr>
+            <tr>
+              <td><code>mammoth</code></td>
+              <td>docx 抽出</td>
+              <td><code>extract-docx.server.ts</code> ラッパー経由</td>
+            </tr>
+            <tr>
+              <td>pgvector（拡張）</td>
+              <td>類似検索</td>
+              <td>
+                手書き SQL マイグレーション + Drizzle <code>customType</code>
+              </td>
+            </tr>
+            <tr>
+              <td>CSV 生成</td>
+              <td>出力</td>
+              <td>
+                軽量実装（依存追加せず自前 or
+                既存ユーティリティ）。原文/訳文の2列
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="legend">
+          環境変数は valibot で専用 config 関数を作って参照（<code
+            class="inline"
+            >ANTHROPIC_API_KEY</code
+          >
+          / <code class="inline">OPENAI_API_KEY</code> を追加）。直接
+          <code class="inline">process.env</code> 参照はしない。
+        </p>
+      </section>
+
+      <!-- 9 -->
+      <section class="card" id="s9">
+        <h2><span class="num">9</span> マイルストーン（コア集中スコープ）</h2>
+        <p class="lead">
+          <span class="tag t-core">コア</span> 作り込む /
+          <span class="tag t-min">最小</span> 動く最小限 /
+          <span class="tag t-later">後続</span>
+          余裕があれば。予算・納期を踏まえた優先順位。
+        </p>
+        <div class="grid3">
+          <div class="mini">
+            <h4>M1 基盤</h4>
+            <p>
+              <span class="tag t-core">コア</span> DBスキーマ + pgvector /
+              認証(既存流用) / プロジェクト CRUD / メンバー認可
+            </p>
+          </div>
+          <div class="mini">
+            <h4>M2 取り込み</h4>
+            <p>
+              <span class="tag t-core">コア</span> ワーク作成 / docx
+              アップロード / 抽出 / 文分割 / セグメント生成
+            </p>
+          </div>
+          <div class="mini">
+            <h4>M3 対訳エディタ</h4>
+            <p>
+              <span class="tag t-core">コア</span> 1行=1セグメント表示 /
+              原文・訳文編集 / 確定 / セグメント結合
+            </p>
+          </div>
+          <div class="mini">
+            <h4>M4 AI英訳 + RAG</h4>
+            <p>
+              <span class="tag t-core">コア</span> 埋め込み / 類似TM上位5 /
+              用語集上位5 / Claude 英訳 / 再生成
+            </p>
+          </div>
+          <div class="mini">
+            <h4>M5 蓄積・出力</h4>
+            <p>
+              <span class="tag t-core">コア</span> 確定訳の TM 蓄積・再利用 /
+              <span class="tag t-min">最小</span> 用語集管理・共通用語集 /
+              バイリンガル CSV 出力
+            </p>
+          </div>
+          <div class="mini">
+            <h4>M6 仕上げ</h4>
+            <p>
+              <span class="tag t-min">最小</span> Public/Private 切替 /
+              <span class="tag t-later">後続</span> pptx 対応 /
+              <span class="tag t-later">後続</span> Docker 完結
+            </p>
+          </div>
+        </div>
+        <div class="mermaid">
+          gantt dateFormat YYYY-MM-DD axisFormat %m/%d section 基盤 M1
+          基盤/スキーマ/認証 :m1, 2026-07-01, 5d section 取り込み・エディタ M2
+          抽出・分割 :m2, after m1, 4d M3 対訳エディタ :m3, after m2, 5d section
+          AI・TM M4 AI英訳 + RAG :m4, after m3, 5d M5 TM蓄積/用語集/CSV :m5,
+          after m4, 4d section 仕上げ M6 可視性/調整/検証 :m6, after m5, 3d
+        </div>
+        <p class="legend">
+          7月末納期に対する目安。実日程はご都合に合わせて調整。
+        </p>
+      </section>
+
+      <!-- 10 -->
+      <section class="card" id="s10">
+        <h2><span class="num">10</span> 未決事項・リスク・確認したい点</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 26%">論点</th>
+              <th style="width: 37%">現時点の想定（提案）</th>
+              <th>確認したいこと</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>埋め込み対象</td>
+              <td>
+                類似検索は<b>原文（和文）</b>で行う。確定訳の原文を埋め込み保存
+              </td>
+              <td>英訳側でも検索したいニーズはあるか</td>
+            </tr>
+            <tr>
+              <td>TM 類似度の扱い</td>
+              <td>上位5件をスコア付きで提示（閾値での足切りはしない）</td>
+              <td>一定スコア未満を隠す等の要望有無</td>
+            </tr>
+            <tr>
+              <td>アップロード元ファイル保存</td>
+              <td>抽出後はファイルを保持せずテキスト（セグメント）のみ保存</td>
+              <td>原本を Supabase Storage に残す必要があるか</td>
+            </tr>
+            <tr>
+              <td>用語集の自動適用</td>
+              <td>英訳プロンプトにヒントとして渡すのみ（強制置換はしない）</td>
+              <td>確定訳での用語強制チェックまで要るか</td>
+            </tr>
+            <tr>
+              <td>同時編集</td>
+              <td>デモでは排他制御なし（後勝ち）</td>
+              <td>複数翻訳者の同時編集を想定するか</td>
+            </tr>
+            <tr>
+              <td>CSV フォーマット</td>
+              <td>原文, 訳文 の2列（UTF-8 BOM 付き）</td>
+              <td>列追加（用語/ステータス等）の希望</td>
+            </tr>
+            <tr>
+              <td>Docker 完結</td>
+              <td>後続。まずクラウド Supabase で動作</td>
+              <td>納品時点で Docker 起動が必須か</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout">
+          <p>
+            上記が固まれば
+            M1（基盤・DBスキーマ）から着手します。特に「ファイル原本の保存有無」と「Docker
+            完結の必須度」はスキーマ・構成に影響するため、先に確認できると安全です。
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "dark",
+        themeVariables: { fontSize: "13px" },
+        securityLevel: "loose",
+      });
+
+      // Shiki によるコードハイライト（フォールバックの <pre> を置換）
+      try {
+        const { codeToHtml } = await import("https://esm.sh/shiki@1.29.2");
+        const blocks = document.querySelectorAll(
+          "pre.code-fallback[data-code]",
+        );
+        for (const el of blocks) {
+          const code = el.getAttribute("data-code");
+          const lang = el.getAttribute("data-lang") || "ts";
+          try {
+            const html = await codeToHtml(code, { lang, theme: "github-dark" });
+            const wrap = document.createElement("div");
+            wrap.innerHTML = html;
+            const pre = wrap.querySelector("pre");
+            if (pre) {
+              pre.classList.add("shiki-block");
+              pre.style.padding = "14px 16px";
+              el.replaceWith(pre);
+            }
+          } catch (e) {
+            el.textContent = code;
+          }
+        }
+      } catch (e) {
+        // Shiki ロード失敗時は data-code をそのまま表示
+        document
+          .querySelectorAll("pre.code-fallback[data-code]")
+          .forEach((el) => {
+            el.textContent = el.getAttribute("data-code");
+          });
+      }
+    </script>
+  </body>
+</html>

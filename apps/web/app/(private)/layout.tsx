@@ -15,7 +15,7 @@ export default function PrivateLayout({
         <header className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 border-b px-4">
           <NavigationMenu />
           <Link className="text-lg font-semibold hover:opacity-80" href="/">
-            FORMAWORK.AI -CRM-
+            TransDesk
           </Link>
           <UserMenu />
         </header>

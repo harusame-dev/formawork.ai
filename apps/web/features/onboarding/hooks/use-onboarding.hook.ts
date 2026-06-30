@@ -9,7 +9,7 @@ const COMPLETE_EVENT = "onboarding-complete";
 const RESET_EVENT = "onboarding-reset";
 
 export const TOUR_NAME = "main";
-export const CUSTOMER_MENU_STEP_INDEX = 3;
+export const PROJECTS_MENU_STEP_INDEX = 3;
 
 function getSnapshot(): boolean {
   try {

@@ -1,32 +1,17 @@
-import {
-  Brain,
-  Hand,
-  Info,
-  Menu,
-  NotebookPen,
-  Search,
-  TriangleAlert,
-  User,
-  Users,
-} from "lucide-react";
+import { FolderKanban, Hand, Menu, TriangleAlert } from "lucide-react";
 import type { Step } from "onborda";
 
 /** オンボーディングで使用する要素のID定数 */
 export const OnboardingId = {
-  BasicInfoTab: "onboarding-basic-info-tab",
   Caution: "onboarding-caution",
-  CustomerMenu: "onboarding-customer-menu",
-  FirstCustomer: "onboarding-first-customer",
-  MemoriesTab: "onboarding-memories-tab",
   MenuButton: "onboarding-menu-button",
-  NotesTab: "onboarding-notes-tab",
-  SearchForm: "onboarding-search-form",
+  ProjectsMenu: "onboarding-projects-menu",
   Welcome: "onboarding-welcome",
 } as const;
 
 export const steps: Step[] = [
   {
-    content: <>FORMAWORK.AI CRMへようこそ！</>,
+    content: <>翻訳支援ツール TransDesk へようこそ！</>,
     icon: <Hand className="size-5" />,
     pointerPadding: 10,
     pointerRadius: 10,
@@ -59,84 +44,22 @@ export const steps: Step[] = [
   },
   {
     content: (
-      <>
-        顧客の管理や接客ノートの記録、AIによる接客アドバイス・顧客メモリなどが確認できます。
-      </>
-    ),
-    icon: <Users className="size-5" />,
-    nextRoute: "/customers",
-    pointerPadding: 10,
-    pointerRadius: 10,
-    selector: `#${OnboardingId.CustomerMenu}`,
-    showControls: true,
-    side: "bottom-left",
-    title: "顧客一覧",
-  },
-  {
-    content: <>姓名、電話番号、メールアドレスで検索可能です。</>,
-    icon: <Search className="size-5" />,
-    pointerPadding: 10,
-    pointerRadius: 10,
-    selector: `#${OnboardingId.SearchForm}`,
-    showControls: true,
-    side: "bottom",
-    title: "顧客を検索",
-  },
-  {
-    content: <>顧客名を選択すると詳細画面に遷移します。</>,
-    icon: <User className="size-5" />,
-    nextRoute: "/customers/00000000-0000-0000-0000-000000000001",
-    pointerPadding: 10,
-    pointerRadius: 10,
-    selector: `#${OnboardingId.FirstCustomer}`,
-    showControls: true,
-    side: "top-left",
-    title: "顧客を選択",
-  },
-  {
-    content: <>顧客の生年月日や住所など、基本情報が閲覧できます。</>,
-    icon: <Info className="size-5" />,
-    nextRoute: "/customers/00000000-0000-0000-0000-000000000001/notes",
-    pointerPadding: 10,
-    pointerRadius: 10,
-    selector: `#${OnboardingId.BasicInfoTab}`,
-    showControls: true,
-    side: "bottom-left",
-    title: "顧客詳細",
-  },
-  {
-    content: (
-      <>
-        接客内容を記録できます。自動で AI
-        が接客内容のアドバイスと顧客情報をメモリに記録していきます。
-      </>
-    ),
-    icon: <NotebookPen className="size-5" />,
-    nextRoute: "/customers/00000000-0000-0000-0000-000000000001/memories",
-    pointerPadding: 10,
-    pointerRadius: 10,
-    selector: `#${OnboardingId.NotesTab}`,
-    showControls: true,
-    side: "bottom",
-    title: "接客ノート",
-  },
-  {
-    content: (
       <div>
         <div>
-          接客ノートからAIが自動で重要な事柄を記録します。手動での管理も行えます。
+          プロジェクト単位で翻訳案件を管理します。ワークをアップロードし、対訳エディタで
+          AI 英訳・翻訳メモリ・用語集を参照しながら翻訳します。
         </div>
         <div className="mt-8">
-          以上で使い方ガイドは完了です。 ご自由にお試しください。
+          以上で使い方ガイドは完了です。ご自由にお試しください。
         </div>
       </div>
     ),
-    icon: <Brain className="size-5" />,
+    icon: <FolderKanban className="size-5" />,
     pointerPadding: 10,
     pointerRadius: 10,
-    selector: `#${OnboardingId.MemoriesTab}`,
+    selector: `#${OnboardingId.ProjectsMenu}`,
     showControls: true,
-    side: "bottom-right",
-    title: "メモリ",
+    side: "bottom-left",
+    title: "プロジェクト",
   },
 ];

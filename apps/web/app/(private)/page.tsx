@@ -16,13 +16,14 @@ export default function Page(): React.JSX.Element {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Sparkles className="size-5" />
-            FORMAWORK.AI CRM へようこそ
+            翻訳支援ツール TransDesk へようこそ
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            顧客管理を効率的に行うための CRM システムです。
-            左上のメニューから各機能にアクセスできます。
+            和文 → 英訳の翻訳支援（CAT）ツールです。AI
+            英訳・翻訳メモリ・用語集を
+            参照しながら効率的に翻訳できます。左上のメニューから各機能にアクセスできます。
           </p>
         </CardContent>
       </Card>

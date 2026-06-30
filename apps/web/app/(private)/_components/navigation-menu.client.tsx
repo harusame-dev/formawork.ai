@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { OnboardingId } from "@/features/onboarding/constants/steps.universal";
 import {
-  CUSTOMER_MENU_STEP_INDEX,
+  PROJECTS_MENU_STEP_INDEX,
   useOnboarding,
 } from "@/features/onboarding/hooks/use-onboarding.hook";
 
@@ -26,7 +26,7 @@ export function NavigationMenu(): React.JSX.Element {
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-    if (currentStep === CUSTOMER_MENU_STEP_INDEX) {
+    if (currentStep === PROJECTS_MENU_STEP_INDEX) {
       // オンボーディング中にメニューを自動で開く必要があるため意図的に effect 内で setState する
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setOpen(true);
@@ -67,11 +67,29 @@ export function NavigationMenu(): React.JSX.Element {
             <li>
               <Link
                 className="block rounded-md px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
-                href="/customers"
-                id={OnboardingId.CustomerMenu}
+                href="/projects"
+                id={OnboardingId.ProjectsMenu}
                 onClick={() => setOpen(false)}
               >
-                顧客一覧
+                プロジェクト
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="block rounded-md px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                href="/glossary"
+                onClick={() => setOpen(false)}
+              >
+                共通用語集
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="block rounded-md px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                href="/translation-memory"
+                onClick={() => setOpen(false)}
+              >
+                翻訳メモリ
               </Link>
             </li>
             <li>
@@ -80,7 +98,7 @@ export function NavigationMenu(): React.JSX.Element {
                 href="/staffs"
                 onClick={() => setOpen(false)}
               >
-                スタッフ一覧
+                ユーザー
               </Link>
             </li>
           </ul>

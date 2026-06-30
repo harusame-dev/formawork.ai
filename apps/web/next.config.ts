@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
       stale: Number.MAX_VALUE,
     },
   },
+  experimental: {
+    serverActions: {
+      // docx アップロードを Server Action で受け取るためサイズ上限を引き上げる
+      bodySizeLimit: "10mb",
+    },
+  },
   images: {
     dangerouslyAllowLocalIP: true,
     remotePatterns: [

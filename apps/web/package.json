@@ -16,7 +16,7 @@
     "type:check": "next build"
   },
   "dependencies": {
-    "@ai-sdk/valibot": "catalog:",
+    "@ai-sdk/openai": "catalog:",
     "@harusame0616/result": "catalog:",
     "@hookform/resolvers": "catalog:",
     "@repo/logger": "workspace:",
@@ -26,13 +26,13 @@
     "ai": "catalog:",
     "framer-motion": "catalog:",
     "lucide-react": "catalog:",
+    "mammoth": "catalog:",
     "next": "catalog:",
     "onborda": "catalog:",
     "pino": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
-    "swr": "catalog:",
     "uuid": "catalog:",
     "valibot": "catalog:"
   },
@@ -57,7 +57,6 @@
     "eslint-plugin-react-hooks": "catalog:",
     "eslint-plugin-unicorn": "catalog:",
     "eslint-plugin-unused-imports": "catalog:",
-    "msw": "catalog:",
     "neostandard": "catalog:",
     "pino-pretty": "catalog:",
     "tailwindcss": "catalog:",
@@ -65,10 +64,5 @@
     "vite": "catalog:",
     "vitest": "catalog:",
     "vitest-browser-react": "catalog:"
-  },
-  "msw": {
-    "workerDirectory": [
-      "public"
-    ]
   }
 }
