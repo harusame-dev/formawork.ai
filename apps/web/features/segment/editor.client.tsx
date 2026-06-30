@@ -298,12 +298,9 @@ export function Editor({
             </Button>
           </>
         )}
-        <Button asChild size="sm" variant="outline">
-          {/* API ルートのためページ用 typedRoutes 対象外の素の anchor を使う */}
-          <a download href={`/api/works/${workId}/export`}>
-            <Download className="size-4" />
-            バイリンガル CSV 出力
-          </a>
+        <Button disabled size="sm" variant="outline">
+          <Download className="size-4" />
+          CSV 出力（未実装）
         </Button>
       </div>
 
