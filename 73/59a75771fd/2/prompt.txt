@@ -1,0 +1,404 @@
+支援ツール（CATツール）の開発をお願いできる方を探しています｜AI英訳×翻訳メモリ
+社内で使う和文→英訳の翻訳支援ツールを一緒に作ってくれる方を探している。Word／PPTの文章を1文ずつに分け、AIの英訳候補や過去の訳を見ながら翻訳者が選んで仕上げていくWebアプリ。確定した訳はためておき、次の翻訳に再利用する仕組み。
+
+【やりたいこと】
+・ログインと、プロジェクトごとのアクセス制御
+・Word／PPTからのテキスト抽出と文分割
+・AI英訳候補の表示（Claude API）
+・過去訳（翻訳メモリ）の検索・提示
+・用語集の登録
+・対訳エディタ（操作性重視）
+・バイリンガルCSVの出力
+
+【技術について】
+React／Next.js ＋ Claude API を想定（提案歓迎）。納品時にDockerで起動できると望ましい。
+
+【こんな方だと心強い】
+・Webアプリをフロント〜DBまで一通り作れる方
+・認証・権限まわりの実装経験
+・生成AIなど外部API連携の経験
+・（あれば）Officeファイルのパースや類似度検索の実装経験
+
+■ご予算・納期：6万円／7月末まで（相談しながら決定）
+
+上記の案件のでもシステムを作成します。
+考慮もれや検討不足があれば聞いて明確にしてください
+
+Project
+- プロジェクト名
+  - プロジェクトごとのワーク（１ワーク１ドキュメントで翻訳を仕上げていく
+  - プロジェクトごとの用語集
+  - プロジェクトごとの過去翻訳一覧
+  - プロジェクトの可視性
+    - Public / Private（招待者のみ）
+- 共通用語集
+
+DB は Supabase。API は Claude API。 フレームワークは Nextjs 
+AI は抽象化そうを作らず claude sdk を使う
+
+
+プロジェクトを作成
+新規ワーク作成
+ドキュメントをアップロード
+-  AI で原文を抽出（AIじゃなくて普通にライブラリで抽出した方がいいかな？
+- 一分ごとに分割。1分の単位は「。」ごと？一般的にどうするのがいいのかな
+- 対話エディタに表示
+- 翻訳単位は 1文ごと。 1分１API 呼び出し。事前に RAG で「類似の過去翻訳」と「辞書」を上位５けん一緒に渡す
+
+対話エディタでは１行ごとに原文と翻訳エリアを表示する。翻訳エリアは自由に編集可能。
+
+---
+
+<task-notification>
+<task-id>aafca271ad6dab268</task-id>
+<tool-use-id>toolu_01Poj3UDk4SsuSL5SxTkwTtq</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/9303169c-ac4d-4634-83df-c83db3d8c791/tasks/aafca271ad6dab268.output</output-file>
+<status>completed</status>
+<summary>Agent "agent-docs規約ドキュメント調査" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>7つのドキュメントすべてを読みました。新機能実装時に守るべき規約を、注目ポイント（ディレクトリ構成 / ファイル命名 / 層分け / キャッシュ / 外部ライブラリ）を軸に要約します。
+
+---
+
+## 1. nextjs-アーキテクチャガイドライン.md
+パス: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/agent-docs/nextjs-アーキテクチャガイドライン.md`
+
+- **Server Component First**: Server Component 実装を最優先。ユーザーインタラクションが必要なときだけ Client Component を採用する。
+- **データ取得は末端で**: 上位でまとめて取得して下位へバケツリレーするのを避け、必要とする末端で取得する。
+- **層の使い分け（mutation/fetch の振り分け）**:
+  - ミューテーション → **Server Action**
+  - Server Component 用のデータ取得には Server Action を使わない
+  - Server Action でカバーできないもの・クライアントからのデータフェッチ API → **Route Handler**
+  - cron 用など外部利用想定 API・ミューテーションを伴わないサーバー操作 → **Route Handler**
+- **Server Action は実質 API**: 自由なパラメータで呼べるため、引数があるものは必ずバリデーション・認証・認可を実施する。
+- 注記: このドキュメント自体は action/usecase/query の細分化には触れていない。usecase 切り出しは CLAUDE.md の `.claude/rules/nextjs-server-action.md`（認証・認可・バリデーション・パラメータ変換・ユースケース呼び出しのみが Server Action の責務）が規定。
+
+## 2. Nextjs-キャッシュ戦略ガイドライン.md
+パス: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/agent-docs/Nextjs-キャッシュ戦略ガイドライン.md`
+
+- **3 つの cache ディレクティブを使い分ける**:
+  - `use cache`: 静的・全ユーザー共有・リクエスト非依存のコンテンツ（ビルド時事前レンダリング）。cookies/headers にアクセス不可。
+  - `use cache: remote`: 動的コンテキストで共有されるが毎リクエストレンダリングが必要なコンテンツ、高価な処理のサーバー側キャッシュ（`await connection()` 後など）。
+  - `use cache: private`: Cookie/ヘッダーで変わるユーザー個別コンテンツ。クライアント側のみ保存・ユーザーごとに分離。
+- **cacheLife（revalidate / タグ運用）**:
+  - **アプリで更新を制御できるデータ**（DB・webhook 検知可能）: カスタムプロファイル **`permanent`** を使い、更新タイミングで **`revalidateTag()`** を実行する。
+  - **`cacheTag()`** で更新タイミングに応じたタグを設定する（例: `cacheTag("parent-delete", "foo-update")`）。
+  - **更新タイミングを制御できないデータ**（外部 API 等、一定間隔更新で十分）: `"hours"`・`"days"`・カスタム時間など要件に応じた時間指定にする。
+
+## 3. フォーム実装ガイドライン.md
+パス: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/agent-docs/フォーム実装ガイドライン.md`
+
+- **必須スタック**: shadcn/ui の Form コンポーネント + **react-hook-form** + **valibot**（`@hookform/resolvers/valibot` の `valibotResolver`）で実装する。
+- 使用コンポーネント: `Form`, `FormField`, `FormItem`, `FormLabel`, `FormDescription`, `FormControl`。
+- **placeholder 禁止**: `placeholder` 属性は使わず、説明は `FormDescription` に記載する。
+- **ハイドレーション対応（必須）**: `useIsHydrated` フックでハイドレーション状態を管理し、完了前は入力コントロールを `disabled` にして誤操作を防ぐ。
+- **スケルトン**: 実フォームを `disabled` で表示する（例: `&lt;FooForm disabled /&gt;`）。
+
+## 4. 命名規則-nextjs.md
+パス: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/agent-docs/命名規則-nextjs.md`
+
+- **目的**: ファイル名だけで性質（サーバー/クライアント、コンポーネント/ユーティリティ等）を判別でき、AI ルールの glob 絞り込みを可能にする。
+- **対象外**: Next.js の file convention（`page.tsx` 等）、shadcn/ui 生成コンポーネント。
+- **ファイル命名パターン**:
+  - サーバーコンポーネント: `*.server.tsx`
+  - クライアントコンポーネント: `*.client.tsx`
+  - ユニバーサルコンポーネント: `*.universal.tsx`
+  - スケルトン: `*.skeleton.universal.tsx`（基本 universal 固定。`"use client"` 必須ライブラリ使用時のみ `*.skeleton.client.tsx`）
+  - container: `*.container.[server|client|universal].tsx`
+  - presenter: `*.presenter.[server|client|universal].tsx`
+  - form: `*.form.client.tsx`
+  - **Server Action**: `*.action.ts`
+  - **RSC 用データフェッチ**: `*.data.ts`
+  - サーバー専用ユーティリティ（非コンポーネント）: `*.server.ts`（`next/headers`・`next/navigation`・DB クライアント等サーバー専用依存を含むもの）
+- **コンポーネント種別判定フロー**（上から評価、最初に該当した区分を採用）:
+  1. 先頭に `"use client"` → **client**
+  2. `async` 関数 / サーバー専用モジュール参照 → **server**
+  3. React hook・イベントハンドラ・ブラウザ API・`"use client"` 要求ライブラリ使用 → **client**（`"use client"` を付与）
+  4. いずれも非該当（props を受け JSX を返すだけ等）→ **universal**
+
+## 5. ロギングガイドライン.md
+パス: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/agent-docs/ロギングガイドライン.md`
+
+- **必ず `@repo/logger` を使用**（OWASP Logging Cheat Sheet 準拠）。
+- **取得関数の使い分け**:
+  - Server Component / Server Action: `@repo/logger/nextjs/server` の **`getLogger()`**（IP・リクエスト ID 自動取得）
+  - Route Handler / その他環境: **`getBaseLogger()`**（request から IP・リクエスト ID を取得し `logger.child()` で付与）
+  - Middleware: リクエスト ID 自動生成のため設定すること
+- 動的コンテキスト（userId 等）は `logger.child()` で追加。機密情報は自動マスキングされるが意図的に含めない。
+- **環境変数（必須）**: `APP_NAME`, `HOST_ENVIRONMENT`, `SERVICE_NAME`。
+- **ログレベル**: fatal/error（通知対象）, warn, info, debug, trace。通知は observability 側で行い、アプリでは通知しない。
+- **記録必須のセキュリティイベント**: 認証・認可（ログイン成否/アクセス拒否）、CRUD（特に削除・更新）、バリデーション失敗、セッション操作、外部 API 呼び出し等。
+- **記録禁止**: パスワード・トークン・暗号鍵、カード/口座情報、セッション ID（必要時はハッシュ化）、機密 PII。
+- **Middleware で設定するヘッダー**: `x-request-id`（必須 UUID）, `x-git-commit-sha`, `x-deployment-id`, `x-auth-user-id`。
+
+## 6. 外部ライブラリの使用.md
+パス: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/agent-docs/外部ライブラリの使用.md`
+
+- **薄いラッパー必須（直接呼び出し禁止が原則）**: 外部ライブラリは API 変更やライブラリ差し替えに備え、アプリに必要なユースケースに絞った薄いラッパーを作って経由する。
+- **例外**: 過度に複雑になる場合は直接呼び出しを許容。
+- ラッパーにテストを書くことで、依存ライブラリ自動更新時の破壊的変更を検知できる（例: `date.ts` に `format` をラップし、利用側は `formatDate` を呼ぶ）。
+
+## 7. テスト戦略-nextjs.md（基本方針）
+パス: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/agent-docs/テスト戦略-nextjs.md`
+
+- **サーバーコンポーネントは E2E テストで動作担保**する（Vitest/Jest での単体テストは現状困難なため）。
+- サーバーコンポーネントのファイルは **E2E 以外のカバレッジ計測対象に含めない**。
+- **ロジックは外部関数に切り出してテストする**: サーバーコンポーネントは「データ取得・切り出した関数呼び出し・JSX の出し分け」のみに保ち、計算・分岐・整形は純粋関数として外部化して Small/Medium テストで網羅する。
+- 表示分岐（ログイン状態・権限による出し分け）は E2E シナリオに含める。
+
+---
+
+補足: 「層の分け方（action/usecase/query/component）」について、agent-docs では **component の命名・分類**（命名規則-nextjs.md）と **action/Route Handler の責務境界**（アーキテクチャ）までが規定されており、**usecase 層の切り出し**は agent-docs ではなくプロジェクトルール `/.claude/rules/nextjs-server-action.md`・`nextjs-server-components.md` に定義されています（Server Action は認証・認可・バリデーション・パラメータ変換・usecase 呼び出しのみ、ロジックは別関数へ分離）。実装時はこの2つも併せて参照することを推奨します。</result>
+<usage><subagent_tokens>32313</subagent_tokens><tool_uses>9</tool_uses><duration_ms>61640</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>a2c717f662d5b3b3a</task-id>
+<tool-use-id>toolu_016AvQKZBtsrK8S6k2z8oBiH</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/9303169c-ac4d-4634-83df-c83db3d8c791/tasks/a2c717f662d5b3b3a.output</output-file>
+<status>completed</status>
+<summary>Agent "packages/db スキーマ構成調査" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>No `pgEnum`, `customType`, or `vector` anywhere in the codebase. I have everything needed.
+
+# packages/db 調査報告（CATツール用テーブル群 + pgvector 追加のための把握）
+
+## 1. Drizzle スキーマの定義場所・分割方法
+
+**場所**: `packages/db/src/schema/` 配下。**1ファイル = 1ドメイン**（厳密に1テーブルではなく、関連する複数テーブルを同居）。例: `customer-note.ts` には `customerNotesTable` と `customerNoteImagesTable` の2テーブルが入っている。
+
+**まとめ方**: `packages/db/src/schema/index.ts:1-5` で全ファイルを re-export。
+
+```ts
+// packages/db/src/schema/index.ts:1
+export * from "./customer";
+export * from "./customer-memory";
+export * from "./customer-note";
+export * from "./customer-note-advice";
+export * from "./staff";
+```
+
+さらに `packages/db/package.json:6-16` の `exports` でファイル単位の subpath export も定義（`./schema/customer` 等）。**新テーブル追加時は index.ts と package.json の両方に追記が必要**。
+
+### 命名規則（重要）
+- **スキーマ定義キー = camelCase / DBカラム名 = snake_case**。`text("content")` のように第1引数に snake_case 名を明示。
+- **テーブル変数名は `xxxTable` サフィックス**（`customersTable`, `customerNotesTable`）。
+- **テーブル物理名は複数形 snake_case**（`"customers"`, `"customer_notes"`, `"customer_note_advice"`）。
+- **id 型は `uuid`**。`serial`/`integer` の自動採番 PK は不使用。PK 名はテーブルごとに `customerId`/`customerNoteId`/`staffId`/`id` と揺れあり（CATツールでは `id` 統一が無難）。
+- **`created_at`/`updated_at` の付け方が定型**（後述）。
+
+### 代表的なテーブル定義の丸ごと引用
+
+`packages/db/src/schema/customer-note.ts:19-45`:
+
+```ts
+export const customerNotesTable = pgSchema(schemaName)
+  .table(
+    "customer_notes",
+    {
+      content: text("content").notNull(),
+      createdAt: timestamp("created_at").defaultNow().notNull(),
+      customerId: uuid("customer_id")
+        .notNull()
+        .references(() =&gt; customersTable.customerId, { onDelete: "cascade" }),
+      customerNoteId: uuid("customer_note_id").primaryKey().defaultRandom(),
+      serviceDate: date("service_date").notNull(),
+      staffId: uuid("staff_id")
+        .notNull()
+        .references(() =&gt; staffsTable.staffId, { onDelete: "cascade" }),
+      updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .notNull()
+        .$onUpdate(() =&gt; new Date()),
+    },
+    (table) =&gt; [
+      index("idx_customer_notes_customer_service_date").on(
+        table.customerId,
+        table.serviceDate.desc(),
+      ),
+    ],
+  )
+  .enableRLS();
+
+export type SelectCustomerNote = typeof customerNotesTable.$inferSelect;
+export type InsertCustomerNote = typeof customerNotesTable.$inferInsert;
+```
+
+**定型パターン（CATツール各テーブルでもこれを踏襲すべき）**:
+- `pgSchema(schemaName).table("物理名", {...columns}, (table) =&gt; [...indexes]).enableRLS()`
+- `schemaName` は `packages/db/src/pgschema.ts` の `import { schemaName } from "../pgschema"`（`.claude/rules/db-schema.md` で必須化）。
+- **必ず `.enableRLS()` を付ける**（`.claude/rules/db-schema.md`: 新テーブルは RLS 有効化。ただしポリシーは作らず認可はアプリ層で実施）。
+- **`created_at`**: `timestamp("created_at").defaultNow().notNull()`
+- **`updated_at`**: `timestamp("updated_at").defaultNow().notNull().$onUpdate(() =&gt; new Date())`
+- **PK uuid**: `uuid("id").primaryKey().defaultRandom()`（`customers` だけはアプリ側採番で `.defaultRandom()` 無し: `customer.ts:21`）
+- ファイル末尾で `Select{Name}` / `Insert{Name}` 型を `$inferSelect`/`$inferInsert` で export。
+
+インデックスのコールバックは配列形式（`customer-note.ts:38`）と旧来のオブジェクト形式（`customer-memory.ts:56` の `{ customerCategoryIdx: index(...) }`）が混在。**新規は配列形式が推奨**。
+
+## 2. DBクライアントのエクスポートとアプリ側 import
+
+`packages/db/src/client.ts:21-30`:
+
+```ts
+const client = postgres(databaseUrl.toString());
+export const db = globalForDb.db || drizzle(client, { schema });
+if (process.env["NODE_ENV"] !== "production") globalForDb.db = db;
+
+export type DbClient = typeof db;
+export type DbExecutor =
+  | typeof db
+  | Parameters&lt;Parameters&lt;typeof db.transaction&gt;[0]&gt;[0];
+```
+
+- `drizzle-orm/postgres-js` + `postgres` ドライバ。`DATABASE_URL` を valibot で URL 検証（`client.ts:7-15`）。
+- 開発時は `globalForDb` でシングルトン化。
+
+**アプリ側 import の仕方**（subpath export 経由、`apps/web/features/...` 多数）:
+```ts
+import { db } from "@workspace/db/client";
+import { customersTable } from "@workspace/db/schema/customer";
+import { schemaName } from "@workspace/db/pgschema";
+import type { SelectCustomerNoteAdvice } from "@workspace/db/schema/customer-note-advice";
+```
+（`apps/web/features/customer-note/advice/fetch-service-note-data.ts:1-2` 等）
+
+## 3. マイグレーション生成・適用のワークフロー
+
+**drizzle.config.ts**（`packages/db/drizzle.config.ts:4-9`）: `dialect: "postgresql"`, `out: "./drizzle"`, `schema: "./src/schema/index.ts"`, `breakpoints: false`。生成専用設定（適用は別スクリプト）。
+
+**コマンド**（`packages/db/package.json:18-24`）:
+- `db:generate` → `drizzle-kit generate`
+- `db:migrate` → `db:pgschema:create`（スキーマ作成）後に `tsx src/migrate.ts`
+- `db:reset` → drop → migrate → seed
+- ルートからは `pnpm -w db:generate` / `pnpm -w db:migrate`（CLAUDE.md）
+
+**ワークフロー（`agent-docs/DBマイグレーション.md` の要点）**:
+1. `packages/db/src/schema/` を更新後 `pnpm -w db:generate`
+2. **生成 SQL から `"local".` を手動削除**（必須）。理由: `pgSchema` で local 固定のため生成SQLが `local` スキーマ参照になるが、リモートは環境別スキーマ（`formawork_ai__web__&lt;branch&gt;`）を使うため。
+3. `pnpm -w db:migrate`
+
+**環境別スキーマの仕組み**: `src/migrate.ts:156` で `SET search_path TO &lt;schemaName&gt;` してから `migrate(db, { migrationsFolder: "./drizzle", migrationsSchema: schemaName })` 実行。`schemaName` は環境変数から組み立て（local は `"local"`、リモートは `${APP_NAME}_${SERVICE_NAME}_${BRANCH_NAME}` 小文字、`pgschema.ts:4-38`）。
+
+**生成 SQL の形式例**（`drizzle/0000_perpetual_master_mold.sql`）: 通常の `CREATE TABLE` → `ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY` → `CREATE INDEX` の順。FK は `ON DELETE cascade ON UPDATE no action`。
+
+`drizzle/meta/_journal.json` で適用履歴管理（現在 0000〜0008、最新タグ `0008_next_killraven`）。
+
+## 4. pgvector / Postgres 拡張の前例
+
+**pgvector / vector カラム / embedding カラムは現状ゼロ**（`grep` で `pgvector`/`vector(`/`embedding`/`customType` ヒットなし）。**CATツールで pgvector を入れるなら新規導入**になる。
+
+ただし**拡張の導入パターンは確立済み**。`drizzle-kit generate` は拡張を生成しないので、**手書きの拡張有効化 SQL マイグレーションを `drizzle/` に追加**している前例がある:
+
+- `drizzle/0001_enable_pgmq.sql`: pgmq 拡張
+- `drizzle/0002_enable_pg_cron.sql`: pg_cron + pg_net 拡張
+
+`drizzle/0002_enable_pg_cron.sql:1-20` の定型（**pgvector もこの形を踏襲すべき**）:
+```sql
+-- CREATE EXTENSION を実行した際に search_path がクリアされてしまうので事前保存して復元
+DO $$
+BEGIN
+  PERFORM set_config('app.saved_search_path', current_setting('search_path'), false);
+END $$;
+
+CREATE EXTENSION IF NOT EXISTS pg_cron WITH SCHEMA extensions;
+CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
+
+DO $$
+BEGIN
+  PERFORM set_config('search_path', current_setting('app.saved_search_path'), false);
+END $$;
+```
+ポイント: `CREATE EXTENSION ... WITH SCHEMA extensions`（Supabase 慣例）＋ search_path 退避・復元で囲む。手書き SQL 追加後は `drizzle/meta/_journal.json` への手動エントリ追記も必要（既存の 0001/0002 が手動追加されている）。
+
+**vector カラムの表現**: Drizzle 標準型に `vector` は無いため、`drizzle-orm/pg-core` の `customType`（現状未使用）で `vector(N)` を自前定義するか、SQL マイグレーションで `ADD COLUMN embedding vector(N)` + HNSW/IVFFlat インデックスを手書きする方針になる。`customers.ts:26-29` で `generatedAlwaysAs` + `sql\`\`` を使った前例があり、`sql` テンプレートでの拡張的カラム表現には慣れている。
+
+## 5. enum / リレーション（外部キー）の定義パターン
+
+### enum: `pgEnum` は不使用。smallint + const オブジェクトで表現
+`grep` で `pgEnum` ヒットなし。代わりに **`smallint` カラム + TypeScript の `as const` オブジェクト + ラベル Record** で擬似 enum を構成。
+
+`packages/db/src/schema/customer-memory.ts:16-49`:
+```ts
+export const MemoryCategory = {
+  Communication: 4, Conversion: 3, Event: 5,
+  Health: 6, Personal: 1, Preference: 2,
+} as const;
+export type MemoryCategory = (typeof MemoryCategory)[keyof typeof MemoryCategory];
+export const MEMORY_CATEGORY_LABEL: Record&lt;MemoryCategory, string&gt; = {
+  [MemoryCategory.Personal]: "パーソナル情報", /* ... */
+};
+// テーブル側:
+category: smallint("category").notNull(),
+```
+`gender` も同様に `smallint("gender").notNull().default(1)`（`customer.ts:34`）。**CATツールの status 等も pgEnum でなく smallint + const が既存規約に沿う**。
+
+jsonb の型付けは `.$type&lt;T&gt;()` を使用（`customer-note-advice.ts:66`: `jsonb("advice").$type&lt;AdviceContent&gt;().notNull()`）。
+
+### リレーション（外部キー）: カラム定義に `.references()` をインライン
+Drizzle の `relations()` ヘルパーは未使用。**FK はカラムに直接 `.references(() =&gt; 親Table.親カラム, { onDelete: "cascade" })`**。
+
+`customer-note.ts:25-27` / `52-56`:
+```ts
+customerId: uuid("customer_id")
+  .notNull()
+  .references(() =&gt; customersTable.customerId, { onDelete: "cascade" }),
+// ...
+customerNoteId: uuid("customer_note_id")
+  .notNull()
+  .references(() =&gt; customerNotesTable.customerNoteId, { onDelete: "cascade" }),
+```
+- 親テーブルは `import { customersTable } from "./customer"` で取り込む。
+- `onDelete: "cascade"` が基本。
+- 複合 PK は `primaryKey({ columns: [table.a, table.b] })`（`customer-note.ts:61`）。
+- 例外的に FK を張らないケースあり（`staff.ts:9-11` の `authUserId` は auth.users へ FK 張らず `.unique()` のみ、理由コメントあり）。
+
+## CATツール追加時のチェックリスト（既存規約まとめ）
+1. `packages/db/src/schema/` に `projects.ts`, `works.ts`, `documents.ts`, `segments.ts`, `translation-memory.ts`, `glossary.ts` 等を追加（1ドメイン1ファイル、関連テーブル同居可）。
+2. 各テーブル: `pgSchema(schemaName).table("snake_case複数形", {...}).enableRLS()`、PK は `uuid("id").primaryKey().defaultRandom()`、`created_at`/`updated_at` 定型、FK は `.references(() =&gt; x, { onDelete: "cascade" })`、enum は smallint + const。
+3. `Select`/`Insert` 型を末尾 export。
+4. `schema/index.ts` と `package.json` の `exports` に追記。
+5. `pnpm -w db:generate` → 生成 SQL の `"local".` 削除 → `pnpm -w db:migrate`。
+6. **pgvector**: 別途手書き SQL マイグレーション（`drizzle/00XX_enable_pgvector.sql`、search_path 退避パターン + `CREATE EXTENSION vector WITH SCHEMA extensions`）を追加し `meta/_journal.json` にエントリ追記。embedding カラムは `customType` 定義 or 手書き SQL で `vector(N)` + ベクトルインデックスを付与。</result>
+<usage><subagent_tokens>43341</subagent_tokens><tool_uses>23</tool_uses><duration_ms>107633</duration_ms></usage>
+</task-notification>
+
+---
+
+先に CLAUDE.md だけ適切な内容に書き換えてほしいのと作成してもらったレポートは docs/配下に配置して
+
+---
+
+プロジェクト一覧、プロジェクト詳細、翻訳エディタと画面サンプルを別ファイルに出力して
+
+---
+
+翻訳エディタ画面の選択中のセグメントが縦に長すぎて類似の過去翻訳などが画面内に入っていない
+
+---
+
+プロジェクト一覧はプロジェクトタイトル、可視性、説明だけでいい。ワーク数などは不要共通用語集、翻訳メモリも画面作って
+
+---
+
+翻訳フィールドと操作フィールドを半々ぐらいにしてみて
+翻訳フィールドにはボタンは要らない編集やAI再生性は操作フィールドで行う
+
+---
+
+翻訳フィールドと操作フィールドを半々ぐらいにして、境界はどらっがぶるな可変にしてもらいたい
+翻訳フィールドにはボタンは要らない編集やAI再生性は操作フィールドで行う
+1文1文の縦幅は低くして
+
+---
+
+結合モードも実装して
+
+---
+
+結合モードの画面もっくも実装して
+
+---
+
+結合はできるけど分割はできないの
