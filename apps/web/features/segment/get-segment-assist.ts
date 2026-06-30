@@ -1,3 +1,4 @@
+import { getLogger } from "@repo/logger/nextjs/server";
 import { fail, type Result, succeed } from "@harusame0616/result";
 import { db } from "@workspace/db/client";
 import { segmentsTable } from "@workspace/db/schema/segment";
@@ -54,8 +55,15 @@ export async function getSegmentAssist({
     const queryEmbedding = await embedText(segment.sourceText);
     const tmMatches = await searchSimilarTm({ projectId, queryEmbedding });
     return succeed({ glossaryMatches, tmMatches });
-  } catch {
-    // 埋め込み/類似検索に失敗しても用語集だけは返す
+  } catch (error) {
+    // 埋め込み/類似検索に失敗しても用語集だけは返す。
+    // 失敗時に「ヒットなし」と区別できるよう原因をログに残す。
+    const logger = await getLogger("getSegmentAssist");
+    logger.error("翻訳メモリの類似検索に失敗しました", {
+      err: error,
+      projectId,
+      segmentId,
+    });
     return succeed({ glossaryMatches, tmMatches: [] });
   }
 }
