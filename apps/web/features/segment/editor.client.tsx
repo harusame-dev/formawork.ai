@@ -373,15 +373,11 @@ export function Editor({
                     )}
                   </div>
                   <div className="px-2 py-1">
-                    <textarea
-                      className="min-h-9 w-full resize-none bg-transparent px-1.5 py-1 text-sm/relaxed outline-none"
+                    <AutoGrowTextarea
                       disabled={!canEdit || mode !== "normal"}
-                      onChange={(event) =>
-                        updateLocalTarget(segment.id, event.target.value)
-                      }
+                      onChange={(value) => updateLocalTarget(segment.id, value)}
                       onClick={(event) => event.stopPropagation()}
                       onFocus={() => handleSelect(segment.id)}
-                      rows={1}
                       value={segment.targetText ?? ""}
                     />
                   </div>
@@ -417,6 +413,37 @@ export function Editor({
         </aside>
       </div>
     </div>
+  );
+}
+
+/**
+ * 入力量に応じて高さが自動で伸びる訳文用 textarea。
+ * CSS の field-sizing: content により、ユーザー入力だけでなく
+ * アシストパネルからの訳文反映でも内容の高さに追従させる。
+ */
+function AutoGrowTextarea({
+  disabled,
+  onChange,
+  onClick,
+  onFocus,
+  value,
+}: {
+  disabled: boolean;
+  onChange: (value: string) => void;
+  onClick: (event: React.MouseEvent<HTMLTextAreaElement>) => void;
+  onFocus: () => void;
+  value: string;
+}): React.JSX.Element {
+  return (
+    <textarea
+      className="min-h-9 w-full resize-none overflow-hidden bg-transparent px-1.5 py-1 text-sm/relaxed outline-none field-sizing-content"
+      disabled={disabled}
+      onChange={(event) => onChange(event.target.value)}
+      onClick={onClick}
+      onFocus={onFocus}
+      rows={1}
+      value={value}
+    />
   );
 }
 
