@@ -1,0 +1,25 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "a55feb2acbf4",
+  "strategy": "manual-commit",
+  "branch": "crawdworks_13271198",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "apps/web/features/translation-memory/search-tm.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a5/5feb2acbf4/0/metadata.json",
+      "transcript": "/a5/5feb2acbf4/0/full.jsonl",
+      "content_hash": "/a5/5feb2acbf4/0/content_hash.txt",
+      "prompt": "/a5/5feb2acbf4/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 14615,
+    "cache_creation_tokens": 181867,
+    "cache_read_tokens": 8249360,
+    "output_tokens": 56597,
+    "api_call_count": 83
+  }
+}
