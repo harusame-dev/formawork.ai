@@ -1,0 +1,34 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "0d7610323028",
+  "session_id": "c212dbcb-1fbf-4a65-8a4e-5389a7626db8",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-30T18:18:56.312128Z",
+  "branch": "crawdworks_13271198",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/e2e/login.e2e.test.ts",
+    "apps/web/features/auth/login/login.action.ts"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "b83da064ba11",
+  "token_usage": {
+    "input_tokens": 9382,
+    "cache_creation_tokens": 44031,
+    "cache_read_tokens": 2056522,
+    "output_tokens": 19355,
+    "api_call_count": 37
+  },
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-30T18:18:56.223697Z",
+    "agent_lines": 12,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 12,
+    "agent_percentage": 100
+  }
+}

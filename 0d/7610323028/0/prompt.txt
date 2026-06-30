@@ -1,0 +1,116 @@
+ログインページのデフォルトのログインメールアドレスがデプロイ先だと admin@formawork.example.com になっているんだけどこれあっている？
+ログインできない
+
+---
+
+<task-notification>
+<task-id>a97624cd813904d70</task-id>
+<tool-use-id>toolu_01EeCseCxdxyGxxogApoHbTd</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/9303169c-ac4d-4634-83df-c83db3d8c791/tasks/a97624cd813904d70.output</output-file>
+<status>completed</status>
+<summary>Agent "ログインデフォルトメール調査" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>調査が完了しました。以下が結果です。
+
+## 1. ログインページのコンポーネント
+
+- ルート: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/apps/web/app/(public)/login/`
+- フォーム本体: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/apps/web/features/auth/login/login-form.client.tsx`
+
+メールアドレス入力欄は `name="username"` の `FormField`（57行目の `&lt;FormLabel&gt;メールアドレス&lt;/FormLabel&gt;`）です。
+
+## 2. デフォルト値の出どころ（環境変数）
+
+`login-form.client.tsx` の `useForm` の `defaultValues` で設定されています。
+
+```tsx
+// login-form.client.tsx  L24-31
+const form = useForm&lt;LoginParams&gt;({
+  defaultValues: {
+    // デモ用に環境変数で初期値を設定できるようにする
+    password: defaultPassword,
+    username: defaultUserName,   // ← メールアドレス欄の初期値
+  },
+  resolver: valibotResolver(loginSchema),
+});
+```
+
+`defaultUserName` / `defaultPassword` は同フォルダの `default-user.ts` で**環境変数から**取得しています（ハードコードではない）。
+
+ファイル: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/apps/web/features/auth/login/default-user.ts`
+
+```ts
+// default-user.ts  L5-13
+export const defaultUserName = v.parse(
+  v.optional(v.string(), ""),
+  process.env["NEXT_PUBLIC_DEFAULT_USERNAME"],
+);
+
+export const defaultPassword = v.parse(
+  v.optional(v.string(), ""),
+  process.env["NEXT_PUBLIC_DEFAULT_PASSWORD"],
+);
+```
+
+- 環境変数名: `NEXT_PUBLIC_DEFAULT_USERNAME`（メール）と `NEXT_PUBLIC_DEFAULT_PASSWORD`
+- 未設定時のフォールバックは空文字 `""`
+
+## 3. `admin@formawork.example.com` / `formawork.example` の登場箇所
+
+該当文字列は**ログイン画面のデフォルト値とは無関係**で、テスト用フィクスチャにのみ存在します。
+
+ファイル: `/Users/haru/ghq/github.com/harusame-dev/formawork.ai/packages/supabase/src/fixtures/users-fixture.ts`
+
+```ts
+// L27  test1@formawork.example.com
+// L34  test2@formawork.example.com
+// L41  admin@formawork.example.com
+```
+
+`@formawork.example.com` を含むのはこの3行のみで、これらはシード/テスト用のユーザー定義です。コードベース全体（node_modules・.next 除く）を grep しても、ログインのデフォルト値としては使われていません。
+
+## 4. 環境変数の設定値（ローカル）
+
+ローカル設定ファイル（`apps/web/.env.local` と `apps/web/.env.sample`）はどちらも以下の値です。
+
+```
+# apps/web/.env.local  L20-21  (および .env.sample も同一値)
+NEXT_PUBLIC_DEFAULT_PASSWORD="Admin@789!"
+NEXT_PUBLIC_DEFAULT_USERNAME=admin@example.com
+```
+
+- ローカルのデフォルトメール値は `admin@example.com`（`formawork` ドメインではない）
+- デプロイ側（Vercel）: `apps/web/vercel.json` には env 設定は無く（`buildCommand` のみ）、リポジトリ内に `.vercel` 等のデプロイ環境変数ファイルは存在しません。デプロイ環境での `NEXT_PUBLIC_DEFAULT_USERNAME` の値は Vercel ダッシュボード側で設定されている想定で、リポジトリ内コードからは確認できません。
+
+## まとめ
+
+- ログイン画面のメール欄デフォルト値 = `process.env.NEXT_PUBLIC_DEFAULT_USERNAME`（`default-user.ts` 経由）
+- ローカルでは `admin@example.com`
+- `admin@formawork.example.com` はテストフィクスチャ専用文字列で、ログインのデフォルト値ロジックとは結びついていません。もしデプロイ環境のログイン画面に `admin@formawork.example.com` が出ているなら、それは Vercel 側の環境変数 `NEXT_PUBLIC_DEFAULT_USERNAME` にその値が設定されているためで、リポジトリ内には記載がありません。
+
+変更は一切行っていません。</result>
+<usage><subagent_tokens>29257</subagent_tokens><tool_uses>11</tool_uses><duration_ms>59389</duration_ms></usage>
+</task-notification>
+
+---
+
+いや、ログインはできているっぽい。
+ログインした後に直接ホームにアクセスするとプロジェクト画面が表示される
+
+---
+
+いや、ログインボタンを押した後ログイン画面んが表示されっぱなしになっちゃうってのが問題。
+
+---
+
+ncaught (in promise) Error: An unexpected response was received from the server.
+    at I (0l2bhs-9pdvms.js?REDACTED:2:743)
+
+---
+
+ncaught (in promise) Error: An unexpected response was received from the server.
+    at I (0l2bhs-9pdvms.js?REDACTED:2:743)
+
+---
+
+修正して
