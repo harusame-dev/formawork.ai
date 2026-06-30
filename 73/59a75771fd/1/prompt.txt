@@ -1,0 +1,62 @@
+類似の過去役は上位５だけじゃなくて類似度が 70 以上の場合に使用
+
+---
+
+<task-notification>
+<task-id>a9267ddfe730c5119</task-id>
+<tool-use-id>toolu_017JnhCmjta23tdknSrihViE</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-haru-ghq-github-com-harusame-dev-formawork-ai/480d321b-31d2-4bd9-9d33-7f982d3c7716/tasks/a9267ddfe730c5119.output</output-file>
+<status>completed</status>
+<summary>Agent "TM類似検索ロジックの調査" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>調査完了しました。以下が翻訳メモリ(TM)類似検索ロジックの全体像です。
+
+## 1. TM類似検索を行う関数・クエリ
+
+中心となる実装は `apps/web/features/translation-memory/search-tm.ts` の `searchSimilarTm` 関数です。
+
+- `search-tm.ts:11-47` — `searchSimilarTm({ limit = 5, projectId, queryEmbedding })`
+- `search-tm.ts:21` — pgvector のコサイン距離演算子 `&lt;=&gt;` で距離を計算
+  ```ts
+  const distance = sql&lt;number&gt;`${translationMemoriesTable.sourceEmbedding} &lt;=&gt; ${vectorLiteral}::extensions.vector`;
+  ```
+- `search-tm.ts:36-38` — 同一プロジェクト内に絞り込み(`WHERE project_id = ...`)、距離昇順でソートして `limit` 件取得
+  ```ts
+  .where(eq(translationMemoriesTable.projectId, projectId))
+  .orderBy(distance)
+  .limit(limit);
+  ```
+
+母集団テーブルは `packages/db/src/schema/translation-memory.ts:39-56` の `translationMemoriesTable`。埋め込みカラムは `sourceEmbedding`(`source_embedding`)、pgvector 1536次元 (`translation-memory.ts:48-50`)。`text-embedding-3-small`(1536次元)を使用 (`apps/web/libs/ai/embed.server.ts:5-17`)。
+
+## 2. 件数制限(上位5件)の方法
+
+- `search-tm.ts:12` — デフォルト引数 `limit = 5` で上位5件に制限。SQL の `.limit(limit)` (`search-tm.ts:38`) で実現。
+- 呼び出し元は2箇所とも `limit` を渡していないため、常にデフォルトの **5件** が使われます (`get-segment-assist.ts:55`、`translate-segment.ts:44`)。
+- UI 側にも「上位5」のバッジがハードコードされています: `apps/web/features/segment/assist-panel.client.tsx:175` (`&lt;Badge variant="secondary"&gt;上位5&lt;/Badge&gt;`)。
+
+## 3. 類似度(similarity)の計算・閾値フィルタ・値の範囲
+
+- 計算: `search-tm.ts:27` — `score: sql&lt;number&gt;`1 - (${distance})`` で、コサイン距離を `1 - distance` に変換して類似度(score)を算出。
+- **閾値フィルタは存在しません**。`WHERE` 句はプロジェクト ID 絞り込みのみで、similarity/score による足切りはなく、距離順に上位5件を無条件に返します(似ていない過去訳でも5件あれば返る)。
+- 値の範囲: コサイン類似度なので **0〜1** です。型定義 `apps/web/features/segment/assist-types.ts:4-5` にも「コサイン類似度(0〜1)」と明記。UI 表示時のみ `assist-panel.client.tsx:197` で `Math.round(tm.score * 100)` として **0〜100%** に変換して「類似度 NN%」と表示しています(内部値は 0-1、表示は 0-100)。
+
+## 4. 検索結果の呼び出し元
+
+`searchSimilarTm` を呼ぶのは2箇所です。
+
+- `apps/web/features/segment/get-segment-assist.ts:55` — アシストパネル用。原文を `embedText` で埋め込み (`get-segment-assist.ts:54`) → `searchSimilarTm` → `tmMatches` として返す。
+  - さらに `get-segment-assist.action.ts:12-21` のサーバーアクション `getSegmentAssistAction` 経由で、クライアント `assist-panel.client.tsx:48` (`getSegmentAssistAction`) から呼ばれ、`assist-panel.client.tsx:179-203` で一覧描画。
+- `apps/web/features/segment/translate-segment.ts:44` — AI英訳生成用。取得した `tmMatches` を `generateTranslation` に渡し (`translate-segment.ts:51-55`)、プロンプトの参考訳として利用 (`apps/web/libs/ai/translate.server.ts:13-37`)。
+
+両呼び出し元とも、埋め込み/類似検索が失敗しても TM なしで処理継続するフォールバック付き (`get-segment-assist.ts:57-60`、`translate-segment.ts:45-48`)。
+
+### 補足(「上位5件」を変える場合の影響範囲)
+件数を変更するなら、(a) `search-tm.ts:12` のデフォルト `limit = 5`(または各呼び出し元で `limit` を明示指定)、(b) UI ハードコードの `assist-panel.client.tsx:175` の「上位5」バッジ、の2箇所がポイントです。閾値フィルタを追加したい場合は `search-tm.ts:36` の `.where(...)` に score(=`1 - distance`)条件を加える形になります。</result>
+<usage><subagent_tokens>30292</subagent_tokens><tool_uses>10</tool_uses><duration_ms>55047</duration_ms></usage>
+</task-notification>
+
+---
+
+類似の過去訳（TM）　って対象の行以外で翻訳されたものみたいな制御入っている？
+どの時点で類似の過去約って追加されるの？

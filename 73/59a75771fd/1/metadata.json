@@ -1,9 +1,11 @@
 {
   "cli_version": "0.5.0",
   "checkpoint_id": "7359a75771fd",
+  "session_id": "480d321b-31d2-4bd9-9d33-7f982d3c7716",
   "strategy": "manual-commit",
+  "created_at": "2026-06-30T10:37:39.738715Z",
   "branch": "crawdworks_13271198",
-  "checkpoints_count": 7,
+  "checkpoints_count": 3,
   "files_touched": [
     ".claude/settings.json",
     ".claude/skills/ticket/SKILL.md",
@@ -39,7 +41,6 @@
     "apps/web/app/api/cron/generate-advice/route.ts",
     "apps/web/app/api/cron/generate-memory/route.ts",
     "apps/web/app/api/customer-notes/[noteId]/advice/route.ts",
-    "apps/web/config/ai.ts",
     "apps/web/e2e/customer-delete.e2e.test.ts",
     "apps/web/e2e/customer-edit.e2e.test.ts",
     "apps/web/e2e/customer-memories.e2e.test.ts",
@@ -156,10 +157,7 @@
     "apps/web/features/onboarding/constants/steps.universal.tsx",
     "apps/web/features/onboarding/hooks/use-onboarding.hook.ts",
     "apps/web/features/segment/assist-panel.client.tsx",
-    "apps/web/features/segment/editor.client.tsx",
     "apps/web/features/translation-memory/search-tm.ts",
-    "apps/web/libs/ai/embed.server.ts",
-    "apps/web/libs/ai/translate.server.ts",
     "apps/web/libs/generate-unique-id.ts",
     "apps/web/libs/queue.medium.server.test.ts",
     "apps/web/libs/queue.ts",
@@ -230,25 +228,26 @@
     "pnpm-lock.yaml",
     "pnpm-workspace.yaml"
   ],
-  "sessions": [
-    {
-      "metadata": "/73/59a75771fd/0/metadata.json",
-      "transcript": "/73/59a75771fd/0/full.jsonl",
-      "content_hash": "/73/59a75771fd/0/content_hash.txt",
-      "prompt": "/73/59a75771fd/0/prompt.txt"
-    },
-    {
-      "metadata": "/73/59a75771fd/1/metadata.json",
-      "transcript": "/73/59a75771fd/1/full.jsonl",
-      "content_hash": "/73/59a75771fd/1/content_hash.txt",
-      "prompt": "/73/59a75771fd/1/prompt.txt"
-    }
-  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-4-8[1m]",
+  "turn_id": "6aa1d3d4bf81",
   "token_usage": {
-    "input_tokens": 15860,
-    "cache_creation_tokens": 163808,
-    "cache_read_tokens": 4391043,
-    "output_tokens": 40749,
-    "api_call_count": 70
+    "input_tokens": 7504,
+    "cache_creation_tokens": 60394,
+    "cache_read_tokens": 708935,
+    "output_tokens": 10218,
+    "api_call_count": 15
+  },
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-30T10:37:39.698062Z",
+    "agent_lines": 1030,
+    "human_added": 8535,
+    "human_modified": 24,
+    "human_removed": 0,
+    "total_committed": 9589,
+    "agent_percentage": 10.741474606319741
   }
 }
