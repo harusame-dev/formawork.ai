@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "95ffac716f83",
+  "session_id": "c212dbcb-1fbf-4a65-8a4e-5389a7626db8",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-30T18:43:49.327191Z",
+  "branch": "crawdworks_13271198",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/features/segment/get-segment-assist.ts"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "6f13b628d6e6",
+  "checkpoint_transcript_start": 188,
+  "transcript_lines_at_start": 188,
+  "token_usage": {
+    "input_tokens": 4613,
+    "cache_creation_tokens": 21286,
+    "cache_read_tokens": 1840531,
+    "output_tokens": 11880,
+    "api_call_count": 21
+  },
+  "session_metrics": {
+    "turn_count": 8
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-30T18:43:49.21062Z",
+    "agent_lines": 10,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 10,
+    "agent_percentage": 100
+  }
+}
