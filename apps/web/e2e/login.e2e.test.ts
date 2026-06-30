@@ -102,7 +102,7 @@ const test = base.extend<{
   },
 });
 
-test("正しいメールアドレスとパスワードを入力するとホームにリダイレクトされ、バックしてもログインページに戻らない", async ({
+test("正しいメールアドレスとパスワードを入力するとプロジェクト一覧にリダイレクトされ、バックしてもログインページに戻らない", async ({
   loginPage,
 }) => {
   await test.step("有効なメールアドレスとパスワードを入力", async () => {
@@ -116,8 +116,8 @@ test("正しいメールアドレスとパスワードを入力するとホー�
     await loginPage.getByRole("button", { name: "ログイン" }).click();
   });
 
-  await test.step("ホームページにリダイレクトされることを確認", async () => {
-    await expect(loginPage).toHaveURL("/");
+  await test.step("プロジェクト一覧ページにリダイレクトされることを確認", async () => {
+    await expect(loginPage).toHaveURL("/projects");
   });
 
   await test.step("ブラウザバックを実行", async () => {
@@ -144,8 +144,8 @@ test("最大文字数のメールアドレス（254文字）でログインで�
     await loginPage.getByRole("button", { name: "ログイン" }).click();
   });
 
-  await test.step("ホームページにリダイレクトされることを確認", async () => {
-    await expect(loginPage).toHaveURL("/");
+  await test.step("プロジェクト一覧ページにリダイレクトされることを確認", async () => {
+    await expect(loginPage).toHaveURL("/projects");
   });
 });
 
@@ -164,8 +164,8 @@ test("最大文字数のパスワード（64文字）のパスワードでログ
     await loginPage.getByRole("button", { name: "ログイン" }).click();
   });
 
-  await test.step("ホームページにリダイレクトされることを確認", async () => {
-    await expect(loginPage).toHaveURL("/");
+  await test.step("プロジェクト一覧ページにリダイレクトされることを確認", async () => {
+    await expect(loginPage).toHaveURL("/projects");
   });
 });
 
@@ -184,8 +184,8 @@ test("最小文字数のメールアドレスでログインできる", async ({
     await loginPage.getByRole("button", { name: "ログイン" }).click();
   });
 
-  await test.step("ホームページにリダイレクトされることを確認", async () => {
-    await expect(loginPage).toHaveURL("/");
+  await test.step("プロジェクト一覧ページにリダイレクトされることを確認", async () => {
+    await expect(loginPage).toHaveURL("/projects");
   });
 });
 
@@ -204,7 +204,7 @@ test("最小文字数のパスワード（8文字）でログインできる", a
     await loginPage.getByRole("button", { name: "ログイン" }).click();
   });
 
-  await test.step("ホームページにリダイレクトされることを確認", async () => {
-    await expect(loginPage).toHaveURL("/");
+  await test.step("プロジェクト一覧ページにリダイレクトされることを確認", async () => {
+    await expect(loginPage).toHaveURL("/projects");
   });
 });
