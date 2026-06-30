@@ -28,7 +28,11 @@ export async function searchSimilarTm({
   queryEmbedding: number[];
 }): Promise<TmMatch[]> {
   const vectorLiteral = `[${queryEmbedding.join(",")}]`;
-  const distance = sql<number>`${translationMemoriesTable.sourceEmbedding} <=> ${vectorLiteral}::extensions.vector`;
+  // pgvector の演算子は extensions スキーマにあるが、ランタイム接続の
+  // search_path には extensions が含まれず素の "<=>" を解決できない
+  // （Supabase デプロイ環境では search_path がブランチスキーマのみになる）。
+  // OPERATOR(extensions.<=>) で明示修飾する。HNSW インデックスも引き続き利用される。
+  const distance = sql<number>`${translationMemoriesTable.sourceEmbedding} OPERATOR(extensions.<=>) ${vectorLiteral}::extensions.vector`;
   const score = sql<number>`1 - (${distance})`;
 
   const rows = await db
