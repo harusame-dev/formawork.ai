@@ -1,0 +1,57 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "680a83a517c8",
+  "strategy": "manual-commit",
+  "branch": "parallel-dev-environment",
+  "checkpoints_count": 4,
+  "files_touched": [
+    ".github/workflows/e2e-test.yml",
+    ".github/workflows/server-test.yml",
+    ".github/workflows/static-analytics.yml",
+    ".gitignore",
+    ".prettierignore",
+    ".worktreeinclude",
+    "CLAUDE.md",
+    "apps/web/.env.sample",
+    "apps/web/package.json",
+    "cspell.json",
+    "package.json",
+    "packages/db/.env.sample",
+    "packages/supabase/.env.sample",
+    "packages/supabase/config.toml",
+    "packages/supabase/package.json",
+    "packages/supabase/storage/customer-note-attachments/.gitkeep.png",
+    "packages/supabase/storage/customer-note-attachments/sample1.jpg",
+    "packages/supabase/storage/customer-note-attachments/sample2.jpg",
+    "packages/supabase/storage/customer-note-attachments/sample3.jpg",
+    "packages/supabase/storage/customer-note-attachments/sample4.jpg",
+    "packages/supabase/storage/customer-note-attachments/sample5.jpg",
+    "packages/supabase/supabase/config.toml",
+    "packages/supabase/supabase/storage/customer-note-attachments/.gitkeep.png",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample1.jpg",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample2.jpg",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample3.jpg",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample4.jpg",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample5.jpg",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "scripts/allocate-supabase-port.sh",
+    "turbo.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/68/0a83a517c8/0/metadata.json",
+      "transcript": "/68/0a83a517c8/0/full.jsonl",
+      "compact_transcript": "/68/0a83a517c8/0/transcript.jsonl",
+      "content_hash": "/68/0a83a517c8/0/content_hash.txt",
+      "prompt": "/68/0a83a517c8/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 192,
+    "cache_creation_tokens": 384697,
+    "cache_read_tokens": 14876129,
+    "output_tokens": 88746,
+    "api_call_count": 104
+  }
+}

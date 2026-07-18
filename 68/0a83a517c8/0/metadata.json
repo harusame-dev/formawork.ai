@@ -1,0 +1,203 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "680a83a517c8",
+  "session_id": "19d45313-8d8c-4635-abe2-a0145db9f8ef",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-18T20:43:15.840207Z",
+  "branch": "parallel-dev-environment",
+  "checkpoints_count": 4,
+  "save_step_count": 4,
+  "files_touched": [
+    ".github/workflows/e2e-test.yml",
+    ".github/workflows/server-test.yml",
+    ".github/workflows/static-analytics.yml",
+    ".gitignore",
+    ".prettierignore",
+    ".worktreeinclude",
+    "CLAUDE.md",
+    "apps/web/.env.sample",
+    "apps/web/package.json",
+    "cspell.json",
+    "package.json",
+    "packages/db/.env.sample",
+    "packages/supabase/.env.sample",
+    "packages/supabase/config.toml",
+    "packages/supabase/package.json",
+    "packages/supabase/storage/customer-note-attachments/.gitkeep.png",
+    "packages/supabase/storage/customer-note-attachments/sample1.jpg",
+    "packages/supabase/storage/customer-note-attachments/sample2.jpg",
+    "packages/supabase/storage/customer-note-attachments/sample3.jpg",
+    "packages/supabase/storage/customer-note-attachments/sample4.jpg",
+    "packages/supabase/storage/customer-note-attachments/sample5.jpg",
+    "packages/supabase/supabase/config.toml",
+    "packages/supabase/supabase/storage/customer-note-attachments/.gitkeep.png",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample1.jpg",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample2.jpg",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample3.jpg",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample4.jpg",
+    "packages/supabase/supabase/storage/customer-note-attachments/sample5.jpg",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "scripts/allocate-supabase-port.sh",
+    "turbo.json"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "78a9eab54d63",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 192,
+    "cache_creation_tokens": 384697,
+    "cache_read_tokens": 14876129,
+    "output_tokens": 88746,
+    "api_call_count": 104
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01SLmRyGQG5356NbYxFPgBj2",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "playwright-cli"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "78a9eab54d63",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 335,
+        "end": 336,
+        "entry_ids": [
+          "aae11b5c-b82b-4db5-abfe-0b9a9bb5ce6d"
+        ],
+        "tool_use_id": "toolu_01SLmRyGQG5356NbYxFPgBj2"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01SLmRyGQG5356NbYxFPgBj2"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: playwright-cli",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_01EU1M58xWpVoNFf4J7QCeW3",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "pr"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "78a9eab54d63",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 543,
+        "end": 544,
+        "entry_ids": [
+          "26420e6d-f166-4b00-874a-b0f93f5f9122"
+        ],
+        "tool_use_id": "toolu_01EU1M58xWpVoNFf4J7QCeW3"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01EU1M58xWpVoNFf4J7QCeW3"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: pr",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_01XU6RfehcSZLWtsebXrDcCj",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "pr"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "78a9eab54d63",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 573,
+        "end": 574,
+        "entry_ids": [
+          "5222d6f0-5702-439a-81cf-b5a86153bd0e"
+        ],
+        "tool_use_id": "toolu_01XU6RfehcSZLWtsebXrDcCj"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01XU6RfehcSZLWtsebXrDcCj"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: pr",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-18T20:43:15.799983Z",
+    "agent_lines": 610,
+    "agent_removed": 364,
+    "human_added": 0,
+    "human_modified": 2,
+    "human_removed": 0,
+    "total_committed": 612,
+    "total_lines_changed": 976,
+    "agent_percentage": 99.79508196721312,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 611,
+      "agent_lines_removed": 364
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 612,
+      "agent_lines_removed": 364
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 612,
+      "agent_lines_removed": 364
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 612,
+      "agent_lines_removed": 364
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+harusame-dev/ai-driven-starter から並列実行のための設定を移植してください
+主に portless による開発サーバーの起動、supabase のポート変更、 turborepo 導入などです
+
+---
+
+basename $PWD だと実行フォルダによって変わってしまったりする可能性ある？ 
+harusame-dev/demo-systems を見てみてどっちがいいか確認して
+
+---
+
+https://community.vercel.com/t/using-portless-with-conductor-git-worktrees/34557
+WORKTREE_NAME を設定して globalEnv に登録しているのは turborepo のキャッシュなどの問題でスカ？
+設定しなくても問題ないの？
+
+---
+
+OK。元の AI DRIVEN の方にも反映させる修正をサブエージェントで行って PR を出しておいて
