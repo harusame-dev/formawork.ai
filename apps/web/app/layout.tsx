@@ -1,4 +1,6 @@
 import type React from "react";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import "@workspace/ui/globals.css";
 
@@ -17,6 +19,8 @@ export default function RootLayout({
     <html lang="ja">
       <body className="overflow-hidden bg-white font-sans antialiased">
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
