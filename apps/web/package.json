@@ -6,6 +6,7 @@
   "scripts": {
     "build": "TZ=Etc/UTC next build",
     "dev": "TZ=Etc/UTC next dev | pino-pretty -m message -i application,environment,service,ipAddress,requestId,userId,userAgent,deploymentId,gitCommitSha",
+    "dev:portless": "TZ=Etc/UTC portless web.formawork-ai.$(basename \"$(git rev-parse --show-toplevel)\") next dev | pino-pretty -m message -i application,environment,service,ipAddress,requestId,userId,userAgent,deploymentId,gitCommitSha",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "start": "TZ=Etc/UTC next start",
@@ -60,6 +61,7 @@
     "msw": "catalog:",
     "neostandard": "catalog:",
     "pino-pretty": "catalog:",
+    "portless": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
