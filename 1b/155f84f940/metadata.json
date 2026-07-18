@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "1b155f84f940",
+  "strategy": "manual-commit",
+  "branch": "update-rules-agent-docs",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "agent-docs/nextjs-キャッシュ戦略.md",
+    "agent-docs/テスト戦略.md",
+    "agent-docs/環境変数.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/1b/155f84f940/0/metadata.json",
+      "transcript": "/1b/155f84f940/0/full.jsonl",
+      "compact_transcript": "/1b/155f84f940/0/transcript.jsonl",
+      "content_hash": "/1b/155f84f940/0/content_hash.txt",
+      "prompt": "/1b/155f84f940/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 64345,
+    "cache_read_tokens": 923837,
+    "output_tokens": 14828,
+    "api_call_count": 18
+  }
+}

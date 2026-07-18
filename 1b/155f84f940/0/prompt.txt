@@ -1,0 +1,8 @@
+agent-docks, claude の rules を harusame-dev/ai-driven-starter から移植してください
+（ai-driven-starter に会ってこちらにないものの追可、 ai-driven-starter になくてこちらにあるものの削除）
+
+最初に削除、追加、上書きする対処の一覧表を HTML で出してください
+
+---
+
+DB マイグレーション.md は残しておいて。それ以外は進めて
