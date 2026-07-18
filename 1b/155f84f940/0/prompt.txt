@@ -6,3 +6,23 @@ agent-docks, claude の rules を harusame-dev/ai-driven-starter から移植し
 ---
 
 DB マイグレーション.md は残しておいて。それ以外は進めて
+
+---
+
+PR 作って
+
+---
+
+6s
+34s
+Run pnpm validate:check
+$ pnpm --filter web lint && pnpm format:check && DATABASE_URL=***localhost:5432/dummy knip && cspell . && pnpm -r type:check
+$ eslint .
+$ prettier --check .
+Checking formatting...
+[warn] agent-docs/nextjs-キャッシュ戦略.md
+[warn] agent-docs/テスト戦略.md
+[warn] agent-docs/環境変数.md
+[warn] Code style issues found in 3 files. Run Prettier with --write to fix.
+[ELIFECYCLE] Command failed with exit code 1.
+[ELIFECYCLE] Command failed with exit code 1.
