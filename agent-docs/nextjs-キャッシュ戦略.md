@@ -4,7 +4,6 @@ Cache Components を有効にし、適切なキャッシュを行う
 
 ## cache directive
 
-
 ### "use cache" のユースケース
 
 - コンテンツがビルド時に事前レンダリングできる場合
