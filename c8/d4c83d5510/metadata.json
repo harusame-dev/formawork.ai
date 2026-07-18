@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "c8d4c83d5510",
+  "strategy": "manual-commit",
+  "branch": "worktree-vercel-analytics-observability",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/web/app/layout.tsx",
+    "apps/web/instrumentation.ts",
+    "apps/web/package.json",
+    "cspell.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/c8/d4c83d5510/0/metadata.json",
+      "transcript": "/c8/d4c83d5510/0/full.jsonl",
+      "compact_transcript": "/c8/d4c83d5510/0/transcript.jsonl",
+      "content_hash": "/c8/d4c83d5510/0/content_hash.txt",
+      "prompt": "/c8/d4c83d5510/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 106,
+    "cache_creation_tokens": 94356,
+    "cache_read_tokens": 3997221,
+    "output_tokens": 20821,
+    "api_call_count": 57
+  }
+}

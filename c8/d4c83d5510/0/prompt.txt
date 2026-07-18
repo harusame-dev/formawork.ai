@@ -1,0 +1,1 @@
+vercel の observability と analytics のパッケージ導入して
