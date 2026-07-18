@@ -1,0 +1,28 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalEnv": [
+    "SUPABASE_API_PORT",
+    "SUPABASE_DB_PORT",
+    "SUPABASE_STUDIO_PORT"
+  ],
+  "tasks": {
+    "dev": {
+      "dependsOn": ["^dev"],
+      "cache": false,
+      "persistent": true
+    },
+    "dev:portless": {
+      "dependsOn": ["^dev"],
+      "cache": false,
+      "persistent": true
+    },
+    "@repo/supabase#dev": {
+      "cache": false,
+      "persistent": false
+    },
+    "@repo/supabase#stop": {
+      "cache": false,
+      "persistent": false
+    }
+  }
+}

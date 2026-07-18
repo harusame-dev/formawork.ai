@@ -4,7 +4,7 @@
     "**/*.svg",
     "**/*tsconfig.tsbuildinfo",
     "pnpm-lock.yaml",
-    "packages/supabase/config.toml",
+    "packages/supabase/supabase/config.toml",
     "**/playwright-report/**",
     "packages/db/drizzle/meta/_journal.json",
     "**/test-results/**",
@@ -67,6 +67,10 @@
     "dorny",
     "shunsuke",
     "pinact",
-    "gomod"
+    "gomod",
+    "worktree",
+    "worktrees",
+    "WORKTREE",
+    "toplevel"
   ]
 }

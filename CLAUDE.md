@@ -24,16 +24,19 @@ packages/
 ## 主要コマンド
 
 ```bash
-pnpm -w dev            # Supabase + Next.js 開発サーバー起動（UTC タイムゾーン）
-pnpm -w build          # ビルド
-pnpm -w validate:check # lint・format・デッドコード・スペル・型チェック
-pnpm -w validate:fix   # lint・format の自動修正
-pnpm -w db:generate    # マイグレーションファイル生成（DB 適用なし）
-pnpm -w db:migrate     # マイグレーション実行
-pnpm -w db:reset       # DB リセット・再マイグレーション・シード
-pnpm -w test:browser   # Vitest ブラウザテスト
-pnpm -w test:server    # Vitest サーバーサイドテスト
-pnpm -w test:e2e       # Playwright E2E テスト
+pnpm -w dev                    # Supabase + Next.js 開発サーバー起動（UTC タイムゾーン）
+pnpm -w dev:portless           # worktree での並列開発用。supabase を worktree 専用ポート（.env）で起動し、名前付き URL（https://web.formawork-ai.<worktree名>.localhost）で開発サーバー起動
+pnpm -w supabase:allocate-port # .env の PUT_YOUR_SUPABASE_PORT_* に空きポートを割り当て。worktree 作成後に 1 回実行する
+pnpm -w supabase:stop          # この worktree の supabase を停止
+pnpm -w build                  # ビルド
+pnpm -w validate:check         # lint・format・デッドコード・スペル・型チェック
+pnpm -w validate:fix           # lint・format の自動修正
+pnpm -w db:generate            # マイグレーションファイル生成（DB 適用なし）
+pnpm -w db:migrate             # マイグレーション実行
+pnpm -w db:reset               # DB リセット・再マイグレーション・シード
+pnpm -w test:browser           # Vitest ブラウザテスト
+pnpm -w test:server            # Vitest サーバーサイドテスト
+pnpm -w test:e2e               # Playwright E2E テスト
 ```
 
 ### 使用可能な CLI コマンド
@@ -56,7 +59,8 @@ pnpm -w test:e2e       # Playwright E2E テスト
 ### 開発環境
 
 - 開発サーバー：http://localhost:3000
-- DB：postgresql://postgres:postgres@127.0.0.1:62022/postgres
+- DB：postgresql://postgres:postgres@127.0.0.1:${SUPABASE_DB_PORT}/postgres
+  - ポートは worktree ごとに packages/supabase/.env の SUPABASE_DB_PORT で割り当てる（メインリポジトリは 62022）
 
 ## ワークフロー
 

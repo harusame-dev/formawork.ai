@@ -1,17 +1,19 @@
 {
   "scripts": {
-    "build": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web build",
+    "build": "pnpm supabase:start && pnpm --filter web build",
     "db:generate": "pnpm --filter @workspace/db db:generate",
     "db:migrate": "pnpm --filter @workspace/db db:migrate",
     "db:reset": "pnpm --filter @workspace/db db:reset",
     "db:seed": "pnpm --filter @workspace/db db:seed",
-    "dev": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web dev",
+    "dev": "turbo run dev --filter web",
+    "dev:portless": "turbo run dev:portless --filter web",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "start": "pnpm --filter @workspace/supabase supabase:start && pnpm --filter web start",
+    "start": "pnpm supabase:start && pnpm --filter web start",
+    "supabase:allocate-port": "./scripts/allocate-supabase-port.sh",
     "supabase:seed": "pnpm --filter @repo/supabase supabase:seed",
-    "supabase:start": "pnpm --filter @repo/supabase supabase:start",
-    "supabase:stop": "pnpm --filter @repo/supabase supabase:stop",
+    "supabase:start": "turbo run dev --filter @repo/supabase",
+    "supabase:stop": "turbo run stop --filter @repo/supabase",
     "test:browser": "pnpm --filter web test:browser",
     "test:e2e": "pnpm --filter web test:e2e",
     "test:server": "pnpm --filter web test:server",
@@ -26,7 +28,8 @@
     "prettier-plugin-sh": "catalog:",
     "prettier-plugin-sql": "catalog:",
     "prettier-plugin-tailwindcss": "catalog:",
-    "prettier-plugin-toml": "catalog:"
+    "prettier-plugin-toml": "catalog:",
+    "turbo": "catalog:"
   },
   "packageManager": "pnpm@11.1.2"
 }

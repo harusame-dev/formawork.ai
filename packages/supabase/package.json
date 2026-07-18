@@ -11,10 +11,10 @@
     "./nextjs/server": "./src/nextjs/server.ts"
   },
   "scripts": {
-    "supabase:reset": "supabase db reset && pnpm supabase:seed",
+    "dev": "SUPABASE_PROJECT=formawork.ai_$(basename \"$(git rev-parse --show-toplevel)\") supabase start",
+    "stop": "SUPABASE_PROJECT=formawork.ai_$(basename \"$(git rev-parse --show-toplevel)\") supabase stop",
+    "supabase:reset": "SUPABASE_PROJECT=formawork.ai_$(basename \"$(git rev-parse --show-toplevel)\") supabase db reset && pnpm supabase:seed",
     "supabase:seed": "tsx --env-file-if-exists=.env src/seed.ts",
-    "supabase:start": "supabase start",
-    "supabase:stop": "supabase stop",
     "type:check": "tsc --noEmit"
   },
   "dependencies": {
