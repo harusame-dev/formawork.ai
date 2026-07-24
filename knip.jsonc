@@ -1,6 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
 
+  "ignore": [
+    // Claude Code の SessionStart フックから直接実行されるため import 元が存在しない
+    ".claude/hooks/**",
+  ],
   "ignoreDependencies": [],
   "workspaces": {
     "apps/web": {
