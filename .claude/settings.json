@@ -72,6 +72,17 @@
           {
             "command": "entire hooks claude-code session-start",
             "type": "command"
+          },
+          {
+            "command": "jq -n --rawfile s \"${CLAUDE_PROJECT_DIR:-.}/.claude/skills/genshijin/SKILL.md\" '{hookSpecificOutput:{hookEventName:\"SessionStart\",additionalContext:(\"以下は genshijin スキル本文。このセッション全体で従うこと。\\n\\n\" + $s)}}' 2>/dev/null || true",
+            "type": "command",
+            "statusMessage": "原始人モード読込中..."
+          },
+          {
+            "command": "bun \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/clickup-branch-context.ts\" 2>/dev/null || true",
+            "type": "command",
+            "timeout": 15,
+            "statusMessage": "ClickUp チケット情報を取得中..."
           }
         ],
         "matcher": ""
