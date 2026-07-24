@@ -55,7 +55,7 @@ console.log(
         `URL: ${task.url ?? ""}`,
         "",
         "説明:",
-        (task.description ?? "").slice(0, 2000),
+        task.description ?? "",
       ].join("\n"),
     },
   }),
