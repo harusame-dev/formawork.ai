@@ -34,7 +34,7 @@ catalog:
   "@types/react-dom": 19.2.3
   supabase: 2.98.0
   knip: 6.9.0
-  cspell: 10.0.0
+  cspell: 10.1.0
   drizzle-orm: 0.45.2
   drizzle-kit: 0.31.10
   postgres: 3.4.9
