@@ -71,7 +71,7 @@ catalog:
   msw: 2.14.2
   onborda: 1.2.5
   framer-motion: 12.38.0
-  eslint: 9.39.4
+  eslint: 9.39.5
   eslint-config-next: 16.2.6
   neostandard: 0.13.0
   eslint-plugin-react-hooks: 7.1.1
