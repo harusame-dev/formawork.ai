@@ -75,7 +75,7 @@ catalog:
   eslint-config-next: 16.2.6
   neostandard: 0.13.0
   eslint-plugin-react-hooks: 7.1.1
-  "@vitest/eslint-plugin": 1.6.17
+  "@vitest/eslint-plugin": 1.6.27
   eslint-plugin-better-tailwindcss: 4.5.0
   eslint-config-prettier: 10.1.8
   eslint-plugin-import-x: 4.16.2
