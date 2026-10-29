@@ -43,7 +43,7 @@ jobs:
 
       - name: Claude Code の実行
         id: claude
-        uses: anthropics/claude-code-action@51ea8ea73a139f2a74ff649e3092c25a904aed7e # v1.0.123
+        uses: anthropics/claude-code-action@a26b07d8c778b0c43f64618e5fd29fd0f8af72e8 # v1.0.250
         with:
           show_full_output: true
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
